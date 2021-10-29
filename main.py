@@ -1,6 +1,7 @@
 import keep_alive
 import sys
 import os
+from dotenv import load_dotenv
 import asyncio
 import discord
 from discord.ext import commands
@@ -735,6 +736,7 @@ async def restart(ctx):
     os.system(command)
     os.execv(sys.executable, ["python"] + sys.argv)
 
+
 @bot.command(name="clear")
 @commands.bot_has_permissions(manage_messages=True)
 @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
@@ -842,7 +844,6 @@ async def admin(ctx, admin: discord.Member, *, message):
             inline=True,
         )
         await ctx.send(embed=embed)
-
 
 
 @bot.command(name="kick")
@@ -1043,5 +1044,7 @@ async def on_command_error(ctx, error):
 
 
 keep_alive.keep_alive()
+BASEDIR = os.path.abspath(os.path.dirname(__file__))
+load_dotenv(os.path.join(BASEDIR, ".env"))
 BotToken = os.environ["BotToken"]
 bot.run(BotToken)
