@@ -269,18 +269,23 @@ async def debug(ctx, codes=""):
         )
         await ctx.send(embed=embed)
     else:
+        embed = discord.Embed(color=0x0DD91A)
         try:
             response = urllib.request.urlopen("https://TIJK-Bot.codeman1o1.repl.co")
             status_code = response.getcode()
             elapsed = requests.get(
                 "https://TIJK-Bot.codeman1o1.repl.co"
             ).elapsed.total_seconds()
-            await ctx.send(
-                f"Status code for https://TIJK-Bot.codeman1o1.repl.co: {status_code}\nResponse time for https://TIJK-Bot.codeman1o1.repl.co: {elapsed} seconds"
+            embed.add_field(
+                name=f"https://TIJK-Bot.codeman1o1.repl.co",
+                value=f"Status code: {status_code}\nResponse time: {elapsed} seconds",
+                inline=False,
             )
         except:
-            await ctx.send(
-                f"https://TIJK-Bot.codeman1o1.repl.co doesn't seem reachable"
+            embed.add_field(
+                name=f"https://TIJK-Bot.codeman1o1.repl.co",
+                value=f"TIJK Bot doesn't seem reachable",
+                inline=False,
             )
 
         try:
@@ -289,13 +294,18 @@ async def debug(ctx, codes=""):
             elapsed = requests.get(
                 "https://TIJK-Music.codeman1o1.repl.co"
             ).elapsed.total_seconds()
-            await ctx.send(
-                f"Status code for https://TIJK-Music.codeman1o1.repl.co: {status_code}\nResponse time for https://TIJK-Music.codeman1o1.repl.co: {elapsed} seconds"
+            embed.add_field(
+                name=f"https://TIJK-Music.codeman1o1.repl.co",
+                value=f"Status code: {status_code}\nResponse time: {elapsed} seconds",
+                inline=False,
             )
         except:
-            await ctx.send(
-                f"https://TIJK-Music.codeman1o1.repl.co doesn't seem reachable"
+            embed.add_field(
+                name=f"https://TIJK-Bot.codeman1o1.repl.co",
+                value=f"TIJK Music doesn't seem reachable",
+                inline=False,
             )
+        await ctx.send(embed=embed)
 
 
 @bot.command(name="api")
