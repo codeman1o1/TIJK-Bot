@@ -17,6 +17,7 @@ bot = commands.Bot(command_prefix=".", intents=discord.Intents.all())
 bot.remove_command("help")
 
 hpon = []
+admins = []
 
 
 @bot.event
@@ -122,90 +123,6 @@ async def on_message(message):
         )
         await message.channel.send(embed=embed, delete_after=5)
 
-    if message.content.lower() == "--help":
-        if isinstance(message.channel, discord.channel.DMChannel):
-            embed = discord.Embed(color=0x0DD91A)
-            embed.add_field(
-                name=f"Hello there!",
-                value=f"If you want to contact me for a feature, send --feature\nIf you want to contact me for a bug, send --bug",
-                inline=True,
-            )
-            await message.channel.send(embed=embed)
-    if message.content.lower() == "--feature":
-        if isinstance(message.channel, discord.channel.DMChannel):
-            embed = discord.Embed(color=0x0DD91A)
-            embed.add_field(
-                name=f"I appreciate that you want to suggest a feature!",
-                value=f"Please send in the next message what you want to suggest within 60 seconds\nIf this was an accident, just send --cancel",
-                inline=True,
-            )
-            await message.channel.send(embed=embed)
-            try:
-                msg = await bot.wait_for("message", timeout=60.0)
-                if msg.content.lower() == "--cancel":
-                    embed = discord.Embed(color=0x0DD91A)
-                    embed.add_field(
-                        name=f"Ok!",
-                        value=f"You can always suggest a feature again by doing --feature",
-                        inline=True,
-                    )
-                    await message.channel.send(embed=embed)
-                else:
-                    codeman1o1 = bot.get_user(656950082431615057)
-                    channel = await codeman1o1.create_dm()
-                    embed = discord.Embed(color=0x0DD91A)
-                    embed.add_field(
-                        name=f"{msg.author.name}#{msg.author.discriminator} suggested the following feature:",
-                        value=msg.content,
-                        inline=True,
-                    )
-                    await channel.send(embed=embed)
-            except asyncio.TimeoutError:
-                embed = discord.Embed(color=0x0DD91A)
-                embed.add_field(
-                    name=f"You ran out of time!",
-                    value=f"Please try again if you didn't have enough time",
-                    inline=True,
-                )
-                await message.channel.send(embed=embed)
-    if message.content.lower() == "--bug":
-        if isinstance(message.channel, discord.channel.DMChannel):
-            embed = discord.Embed(color=0x0DD91A)
-            embed.add_field(
-                name=f"I appreciate that you want to report a bug!",
-                value=f"Please send in the next message what you want to report within 60 seconds\nIf this was an accident, just send --cancel",
-                inline=True,
-            )
-            await message.channel.send(embed=embed)
-            try:
-                msg = await bot.wait_for("message", timeout=60.0)
-                if msg.content.lower() == "--cancel":
-                    embed = discord.Embed(color=0x0DD91A)
-                    embed.add_field(
-                        name=f"Ok!",
-                        value=f"You can always report a bug again by doing --bug",
-                        inline=True,
-                    )
-                    await message.channel.send(embed=embed)
-                else:
-                    codeman1o1 = bot.get_user(656950082431615057)
-                    channel = await codeman1o1.create_dm()
-                    embed = discord.Embed(color=0x0DD91A)
-                    embed.add_field(
-                        name=f"{msg.author.name}#{msg.author.discriminator} reported the following bug:",
-                        value=msg.content,
-                        inline=True,
-                    )
-                    await channel.send(embed=embed)
-            except asyncio.TimeoutError:
-                embed = discord.Embed(color=0x0DD91A)
-                embed.add_field(
-                    name=f"You ran out of time!",
-                    value=f"Please try again if you didn't have enough time",
-                    inline=True,
-                )
-                await message.channel.send(embed=embed)
-
     with open("spam_detect.txt", "r+") as file:
         for lines in file:
             if lines.strip("\n") == str(message.author.id):
@@ -246,12 +163,133 @@ async def on_message(message):
     await bot.process_commands(message)
 
 
+@bot.event
+async def on_message_edit(before, after):
+    abuse_list = ["abuse", "misbruik"]
+    message0 = after.content.lower()
+    message1 = message0.replace(" ", "")
+    message2 = message1.replace("@", "a")
+    message3 = message2.replace("3", "e")
+    message4 = message3.replace("$", "s")
+    message5 = message4.replace("!", "i")
+    message6 = message5.replace(".", "")
+    message7 = message6.replace("_", "")
+    message8 = message7.replace("ä", "a")
+    message9 = message8.replace("á", "a")
+    message10 = message9.replace("à", "a")
+    message11 = message10.replace("â", "a")
+    message12 = message11.replace("ã", "a")
+    message13 = message12.replace("å", "a")
+    message14 = message13.replace("ª", "a")
+    message15 = message14.replace("ą", "a")
+    message16 = message15.replace("ă", "a")
+    message17 = message16.replace("ā", "a")
+    message18 = message17.replace("æ", "a")
+    message19 = message18.replace("æ", "e")
+    message20 = message19.replace("ü", "u")
+    message21 = message20.replace("ū", "u")
+    message22 = message21.replace("ů", "u")
+    message23 = message22.replace("ű", "u")
+    message24 = message23.replace("ų", "u")
+    message25 = message24.replace("û", "u")
+    message26 = message25.replace("ù", "u")
+    message27 = message26.replace("ú", "u")
+    message28 = message27.replace("ß", "b")
+    message29 = message28.replace("§", "s")
+    message30 = message29.replace("ś", "s")
+    message31 = message30.replace("š", "s")
+    message32 = message31.replace("ş", "s")
+    message33 = message32.replace("ë", "e")
+    message34 = message33.replace("ė", "e")
+    message35 = message34.replace("é", "e")
+    message36 = message35.replace("è", "e")
+    message37 = message36.replace("ê", "e")
+    message38 = message37.replace("ē", "e")
+    message39 = message38.replace("ę", "e")
+    message40 = message39.replace("ě", "e")
+    message41 = message40.replace("ĕ", "e")
+    message42 = message41.replace("ə", "e")
+    message43 = message42.replace("í", "i")
+    message44 = message43.replace("ì", "i")
+    message45 = message44.replace("ï", "i")
+    message46 = message45.replace("¡", "i")
+    message47 = message46.replace("î", "i")
+    message_final1 = message47.encode("ascii", "ignore")
+    message_final2 = message_final1.decode()
+
+    for file in after.attachments:
+        if file.filename.endswith((".exe", ".dll")):
+            await after.delete()
+            embed = discord.Embed(color=0x0DD91A)
+            embed.add_field(
+                name=f"Hey, don't send that!",
+                value=f"This message wil delete itself after 5 seconds",
+                inline=True,
+            )
+            await after.channel.send(embed=embed, delete_after=5)
+
+    if any(abuse in message_final2 for abuse in abuse_list):
+        embed = discord.Embed(color=0x0DD91A)
+        embed.add_field(
+            name=f"Hey, don't say that!",
+            value=f"This message wil delete itself after 5 seconds",
+            inline=True,
+        )
+        await after.channel.send(embed=embed, delete_after=5)
+        await after.delete()
+
+    if after.author.id == 861994137413484607:
+        return
+
+    if "youtube.com/watch?v=dQw4w9WgXcQ" in after.content.lower():
+        await after.delete()
+        embed = discord.Embed(color=0x0DD91A)
+        embed.add_field(
+            name=f"Rick Roll alert!",
+            value=f"This message wil delete itself after 5 seconds",
+            inline=True,
+        )
+        await after.channel.send(embed=embed, delete_after=5)
+    await bot.process_commands(after)
+
+
+@bot.event
+async def on_member_update(before, after):
+    if after.nick:
+        for user in before.guild.members:
+            owner = discord.utils.find(lambda r: r.name == "Owner", user.guild.roles)
+            admin = discord.utils.find(lambda r: r.name == "Admin", user.guild.roles)
+            roles = [owner, admin]
+            if any(role in user.roles for role in roles):
+                admins.append(str(user.name))
+                admins.append(str(user.display_name))
+        if any(role.lower() in after.nick.lower() for role in admins):
+            if before.nick:
+                await after.edit(nick=before.nick)
+            else:
+                await after.edit(nick=before.name)
+    admins.clear()
+
+
 @bot.command(name="website")
 async def website(ctx):
     embed = discord.Embed(color=0x0DD91A)
     embed.add_field(
-        name=f"Visit the official TIJK Bot webiste now!",
+        name=f"Visit the official TIJK Bot website now!",
         value=f"https://tijk-bot.codeman1o1.repl.co",
+        inline=False,
+    )
+    await ctx.send(embed=embed)
+
+
+@bot.command(
+    name="github", aliases=["git", "os", "opensource", "open-source", "source"]
+)
+async def website(ctx):
+    embed = discord.Embed(color=0x0DD91A)
+    embed.add_field(
+        name=f"View the official TIJK Bot code now!",
+        value=f"https://github.com/codeman1o1/TIJK-Bot",
         inline=False,
     )
     await ctx.send(embed=embed)
@@ -571,10 +609,13 @@ async def shutdown(ctx):
     embed = discord.Embed(color=0x0DD91A)
     embed.add_field(
         name=f"TIJK Bot was shut down",
-        value=f"TIJK Bot was shut down by {ctx.author.display_name}",
+        value=f"TIJK Bot was shut down by {ctx.author.name}#{ctx.author.discriminator}",
         inline=True,
     )
     await ctx.send(embed=embed)
+    codeman1o1 = bot.get_user(656950082431615057)
+    dm = await codeman1o1.create_dm()
+    await dm.send(embed=embed)
     print("TIJK Bot was shut down by " + ctx.author.display_name)
     await ctx.bot.close()
 
@@ -911,6 +952,7 @@ async def help(ctx, category=None):
         )
         embed.add_field(name="admin", value=".admin <admin> <message>", inline=True)
         embed.add_field(name="api", value=".api <type> <subtype>", inline=True)
+        embed.add_field(name="github", value=".github", inline=True)
         embed.add_field(name="help", value=".help <category>", inline=True)
         embed.add_field(name="hypixelrandom", value=".hpr", inline=True)
         embed.add_field(name="ping", value=".ping <roundNr>", inline=True)
@@ -930,6 +972,7 @@ async def help(ctx, category=None):
         embed.add_field(name="assignrole", value=".ar <role> <user>", inline=True)
         embed.add_field(name="ban", value=".ban <user> <reason>", inline=True)
         embed.add_field(name="clear", value=".clear <amount>", inline=True)
+        embed.add_field(name="github", value=".github", inline=True)
         embed.add_field(name="kick", value=".kick <user> <reason>", inline=True)
         embed.add_field(name="mute", value=".mute <user>", inline=True)
         embed.add_field(name="nick", value=".nick <user> <nickname>", inline=True)
@@ -950,6 +993,7 @@ async def help(ctx, category=None):
             inline=False,
         )
         embed.add_field(name="debug", value=".debug <codes>", inline=True)
+        embed.add_field(name="github", value=".github", inline=True)
         embed.add_field(name="restart", value=".restart", inline=True)
         embed.add_field(name="shutdown", value=".stop", inline=True)
         embed.add_field(name="status", value=".status <type> <text>", inline=True)
@@ -971,6 +1015,7 @@ async def help(ctx, category=None):
         embed.add_field(name="ban", value=".ban <user> <reason>", inline=True)
         embed.add_field(name="clear", value=".clear <amount>", inline=True)
         embed.add_field(name="debug", value=".debug <codes>", inline=True)
+        embed.add_field(name="github", value=".github", inline=True)
         embed.add_field(name="help", value=".help <category>", inline=True)
         embed.add_field(name="hypixelrandom", value=".hpr", inline=True)
         embed.add_field(name="kick", value=".kick <user> <reason>", inline=True)
