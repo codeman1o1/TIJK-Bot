@@ -935,6 +935,19 @@ async def ban(ctx, user: discord.Member, *, reason="No reason provided"):
     await mo.send(embed=embed)
 
 
+@bot.command(name="tijkbotdeveloper", aliases=["tbdv"])
+@commands.has_permissions(manage_roles=True)
+@commands.is_owner()
+async def tijkbotdeveloper(ctx):
+    tbdv = discord.utils.get(ctx.guild.roles, name="TIJK-Bot developer")
+    await ctx.author.add_roles(tbdv)
+    embed = discord.Embed(color=0x0DD91A)
+    embed.add_field(
+        name="Done!", value="You now have the TIJK Bot developer role!", inline=True
+    )
+    await ctx.send(embed=embed)
+
+
 @bot.command(name="help")
 async def help(ctx, category=None):
     if category == None:
@@ -1007,6 +1020,7 @@ async def help(ctx, category=None):
         embed.add_field(name="restart", value=".restart", inline=True)
         embed.add_field(name="shutdown", value=".stop", inline=True)
         embed.add_field(name="status", value=".status <type> <text>", inline=True)
+        embed.add_field(name="tijkbotdeveloper", value=".tbdv", inline=True)
         await ctx.send(embed=embed)
     if category.lower() == "all":
         embed = discord.Embed(
@@ -1037,6 +1051,7 @@ async def help(ctx, category=None):
         embed.add_field(name="restart", value=".restart", inline=True)
         embed.add_field(name="shutdown", value=".stop", inline=True)
         embed.add_field(name="status", value=".status <type> <text>", inline=True)
+        embed.add_field(name="tijkbotdeveloper", value=".tbdv", inline=True)
         embed.add_field(name="unmute", value=".unmute <user>", inline=True)
         embed.add_field(name="website", value=".website", inline=True)
         await ctx.send(embed=embed)
