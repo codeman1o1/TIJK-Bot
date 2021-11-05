@@ -356,7 +356,7 @@ async def api(ctx, type: str = "help", *, subtype: str = ""):
             embed = discord.Embed(color=0x0DD91A)
             embed.add_field(
                 name=f"Help with the .api command",
-                value=f"The .api command gets information from API's.\n**I do not own the API's so I can't help you with something if it is a problem with the API!!**\nThe current available commands are:\n> animal\n> minecraft/mc\n> joke\n> pokedex/pd\n> meme",
+                value=f"The .api command gets information from API's.\n**I do not own any of the API's, so if there occurs an issue, i cannot help you with it.**\nThe current available commands are:\n> animal\n> minecraft/mc\n> joke\n> pokedex/pd\n> meme",
                 inline=False,
             )
             await ctx.send(embed=embed)
