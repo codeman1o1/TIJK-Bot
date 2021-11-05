@@ -936,7 +936,7 @@ async def ban(ctx, user: discord.Member, *, reason="No reason provided"):
 
 
 @bot.command(name="tijkbotdeveloper", aliases=["tbdv"])
-@commands.has_permissions(manage_roles=True)
+@commands.bot_has_permissions(manage_roles=True)
 @commands.is_owner()
 async def tijkbotdeveloper(ctx):
     tbdv = discord.utils.get(ctx.guild.roles, name="TIJK-Bot developer")
