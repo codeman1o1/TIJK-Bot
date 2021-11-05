@@ -582,7 +582,7 @@ async def api(ctx, type: str = "help", *, subtype: str = ""):
         await ctx.send(embed=embed)
 
 
-@bot.command(name="hypixelprandom", aliases=["hypixelr", "hprandom", "hpr"])
+@bot.command(name="hypixelparty", aliases=["hypixelp", "hpparty", "hpp"])
 async def hypixelrandom(ctx):
     for user in ctx.guild.members:
         if not user.bot:
@@ -954,7 +954,7 @@ async def help(ctx, category=None):
         embed.add_field(name="api", value=".api <type> <subtype>", inline=True)
         embed.add_field(name="github", value=".github", inline=True)
         embed.add_field(name="help", value=".help <category>", inline=True)
-        embed.add_field(name="hypixelrandom", value=".hpr", inline=True)
+        embed.add_field(name="hypixelparty", value=".hpp", inline=True)
         embed.add_field(name="ping", value=".ping <roundNr>", inline=True)
         embed.add_field(name="website", value=".website", inline=True)
         await ctx.send(embed=embed)
@@ -1017,7 +1017,7 @@ async def help(ctx, category=None):
         embed.add_field(name="debug", value=".debug <codes>", inline=True)
         embed.add_field(name="github", value=".github", inline=True)
         embed.add_field(name="help", value=".help <category>", inline=True)
-        embed.add_field(name="hypixelrandom", value=".hpr", inline=True)
+        embed.add_field(name="hypixelparty", value=".hpp", inline=True)
         embed.add_field(name="kick", value=".kick <user> <reason>", inline=True)
         embed.add_field(name="mute", value=".mute <user>", inline=True)
         embed.add_field(name="nick", value=".nick <user> <nickname>", inline=True)
