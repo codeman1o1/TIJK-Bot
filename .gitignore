@@ -1,5 +1,3 @@
-spam_detect.txt
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -129,3 +127,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+spam_detect.txt

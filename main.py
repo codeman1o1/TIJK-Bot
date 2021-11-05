@@ -130,12 +130,10 @@ async def on_message(message):
         file.writelines(f"{str(message.author.id)}\n")
         if counter > 5:
             user = message.author
-            muted = discord.utils.find(lambda r: r.name == "Muted", user.guild.roles)
-            owner = discord.utils.find(lambda r: r.name == "Owner", user.guild.roles)
-            admin = discord.utils.find(lambda r: r.name == "Admin", user.guild.roles)
-            tb_dv = discord.utils.find(
-                lambda r: r.name == "TIJK-Bot developer", user.guild.roles
-            )
+            muted = discord.utils.get(user.guild.roles, name="Muted")
+            owner = discord.utils.get(user.guild.roles, name="Owner")
+            admin = discord.utils.get(user.guild.roles, name="Admin")
+            tb_dv = discord.utils.get(user.guild.roles, name="TIJK-Bot developer")
             anti_mute = [owner, admin, tb_dv]
             if any(role in user.roles for role in anti_mute):
                 return
@@ -257,8 +255,8 @@ async def on_message_edit(before, after):
 async def on_member_update(before, after):
     if after.nick:
         for user in before.guild.members:
-            owner = discord.utils.find(lambda r: r.name == "Owner", user.guild.roles)
-            admin = discord.utils.find(lambda r: r.name == "Admin", user.guild.roles)
+            owner = discord.utils.get(user.guild.roles, name="Owner")
+            admin = discord.utils.get(user.guild.roles, name="Admin")
             roles = [owner, admin]
             if any(role in user.roles for role in roles):
                 admins.append(str(user.name))
@@ -587,9 +585,7 @@ async def hypixelrandom(ctx):
     for user in ctx.guild.members:
         if not user.bot:
             if user.status != discord.Status.offline:
-                hping = discord.utils.find(
-                    lambda r: r.name == "hypixel ping", ctx.guild.roles
-                )
+                hping = discord.utils.get(ctx.guild.roles, name="hypixel ping")
                 if hping in user.roles:
                     hpon.append(str(user.name) + "#" + str(user.discriminator))
     randomInt = random.randint(0, len(hpon) - 1)
@@ -616,7 +612,9 @@ async def shutdown(ctx):
     codeman1o1 = bot.get_user(656950082431615057)
     dm = await codeman1o1.create_dm()
     await dm.send(embed=embed)
-    print("TIJK Bot was shut down by " + ctx.author.display_name)
+    print(
+        "TIJK Bot was shut down by " + ctx.author.name + "#" + ctx.author.discriminator
+    )
     await ctx.bot.close()
 
 
@@ -637,24 +635,26 @@ async def read_the_rules(ctx, rule_number: int, user: discord.Member):
 @commands.bot_has_permissions(manage_roles=True)
 @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
 async def mute(ctx, user: discord.Member):
-    muted = discord.utils.find(lambda r: r.name == "Muted", ctx.guild.roles)
-    owner = discord.utils.find(lambda r: r.name == "Owner", user.guild.roles)
-    admin = discord.utils.find(lambda r: r.name == "Admin", user.guild.roles)
+    muted = discord.utils.get(ctx.guild.roles, name="Muted")
+    owner = discord.utils.get(ctx.guild.roles, name="Owner")
+    admin = discord.utils.get(ctx.guild.roles, name="Admin")
     mute_protection = [owner, admin]
     if not muted in user.roles:
         if not any(role in user.roles for role in mute_protection):
+            mo = discord.utils.get(ctx.guild.channels, name="moderator-only")
             await user.add_roles(muted)
             embed = discord.Embed(color=0x0DD91A)
             embed.add_field(
                 name=f"User muted!",
-                value=f"{user.display_name} was muted by {ctx.author.name}#{ctx.author.discriminator}\nType .unmute {user.display_name} to unmute",
+                value=f"{user.display_name}#{user.discriminator} was muted by {ctx.author.display_name}\nType .unmute {user.display_name}#{user.discriminator} to unmute",
                 inline=True,
             )
             await ctx.send(embed=embed)
+            await mo.send(embed=embed)
         else:
             embed = discord.Embed(color=0x0DD91A)
             embed.add_field(
-                name=f"Coul not mute {user.display_name}!",
+                name=f"Could not mute {user.display_name}!",
                 value=f"You can't mute the owner or an admin!",
                 inline=True,
             )
@@ -673,13 +673,13 @@ async def mute(ctx, user: discord.Member):
 @commands.bot_has_permissions(manage_roles=True)
 @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
 async def unmute(ctx, user: discord.Member):
-    muted = discord.utils.find(lambda r: r.name == "Muted", ctx.guild.roles)
+    muted = discord.utils.get(ctx.guild.roles, name="Muted")
     if muted in user.roles:
         await user.remove_roles(muted)
         embed = discord.Embed(color=0x0DD91A)
         embed.add_field(
             name=f"User unmuted!",
-            value=f"{user.display_name} was unmuted by {ctx.author.name}#{ctx.author.discriminator}",
+            value=f"{user.display_name} was unmuted by {ctx.author.display_name}",
             inline=True,
         )
         await ctx.send(embed=embed)
@@ -724,14 +724,16 @@ async def nick(ctx, user: discord.Member, *, name):
 @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
 async def assignrole(ctx, role: discord.Role, user: discord.Member):
     if not role in user.roles:
+        mo = discord.utils.get(ctx.guild.channels, name="moderator-only")
         await user.add_roles(role)
         embed = discord.Embed(color=0x0DD91A)
         embed.add_field(
             name=f"Role assigned!",
-            value=f"Role {role} has been assigned to {user.display_name} by {ctx.author.name}#{ctx.author.discriminator}",
+            value=f"Role {role} has been assigned to {user.display_name} by {ctx.author.display_name}",
             inline=True,
         )
         await ctx.send(embed=embed)
+        await mo.send(embed=embed)
 
     else:
         embed = discord.Embed(color=0x0DD91A)
@@ -748,14 +750,16 @@ async def assignrole(ctx, role: discord.Role, user: discord.Member):
 @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
 async def removerole(ctx, role: discord.Role, user: discord.Member):
     if role in user.roles:
+        mo = discord.utils.get(ctx.guild.channels, name="moderator-only")
         await user.remove_roles(role)
         embed = discord.Embed(color=0x0DD91A)
         embed.add_field(
             name=f"Role removed!",
-            value=f"Role {role} has been removed from {user.display_name} by {ctx.author.name}#{ctx.author.discriminator}",
+            value=f"Role {role} has been removed from {user.display_name} by {ctx.author.display_name}",
             inline=True,
         )
         await ctx.send(embed=embed)
+        await mo.send(embed=embed)
     else:
         embed = discord.Embed(color=0x0DD91A)
         embed.add_field(
@@ -769,6 +773,7 @@ async def removerole(ctx, role: discord.Role, user: discord.Member):
 @bot.command(name="restart")
 @commands.has_any_role("TIJK-Bot developer")
 async def restart(ctx):
+    mo = discord.utils.get(ctx.guild.channels, name="moderator-only")
     embed = discord.Embed(color=0x0DD91A)
     embed.add_field(
         name=f"TIJK Bot is restarting...",
@@ -776,6 +781,7 @@ async def restart(ctx):
         inline=True,
     )
     await ctx.send(embed=embed)
+    await mo.send(embed=embed)
     await bot.change_presence(
         activity=discord.Activity(
             type=discord.ActivityType.playing, name="Restarting..."
@@ -860,8 +866,8 @@ async def status(ctx, type, *, text: str = "the TIJK Server"):
 @bot.command(name="admin")
 @commands.cooldown(1, 30, commands.BucketType.user)
 async def admin(ctx, admin: discord.Member, *, message):
-    ownerR = discord.utils.find(lambda r: r.name == "Owner", ctx.guild.roles)
-    adminR = discord.utils.find(lambda r: r.name == "Admin", ctx.guild.roles)
+    ownerR = discord.utils.get(ctx.guild.roles, name="Owner")
+    adminR = discord.utils.get(ctx.guild.roles, name="Admin")
     roles = [ownerR, adminR]
     if any(roles in admin.roles for roles in roles):
         if admin == ctx.author:
@@ -901,28 +907,32 @@ async def admin(ctx, admin: discord.Member, *, message):
 @commands.bot_has_permissions(kick_members=True)
 @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
 async def kick(ctx, user: discord.Member, *, reason="No reason provided"):
+    mo = discord.utils.get(ctx.guild.channels, name="moderator-only")
     await user.kick(reason=reason)
     embed = discord.Embed(color=0x0DD91A)
     embed.add_field(
         name=f"User kicked!",
-        value=f"{user.display_name} has been kicked by {ctx.author.name}#{ctx.author.discriminator} with the reason {reason}",
+        value=f"{user.display_name} has been kicked by {ctx.author.display_name}with the reason {reason}",
         inline=True,
     )
     await ctx.send(embed=embed)
+    await mo.send(embed=embed)
 
 
 @bot.command(name="ban")
 @commands.bot_has_permissions(ban_members=True)
 @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
 async def ban(ctx, user: discord.Member, *, reason="No reason provided"):
+    mo = discord.utils.get(ctx.guild.channels, name="moderator-only")
     await user.ban(reason=reason)
     embed = discord.Embed(color=0x0DD91A)
     embed.add_field(
         name=f"User banned!",
-        value=f"{user.display_name} has been banned by {ctx.author.name}#{ctx.author.discriminator} with the reason {reason}",
+        value=f"{user.display_name} has been banned by {ctx.author.display_name} with the reason {reason}",
         inline=True,
     )
     await ctx.send(embed=embed)
+    await mo.send(embed=embed)
 
 
 @bot.command(name="help")
