@@ -647,7 +647,7 @@ async def mute(ctx, user: discord.Member):
             embed = discord.Embed(color=0x0DD91A)
             embed.add_field(
                 name=f"User muted!",
-                value=f"{user.display_name} is now muted\nType .unmute {user.display_name} to unmute",
+                value=f"{user.display_name} is now muted by {ctx.author.name}#{ctx.author.discriminator}\nType .unmute {user.display_name} to unmute",
                 inline=True,
             )
             await ctx.send(embed=embed)
@@ -679,7 +679,7 @@ async def unmute(ctx, user: discord.Member):
         embed = discord.Embed(color=0x0DD91A)
         embed.add_field(
             name=f"User unmuted!",
-            value=f"{user.display_name} is now unmuted",
+            value=f"{user.display_name} is now unmuted by {ctx.author.name}#{ctx.author.discriminator}",
             inline=True,
         )
         await ctx.send(embed=embed)
@@ -728,7 +728,7 @@ async def assignrole(ctx, role: discord.Role, user: discord.Member):
         embed = discord.Embed(color=0x0DD91A)
         embed.add_field(
             name=f"Role assigned!",
-            value=f"Role {role} has been assigned to {user.display_name}",
+            value=f"Role {role} has been assigned to {user.display_name} by {ctx.author.name}#{ctx.author.discriminator}",
             inline=True,
         )
         await ctx.send(embed=embed)
@@ -752,7 +752,7 @@ async def removerole(ctx, role: discord.Role, user: discord.Member):
         embed = discord.Embed(color=0x0DD91A)
         embed.add_field(
             name=f"Role removed!",
-            value=f"Role {role} has been removed from {user.display_name}",
+            value=f"Role {role} has been removed from {user.display_name} by {ctx.author.name}#{ctx.author.discriminator}",
             inline=True,
         )
         await ctx.send(embed=embed)
@@ -905,7 +905,7 @@ async def kick(ctx, user: discord.Member, *, reason="No reason provided"):
     embed = discord.Embed(color=0x0DD91A)
     embed.add_field(
         name=f"User kicked!",
-        value=f"{user.display_name} has been kicked with the reason {reason}",
+        value=f"{user.display_name} has been kicked by {ctx.author.name}#{ctx.author.discriminator} with the reason {reason}",
         inline=True,
     )
     await ctx.send(embed=embed)
@@ -919,7 +919,7 @@ async def ban(ctx, user: discord.Member, *, reason="No reason provided"):
     embed = discord.Embed(color=0x0DD91A)
     embed.add_field(
         name=f"User banned!",
-        value=f"{user.display_name} has been banned with the reason {reason}",
+        value=f"{user.display_name} has been banned by {ctx.author.name}#{ctx.author.discriminator} with the reason {reason}",
         inline=True,
     )
     await ctx.send(embed=embed)
