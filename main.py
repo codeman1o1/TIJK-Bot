@@ -647,7 +647,7 @@ async def mute(ctx, user: discord.Member):
             embed = discord.Embed(color=0x0DD91A)
             embed.add_field(
                 name=f"User muted!",
-                value=f"{user.display_name} is now muted by {ctx.author.name}#{ctx.author.discriminator}\nType .unmute {user.display_name} to unmute",
+                value=f"{user.display_name} was muted by {ctx.author.name}#{ctx.author.discriminator}\nType .unmute {user.display_name} to unmute",
                 inline=True,
             )
             await ctx.send(embed=embed)
@@ -679,7 +679,7 @@ async def unmute(ctx, user: discord.Member):
         embed = discord.Embed(color=0x0DD91A)
         embed.add_field(
             name=f"User unmuted!",
-            value=f"{user.display_name} is now unmuted by {ctx.author.name}#{ctx.author.discriminator}",
+            value=f"{user.display_name} was unmuted by {ctx.author.name}#{ctx.author.discriminator}",
             inline=True,
         )
         await ctx.send(embed=embed)
