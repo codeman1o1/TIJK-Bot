@@ -8,6 +8,7 @@ authors = ["codeman1o1"]
 python = "^3.8"
 Flask = "^2.0.1"
 python-dotenv = "^0.19.1"
+aiohttp = "^3.8.0"
 
 [tool.poetry.dev-dependencies]
 
