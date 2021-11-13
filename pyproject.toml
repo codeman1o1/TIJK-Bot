@@ -6,7 +6,6 @@ authors = ["codeman1o1"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-discord = "^1.7.3"
 Flask = "^2.0.1"
 python-dotenv = "^0.19.1"
 

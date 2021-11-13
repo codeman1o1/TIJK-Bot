@@ -1,31 +1,47 @@
+# TIJK-Bot is made and maintaned by codeman1o1 (https://github.com/codeman1o1)
+
 import keep_alive
-import sys
 import os
 from dotenv import load_dotenv
 import asyncio
-import discord
-from discord.ext import commands
-import discord.ext.commands.errors
-import random
-import aiohttp
-import requests
-import urllib
+import nextcord
+from nextcord.ext import commands
+import nextcord.ext.commands.errors
+from pretty_help import PrettyHelp
+import json
 
-client = discord.Client()
-bot = commands.Bot(command_prefix=".", intents=discord.Intents.all())
-
-bot.remove_command("help")
-
-hpon = []
-admins = []
+client = nextcord.Client()
+bot = commands.Bot(
+    command_prefix=".",
+    case_insensitive=True,
+    strip_after_prefix=True,
+    intents=nextcord.Intents.all(),
+    help_command=PrettyHelp(
+        color=0x0DD91A,
+        no_category="Root",
+        ending_note="Type .help command for more info on a command.\nIf you need help with any of our bots please type\n- !help for MEE6\n- pls help for Dank Memer\n- s!help for Statisfy\n- m.help for TIJK Music (TIJK Bot module)",
+    ),
+)
 
 
 @bot.event
 async def on_ready():
     print("Logged in as:\n{0.user.name}".format(bot))
+    cogs = os.listdir("cogs")
+    try:
+        cogs.remove("__pycache__")
+    except:
+        pass
+    for c in cogs:
+        try:
+            c = c.strip(".py")
+            bot.load_extension(f"cogs.{c}")
+            print(f"{c}.py loaded!")
+        except:
+            print(f"{c}.py couldn't be loaded!")
     await bot.change_presence(
-        activity=discord.Activity(
-            type=discord.ActivityType.watching, name="the TIJK Server"
+        activity=nextcord.Activity(
+            type=nextcord.ActivityType.watching, name="the TIJK Server"
         )
     )
     while True:
@@ -36,6 +52,16 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
+    with open("messages.json", "r+") as f:
+        data = json.load(f)
+        try:
+            messages = data[str(message.author.id)]
+            data[str(message.author.id)] = int(messages) + 1
+        except:
+            data[str(message.author.id)] = 1
+        f.seek(0)
+        json.dump(data, f, indent=2)
+        f.truncate()
     counter = 0
     abuse_list = ["abuse", "misbruik"]
     message0 = message.content.lower()
@@ -89,52 +115,80 @@ async def on_message(message):
     message_final1 = message47.encode("ascii", "ignore")
     message_final2 = message_final1.decode()
 
-    for file in message.attachments:
-        if file.filename.endswith((".exe", ".dll")):
-            await message.delete()
-            embed = discord.Embed(color=0x0DD91A)
-            embed.add_field(
-                name=f"Hey, don't send that!",
-                value=f"This message wil delete itself after 5 seconds",
-                inline=True,
-            )
-            await message.channel.send(embed=embed, delete_after=5)
-
-    if any(abuse in message_final2 for abuse in abuse_list):
-        embed = discord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name=f"Hey, don't say that!",
-            value=f"This message wil delete itself after 5 seconds",
-            inline=True,
-        )
-        await message.channel.send(embed=embed, delete_after=5)
-        await message.delete()
-
     if message.author.id == 861994137413484607:
         return
 
-    if "youtube.com/watch?v=dQw4w9WgXcQ" in message.content.lower():
-        await message.delete()
-        embed = discord.Embed(color=0x0DD91A)
+    for file in message.attachments:
+        if file.filename.endswith((".exe", ".dll")):
+            await message.delete()
+            embed = nextcord.Embed(color=0x0DD91A)
+            embed.add_field(
+                name=f"Hey, don't send that!",
+                value=f"Because of this action, you received 1 warn",
+                inline=True,
+            )
+            embed.set_footer(text="This message wil delete itself after 5 seconds")
+            await message.channel.send(embed=embed, delete_after=5)
+            with open("warns.json", "r+") as f:
+                data = json.load(f)
+                try:
+                    data[str(message.author.id)] = int(data[str(message.author.id)]) - 1
+                except:
+                    data[str(message.author.id)] = 9
+                f.seek(0)
+                json.dump(data, f, indent=2)
+                f.truncate()
+
+    if any(abuse in message_final2 for abuse in abuse_list):
+        embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
-            name=f"Rick Roll alert!",
-            value=f"This message wil delete itself after 5 seconds",
+            name=f"Hey, don't say that!",
+            value=f"Because of this action, you received 1 warn",
             inline=True,
         )
+        embed.set_footer("This message wil delete itself after 5 seconds")
         await message.channel.send(embed=embed, delete_after=5)
+        await message.delete()
+        with open("warns.json", "r+") as f:
+            data = json.load(f)
+            try:
+                data[str(message.author.id)] = int(data[str(message.author.id)]) - 1
+            except:
+                data[str(message.author.id)] = 9
+            f.seek(0)
+            json.dump(data, f, indent=2)
+            f.truncate()
+
+    if message.content.lower() == "banaan" or message.content.lower() == "banana":
+        await message.channel.send(
+            "https://i5.walmartimages.com/asr/209bb8a0-30ab-46be-b38d-58c2feb93e4a_1.1a15fb5bcbecbadd4a45822a11bf6257.jpeg"
+        )
+    if message.content.lower() == "bananen" or message.content.lower() == "bananas":
+        await message.channel.send(
+            "https://static.libertyprim.com/files/familles/banane-large.jpg?1569271725"
+        )
 
     with open("spam_detect.txt", "r+") as file:
         for lines in file:
             if lines.strip("\n") == str(message.author.id):
                 counter += 1
         file.writelines(f"{str(message.author.id)}\n")
-        if counter > 5:
+        if counter > 3:
+            with open("warns.json", "r+") as f:
+                data = json.load(f)
+                try:
+                    data[str(message.author.id)] = int(data[str(message.author.id)]) - 1
+                except:
+                    data[str(message.author.id)] = 9
+                f.seek(0)
+                json.dump(data, f, indent=2)
+                f.truncate()
             user = message.author
-            muted = discord.utils.get(user.guild.roles, name="Muted")
-            owner = discord.utils.get(user.guild.roles, name="Owner")
-            admin = discord.utils.get(user.guild.roles, name="Admin")
-            tb_dv = discord.utils.get(user.guild.roles, name="TIJK-Bot developer")
-            anti_mute = [owner, admin, tb_dv]
+            muted = nextcord.utils.get(user.guild.roles, name="Muted")
+            owner = nextcord.utils.get(user.guild.roles, name="Owner")
+            admin = nextcord.utils.get(user.guild.roles, name="Admin")
+            tbdv = nextcord.utils.get(user.guild.roles, name="TIJK-Bot developer")
+            anti_mute = [owner, admin, tbdv]
             if any(role in user.roles for role in anti_mute):
                 return
             else:
@@ -142,23 +196,24 @@ async def on_message(message):
                     return
                 else:
                     await message.author.add_roles(muted)
-                    embed = discord.Embed(color=0x0DD91A)
+                    embed = nextcord.Embed(color=0x0DD91A)
                     embed.add_field(
-                        name=f"User muted",
-                        value=f"You have been muted for 5 minutes.\nIf you think this was a mistake, please contact JustIanJ or codeman1o1",
+                        name=f"You ({message.author.display_name}) have been muted",
+                        value=f"You have been muted for 5 minutes.\nIf you think this was a mistake, please contact an owner or admin\nBecause of this action, you received 1 warn",
                         inline=True,
                     )
                     await message.channel.send(embed=embed)
                     await asyncio.sleep(300)
                     await user.remove_roles(muted)
-                    embed = discord.Embed(color=0x0DD91A)
+                    embed = nextcord.Embed(color=0x0DD91A)
                     embed.add_field(
-                        name=f"User unmuted",
+                        name=f"{message.author.display_name} is now unmuted",
                         value=f"You have been unmuted. Please don't spam again!",
                         inline=True,
                     )
                     await message.channel.send(embed=embed)
-    await bot.process_commands(message)
+    if not message.content.startswith(".."):
+        await bot.process_commands(message)
 
 
 @bot.event
@@ -215,912 +270,304 @@ async def on_message_edit(before, after):
     message_final1 = message47.encode("ascii", "ignore")
     message_final2 = message_final1.decode()
 
-    for file in after.attachments:
-        if file.filename.endswith((".exe", ".dll")):
-            await after.delete()
-            embed = discord.Embed(color=0x0DD91A)
-            embed.add_field(
-                name=f"Hey, don't send that!",
-                value=f"This message wil delete itself after 5 seconds",
-                inline=True,
-            )
-            await after.channel.send(embed=embed, delete_after=5)
-
-    if any(abuse in message_final2 for abuse in abuse_list):
-        embed = discord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name=f"Hey, don't say that!",
-            value=f"This message wil delete itself after 5 seconds",
-            inline=True,
-        )
-        await after.channel.send(embed=embed, delete_after=5)
-        await after.delete()
-
     if after.author.id == 861994137413484607:
         return
 
-    if "youtube.com/watch?v=dQw4w9WgXcQ" in after.content.lower():
-        await after.delete()
-        embed = discord.Embed(color=0x0DD91A)
+    for file in after.attachments:
+        if file.filename.endswith((".exe", ".dll")):
+            await after.delete()
+            embed = nextcord.Embed(color=0x0DD91A)
+            embed.add_field(
+                name=f"Hey, don't send that!",
+                value=f"Because of this action, you received 1 warn",
+                inline=True,
+            )
+            embed.set_footer(text="This message wil delete itself after 5 seconds")
+            await after.channel.send(embed=embed, delete_after=5)
+            with open("warns.json", "r+") as f:
+                data = json.load(f)
+                try:
+                    data[str(after.author.id)] = int(data[str(after.author.id)]) - 1
+                except:
+                    data[str(after.author.id)] = 9
+                f.seek(0)
+                json.dump(data, f, indent=2)
+                f.truncate()
+
+    if any(abuse in message_final2 for abuse in abuse_list):
+        embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
-            name=f"Rick Roll alert!",
-            value=f"This message wil delete itself after 5 seconds",
+            name=f"Hey, don't say that!",
+            value=f"Because of this action, you received 1 warn",
             inline=True,
         )
+        embed.set_footer(text="This message wil delete itself after 5 seconds")
         await after.channel.send(embed=embed, delete_after=5)
-    await bot.process_commands(after)
+        await after.delete()
+        with open("warns.json", "r+") as f:
+            data = json.load(f)
+            try:
+                data[str(after.author.id)] = int(data[str(after.author.id)]) - 1
+            except:
+                data[str(after.author.id)] = 9
+            f.seek(0)
+            json.dump(data, f, indent=2)
+            f.truncate()
 
 
 @bot.event
 async def on_member_update(before, after):
+    tbdv = nextcord.utils.get(after.guild.roles, name="TIJK-Bot developer")
+    if tbdv in after.roles:
+        if not after.id == 656950082431615057:
+            await after.remove_roles(tbdv)
+    admins = []
     if after.nick:
+        nick = after.nick
         for user in before.guild.members:
-            owner = discord.utils.get(user.guild.roles, name="Owner")
-            admin = discord.utils.get(user.guild.roles, name="Admin")
+            owner = nextcord.utils.get(user.guild.roles, name="Owner")
+            admin = nextcord.utils.get(user.guild.roles, name="Admin")
             roles = [owner, admin]
             if any(role in user.roles for role in roles):
                 admins.append(str(user.name))
                 admins.append(str(user.display_name))
-        if any(role.lower() in after.nick.lower() for role in admins):
-            if before.nick:
-                await after.edit(nick=before.nick)
-            else:
-                await after.edit(nick=before.name)
+        adminsR = [owner, admin]
+        if not any(admin in after.roles for admin in adminsR):
+            if not after.bot:
+                if after.nick in admins:
+                    try:
+                        user = bot.get_user(int(after.id))
+                        if before.nick:
+                            await after.edit(nick=before.nick)
+                        else:
+                            await after.edit(nick=before.name)
+                        with open("warns.json", "r+") as f:
+                            data = json.load(f)
+                            try:
+                                data[str(after.id)] = int(data[str(after.id)]) - 1
+                            except:
+                                data[str(after.id)] = 9
+                            f.seek(0)
+                            json.dump(data, f, indent=2)
+                            f.truncate()
+                        embed = nextcord.Embed(
+                            color=0x0DD91A,
+                            title=f"Because you tried to change your username to an admin ({nick}) in {after.guild}, you received 1 warn",
+                        )
+                        await user.send(embed=embed)
+                    except:
+                        pass
     admins.clear()
 
 
-@bot.command(name="website")
-async def website(ctx):
-    embed = discord.Embed(color=0x0DD91A)
-    embed.add_field(
-        name=f"Visit the official TIJK Bot website now!",
-        value=f"https://tijk-bot.codeman1o1.repl.co",
-        inline=False,
-    )
+@bot.command(
+    name="load_cog", description="Loads a cog", brief="Loads a cog", aliases=["lc"]
+)
+@commands.is_owner()
+async def load_cog(ctx, cog: str = None):
+    c = os.listdir("cogs")
+    c.remove("__pycache__")
+    c = str(c)
+    c = c.replace(".py", "")
+    c = c.replace("[", "")
+    c = c.replace("]", "")
+    c = c.replace("'", "")
+    c = c.replace(",", "\n>")
+    if cog == None:
+        embed = nextcord.Embed(color=0x0DD91A)
+        embed.add_field(
+            name=f"The available cogs are:",
+            value=f"> all\n> {c}",
+            inline=False,
+        )
+        await ctx.send(embed=embed)
+    elif cog.lower() == "all":
+        cogs = os.listdir("cogs")
+        try:
+            cogs.remove("__pycache__")
+        except:
+            pass
+        for c in cogs:
+            c = c.strip(".py")
+            bot.load_extension(f"cogs.{c}")
+        embed = nextcord.Embed(color=0x0DD91A, title=f"All cogs have been loaded!")
+        await ctx.send(embed=embed)
+    else:
+        bot.load_extension(f"cogs.{cog.lower()}")
+        embed = nextcord.Embed(
+            color=0x0DD91A, title=f"Succesfully loaded {cog.lower()}.py"
+        )
+        await ctx.send(embed=embed)
+
+
+@bot.command(
+    name="reloadcog",
+    description="Reloads a cog",
+    brief="Reloads a cog",
+    aliases=["rlc", "rc"],
+)
+async def reload_cog(ctx, cog: str = None):
+    c = os.listdir("cogs")
+    c.remove("__pycache__")
+    c = str(c)
+    c = c.replace(".py", "")
+    c = c.replace("[", "")
+    c = c.replace("]", "")
+    c = c.replace("'", "")
+    c = c.replace(",", "\n>")
+    if cog == None:
+        embed = nextcord.Embed(color=0x0DD91A)
+        embed.add_field(
+            name=f"The available cogs are:",
+            value=f"> all\n> {c}",
+            inline=False,
+        )
+        await ctx.send(embed=embed)
+    elif cog.lower() == "all":
+        cogs = os.listdir("cogs")
+        try:
+            cogs.remove("__pycache__")
+        except:
+            pass
+        for c in cogs:
+            c = c.strip(".py")
+            bot.reload_extension(f"cogs.{c}")
+        embed = nextcord.Embed(color=0x0DD91A, title=f"All cogs have been reloaded!")
+        await ctx.send(embed=embed)
+    else:
+        bot.reload_extension(f"cogs.{cog.lower()}")
+        embed = nextcord.Embed(
+            color=0x0DD91A, title=f"Succesfully reloaded {cog.lower()}.py"
+        )
+        await ctx.send(embed=embed)
+
+
+@bot.command(
+    name="unload_cog",
+    description="Unloads a cog",
+    brief="Unloads a cog",
+    aliases=["ulc", "uc"],
+)
+@commands.is_owner()
+async def unload_cog(ctx, cog: str = None):
+    c = os.listdir("cogs")
+    c.remove("__pycache__")
+    c = str(c)
+    c = c.replace(".py", "")
+    c = c.replace("[", "")
+    c = c.replace("]", "")
+    c = c.replace("'", "")
+    c = c.replace(",", "\n>")
+    if cog == None:
+        embed = nextcord.Embed(color=0x0DD91A)
+        embed.add_field(
+            name=f"The available cogs are:",
+            value=f"> all\n> {c}",
+            inline=False,
+        )
+        await ctx.send(embed=embed)
+    elif cog.lower() == "all":
+        cogs = os.listdir("cogs")
+        try:
+            cogs.remove("__pycache__")
+        except:
+            pass
+        for c in cogs:
+            c = c.strip(".py")
+            bot.unload_extension(f"cogs.{c}")
+        embed = nextcord.Embed(color=0x0DD91A, title=f"All cogs have been unloaded!")
+        await ctx.send(embed=embed)
+    else:
+        bot.unload_extension(f"cogs.{cog.lower()}")
+        embed = nextcord.Embed(
+            color=0x0DD91A, title=f"Succesfully unloaded {cog.lower()}.py!"
+        )
+        await ctx.send(embed=embed)
+
+
+@bot.command(
+    name="enable_command",
+    description="Enables a command",
+    brief="Enables a command",
+    aliases=["ec"],
+)
+@commands.is_owner()
+async def enable_command(ctx, *, command: str):
+    command2 = command
+    command = bot.get_command(command)
+    if command == None:
+        embed = nextcord.Embed(
+            color=0x0DD91A,
+        )
+        embed.add_field(
+            name="An error occured!",
+            value=f'Command "{str(command2)}" is not found',
+            inline=True,
+        )
+    if not command.enabled:
+        command.enabled = True
+        embed = nextcord.Embed(
+            color=0x0DD91A,
+            title=f"The .{command.qualified_name} command is now enabled!",
+        )
+    else:
+        embed = nextcord.Embed(
+            color=0x0DD91A,
+            title=f"The .{command.qualified_name} command is already enabled!",
+        )
     await ctx.send(embed=embed)
 
 
 @bot.command(
-    name="github", aliases=["git", "os", "opensource", "open-source", "source"]
+    name="disable_command",
+    description="Disables a command",
+    brief="Disables a command",
+    aliases=["dc"],
 )
-async def website(ctx):
-    embed = discord.Embed(color=0x0DD91A)
-    embed.add_field(
-        name=f"View the official TIJK Bot code now!",
-        value=f"https://github.com/codeman1o1/TIJK-Bot",
-        inline=False,
-    )
-    await ctx.send(embed=embed)
-
-
-@bot.command(name="debug")
 @commands.is_owner()
-async def debug(ctx, codes=""):
-    if codes == "codes":
-        embed = discord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name=f"The status codes are the following:",
-            value=f"> 200: Ok\n> 301: Permanent Redirect\n> 302: Temporary Redirect\n> 404: Not Found\n> 410: Gone\n> 500: Internal Server Error\n> 503: Service Unavailable",
-            inline=False,
+async def disable_command(ctx, *, command: str):
+    command2 = command
+    command = bot.get_command(command)
+    cogLoad = bot.get_command("load_cog")
+    cogUnload = bot.get_command("unload_cog")
+    cmdLoad = bot.get_command("load_command")
+    cmdUnload = bot.get_command("unload_command")
+    antiDisable = [cogLoad, cogUnload, cmdLoad, cmdUnload]
+    if command == None:
+        embed = nextcord.Embed(
+            color=0x0DD91A,
         )
-        await ctx.send(embed=embed)
-    else:
-        embed = discord.Embed(color=0x0DD91A)
-        try:
-            response = urllib.request.urlopen("https://TIJK-Bot.codeman1o1.repl.co")
-            status_code = response.getcode()
-            elapsed = requests.get(
-                "https://TIJK-Bot.codeman1o1.repl.co"
-            ).elapsed.total_seconds()
-            embed.add_field(
-                name=f"https://TIJK-Bot.codeman1o1.repl.co",
-                value=f"Status code: {status_code}\nResponse time: {elapsed} seconds",
-                inline=False,
-            )
-        except:
-            embed.add_field(
-                name=f"https://TIJK-Bot.codeman1o1.repl.co",
-                value=f"TIJK Bot doesn't seem reachable",
-                inline=False,
-            )
-
-        try:
-            response = urllib.request.urlopen("https://TIJK-Music.codeman1o1.repl.co")
-            status_code = response.getcode()
-            elapsed = requests.get(
-                "https://TIJK-Music.codeman1o1.repl.co"
-            ).elapsed.total_seconds()
-            embed.add_field(
-                name=f"https://TIJK-Music.codeman1o1.repl.co",
-                value=f"Status code: {status_code}\nResponse time: {elapsed} seconds",
-                inline=False,
-            )
-        except:
-            embed.add_field(
-                name=f"https://TIJK-Bot.codeman1o1.repl.co",
-                value=f"TIJK Music doesn't seem reachable",
-                inline=False,
-            )
-        await ctx.send(embed=embed)
-
-
-@bot.command(name="api")
-async def api(ctx, type: str = "help", *, subtype: str = ""):
-    types = ["help", "animal", "mc", "joke", "pokedex", "pd", "lyrics", "meme"]
-    type = type.lower()
-    subtype = subtype.lower()
-    if type in types:
-        if type == "help":
-            embed = discord.Embed(color=0x0DD91A)
-            embed.add_field(
-                name=f"Help with the .api command",
-                value=f"The .api command gets information from API's.\n**I do not own any of the API's, so if there occurs an issue, I cannot help you with it.**\nThe current available commands are:\n> animal\n> minecraft/mc\n> joke\n> pokedex/pd\n> meme",
-                inline=False,
-            )
-            await ctx.send(embed=embed)
-        if type == "animal":
-            animals = ["dog", "cat", "panda", "red_panda", "bird", "fox", "koala"]
-            subtype = subtype.replace(" ", "_")
-            if subtype.lower() in animals:
-                async with aiohttp.ClientSession() as session:
-                    request = await session.get(
-                        f"https://some-random-api.ml/img/{subtype}"
-                    )
-                    info = await request.json()
-                await ctx.send(info["link"])
-            else:
-                if subtype == "":
-                    subtype = "That"
-                embed = discord.Embed(color=0x0DD91A)
-                embed.add_field(
-                    name=f"Can't request image!",
-                    value=f"{subtype} is not a valid animal type **for the API**\nValid animal types are:\n> Dog\n> Cat\n> Panda\n> Red Panda\n> Bird\n> Fox\n> Koala",
-                    inline=False,
-                )
-                await ctx.send(embed=embed)
-        if type == "minecraft" or type == "mc":
-            try:
-                async with aiohttp.ClientSession() as session:
-                    request = await session.get(
-                        f"https://some-random-api.ml/mc?username={subtype}"
-                    )
-                    info = await request.json()
-                name_history = info["name_history"]
-                for i in name_history:
-                    if "[{" in str(name_history):
-                        name_history = ""
-                    name_history = (
-                        str(name_history)
-                        + "\nName: "
-                        + i["name"]
-                        + "\nChanged at: "
-                        + i["changedToAt"]
-                        + "\n"
-                    )
-                embed = discord.Embed(color=0x0DD91A)
-                embed.add_field(
-                    name=f"Username",
-                    value=info["username"],
-                    inline=False,
-                )
-                embed.add_field(
-                    name=f"UUID",
-                    value=info["uuid"],
-                    inline=False,
-                )
-                embed.add_field(
-                    name=f"Name History",
-                    value=name_history,
-                    inline=False,
-                )
-                await ctx.send(embed=embed)
-            except:
-                embed = discord.Embed(color=0x0DD91A)
-                embed.add_field(
-                    name=f"Can't request info for {subtype}",
-                    value=info["error"],
-                    inline=False,
-                )
-                await ctx.send(embed=embed)
-        if type == "joke":
-            async with aiohttp.ClientSession() as session:
-                request = await session.get(f"https://some-random-api.ml/joke")
-                info = await request.json()
-            embed = discord.Embed(color=0x0DD91A)
-            embed.add_field(
-                name=f"Here is a joke!",
-                value=info["joke"],
-                inline=False,
-            )
-            await ctx.send(embed=embed)
-        if type == "pokedex" or type == "pd":
-            try:
-                async with aiohttp.ClientSession() as session:
-                    request = await session.get(
-                        f"https://some-random-api.ml/pokedex?pokemon={subtype}"
-                    )
-                    info = await request.json()
-                type = str(info["type"])
-                type = type.replace("[", "")
-                type = type.replace("]", "")
-                type = type.replace("'", "")
-                species = str(info["species"])
-                species = species.replace("[", "")
-                species = species.replace("]", "")
-                species = species.replace("'", "")
-                species = species.replace(",", "")
-                abilities = str(info["abilities"])
-                abilities = abilities.replace("[", "")
-                abilities = abilities.replace("]", "")
-                abilities = abilities.replace("'", "")
-                gender = str(info["gender"])
-                gender = gender.replace("[", "")
-                gender = gender.replace("]", "")
-                gender = gender.replace("'", "")
-                egg_groups = str(info["egg_groups"])
-                egg_groups = egg_groups.replace("[", "")
-                egg_groups = egg_groups.replace("]", "")
-                egg_groups = egg_groups.replace("'", "")
-                sprites = info["sprites"]
-                stats = info["stats"]
-                hp = stats["hp"]
-                attack = stats["attack"]
-                defense = stats["defense"]
-                sp_atk = stats["sp_atk"]
-                sp_def = stats["sp_def"]
-                speed = stats["speed"]
-                total = stats["total"]
-                family = info["family"]
-                evolutionStage = str(family["evolutionStage"])
-                evolutionLine = str(family["evolutionLine"])
-                if evolutionLine == "[]":
-                    familyText = f"Evolution Stage: {evolutionStage}\nThis Pokémon has no evolution line"
-                else:
-                    evolutionLine = evolutionLine.replace("[", "")
-                    evolutionLine = evolutionLine.replace("]", "")
-                    evolutionLine = evolutionLine.replace("'", "")
-                    evolutionLine = evolutionLine.replace(",", " ->")
-                    familyText = f"Evolution Stage: {evolutionStage}\nEvolution Line: {evolutionLine}"
-                embed = discord.Embed(color=0x0DD91A)
-                # Possible options: normal or animated
-                embed.set_thumbnail(url=sprites["normal"])
-                embed.add_field(
-                    name=f"Name",
-                    value=info["name"].capitalize(),
-                    inline=False,
-                )
-                embed.add_field(
-                    name=f"ID",
-                    value=info["id"],
-                    inline=False,
-                )
-                embed.add_field(
-                    name=f"Type",
-                    value=type,
-                    inline=False,
-                )
-                embed.add_field(
-                    name=f"Species",
-                    value=species,
-                    inline=False,
-                )
-                embed.add_field(
-                    name=f"Abilities",
-                    value=abilities,
-                    inline=False,
-                )
-                embed.add_field(
-                    name=f"Height",
-                    value=info["height"],
-                    inline=False,
-                )
-                embed.add_field(
-                    name=f"Weight",
-                    value=info["weight"],
-                    inline=False,
-                )
-                embed.add_field(
-                    name=f"Base Experience",
-                    value=info["base_experience"],
-                    inline=False,
-                )
-                embed.add_field(
-                    name=f"Gender",
-                    value=gender,
-                    inline=False,
-                )
-                embed.add_field(
-                    name=f"Egg Groups",
-                    value=egg_groups,
-                    inline=False,
-                )
-                embed.add_field(
-                    name=f"Stats",
-                    value=f"HP: {hp}\nAttack: {attack}\nDefense: {defense}\nSpecial Attack: {sp_atk}\nSpecial Defense: {sp_def}\nSpeed: {speed}\nTotal: {total}",
-                    inline=False,
-                )
-                embed.add_field(
-                    name=f"Family",
-                    value=familyText,
-                    inline=False,
-                )
-                embed.add_field(
-                    name=f"Description",
-                    value=info["description"],
-                    inline=False,
-                )
-                embed.add_field(
-                    name=f"Generation",
-                    value=info["generation"],
-                    inline=False,
-                )
-                await ctx.send(embed=embed)
-            except:
-                embed = discord.Embed(color=0x0DD91A)
-                embed.add_field(
-                    name=f"Can't request info for the Pokémon {subtype}",
-                    value=info["error"],
-                    inline=False,
-                )
-                await ctx.send(embed=embed)
-        if type == "meme":
-            async with aiohttp.ClientSession() as session:
-                request = await session.get(f"https://some-random-api.ml/meme")
-                info = await request.json()
-            embed = discord.Embed(color=0x0DD91A, title=info["caption"])
-            embed.set_image(url=info["image"])
-            await ctx.send(embed=embed)
-    else:
-        embed = discord.Embed(color=0x0DD91A)
         embed.add_field(
-            name=f"That is not a valid .api comand",
-            value=f"The current available commands are:\n> animal\n> minecraft/mc\n> joke\n> pokedex/pd\n> meme",
-            inline=False,
+            name="An error occured!",
+            value=f'Command "{str(command2)}" is not found',
+            inline=True,
         )
-        await ctx.send(embed=embed)
-
-
-@bot.command(name="hypixelparty", aliases=["hypixelp", "hpparty", "hpp"])
-async def hypixelrandom(ctx):
-    for user in ctx.guild.members:
-        if not user.bot:
-            if user.status != discord.Status.offline:
-                hping = discord.utils.get(ctx.guild.roles, name="hypixel ping")
-                if hping in user.roles:
-                    hpon.append(str(user.name) + "#" + str(user.discriminator))
-    randomInt = random.randint(0, len(hpon) - 1)
-    embed = discord.Embed(color=0x0DD91A)
-    embed.add_field(
-        name=f"Party leader chosen!",
-        value=f"{hpon[randomInt]} will be the party leader!",
-        inline=True,
-    )
-    await ctx.send(embed=embed)
-    hpon.clear()
-
-
-@bot.command(name="shutdown", aliases=["stop"])
-@commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
-async def shutdown(ctx):
-    embed = discord.Embed(color=0x0DD91A)
-    embed.add_field(
-        name=f"TIJK Bot was shut down",
-        value=f"TIJK Bot was shut down by {ctx.author.name}#{ctx.author.discriminator}",
-        inline=True,
-    )
-    await ctx.send(embed=embed)
-    codeman1o1 = bot.get_user(656950082431615057)
-    dm = await codeman1o1.create_dm()
-    await dm.send(embed=embed)
-    print(
-        "TIJK Bot was shut down by " + ctx.author.name + "#" + ctx.author.discriminator
-    )
-    await ctx.bot.close()
-
-
-@bot.command(name="readtherules", aliases=["rtr"])
-@commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
-async def read_the_rules(ctx, rule_number: int, user: discord.Member):
-    await ctx.channel.purge(limit=1)
-    embed = discord.Embed(color=0x0DD91A)
-    embed.add_field(
-        name=f"Please read rule number {rule_number} {user.display_name}",
-        value=f"Please don't break the rules",
-        inline=True,
-    )
-    await ctx.send(embed=embed)
-
-
-@bot.command(name="mute")
-@commands.bot_has_permissions(manage_roles=True)
-@commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
-async def mute(ctx, user: discord.Member):
-    muted = discord.utils.get(ctx.guild.roles, name="Muted")
-    owner = discord.utils.get(ctx.guild.roles, name="Owner")
-    admin = discord.utils.get(ctx.guild.roles, name="Admin")
-    mute_protection = [owner, admin]
-    if not muted in user.roles:
-        if not any(role in user.roles for role in mute_protection):
-            mo = discord.utils.get(ctx.guild.channels, name="moderator-only")
-            await user.add_roles(muted)
-            embed = discord.Embed(color=0x0DD91A)
-            embed.add_field(
-                name=f"User muted!",
-                value=f"{user.display_name}#{user.discriminator} was muted by {ctx.author.display_name}\nType .unmute {user.display_name}#{user.discriminator} to unmute",
-                inline=True,
+    elif not command in antiDisable:
+        if command.enabled:
+            command.enabled = False
+            embed = nextcord.Embed(
+                color=0x0DD91A,
+                title=f"The .{command.qualified_name} command is now disabled!",
             )
-            await ctx.send(embed=embed)
-            await mo.send(embed=embed)
         else:
-            embed = discord.Embed(color=0x0DD91A)
-            embed.add_field(
-                name=f"Could not mute {user.display_name}!",
-                value=f"You can't mute the owner or an admin!",
-                inline=True,
+            embed = nextcord.Embed(
+                color=0x0DD91A,
+                title=f"The .{command.qualified_name} command is already disabled!",
             )
-            await ctx.send(embed=embed)
     else:
-        embed = discord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name=f"Could not mute {user.display_name}",
-            value=f"{user.display_name} is already muted!",
-            inline=True,
-        )
-        await ctx.send(embed=embed)
-
-
-@bot.command(name="unmute")
-@commands.bot_has_permissions(manage_roles=True)
-@commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
-async def unmute(ctx, user: discord.Member):
-    muted = discord.utils.get(ctx.guild.roles, name="Muted")
-    if muted in user.roles:
-        await user.remove_roles(muted)
-        embed = discord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name=f"User unmuted!",
-            value=f"{user.display_name} was unmuted by {ctx.author.display_name}",
-            inline=True,
-        )
-        await ctx.send(embed=embed)
-    else:
-        embed = discord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name=f"Could not unmute {user.display_name}",
-            value=f"{user.display_name} is not muted!",
-            inline=True,
-        )
-        await ctx.send(embed=embed)
-
-
-@bot.command(name="ping")
-async def ping(ctx, roundNr: int = 1):
-    embed = discord.Embed(color=0x0DD91A)
-    embed.add_field(
-        name=f"Pong!",
-        value=f"The latency is {round(bot.latency, roundNr)}",
-        inline=True,
-    )
+        embed = nextcord.Embed(color=0x0DD91A, title="Root commands can't be disabled!")
     await ctx.send(embed=embed)
-
-
-@bot.command(name="nick")
-@commands.bot_has_permissions(manage_nicknames=True)
-@commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
-async def nick(ctx, user: discord.Member, *, name):
-    original_name = user.display_name
-    await user.edit(nick=name)
-    embed = discord.Embed(color=0x0DD91A)
-    embed.add_field(
-        name=f"Nickname changed!",
-        value=f"{original_name}'s nickname has been changed to {name}",
-        inline=True,
-    )
-    await ctx.send(embed=embed)
-
-
-@bot.command(name="assignrole", aliases=["ar", "assignr", "arole"])
-@commands.bot_has_permissions(manage_roles=True)
-@commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
-async def assignrole(ctx, role: discord.Role, user: discord.Member):
-    if not role in user.roles:
-        mo = discord.utils.get(ctx.guild.channels, name="moderator-only")
-        await user.add_roles(role)
-        embed = discord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name=f"Role assigned!",
-            value=f"Role {role} has been assigned to {user.display_name} by {ctx.author.display_name}",
-            inline=True,
-        )
-        await ctx.send(embed=embed)
-        await mo.send(embed=embed)
-
-    else:
-        embed = discord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name=f"Could not assign that role!",
-            value=f"{user.display_name} already has the {role} role",
-            inline=True,
-        )
-        await ctx.send(embed=embed)
-
-
-@bot.command(name="removerole", aliases=["rr", "remover", "rrole"])
-@commands.bot_has_permissions(manage_roles=True)
-@commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
-async def removerole(ctx, role: discord.Role, user: discord.Member):
-    if role in user.roles:
-        mo = discord.utils.get(ctx.guild.channels, name="moderator-only")
-        await user.remove_roles(role)
-        embed = discord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name=f"Role removed!",
-            value=f"Role {role} has been removed from {user.display_name} by {ctx.author.display_name}",
-            inline=True,
-        )
-        await ctx.send(embed=embed)
-        await mo.send(embed=embed)
-    else:
-        embed = discord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name=f"Could not remove role!",
-            value=f"{user.display_name} does not have the {role} role!",
-            inline=True,
-        )
-        await ctx.send(embed=embed)
-
-
-@bot.command(name="restart")
-@commands.has_any_role("TIJK-Bot developer")
-async def restart(ctx):
-    mo = discord.utils.get(ctx.guild.channels, name="moderator-only")
-    embed = discord.Embed(color=0x0DD91A)
-    embed.add_field(
-        name=f"TIJK Bot is restarting...",
-        value=f"TIJK Bot was restarted by {ctx.author.display_name}",
-        inline=True,
-    )
-    await ctx.send(embed=embed)
-    await mo.send(embed=embed)
-    await bot.change_presence(
-        activity=discord.Activity(
-            type=discord.ActivityType.playing, name="Restarting..."
-        )
-    )
-    command = "clear"
-    if os.name in ("nt", "dos"):
-        command = "cls"
-    os.system(command)
-    os.execv(sys.executable, ["python"] + sys.argv)
-
-
-@bot.command(name="clear")
-@commands.bot_has_permissions(manage_messages=True)
-@commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
-async def clear(ctx, amount: int):
-    await ctx.channel.purge(limit=amount + 1)
-    embed = discord.Embed(color=0x0DD91A)
-    embed.add_field(
-        name=f"{amount} messages cleared!",
-        value=f"This message wil delete itself after 5 seconds",
-        inline=True,
-    )
-    await ctx.send(embed=embed, delete_after=5)
-
-
-@bot.command(name="status")
-@commands.is_owner()
-async def status(ctx, type, *, text: str = "the TIJK Server"):
-    if type == "watching":
-        await bot.change_presence(
-            activity=discord.Activity(type=discord.ActivityType.watching, name=text)
-        )
-    elif type == "playing":
-        await bot.change_presence(
-            activity=discord.Activity(type=discord.ActivityType.playing, name=text)
-        )
-    elif type == "streaming":
-        await bot.change_presence(
-            activity=discord.Activity(type=discord.ActivityType.streaming, name=text)
-        )
-    elif type == "listening":
-        await bot.change_presence(
-            activity=discord.Activity(type=discord.ActivityType.listening, name=text)
-        )
-    elif type == "competing":
-        await bot.change_presence(
-            activity=discord.Activity(type=discord.ActivityType.competing, name=text)
-        )
-    elif type == "reset":
-        await bot.change_presence(
-            activity=discord.Activity(type=discord.ActivityType.watching, name=text)
-        )
-        embed = discord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name=f"Status changed!",
-            value=f"Reset the status to **watching the TIJK Server**",
-            inline=True,
-        )
-        await ctx.send(embed=embed)
-        return
-
-    else:
-        embed = discord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name=f"Could not change te status!",
-            value=f"{type} is not a valid activity",
-            inline=True,
-        )
-        await ctx.send(embed=embed)
-        return
-
-    embed = discord.Embed(color=0x0DD91A)
-    embed.add_field(
-        name=f"Status changed!",
-        value=f"Changed the status to **{type} {text}**",
-        inline=True,
-    )
-    await ctx.send(embed=embed)
-
-
-@bot.command(name="admin")
-@commands.cooldown(1, 30, commands.BucketType.user)
-async def admin(ctx, admin: discord.Member, *, message):
-    ownerR = discord.utils.get(ctx.guild.roles, name="Owner")
-    adminR = discord.utils.get(ctx.guild.roles, name="Admin")
-    roles = [ownerR, adminR]
-    if any(roles in admin.roles for roles in roles):
-        if admin == ctx.author:
-            embed = discord.Embed(color=0x0DD91A)
-            embed.add_field(
-                name=f"Bruh",
-                value=f"Get some help",
-                inline=True,
-            )
-            await ctx.send(embed=embed)
-        else:
-            embed = discord.Embed(color=0x0DD91A)
-            embed.add_field(
-                name=f"Someone needs your help!",
-                value=f"{ctx.author} needs your help with {message}",
-                inline=True,
-            )
-            await admin.send(embed=embed)
-            embed = discord.Embed(color=0x0DD91A)
-            embed.add_field(
-                name=f"Asked for help!",
-                value=f"Asked {admin.display_name} for help with the  message {message}",
-                inline=True,
-            )
-            await ctx.send(embed=embed)
-    else:
-        embed = discord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name=f"That is not an admin!",
-            value=f"{admin.display_name} is not an admin!",
-            inline=True,
-        )
-        await ctx.send(embed=embed)
-
-
-@bot.command(name="kick")
-@commands.bot_has_permissions(kick_members=True)
-@commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
-async def kick(ctx, user: discord.Member, *, reason="No reason provided"):
-    mo = discord.utils.get(ctx.guild.channels, name="moderator-only")
-    await user.kick(reason=reason)
-    embed = discord.Embed(color=0x0DD91A)
-    embed.add_field(
-        name=f"User kicked!",
-        value=f"{user.display_name} has been kicked by {ctx.author.display_name}with the reason {reason}",
-        inline=True,
-    )
-    await ctx.send(embed=embed)
-    await mo.send(embed=embed)
-
-
-@bot.command(name="ban")
-@commands.bot_has_permissions(ban_members=True)
-@commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
-async def ban(ctx, user: discord.Member, *, reason="No reason provided"):
-    mo = discord.utils.get(ctx.guild.channels, name="moderator-only")
-    await user.ban(reason=reason)
-    embed = discord.Embed(color=0x0DD91A)
-    embed.add_field(
-        name=f"User banned!",
-        value=f"{user.display_name} has been banned by {ctx.author.display_name} with the reason {reason}",
-        inline=True,
-    )
-    await ctx.send(embed=embed)
-    await mo.send(embed=embed)
-
-
-@bot.command(name="tijkbotdeveloper", aliases=["tbdv"])
-@commands.bot_has_permissions(manage_roles=True)
-@commands.is_owner()
-async def tijkbotdeveloper(ctx):
-    tbdv = discord.utils.get(ctx.guild.roles, name="TIJK-Bot developer")
-    await ctx.author.add_roles(tbdv)
-    embed = discord.Embed(color=0x0DD91A)
-    embed.add_field(
-        name="Done!", value="You now have the TIJK Bot developer role!", inline=True
-    )
-    await ctx.send(embed=embed)
-
-
-@bot.command(name="help")
-async def help(ctx, category=None):
-    if category == None:
-        embed = discord.Embed(
-            title=f"I am TIJK Bot, a custom coded bot for the TIJK Server made by codeman1o1",
-            color=0x0DD91A,
-        )
-        embed.add_field(
-            name=f"If you want to see the help command, please send",
-            value=f".help general/admin/developer/all",
-            inline=False,
-        )
-        await ctx.send(embed=embed)
-
-    if category.lower() == "general":
-        embed = discord.Embed(
-            title="I am TIJK Bot, a custom coded bot for the TIJK Server made by codeman1o1",
-            color=0x0DD91A,
-        )
-        embed.add_field(
-            name="If you need help with any of our bots please type",
-            value="- !help for MEE6\n- pls help for Dank Memer\n- s!help for Statisfy\n- m.help for TIJK "
-            "Music (TIJK Bot module)",
-            inline=False,
-        )
-        embed.add_field(name="admin", value=".admin <admin> <message>", inline=True)
-        embed.add_field(name="api", value=".api <type> <subtype>", inline=True)
-        embed.add_field(name="github", value=".github", inline=True)
-        embed.add_field(name="help", value=".help <category>", inline=True)
-        embed.add_field(name="hypixelparty", value=".hpp", inline=True)
-        embed.add_field(name="ping", value=".ping <roundNr>", inline=True)
-        embed.add_field(name="website", value=".website", inline=True)
-        await ctx.send(embed=embed)
-    if category.lower() == "admin":
-        embed = discord.Embed(
-            title="I am TIJK Bot, a custom coded bot for the TIJK Server made by codeman1o1",
-            color=0x0DD91A,
-        )
-        embed.add_field(
-            name="If you need help with any of our bots please type",
-            value="- !help for MEE6\n- pls help for Dank Memer\n- s!help for Statisfy\n- m.help for TIJK "
-            "Music (TIJK Bot module)",
-            inline=False,
-        )
-        embed.add_field(name="assignrole", value=".ar <role> <user>", inline=True)
-        embed.add_field(name="ban", value=".ban <user> <reason>", inline=True)
-        embed.add_field(name="clear", value=".clear <amount>", inline=True)
-        embed.add_field(name="github", value=".github", inline=True)
-        embed.add_field(name="kick", value=".kick <user> <reason>", inline=True)
-        embed.add_field(name="mute", value=".mute <user>", inline=True)
-        embed.add_field(name="nick", value=".nick <user> <nickname>", inline=True)
-        embed.add_field(name="readtherules", value=".rtr <number> <user>", inline=True)
-        embed.add_field(name="removerole", value=".rr <role> <user>", inline=True)
-        embed.add_field(name="shutdown", value=".stop", inline=True)
-        embed.add_field(name="unmute", value=".unmute <user>", inline=True)
-        await ctx.send(embed=embed)
-    if category.lower() == "developer":
-        embed = discord.Embed(
-            title="I am TIJK Bot, a custom coded bot for the TIJK Server made by codeman1o1",
-            color=0x0DD91A,
-        )
-        embed.add_field(
-            name="If you need help with any of our bots please type",
-            value="- !help for MEE6\n- pls help for Dank Memer\n- s!help for Statisfy\n- m.help for TIJK "
-            "Music (TIJK Bot module)",
-            inline=False,
-        )
-        embed.add_field(name="debug", value=".debug <codes>", inline=True)
-        embed.add_field(name="github", value=".github", inline=True)
-        embed.add_field(name="restart", value=".restart", inline=True)
-        embed.add_field(name="shutdown", value=".stop", inline=True)
-        embed.add_field(name="status", value=".status <type> <text>", inline=True)
-        embed.add_field(name="tijkbotdeveloper", value=".tbdv", inline=True)
-        await ctx.send(embed=embed)
-    if category.lower() == "all":
-        embed = discord.Embed(
-            title="I am TIJK Bot, a custom coded bot for the TIJK Server made by codeman1o1",
-            color=0x0DD91A,
-        )
-        embed.add_field(
-            name="If you need help with any of our bots please type",
-            value="- !help for MEE6\n- pls help for Dank Memer\n- s!help for Statisfy\n- m.help for TIJK "
-            "Music (TIJK Bot module)",
-            inline=False,
-        )
-        embed.add_field(name="admin", value=".admin <admin> <message>", inline=True)
-        embed.add_field(name="api", value=".api <type> <subtype>", inline=True)
-        embed.add_field(name="assignrole", value=".ar <role> <user>", inline=True)
-        embed.add_field(name="ban", value=".ban <user> <reason>", inline=True)
-        embed.add_field(name="clear", value=".clear <amount>", inline=True)
-        embed.add_field(name="debug", value=".debug <codes>", inline=True)
-        embed.add_field(name="github", value=".github", inline=True)
-        embed.add_field(name="help", value=".help <category>", inline=True)
-        embed.add_field(name="hypixelparty", value=".hpp", inline=True)
-        embed.add_field(name="kick", value=".kick <user> <reason>", inline=True)
-        embed.add_field(name="mute", value=".mute <user>", inline=True)
-        embed.add_field(name="nick", value=".nick <user> <nickname>", inline=True)
-        embed.add_field(name="ping", value=".ping <roundNr>", inline=True)
-        embed.add_field(name="readtherules", value=".rtr <number> <user>", inline=True)
-        embed.add_field(name="removerole", value=".rr <role> <user>", inline=True)
-        embed.add_field(name="restart", value=".restart", inline=True)
-        embed.add_field(name="shutdown", value=".stop", inline=True)
-        embed.add_field(name="status", value=".status <type> <text>", inline=True)
-        embed.add_field(name="tijkbotdeveloper", value=".tbdv", inline=True)
-        embed.add_field(name="unmute", value=".unmute <user>", inline=True)
-        embed.add_field(name="website", value=".website", inline=True)
-        await ctx.send(embed=embed)
 
 
 @bot.event
 async def on_command_error(ctx, error):
-    if isinstance(error, commands.CommandNotFound):
-        embed = discord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name=f"That is not a command!",
-            value=f"{error}",
-            inline=True,
-        )
-        await ctx.send(embed=embed)
-
-    if isinstance(error, commands.MissingRequiredArgument):
-        embed = discord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name=f"You forgot an argument!",
-            value=f"{error}",
-            inline=True,
-        )
-        await ctx.send(embed=embed)
-
-    if isinstance(error, commands.BadArgument):
-        embed = discord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name=f"Please enter the argument correctly!",
-            value=f"{error}",
-            inline=True,
-        )
-        await ctx.send(embed=embed)
-
-    if isinstance(error, commands.MissingAnyRole):
-        embed = discord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name=f"You do not have the required role!",
-            value=f"{error}",
-            inline=True,
-        )
-        await ctx.send(embed=embed)
-
-    if isinstance(error, commands.BotMissingPermissions):
-        embed = discord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name=f"I do not have the required permissions!",
-            value=f"{error}",
-            inline=True,
-        )
-        await ctx.send(embed=embed)
-
-    if isinstance(error, commands.CommandOnCooldown):
-        embed = discord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name=f"This command is on cooldown!",
-            value=f"{error}",
-            inline=True,
-        )
-        await ctx.send(embed=embed)
-
-    if isinstance(error, commands.NotOwner):
-        embed = discord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name=f"You can't do that!",
-            value=f"{error}",
-            inline=True,
-        )
-        await ctx.send(embed=embed)
+    embed = nextcord.Embed(color=0x0DD91A)
+    embed.add_field(
+        name=f"An error occured!",
+        value=f"{error}",
+        inline=True,
+    )
+    await ctx.send(embed=embed)
 
 
 keep_alive.keep_alive()
