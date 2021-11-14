@@ -115,7 +115,7 @@ class general(
         description="Makes the .admin command urgent",
         brief="Makes the .admin command urgent",
     )
-    # @commands.cooldown(1, 300, commands.BucketType.user)
+    @commands.cooldown(1, 300, commands.BucketType.user)
     async def urgent_admin(self, ctx, admin: nextcord.Member, *, message: str):
         ownerR = nextcord.utils.get(ctx.guild.roles, name="Owner")
         adminR = nextcord.utils.get(ctx.guild.roles, name="Admin")

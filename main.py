@@ -146,7 +146,7 @@ async def on_message(message):
             value=f"Because of this action, you received 1 warn",
             inline=True,
         )
-        embed.set_footer("This message wil delete itself after 5 seconds")
+        embed.set_footer(text="This message wil delete itself after 5 seconds")
         await message.channel.send(embed=embed, delete_after=5)
         await message.delete()
         with open("warns.json", "r+") as f:
