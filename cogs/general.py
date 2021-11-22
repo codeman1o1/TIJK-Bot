@@ -13,21 +13,6 @@ class general(
         self.bot = bot
 
     @commands.command(
-        name="website",
-        description="Sends a link to the official TIJK Bot website",
-        brief="Sends a link to the official TIJK Bot website",
-        aliases=["web"],
-    )
-    async def website(self, ctx):
-        embed = nextcord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name=f"Visit the official TIJK Bot website now!",
-            value=f"https://tijk-bot.codeman1o1.repl.co",
-            inline=False,
-        )
-        await ctx.send(embed=embed)
-
-    @commands.command(
         name="github",
         description="Sends a link to the official TIJK Bot GitHub page",
         brief="Sends a link to the official TIJK Bot GitHub page",
