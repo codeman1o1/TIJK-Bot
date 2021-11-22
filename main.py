@@ -1,6 +1,5 @@
 # TIJK-Bot is made and maintaned by codeman1o1 (https://github.com/codeman1o1)
 
-import keep_alive
 import os
 from dotenv import load_dotenv
 import asyncio
@@ -570,7 +569,6 @@ async def on_command_error(ctx, error):
     await ctx.send(embed=embed)
 
 
-keep_alive.keep_alive()
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(BASEDIR, ".env"))
 BotToken = os.environ["BotToken"]
