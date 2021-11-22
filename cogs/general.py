@@ -48,7 +48,7 @@ class general(
         brief="Chooses randomly a player that can own the party",
         aliases=["hypixelp", "hpparty", "hpp"],
     )
-    async def hypixelrandom(self, ctx):
+    async def hypixelparty(self, ctx):
         hpon = []
         for user in ctx.guild.members:
             if not user.bot:
@@ -56,13 +56,19 @@ class general(
                     hping = nextcord.utils.get(ctx.guild.roles, name="hypixel ping")
                     if hping in user.roles:
                         hpon.append(str(user.name) + "#" + str(user.discriminator))
-        randomInt = random.randint(0, len(hpon) - 1)
-        embed = nextcord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name=f"Party leader chosen!",
-            value=f"{hpon[randomInt]} will be the party leader!",
-            inline=False,
-        )
+        if not len(hpon) == 0:
+            embed = nextcord.Embed(color=0x0DD91A)
+            randomInt = random.randint(0, len(hpon) - 1)
+            embed.add_field(
+                name=f"Party leader chosen!",
+                value=f"{hpon[randomInt]} will be the party leader!",
+                inline=False,
+            )
+        else:
+            embed = nextcord.Embed(
+                color=0x0DD91A,
+                title=f"Nobody meets the requirements to be the party leader!",
+            )
         await ctx.send(embed=embed)
         hpon.clear()
 
