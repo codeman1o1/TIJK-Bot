@@ -164,7 +164,7 @@ class fun(
         aliases=["msg"],
     )
     async def messages(self, ctx, user: nextcord.Member = None):
-        with open(os.getcwd() + "\messages.json", "r+") as f:
+        with open(os.getcwd() + "/messages.json", "r+") as f:
             data = json.load(f)
             if user == None:
                 embed = nextcord.Embed(color=0x0DD91A)
