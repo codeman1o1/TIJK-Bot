@@ -190,7 +190,13 @@ class fun(
                     )
                 if user is None:
                     UserData.delete_one({"_id": k["_id"]})
-        await ctx.send(embed=embed)
+        try:
+            await ctx.send(embed=embed)
+        except:
+            embed = nextcord.Embed(
+                color=0x0DD91A, title=f"Nobody has sent any messages!"
+            )
+            await ctx.send(embed=embed)
 
 
 def setup(bot: commands.Bot):
