@@ -281,62 +281,6 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
             )
         await ctx.send(embed=embed)
 
-    @api.group(
-        name="unixtime",
-        description="Uses a Unix Time Converter API to get information",
-        brief="Uses a Unix Time Converter API to get information",
-        aliases=["ut"],
-        invoke_without_command=True,
-    )
-    async def unixtime_api(self, ctx):
-        embed = nextcord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name=f"Please select a mode",
-            value=f"Type .help api unixtime to view the modes",
-            inline=False,
-        )
-        await ctx.send(embed=embed)
-
-    @unixtime_api.command(
-        name="ymdhm",
-        description="year/month/day hour:minute",
-        brief="year/month/day hour:minute",
-    )
-    async def datetime_unixtime_api(self, ctx, date, time):
-        time = datetime.strptime(time, "%H:%M") - datetime.strptime("01:00", "%H:%M")
-        async with aiohttp.ClientSession() as session:
-            request = await session.get(
-                f"https://showcase.api.linx.twenty57.net/UnixTime/tounixtimestamp?datetime={date}%20{time}"
-            )
-            info = await request.json()
-        embed = nextcord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name="The Unix Time Stamp is " + info["UnixTimeStamp"],
-            value=f"Use it in the chat by typing\n\<t:" + info["UnixTimeStamp"] + ":f>",
-            inline=False,
-        )
-        await ctx.send(embed=embed)
-
-    @unixtime_api.command(
-        name="now",
-        description="Current DateTime",
-        brief="Current DateTime",
-        aliases=["current"],
-    )
-    async def now_unixtime_api(self, ctx):
-        async with aiohttp.ClientSession() as session:
-            request = await session.get(
-                f"https://showcase.api.linx.twenty57.net/UnixTime/tounixtimestamp?datetime=now"
-            )
-            info = await request.json()
-        embed = nextcord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name="The Unix Time Stamp is " + info["UnixTimeStamp"],
-            value=f"Use it in the chat by typing\n\<t:" + info["UnixTimeStamp"] + ":f>",
-            inline=False,
-        )
-        await ctx.send(embed=embed)
-
 
 def setup(bot: commands.Bot):
     bot.add_cog(api(bot))
