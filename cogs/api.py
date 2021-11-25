@@ -8,6 +8,8 @@ import os
 from dotenv import load_dotenv
 from datetime import datetime
 
+load_dotenv(os.path.join(os.getcwd() + "\.env"))
+
 
 class api(commands.Cog, name="API", description="A seperate cog for the API command"):
     def __init__(self, bot: commands.Bot):
@@ -71,6 +73,7 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
         aliases=["mc"],
     )
     async def mc_api(self, ctx, *, username):
+        embed = nextcord.Embed(color=0x0DD91A)
         try:
             async with aiohttp.ClientSession() as session:
                 request = await session.get(
@@ -89,7 +92,6 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
                     + i["changedToAt"]
                     + "\n"
                 )
-            embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name=f"Username",
                 value=info["username"],
@@ -105,15 +107,14 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
                 value=name_history,
                 inline=False,
             )
-            await ctx.send(embed=embed)
-        except:
+        except KeyError:
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name=f"Can't request info for {username}",
                 value=info["error"],
                 inline=False,
             )
-            await ctx.send(embed=embed)
+        await ctx.send(embed=embed)
 
     @api.command(
         name="joke",
@@ -152,6 +153,7 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
         aliases=["pd"],
     )
     async def pokedex_api(self, ctx, *, name):
+        embed = nextcord.Embed(color=0x0DD91A)
         try:
             async with aiohttp.ClientSession() as session:
                 request = await session.get(
@@ -199,7 +201,6 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
                 evolutionLine = evolutionLine.replace("'", "")
                 evolutionLine = evolutionLine.replace(",", " ->")
                 familyText = f"Evolution Stage: {evolutionStage}\nEvolution Line: {evolutionLine}"
-            embed = nextcord.Embed(color=0x0DD91A)
             # Possible options: normal or animated
             embed.set_thumbnail(url=sprites["normal"])
             embed.add_field(
@@ -272,15 +273,13 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
                 value=info["generation"],
                 inline=True,
             )
-            await ctx.send(embed=embed)
-        except:
-            embed = nextcord.Embed(color=0x0DD91A)
+        except KeyError:
             embed.add_field(
                 name=f"Can't request info for the Pokémon {name}",
                 value=info["error"],
                 inline=True,
             )
-            await ctx.send(embed=embed)
+        await ctx.send(embed=embed)
 
     @api.group(
         name="unixtime",

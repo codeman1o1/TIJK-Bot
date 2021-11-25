@@ -1,11 +1,23 @@
 import nextcord
 from nextcord.ext import commands
+from pymongo import MongoClient
+from dotenv import load_dotenv
 import random
 import asyncio
 import os
-import json
 import socket
 import struct
+
+BASEDIR = os.path.abspath(os.path.dirname(__file__))
+load_dotenv(os.path.join(BASEDIR, ".env"))
+
+MongoPassword = os.environ["MongoPassword"]
+MongoUsername = os.environ["MongoUsername"]
+MongoWebsite = os.environ["MongoWebsite"]
+cluster = MongoClient(f"mongodb+srv://{MongoUsername}:{MongoPassword}@{MongoWebsite}")
+Data = cluster["Data"]
+UserData = Data["UserData"]
+BotData = Data["BotData"]
 
 
 class fun(
@@ -164,28 +176,20 @@ class fun(
         aliases=["msg"],
     )
     async def messages(self, ctx, user: nextcord.Member = None):
-        with open(os.getcwd() + "/messages.json", "r+") as f:
-            data = json.load(f)
-            if user == None:
-                embed = nextcord.Embed(color=0x0DD91A)
-                for k in data:
-                    u = self.bot.get_user(int(k))
-                    if not u == None:
-                        embed.add_field(
-                            name=f"{u} has sent",
-                            value=f"{data[k]} messages",
-                            inline=False,
-                        )
-
-            else:
-                try:
-                    messages = data[str(user.id)]
-                except:
-                    messages = 0
-                embed = nextcord.Embed(
-                    color=0x0DD91A,
-                    title=f"{user.display_name} has sent {messages} messages",
-                )
+        async with ctx.typing():
+            embed = nextcord.Embed(color=0x0DD91A)
+            indexes = UserData.find()
+            for k in indexes:
+                user = self.bot.get_user(int(k["_id"]))
+                if not user is None:
+                    messages = k["messages"]
+                    embed.add_field(
+                        name=f"{user} has sent",
+                        value=f"{messages} messages",
+                        inline=False,
+                    )
+                if user is None:
+                    UserData.delete_one({"_id": k["_id"]})
         await ctx.send(embed=embed)
 
 

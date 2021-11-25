@@ -1,7 +1,5 @@
 import nextcord
 from nextcord.ext import commands
-import urllib
-import requests
 import os
 import sys
 
@@ -13,67 +11,6 @@ class developer(
 ):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-
-    @commands.group(
-        name="debug",
-        description="Gets the status codes from the TIJK Bot websites",
-        brief="Gets the status codes from the TIJK Bot websites",
-        invoke_without_command=True,
-    )
-    @commands.is_owner()
-    async def debug(self, ctx):
-        async with ctx.typing():
-            embed = nextcord.Embed(color=0x0DD91A)
-            try:
-                response = urllib.request.urlopen("https://TIJK-Bot.codeman1o1.repl.co")
-                status_code = response.getcode()
-                elapsed = requests.get(
-                    "https://TIJK-Bot.codeman1o1.repl.co"
-                ).elapsed.total_seconds()
-                embed.add_field(
-                    name=f"https://TIJK-Bot.codeman1o1.repl.co",
-                    value=f"Status code: {status_code}\nResponse time: {elapsed} seconds",
-                    inline=False,
-                )
-            except:
-                embed.add_field(
-                    name=f"https://TIJK-Bot.codeman1o1.repl.co",
-                    value=f"TIJK Bot doesn't seem reachable",
-                    inline=False,
-                )
-
-            try:
-                response = urllib.request.urlopen(
-                    "https://TIJK-Music.codeman1o1.repl.co"
-                )
-                status_code = response.getcode()
-                elapsed = requests.get(
-                    "https://TIJK-Music.codeman1o1.repl.co"
-                ).elapsed.total_seconds()
-                embed.add_field(
-                    name=f"https://TIJK-Music.codeman1o1.repl.co",
-                    value=f"Status code: {status_code}\nResponse time: {elapsed} seconds",
-                    inline=False,
-                )
-            except:
-                embed.add_field(
-                    name=f"https://TIJK-Bot.codeman1o1.repl.co",
-                    value=f"TIJK Music doesn't seem reachable",
-                    inline=False,
-                )
-        await ctx.send(embed=embed)
-
-    @debug.command(
-        name="codes", description="View the status codes", brief="View the status codes"
-    )
-    async def codes_debug(self, ctx):
-        embed = nextcord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name=f"The status codes are the following:",
-            value=f"> 200: Ok\n> 301: Permanent Redirect\n> 302: Temporary Redirect\n> 404: Not Found\n> 410: Gone\n> 500: Internal Server Error\n> 503: Service Unavailable",
-            inline=False,
-        )
-        await ctx.send(embed=embed)
 
     @commands.command(
         name="restart", description="Restarts TIJK Bot", brief="Restarts TIJK Bot"
