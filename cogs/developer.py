@@ -133,20 +133,6 @@ class developer(
             )
             await ctx.send(embed=embed)
 
-    @commands.command(
-        name="update",
-        description="Sends the latest GitHub commit",
-        brief="Sends the latest GitHub commit",
-        aliases=["commit", "latest"],
-    )
-    @commands.is_owner()
-    async def update(self, ctx):
-        async with ctx.typing():
-            repo = git.Repo(search_parent_directories=True)
-            main = repo.head.reference
-            message = main.commit.message
-        await ctx.send(message)
-
 
 def setup(bot: commands.Bot):
     bot.add_cog(developer(bot))
