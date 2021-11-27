@@ -1,6 +1,5 @@
 import nextcord
 from nextcord.ext import commands
-import git
 import os
 import sys
 
