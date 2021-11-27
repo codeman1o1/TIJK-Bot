@@ -142,7 +142,7 @@ class developer(
     @commands.is_owner()
     async def update(self, ctx):
         async with ctx.typing():
-            repo = git.Repo(".")
+            repo = git.Repo(search_parent_directories=True)
             main = repo.head.reference
             message = main.commit.message
         await ctx.send(message)
