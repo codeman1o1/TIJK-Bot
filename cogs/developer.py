@@ -1,5 +1,6 @@
 import nextcord
 from nextcord.ext import commands
+import git
 import os
 import sys
 
@@ -131,6 +132,20 @@ class developer(
                 color=0x0DD91A, title='You already have the "TIJK-Bot developer" role'
             )
             await ctx.send(embed=embed)
+
+    @commands.command(
+        name="update",
+        description="Sends the latest GitHub commit",
+        brief="Sends the latest GitHub commit",
+        aliases=["commit", "latest"],
+    )
+    @commands.is_owner()
+    async def update(self, ctx):
+        async with ctx.typing():
+            repo = git.Repo(".")
+            main = repo.head.reference
+            message = main.commit.message
+        await ctx.send(message)
 
 
 def setup(bot: commands.Bot):

@@ -437,6 +437,35 @@ class admin(
         await ctx.send(embed=embed)
         await mo.send(embed=embed)
 
+    @commands.command(
+        name="unban",
+        description="Unbans a user from the server",
+        brief="Unbans a user from the server",
+    )
+    @commands.bot_has_permissions(ban_members=True)
+    @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    async def unban(self, ctx, user, *, reason="No reason provided"):
+        user = await commands.converter.UserConverter().convert(ctx, user)
+        embed = nextcord.Embed(color=0x0DD91A)
+        bans = tuple(ban_entry.user for ban_entry in await ctx.guild.bans())
+        if user in bans:
+            mo = nextcord.utils.get(ctx.guild.channels, name="moderator-only")
+            await ctx.guild.unban(user, reason=reason)
+            embed.add_field(
+                name=f"User unbanned!",
+                value=f"{user.display_name} has been unbanned by {ctx.author.name}#{ctx.author.discriminator} with the reason {reason}",
+                inline=False,
+            )
+            await mo.send(embed=embed)
+        else:
+            embed.add_field(
+                name=f"Unbanning failed!",
+                value=f"{user.display_name} is not banned!",
+                inline=False,
+            )
+
+        await ctx.send(embed=embed)
+
     @commands.group(
         name="warn",
         description="Warn someone",

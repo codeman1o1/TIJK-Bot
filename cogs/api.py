@@ -25,7 +25,7 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name=f"Help with the .api command",
-            value=f"The .api command gets information from API's.\nI do not own any of the API's, so if there occurs an issue, I cannot help you with it.\nType .help api for all available subcommands",
+            value=f"The .api command gets information from API's.\nI do not own any of the API's, so if there occurs an issue, I cannot help you with it.\nType `.help api` for all available subcommands",
             inline=False,
         )
         await ctx.send(embed=embed)

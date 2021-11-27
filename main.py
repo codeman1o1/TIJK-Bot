@@ -517,10 +517,12 @@ async def on_message_edit(before, after):
 
 @bot.event
 async def on_member_join(member):
-    embed = nextcord.Embed(
-        title=f"Hey {member.display_name} :wave:\nWe hope you enjoy your stay!"
-    )
-    await member.channel.send(embed=embed)
+    if member.guild.system_channel:
+        embed = nextcord.Embed(
+            color=0x0DD91A,
+            title=f"Hey {member.display_name} :wave:\nWelcome to {member.guild.name}!\nWe hope you enjoy your stay!",
+        )
+        await member.guild.system_channel.send(embed=embed)
 
 
 @bot.event
