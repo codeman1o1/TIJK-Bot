@@ -431,7 +431,7 @@ class admin(
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name=f"User banned!",
-            value=f"{user.display_name} has been banned by {ctx.author.name}#{ctx.author.discriminator} with the reason {reason}",
+            value=f"{user.name}#{user.discriminator} has been banned by {ctx.author.name}#{ctx.author.discriminator} with the reason {reason}",
             inline=False,
         )
         await ctx.send(embed=embed)
@@ -453,7 +453,7 @@ class admin(
             await ctx.guild.unban(user, reason=reason)
             embed.add_field(
                 name=f"User unbanned!",
-                value=f"{user.display_name} has been unbanned by {ctx.author.name}#{ctx.author.discriminator} with the reason {reason}",
+                value=f"{user.name}#{user.discriminator} has been unbanned by {ctx.author.name}#{ctx.author.discriminator} with the reason {reason}",
                 inline=False,
             )
             await mo.send(embed=embed)
