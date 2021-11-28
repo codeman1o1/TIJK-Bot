@@ -664,37 +664,31 @@ async def on_member_update(before, after):
                 admins.append(str(user.display_name))
         adminsR = [owner, admin]
         if not any(admin in after.roles for admin in adminsR):
-            if not after.bot:
-                if after.nick in admins:
-                    try:
-                        user = bot.get_user(int(after.id))
-                        if before.nick:
-                            await after.edit(nick=before.nick)
-                        else:
-                            await after.edit(nick=before.name)
-                        embed = nextcord.Embed(
-                            color=0x0DD91A,
-                            title=f"Because you tried to change your username to an admin ({nick}) in {after.guild}, you received 1 warn",
+            if after.nick in admins:
+                try:
+                    user = bot.get_user(int(after.id))
+                    if before.nick:
+                        await after.edit(nick=before.nick)
+                    else:
+                        await after.edit(nick=before.name)
+                    query = {"_id": after.id}
+                    if UserData.count_documents(query) == 0:
+                        post = {"_id": after.id, "warns": 1}
+                        UserData.insert_one(post)
+                    else:
+                        user = UserData.find(query)
+                        warns = 0
+                        try:
+                            for result in user:
+                                warns = result["warns"]
+                        except KeyError:
+                            pass
+                        warns = warns + 1
+                        UserData.update_one(
+                            {"_id": after.id}, {"$set": {"warns": warns}}
                         )
-                        await user.send(embed=embed)
-                        query = {"_id": after.author.id}
-                        if UserData.count_documents(query) == 0:
-                            post = {"_id": after.author.id, "warns": 1}
-                            UserData.insert_one(post)
-                        else:
-                            user = UserData.find(query)
-                            warns = 0
-                            try:
-                                for result in user:
-                                    warns = result["warns"]
-                            except KeyError:
-                                pass
-                            warns = warns + 1
-                            UserData.update_one(
-                                {"_id": after.author.id}, {"$set": {"warns": warns}}
-                            )
-                    except nextcord.Forbidden:
-                        pass
+                except nextcord.Forbidden:
+                    pass
     admins.clear()
 
 
