@@ -178,18 +178,7 @@ class fun(
     )
     async def messages(self, ctx):
         async with ctx.typing():
-            messages = []
             embed = nextcord.Embed(color=0x0DD91A)
-            indexes = UserData.find()
-            for k in indexes:
-                user = self.bot.get_user(int(k["_id"]))
-                if user is None:
-                    UserData.delete_one({"_id": k["_id"]})
-                if not user is None:
-                    message = k["messages"]
-                    messages.append(message)
-            messages.sort()
-            messages.reverse()
             indexes = UserData.find().sort("messages", pymongo.DESCENDING)
             for k in indexes:
                 user = self.bot.get_user(int(k["_id"]))
@@ -206,7 +195,6 @@ class fun(
                 color=0x0DD91A, title=f"Nobody has sent any messages!"
             )
             await ctx.send(embed=embed)
-        messages.clear()
 
 
 def setup(bot: commands.Bot):
