@@ -1,5 +1,7 @@
 import nextcord
 from nextcord.ext import commands
+import uptime
+import time
 import os
 import sys
 
@@ -131,6 +133,31 @@ class developer(
                 color=0x0DD91A, title='You already have the "TIJK-Bot developer" role'
             )
             await ctx.send(embed=embed)
+
+    @commands.command(
+        name="stats",
+        description="Shows the stats of TIJK Bot",
+        brief="Shows the stats of TIJK Bot",
+    )
+    async def stats(self, ctx):
+        cmds = 0
+        embed = nextcord.Embed(
+            color=0x0DD91A, title=f"Here are some stats for TIJK Bot!"
+        )
+        for _ in self.bot.commands:
+            cmds += 1
+        embed.add_field(
+            name=f"Total commands:",
+            value=f"{cmds}",
+            inline=False,
+        )
+        uptime2 = time.strftime("%H:%M:%S", time.gmtime(uptime.uptime()))
+        embed.add_field(
+            name=f"Uptime:",
+            value=f"{uptime2}",
+            inline=False,
+        )
+        await ctx.send(embed=embed)
 
 
 def setup(bot: commands.Bot):
