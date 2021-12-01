@@ -697,6 +697,8 @@ async def on_member_update(before, after):
 )
 @commands.is_owner()
 async def load_cog(ctx, cog: str = None):
+    if cog.lower() == "dev":
+        cog = "developer"
     c = os.listdir("cogs")
     c.remove("__pycache__")
     c = str(c)
@@ -739,6 +741,8 @@ async def load_cog(ctx, cog: str = None):
     aliases=["rlc", "rc"],
 )
 async def reload_cog(ctx, cog: str = None):
+    if cog.lower() == "dev":
+        cog = "developer"
     c = os.listdir("cogs")
     c.remove("__pycache__")
     c = str(c)
@@ -782,6 +786,8 @@ async def reload_cog(ctx, cog: str = None):
 )
 @commands.is_owner()
 async def unload_cog(ctx, cog: str = None):
+    if cog.lower() == "dev":
+        cog = "developer"
     c = os.listdir("cogs")
     c.remove("__pycache__")
     c = str(c)
