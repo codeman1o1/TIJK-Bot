@@ -144,17 +144,35 @@ class developer(
         embed = nextcord.Embed(
             color=0x0DD91A, title=f"Here are some stats for TIJK Bot!"
         )
-        for _ in self.bot.commands:
-            cmds += 1
         embed.add_field(
             name=f"Total commands:",
-            value=f"{cmds}",
+            value=f"{len(self.bot.commands)}",
             inline=False,
         )
         uptime2 = time.strftime("%H:%M:%S", time.gmtime(uptime.uptime()))
         embed.add_field(
             name=f"Uptime:",
             value=f"{uptime2}",
+            inline=False,
+        )
+        embed.add_field(
+            name=f"Guilds:",
+            value=f"{len(self.bot.guilds)}",
+            inline=False,
+        )
+        embed.add_field(
+            name=f"Cogs loaded:",
+            value=f"{len(self.bot.cogs)}",
+            inline=False,
+        )
+        embed.add_field(
+            name=f"Users:",
+            value=f"{len(self.bot.users)}",
+            inline=False,
+        )
+        embed.add_field(
+            name=f"Latency:",
+            value=f"{self.bot.latency} seconds",
             inline=False,
         )
         await ctx.send(embed=embed)
