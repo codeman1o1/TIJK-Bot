@@ -2,6 +2,7 @@ import nextcord
 from nextcord.ext import commands
 import uptime
 import time
+import psutil
 import os
 import sys
 
@@ -140,7 +141,6 @@ class developer(
         brief="Shows the stats of TIJK Bot",
     )
     async def stats(self, ctx):
-        cmds = 0
         embed = nextcord.Embed(
             color=0x0DD91A, title=f"Here are some stats for TIJK Bot!"
         )
@@ -161,13 +161,19 @@ class developer(
             inline=False,
         )
         embed.add_field(
+            name=f"Users:",
+            value=f"{len(self.bot.users)}",
+            inline=False,
+        )
+        embed.add_field(
             name=f"Cogs loaded:",
             value=f"{len(self.bot.cogs)}",
             inline=False,
         )
+        # CPU usage is index nr. 5
         embed.add_field(
-            name=f"Users:",
-            value=f"{len(self.bot.users)}",
+            name=f"CPU usage:",
+            value=f"`Please wait 5 seconds for accurate usage`",
             inline=False,
         )
         embed.add_field(
@@ -175,7 +181,11 @@ class developer(
             value=f"{self.bot.latency} seconds",
             inline=False,
         )
-        await ctx.send(embed=embed)
+        msg = await ctx.send(embed=embed)
+        embed.set_field_at(
+            5, name=f"CPU usage:", value=f"{psutil.cpu_percent(5)} percent"
+        )
+        await msg.edit(embed=embed)
 
 
 def setup(bot: commands.Bot):
