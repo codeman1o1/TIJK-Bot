@@ -291,131 +291,131 @@ async def on_message(message):
         )
 
     with open("spam_detect.txt", "r+") as file:
-        for lines in file:
-            if lines.strip("\n") == str(message.author.id):
-                counter += 1
-        file.writelines(f"{str(message.author.id)}\n")
-        if counter > 3:
-            cancel = True
-            query = {"_id": message.author.id}
-            if UserData.count_documents(query) == 0:
-                post = {"_id": message.author.id, "warns": 1}
-                UserData.insert_one(post)
-                total = 1
-            else:
-                user2 = UserData.find(query)
-                warns = 0
-                try:
-                    for result in user2:
-                        warns = result["warns"]
-                except KeyError:
-                    pass
-                warns = warns + 1
-                UserData.update_one(
-                    {"_id": message.author.id}, {"$set": {"warns": warns}}
-                )
-                total = warns
-            embed = nextcord.Embed(color=0x0DD91A)
-            if total <= 8:
-                embed.add_field(
-                    name=f"{message.author.display_name} has been warned by Warn System",
-                    value=f"{message.author.display_name} has {10 - total} warns left!",
-                    inline=False,
-                )
-            if total == 9:
-                embed.add_field(
-                    name=f"{message.author.display_name} has been warned by Warn System",
-                    value=f"{message.author.display_name} has no more warns left! Next time, he shall be punished!",
-                    inline=False,
-                )
-            if total >= 10:
+        if not message.author.bot:
+            for lines in file:
+                if lines.strip("\n") == str(message.author.id):
+                    counter += 1
+            file.writelines(f"{str(message.author.id)}\n")
+            if counter > 3:
+                cancel = True
                 query = {"_id": message.author.id}
                 if UserData.count_documents(query) == 0:
-                    post = {"_id": message.author.id, "warns": 0}
+                    post = {"_id": message.author.id, "warns": 1}
                     UserData.insert_one(post)
+                    total = 1
                 else:
+                    user2 = UserData.find(query)
+                    warns = 0
+                    try:
+                        for result in user2:
+                            warns = result["warns"]
+                    except KeyError:
+                        pass
+                    warns = warns + 1
                     UserData.update_one(
-                        {"_id": message.author.id}, {"$set": {"warns": 0}}
+                        {"_id": message.author.id}, {"$set": {"warns": warns}}
                     )
-                embed.add_field(
-                    name=f"{message.author.display_name} exceeded the warn limit!",
-                    value=f"He shall be punished with a 10 minute mute!",
-                    inline=False,
-                )
-                await message.channel.send(embed=embed)
-                muted = nextcord.utils.get(message.author.guild.roles, name="Muted")
-                if not muted in message.author.roles:
-                    mo = nextcord.utils.get(
-                        message.author.guild.channels, name="moderator-only"
-                    )
-                    await message.author.add_roles(muted)
-                    embed = nextcord.Embed(color=0x0DD91A)
+                    total = warns
+                embed = nextcord.Embed(color=0x0DD91A)
+                if total <= 8:
                     embed.add_field(
-                        name=f"User muted!",
-                        value=f"{message.author.display_name} was muted for 10 minutes by Warn System",
+                        name=f"{message.author.display_name} has been warned by Warn System",
+                        value=f"{message.author.display_name} has {10 - total} warns left!",
                         inline=False,
                     )
-                    await mo.send(embed=embed)
-                    await asyncio.sleep(600)
-                    await message.author.remove_roles(muted)
-                    embed = nextcord.Embed(
-                        color=0x0DD91A,
-                        title=f"{message.author.display_name} is now unmuted!",
+                if total == 9:
+                    embed.add_field(
+                        name=f"{message.author.display_name} has been warned by Warn System",
+                        value=f"{message.author.display_name} has no more warns left! Next time, he shall be punished!",
+                        inline=False,
                     )
-                    await mo.send(embed=embed)
-            user = message.author
-            muted = nextcord.utils.get(user.guild.roles, name="Muted")
-            owner = nextcord.utils.get(user.guild.roles, name="Owner")
-            admin = nextcord.utils.get(user.guild.roles, name="Admin")
-            tbdv = nextcord.utils.get(user.guild.roles, name="TIJK-Bot developer")
-            anti_mute = [owner, admin, tbdv]
-            if not user.bot:
-                if any(role in user.roles for role in anti_mute):
-                    return
-                else:
-                    if muted in user.roles:
-                        return
+                if total >= 10:
+                    query = {"_id": message.author.id}
+                    if UserData.count_documents(query) == 0:
+                        post = {"_id": message.author.id, "warns": 0}
+                        UserData.insert_one(post)
                     else:
+                        UserData.update_one(
+                            {"_id": message.author.id}, {"$set": {"warns": 0}}
+                        )
+                    embed.add_field(
+                        name=f"{message.author.display_name} exceeded the warn limit!",
+                        value=f"He shall be punished with a 10 minute mute!",
+                        inline=False,
+                    )
+                    await message.channel.send(embed=embed)
+                    muted = nextcord.utils.get(message.author.guild.roles, name="Muted")
+                    if not muted in message.author.roles:
+                        mo = nextcord.utils.get(
+                            message.author.guild.channels, name="moderator-only"
+                        )
                         await message.author.add_roles(muted)
                         embed = nextcord.Embed(color=0x0DD91A)
                         embed.add_field(
-                            name=f"You ({message.author.display_name}) have been muted",
-                            value=f"You have been muted for 5 minutes.\nIf you think this was a mistake, please contact an owner or admin\nBecause of this action, you received 1 warn",
-                            inline=True,
+                            name=f"User muted!",
+                            value=f"{message.author.display_name} was muted for 10 minutes by Warn System",
+                            inline=False,
                         )
-                        await message.channel.send(embed=embed)
-                        await asyncio.sleep(300)
-                        await user.remove_roles(muted)
-                        embed = nextcord.Embed(color=0x0DD91A)
-                        embed.add_field(
-                            name=f"{message.author.display_name} is now unmuted",
-                            value=f"You have been unmuted. Please don't spam again!",
-                            inline=True,
+                        await mo.send(embed=embed)
+                        await asyncio.sleep(600)
+                        await message.author.remove_roles(muted)
+                        embed = nextcord.Embed(
+                            color=0x0DD91A,
+                            title=f"{message.author.display_name} is now unmuted!",
                         )
-                        await message.channel.send(embed=embed)
+                        await mo.send(embed=embed)
+                user = message.author
+                muted = nextcord.utils.get(user.guild.roles, name="Muted")
+                owner = nextcord.utils.get(user.guild.roles, name="Owner")
+                admin = nextcord.utils.get(user.guild.roles, name="Admin")
+                tbdv = nextcord.utils.get(user.guild.roles, name="TIJK-Bot developer")
+                anti_mute = [owner, admin, tbdv]
+                if not user.bot:
+                    if any(role in user.roles for role in anti_mute):
+                        return
+                    else:
+                        if muted in user.roles:
+                            return
+                        else:
+                            await message.author.add_roles(muted)
+                            embed = nextcord.Embed(color=0x0DD91A)
+                            embed.add_field(
+                                name=f"You ({message.author.display_name}) have been muted",
+                                value=f"You have been muted for 5 minutes.\nIf you think this was a mistake, please contact an owner or admin\nBecause of this action, you received 1 warn",
+                                inline=True,
+                            )
+                            await message.channel.send(embed=embed)
+                            await asyncio.sleep(300)
+                            await user.remove_roles(muted)
+                            embed = nextcord.Embed(color=0x0DD91A)
+                            embed.add_field(
+                                name=f"{message.author.display_name} is now unmuted",
+                                value=f"You have been unmuted. Please don't spam again!",
+                                inline=True,
+                            )
+                            await message.channel.send(embed=embed)
     if not cancel:
         if not message.author.bot:
             if not message.content.startswith(".."):
                 await bot.process_commands(message)
     user = bot.get_user(message.author.id)
-    if not user.bot:
-        if not user is None:
-            query = {"_id": message.author.id}
-            if UserData.count_documents(query) == 0:
-                post = {"_id": message.author.id, "messages": 1}
-                UserData.insert_one(post)
-            else:
-                user = UserData.find(query)
-                messages = 0
-                try:
-                    for result in user:
-                        messages = result["messages"]
-                except KeyError:
-                    pass
-                messages = messages + 1
-                UserData.update_one(
-                    {"_id": message.author.id}, {"$set": {"messages": messages}}
-                )
+    if not user is None:
+        query = {"_id": message.author.id}
+        if UserData.count_documents(query) == 0:
+            post = {"_id": message.author.id, "messages": 1}
+            UserData.insert_one(post)
+        else:
+            user = UserData.find(query)
+            messages = 0
+            try:
+                for result in user:
+                    messages = result["messages"]
+            except KeyError:
+                pass
+            messages = messages + 1
+            UserData.update_one(
+                {"_id": message.author.id}, {"$set": {"messages": messages}}
+            )
 
 
 @bot.event
