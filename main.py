@@ -398,23 +398,24 @@ async def on_message(message):
             if not message.content.startswith(".."):
                 await bot.process_commands(message)
     user = bot.get_user(message.author.id)
-    if not user is None:
-        query = {"_id": message.author.id}
-        if UserData.count_documents(query) == 0:
-            post = {"_id": message.author.id, "messages": 1}
-            UserData.insert_one(post)
-        else:
-            user = UserData.find(query)
-            messages = 0
-            try:
-                for result in user:
-                    messages = result["messages"]
-            except KeyError:
-                pass
-            messages = messages + 1
-            UserData.update_one(
-                {"_id": message.author.id}, {"$set": {"messages": messages}}
-            )
+    if not user.bot:
+        if not user is None:
+            query = {"_id": message.author.id}
+            if UserData.count_documents(query) == 0:
+                post = {"_id": message.author.id, "messages": 1}
+                UserData.insert_one(post)
+            else:
+                user = UserData.find(query)
+                messages = 0
+                try:
+                    for result in user:
+                        messages = result["messages"]
+                except KeyError:
+                    pass
+                messages = messages + 1
+                UserData.update_one(
+                    {"_id": message.author.id}, {"$set": {"messages": messages}}
+                )
 
 
 @bot.event
