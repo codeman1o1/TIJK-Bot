@@ -66,7 +66,9 @@ async def on_ready():
 async def on_message(message):
     cancel = False
     counter = 0
-    abuse_list = ["abuse", "misbruik"]
+    forbidden_list = BotData.find()
+    for k in forbidden_list:
+        forbidden_list = k["forbidden_words"]
     message0 = message.content.lower()
     message1 = message0.replace(" ", "")
     message2 = message1.replace("@", "a")
@@ -200,7 +202,7 @@ async def on_message(message):
             except nextcord.errors.NotFound:
                 pass
 
-    if any(abuse in message_final2 for abuse in abuse_list):
+    if any(forbidden in message_final2 for forbidden in forbidden_list):
         try:
             cancel = True
             embed = nextcord.Embed(color=0x0DD91A)
@@ -420,7 +422,9 @@ async def on_message(message):
 
 @bot.event
 async def on_message_edit(before, after):
-    abuse_list = ["abuse", "misbruik"]
+    forbidden_list = BotData.find()
+    for k in forbidden_list:
+        forbidden_list = k["forbidden_words"]
     message = after
     message0 = after.content.lower()
     message1 = message0.replace(" ", "")
@@ -555,7 +559,7 @@ async def on_message_edit(before, after):
             except nextcord.errors.NotFound:
                 pass
 
-    if any(abuse in message_final2 for abuse in abuse_list):
+    if any(forbidden in message_final2 for forbidden in forbidden_list):
         try:
             cancel = True
             embed = nextcord.Embed(color=0x0DD91A)

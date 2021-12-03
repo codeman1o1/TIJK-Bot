@@ -630,6 +630,67 @@ class admin(
                     )
         await ctx.send(embed=embed)
 
+    @commands.group(
+        name="forbiddenwords",
+        description="Shows the forbidden words",
+        brief="Shows the forbidden words",
+        invoke_without_command=True,
+        aliases=["fwords", "fword"],
+    )
+    async def forbiddenwords(self, ctx):
+        forbidden_words = BotData.find()
+        for k in forbidden_words:
+            forbidden_words = k["forbidden_words"]
+        forbidden_words2 = ""
+        for k in forbidden_words:
+            forbidden_words2 = (
+                f"{forbidden_words2} \n> {k} (index number {forbidden_words.index(k)})"
+            )
+        embed = nextcord.Embed(color=0x0DD91A)
+        embed.add_field(
+            name=f"These are the forbidden words",
+            value=forbidden_words2,
+            inline=False,
+        )
+        await ctx.send(embed=embed)
+
+    @forbiddenwords.command(
+        name="add", description="Adds a forbidden word", brief="Adds a forbidden word"
+    )
+    @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    async def add_forbiddenwords(self, ctx, *, word: str):
+        forbidden_words = BotData.find()
+        for k in forbidden_words:
+            forbidden_words = k["forbidden_words"]
+            forbidden_words.append(word)
+            BotData.update_one(
+                {"_id": k["_id"]},
+                {"$set": {"forbidden_words": forbidden_words}},
+                upsert=False,
+            )
+        embed = nextcord.Embed(color=0x0DD91A, title=f"{word} is now a forbidden word!")
+        await ctx.send(embed=embed)
+
+    @forbiddenwords.command(
+        name="remove",
+        description="Removes a forbidden word",
+        brief="Removes a forbidden word",
+    )
+    @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    async def remove_forbiddenwords(self, ctx, *, index: int):
+        forbidden_words = BotData.find()
+        for k in forbidden_words:
+            forbidden_words = k["forbidden_words"]
+            word = forbidden_words[index]
+            forbidden_words.remove(forbidden_words[index])
+            BotData.update_one(
+                {"_id": k["_id"]},
+                {"$set": {"forbidden_words": forbidden_words}},
+                upsert=False,
+            )
+        embed = nextcord.Embed(color=0x0DD91A, title=f"{word} is now an allowed word!")
+        await ctx.send(embed=embed)
+
 
 def setup(bot: commands.Bot):
     bot.add_cog(admin(bot))
