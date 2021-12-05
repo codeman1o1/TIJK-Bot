@@ -1,11 +1,12 @@
 # TIJK-Bot is made and maintaned by codeman1o1 (https://github.com/codeman1o1)
 
-import os
-from dotenv import load_dotenv
 import asyncio
+import os
+
 import nextcord
-from nextcord.ext import commands
 import nextcord.ext.commands.errors
+from dotenv import load_dotenv
+from nextcord.ext import commands
 from pretty_help import PrettyHelp
 from pymongo import MongoClient
 
@@ -19,7 +20,6 @@ Data = cluster["Data"]
 UserData = Data["UserData"]
 BotData = Data["BotData"]
 
-
 client = nextcord.Client()
 bot = commands.Bot(
     command_prefix=".",
@@ -32,6 +32,105 @@ bot = commands.Bot(
         ending_note="Type .help command for more info on a command.\nIf you need help with any of our bots please type\n- !help for MEE6\n- pls help for Dank Memer\n- s!help for Statisfy\n- ,help for Hydra",
     ),
 )
+
+
+async def filter(message):
+    message = message.content.lower()
+    message = message.replace(" ", "")
+    message = message.replace(".", "")
+    message = message.replace(",", "")
+    message = message.replace("_", "")
+    message = message.replace("@", "a")
+    message = message.replace("ä", "a")
+    message = message.replace("á", "a")
+    message = message.replace("à", "a")
+    message = message.replace("â", "a")
+    message = message.replace("ã", "a")
+    message = message.replace("å", "a")
+    message = message.replace("ª", "a")
+    message = message.replace("ą", "a")
+    message = message.replace("ă", "a")
+    message = message.replace("ā", "a")
+    message = message.replace("æ", "a")
+    message = message.replace("ß", "b")
+    message = message.replace("þ", "b")
+    message = message.replace("ç", "c")
+    message = message.replace("ć", "c")
+    message = message.replace("č", "c")
+    message = message.replace("ď", "d")
+    message = message.replace("đ", "d")
+    message = message.replace("3", "e")
+    message = message.replace("€", "e")
+    message = message.replace("ë", "e")
+    message = message.replace("ė", "e")
+    message = message.replace("é", "e")
+    message = message.replace("è", "e")
+    message = message.replace("ê", "e")
+    message = message.replace("ē", "e")
+    message = message.replace("ę", "e")
+    message = message.replace("ě", "e")
+    message = message.replace("ĕ", "e")
+    message = message.replace("ə", "e")
+    message = message.replace("£", "f")
+    message = message.replace("ģ", "g")
+    message = message.replace("ğ", "g")
+    message = message.replace("!", "i")
+    message = message.replace("í", "i")
+    message = message.replace("ì", "i")
+    message = message.replace("ï", "i")
+    message = message.replace("¡", "i")
+    message = message.replace("î", "i")
+    message = message.replace("ī", "i")
+    message = message.replace("į", "i")
+    message = message.replace("ķ", "k")
+    message = message.replace("ĺ", "l")
+    message = message.replace("ļ", "l")
+    message = message.replace("ľ", "l")
+    message = message.replace("ł", "l")
+    message = message.replace("ñ", "n")
+    message = message.replace("ń", "n")
+    message = message.replace("ņ", "n")
+    message = message.replace("ň", "n")
+    message = message.replace("№", "n")
+    message = message.replace("ö", "o")
+    message = message.replace("ó", "o")
+    message = message.replace("ò", "o")
+    message = message.replace("ô", "o")
+    message = message.replace("õ", "o")
+    message = message.replace("ø", "o")
+    message = message.replace("ō", "o")
+    message = message.replace("ő", "o")
+    message = message.replace("œ", "o")
+    message = message.replace("•", "o")
+    message = message.replace("○", "o")
+    message = message.replace("●", "o")
+    message = message.replace("ŕ", "r")
+    message = message.replace("ř", "r")
+    message = message.replace("$", "s")
+    message = message.replace("§", "s")
+    message = message.replace("ś", "s")
+    message = message.replace("š", "s")
+    message = message.replace("ş", "s")
+    message = message.replace("ť", "t")
+    message = message.replace("ț", "t")
+    message = message.replace("ţ", "t")
+    message = message.replace("ü", "u")
+    message = message.replace("ū", "u")
+    message = message.replace("ů", "u")
+    message = message.replace("ű", "u")
+    message = message.replace("ų", "u")
+    message = message.replace("û", "u")
+    message = message.replace("ù", "u")
+    message = message.replace("ú", "u")
+    message = message.replace("₩", "w")
+    message = message.replace("ý", "y")
+    message = message.replace("¥", "y")
+    message = message.replace("ź", "z")
+    message = message.replace("ż", "z")
+    message = message.replace("ž", "z")
+    message = message.encode("ascii", "ignore")
+    message = message.decode()
+    return message
 
 
 @bot.event
@@ -69,56 +168,8 @@ async def on_message(message):
     forbidden_list = BotData.find()
     for k in forbidden_list:
         forbidden_list = k["forbidden_words"]
-    message0 = message.content.lower()
-    message1 = message0.replace(" ", "")
-    message2 = message1.replace("@", "a")
-    message3 = message2.replace("3", "e")
-    message4 = message3.replace("$", "s")
-    message5 = message4.replace("!", "i")
-    message6 = message5.replace(".", "")
-    message7 = message6.replace("_", "")
-    message8 = message7.replace("ä", "a")
-    message9 = message8.replace("á", "a")
-    message10 = message9.replace("à", "a")
-    message11 = message10.replace("â", "a")
-    message12 = message11.replace("ã", "a")
-    message13 = message12.replace("å", "a")
-    message14 = message13.replace("ª", "a")
-    message15 = message14.replace("ą", "a")
-    message16 = message15.replace("ă", "a")
-    message17 = message16.replace("ā", "a")
-    message18 = message17.replace("æ", "a")
-    message19 = message18.replace("æ", "e")
-    message20 = message19.replace("ü", "u")
-    message21 = message20.replace("ū", "u")
-    message22 = message21.replace("ů", "u")
-    message23 = message22.replace("ű", "u")
-    message24 = message23.replace("ų", "u")
-    message25 = message24.replace("û", "u")
-    message26 = message25.replace("ù", "u")
-    message27 = message26.replace("ú", "u")
-    message28 = message27.replace("ß", "b")
-    message29 = message28.replace("§", "s")
-    message30 = message29.replace("ś", "s")
-    message31 = message30.replace("š", "s")
-    message32 = message31.replace("ş", "s")
-    message33 = message32.replace("ë", "e")
-    message34 = message33.replace("ė", "e")
-    message35 = message34.replace("é", "e")
-    message36 = message35.replace("è", "e")
-    message37 = message36.replace("ê", "e")
-    message38 = message37.replace("ē", "e")
-    message39 = message38.replace("ę", "e")
-    message40 = message39.replace("ě", "e")
-    message41 = message40.replace("ĕ", "e")
-    message42 = message41.replace("ə", "e")
-    message43 = message42.replace("í", "i")
-    message44 = message43.replace("ì", "i")
-    message45 = message44.replace("ï", "i")
-    message46 = message45.replace("¡", "i")
-    message47 = message46.replace("î", "i")
-    message_final1 = message47.encode("ascii", "ignore")
-    message_final2 = message_final1.decode()
+
+    filtered_message = await filter(message)
 
     for file in message.attachments:
         if file.filename.endswith((".exe", ".dll")):
@@ -202,7 +253,7 @@ async def on_message(message):
             except nextcord.errors.NotFound:
                 pass
 
-    if any(forbidden in message_final2 for forbidden in forbidden_list):
+    if any(forbidden in filtered_message for forbidden in forbidden_list):
         try:
             cancel = True
             embed = nextcord.Embed(color=0x0DD91A)
@@ -283,11 +334,11 @@ async def on_message(message):
         except nextcord.errors.NotFound:
             pass
 
-    if message.content.lower() == "banaan" or message.content.lower() == "banana":
+    if filtered_message == "banaan" or filtered_message == "banana":
         await message.channel.send(
             "https://i5.walmartimages.com/asr/209bb8a0-30ab-46be-b38d-58c2feb93e4a_1.1a15fb5bcbecbadd4a45822a11bf6257.jpeg"
         )
-    if message.content.lower() == "bananen" or message.content.lower() == "bananas":
+    if filtered_message == "bananen" or filtered_message == "bananas":
         await message.channel.send(
             "https://static.libertyprim.com/files/familles/banane-large.jpg?1569271725"
         )
@@ -425,63 +476,14 @@ async def on_message_edit(before, after):
     forbidden_list = BotData.find()
     for k in forbidden_list:
         forbidden_list = k["forbidden_words"]
-    message = after
-    message0 = after.content.lower()
-    message1 = message0.replace(" ", "")
-    message2 = message1.replace("@", "a")
-    message3 = message2.replace("3", "e")
-    message4 = message3.replace("$", "s")
-    message5 = message4.replace("!", "i")
-    message6 = message5.replace(".", "")
-    message7 = message6.replace("_", "")
-    message8 = message7.replace("ä", "a")
-    message9 = message8.replace("á", "a")
-    message10 = message9.replace("à", "a")
-    message11 = message10.replace("â", "a")
-    message12 = message11.replace("ã", "a")
-    message13 = message12.replace("å", "a")
-    message14 = message13.replace("ª", "a")
-    message15 = message14.replace("ą", "a")
-    message16 = message15.replace("ă", "a")
-    message17 = message16.replace("ā", "a")
-    message18 = message17.replace("æ", "a")
-    message19 = message18.replace("æ", "e")
-    message20 = message19.replace("ü", "u")
-    message21 = message20.replace("ū", "u")
-    message22 = message21.replace("ů", "u")
-    message23 = message22.replace("ű", "u")
-    message24 = message23.replace("ų", "u")
-    message25 = message24.replace("û", "u")
-    message26 = message25.replace("ù", "u")
-    message27 = message26.replace("ú", "u")
-    message28 = message27.replace("ß", "b")
-    message29 = message28.replace("§", "s")
-    message30 = message29.replace("ś", "s")
-    message31 = message30.replace("š", "s")
-    message32 = message31.replace("ş", "s")
-    message33 = message32.replace("ë", "e")
-    message34 = message33.replace("ė", "e")
-    message35 = message34.replace("é", "e")
-    message36 = message35.replace("è", "e")
-    message37 = message36.replace("ê", "e")
-    message38 = message37.replace("ē", "e")
-    message39 = message38.replace("ę", "e")
-    message40 = message39.replace("ě", "e")
-    message41 = message40.replace("ĕ", "e")
-    message42 = message41.replace("ə", "e")
-    message43 = message42.replace("í", "i")
-    message44 = message43.replace("ì", "i")
-    message45 = message44.replace("ï", "i")
-    message46 = message45.replace("¡", "i")
-    message47 = message46.replace("î", "i")
-    message_final1 = message47.encode("ascii", "ignore")
-    message_final2 = message_final1.decode()
 
-    for file in message.attachments:
+    filtered_message = await filter(after)
+
+    for file in after.attachments:
         if file.filename.endswith((".exe", ".dll")):
             try:
                 cancel = True
-                await message.delete()
+                await after.delete()
                 embed = nextcord.Embed(color=0x0DD91A)
                 embed.add_field(
                     name=f"Hey, don't send that!",
@@ -489,10 +491,10 @@ async def on_message_edit(before, after):
                     inline=True,
                 )
                 embed.set_footer(text="This message wil delete itself after 5 seconds")
-                await message.channel.send(embed=embed, delete_after=5)
-                query = {"_id": message.author.id}
+                await after.channel.send(embed=embed, delete_after=5)
+                query = {"_id": after.author.id}
                 if UserData.count_documents(query) == 0:
-                    post = {"_id": message.author.id, "warns": 1}
+                    post = {"_id": after.author.id, "warns": 1}
                     UserData.insert_one(post)
                     total = 1
                 else:
@@ -505,61 +507,61 @@ async def on_message_edit(before, after):
                         pass
                     warns = warns + 1
                     UserData.update_one(
-                        {"_id": message.author.id}, {"$set": {"warns": warns}}
+                        {"_id": after.author.id}, {"$set": {"warns": warns}}
                     )
                     total = warns
                 embed = nextcord.Embed(color=0x0DD91A)
                 if total <= 8:
                     embed.add_field(
-                        name=f"{message.author.display_name} has been warned by Warn System",
-                        value=f"{message.author.display_name} has {10 - total} warns left!",
+                        name=f"{after.author.display_name} has been warned by Warn System",
+                        value=f"{after.author.display_name} has {10 - total} warns left!",
                         inline=False,
                     )
                 if total == 9:
                     embed.add_field(
-                        name=f"{message.author.display_name} has been warned by Warn System",
-                        value=f"{message.author.display_name} has no more warns left! Next time, he shall be punished!",
+                        name=f"{after.author.display_name} has been warned by Warn System",
+                        value=f"{after.author.display_name} has no more warns left! Next time, he shall be punished!",
                         inline=False,
                     )
                 if total >= 10:
-                    query = {"_id": message.author.id}
+                    query = {"_id": after.author.id}
                     if UserData.count_documents(query) == 0:
-                        post = {"_id": message.author.id, "warns": 0}
+                        post = {"_id": after.author.id, "warns": 0}
                         UserData.insert_one(post)
                     else:
                         UserData.update_one(
-                            {"_id": message.author.id}, {"$set": {"warns": 0}}
+                            {"_id": after.author.id}, {"$set": {"warns": 0}}
                         )
                     embed.add_field(
-                        name=f"{message.author.display_name} exceeded the warn limit!",
+                        name=f"{after.author.display_name} exceeded the warn limit!",
                         value=f"He shall be punished with a 10 minute mute!",
                         inline=False,
                     )
-                    await message.channel.send(embed=embed)
-                    muted = nextcord.utils.get(message.author.guild.roles, name="Muted")
-                    if not muted in message.author.roles:
+                    await after.channel.send(embed=embed)
+                    muted = nextcord.utils.get(after.author.guild.roles, name="Muted")
+                    if not muted in after.author.roles:
                         mo = nextcord.utils.get(
-                            message.author.guild.channels, name="moderator-only"
+                            after.author.guild.channels, name="moderator-only"
                         )
-                        await message.author.add_roles(muted)
+                        await after.author.add_roles(muted)
                         embed = nextcord.Embed(color=0x0DD91A)
                         embed.add_field(
                             name=f"User muted!",
-                            value=f"{message.author.display_name} was muted for 10 minutes by Warn System",
+                            value=f"{after.author.display_name} was muted for 10 minutes by Warn System",
                             inline=False,
                         )
                         await mo.send(embed=embed)
                         await asyncio.sleep(600)
-                        await message.author.remove_roles(muted)
+                        await after.author.remove_roles(muted)
                         embed = nextcord.Embed(
                             color=0x0DD91A,
-                            title=f"{message.author.display_name} is now unmuted!",
+                            title=f"{after.author.display_name} is now unmuted!",
                         )
                         await mo.send(embed=embed)
             except nextcord.errors.NotFound:
                 pass
 
-    if any(forbidden in message_final2 for forbidden in forbidden_list):
+    if any(forbidden in filtered_message for forbidden in forbidden_list):
         try:
             cancel = True
             embed = nextcord.Embed(color=0x0DD91A)
@@ -569,11 +571,11 @@ async def on_message_edit(before, after):
                 inline=True,
             )
             embed.set_footer(text="This message wil delete itself after 5 seconds")
-            await message.channel.send(embed=embed, delete_after=5)
-            await message.delete()
-            query = {"_id": message.author.id}
+            await after.channel.send(embed=embed, delete_after=5)
+            await after.delete()
+            query = {"_id": after.author.id}
             if UserData.count_documents(query) == 0:
-                post = {"_id": message.author.id, "warns": 1}
+                post = {"_id": after.author.id, "warns": 1}
                 UserData.insert_one(post)
                 total = 1
             else:
@@ -586,55 +588,55 @@ async def on_message_edit(before, after):
                     pass
                 warns = warns + 1
                 UserData.update_one(
-                    {"_id": message.author.id}, {"$set": {"warns": warns}}
+                    {"_id": after.author.id}, {"$set": {"warns": warns}}
                 )
                 total = warns
             embed = nextcord.Embed(color=0x0DD91A)
             if total <= 8:
                 embed.add_field(
-                    name=f"{message.author.display_name} has been warned by Warn System",
-                    value=f"{message.author.display_name} has {10 - total} warns left!",
+                    name=f"{after.author.display_name} has been warned by Warn System",
+                    value=f"{after.author.display_name} has {10 - total} warns left!",
                     inline=False,
                 )
             if total == 9:
                 embed.add_field(
-                    name=f"{message.author.display_name} has been warned by Warn System",
-                    value=f"{message.author.display_name} has no more warns left! Next time, he shall be punished!",
+                    name=f"{after.author.display_name} has been warned by Warn System",
+                    value=f"{after.author.display_name} has no more warns left! Next time, he shall be punished!",
                     inline=False,
                 )
             if total >= 10:
-                query = {"_id": message.author.id}
+                query = {"_id": after.author.id}
                 if UserData.count_documents(query) == 0:
-                    post = {"_id": message.author.id, "warns": 0}
+                    post = {"_id": after.author.id, "warns": 0}
                     UserData.insert_one(post)
                 else:
                     UserData.update_one(
-                        {"_id": message.author.id}, {"$set": {"warns": 0}}
+                        {"_id": after.author.id}, {"$set": {"warns": 0}}
                     )
                 embed.add_field(
-                    name=f"{message.author.display_name} exceeded the warn limit!",
+                    name=f"{after.author.display_name} exceeded the warn limit!",
                     value=f"He shall be punished with a 10 minute mute!",
                     inline=False,
                 )
-                await message.channel.send(embed=embed)
-                muted = nextcord.utils.get(message.author.guild.roles, name="Muted")
-                if not muted in message.author.roles:
+                await after.channel.send(embed=embed)
+                muted = nextcord.utils.get(after.author.guild.roles, name="Muted")
+                if not muted in after.author.roles:
                     mo = nextcord.utils.get(
-                        message.author.guild.channels, name="moderator-only"
+                        after.author.guild.channels, name="moderator-only"
                     )
-                    await message.author.add_roles(muted)
+                    await after.author.add_roles(muted)
                     embed = nextcord.Embed(color=0x0DD91A)
                     embed.add_field(
                         name=f"User muted!",
-                        value=f"{message.author.display_name} was muted for 10 minutes by Warn System",
+                        value=f"{after.author.display_name} was muted for 10 minutes by Warn System",
                         inline=False,
                     )
                     await mo.send(embed=embed)
                     await asyncio.sleep(600)
-                    await message.author.remove_roles(muted)
+                    await after.author.remove_roles(muted)
                     embed = nextcord.Embed(
                         color=0x0DD91A,
-                        title=f"{message.author.display_name} is now unmuted!",
+                        title=f"{after.author.display_name} is now unmuted!",
                     )
                     await mo.send(embed=embed)
         except nextcord.errors.NotFound:
