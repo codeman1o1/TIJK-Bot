@@ -129,4 +129,5 @@ dmypy.json
 .pyre/
 
 spam_detect.txt
+file.txt
 .vscode/settings.json
