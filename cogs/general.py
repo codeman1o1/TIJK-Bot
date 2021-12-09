@@ -54,7 +54,7 @@ class general(
                 color=0x0DD91A,
                 title=f"Nobody meets the requirements to be the party leader!",
             )
-        await ctx.send(embed=embed)
+        await ctx.send(embed=embed, delete_after=300)
         hpon.clear()
 
     @commands.group(
