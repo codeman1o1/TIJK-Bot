@@ -822,6 +822,12 @@ async def on_member_join(member):
             title=f"Hey {member.display_name} :wave:\nWelcome to {member.guild.name}!\nWe hope you enjoy your stay!",
         )
         await member.guild.system_channel.send(embed=embed)
+    if not member.bot:
+        memberRole = nextcord.utils.get(member.guild.roles, name="Member")
+        await member.add_roles(memberRole)
+    elif member.bot:
+        botRole = nextcord.utils.get(member.guild.roles, name="Bot")
+        await member.add_roles(botRole)
 
 
 @bot.event
