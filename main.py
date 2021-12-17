@@ -144,6 +144,7 @@ async def on_ready():
     cogs = os.listdir("cogs")
     try:
         cogs.remove("__pycache__")
+        cogs.remove("role_view.py")
     except ValueError:
         pass
     for c in cogs:
@@ -688,7 +689,6 @@ async def on_message_edit(before, after):
     for file in after.attachments:
         if file.filename.endswith((".exe", ".dll")):
             try:
-                cancel = True
                 await after.delete()
                 embed = nextcord.Embed(color=0x0DD91A)
                 embed.add_field(
@@ -769,7 +769,6 @@ async def on_message_edit(before, after):
 
     if any(forbidden in filtered_message for forbidden in forbidden_list):
         try:
-            cancel = True
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name=f"Hey, don't say that!",
@@ -876,7 +875,6 @@ async def on_member_update(before, after):
             await after.remove_roles(tbdv)
     admins = []
     if after.nick:
-        nick = after.nick
         for user in before.guild.members:
             owner = nextcord.utils.get(user.guild.roles, name="Owner")
             admin = nextcord.utils.get(user.guild.roles, name="Admin")
@@ -932,10 +930,12 @@ async def on_member_remove(member):
 )
 @commands.is_owner()
 async def load_cog(ctx, cog: str = None):
-    if cog.lower() == "dev":
-        cog = "developer"
+    if cog is not None:
+        if cog.lower() == "dev":
+            cog = "developer"
     c = os.listdir("cogs")
     c.remove("__pycache__")
+    c.remove("role_view.py")
     c = str(c)
     c = c.replace(".py", "")
     c = c.replace("[", "")
@@ -954,6 +954,7 @@ async def load_cog(ctx, cog: str = None):
         cogs = os.listdir("cogs")
         try:
             cogs.remove("__pycache__")
+            cogs.remove("role_view.py")
         except ValueError:
             pass
         for c in cogs:
@@ -976,10 +977,12 @@ async def load_cog(ctx, cog: str = None):
     aliases=["rlc", "rc"],
 )
 async def reload_cog(ctx, cog: str = None):
-    if cog.lower() == "dev":
-        cog = "developer"
+    if cog is not None:
+        if cog.lower() == "dev":
+            cog = "developer"
     c = os.listdir("cogs")
     c.remove("__pycache__")
+    c.remove("role_view.py")
     c = str(c)
     c = c.replace(".py", "")
     c = c.replace("[", "")
@@ -998,6 +1001,7 @@ async def reload_cog(ctx, cog: str = None):
         cogs = os.listdir("cogs")
         try:
             cogs.remove("__pycache__")
+            cogs.remove("role_view.py")
         except ValueError:
             pass
         for c in cogs:
@@ -1021,10 +1025,12 @@ async def reload_cog(ctx, cog: str = None):
 )
 @commands.is_owner()
 async def unload_cog(ctx, cog: str = None):
-    if cog.lower() == "dev":
-        cog = "developer"
+    if cog is not None:
+        if cog.lower() == "dev":
+            cog = "developer"
     c = os.listdir("cogs")
     c.remove("__pycache__")
+    c.remove("role_view.py")
     c = str(c)
     c = c.replace(".py", "")
     c = c.replace("[", "")
@@ -1043,6 +1049,7 @@ async def unload_cog(ctx, cog: str = None):
         cogs = os.listdir("cogs")
         try:
             cogs.remove("__pycache__")
+            cogs.remove("role_view.py")
         except ValueError:
             pass
         for c in cogs:
