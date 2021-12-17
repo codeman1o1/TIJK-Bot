@@ -1,7 +1,22 @@
 import nextcord
 from nextcord.ext import commands
+import os
+from dotenv import load_dotenv
+from pymongo import MongoClient
+import pymongo
 import random
 import datetime
+
+BASEDIR = os.path.abspath(os.path.dirname(__file__))
+load_dotenv(os.path.join(BASEDIR, ".env"))
+
+MongoPassword = os.environ["MongoPassword"]
+MongoUsername = os.environ["MongoUsername"]
+MongoWebsite = os.environ["MongoWebsite"]
+cluster = MongoClient(f"mongodb+srv://{MongoUsername}:{MongoPassword}@{MongoWebsite}")
+Data = cluster["Data"]
+UserData = Data["UserData"]
+BotData = Data["BotData"]
 
 
 class general(
@@ -145,65 +160,86 @@ class general(
             )
             await ctx.send(embed=embed)
 
-    @commands.command(
+    @commands.group(
         name="birthday",
         description="Sends birthday dates",
         brief="Sends birthday dates",
+        invoke_without_command=True,
         aliases=["bday"],
     )
     async def birthday(self, ctx):
-        info = ""
-        today = datetime.date.today()
-        karsten = datetime.date(2022, 3, 25)
-        ian = datetime.date(2022, 3, 26)
-        tim = datetime.date(2021, 12, 15)
-        jacco = datetime.date(2022, 5, 27)
-        jurre = datetime.date(2022, 1, 24)
-        embed = nextcord.Embed(color=0x0DD91A)
-        diff = karsten - today
-        if diff.days < 0:
-            info = "\nThis is outdated, please report it to codeman1o1#1450"
-        embed.add_field(
-            name=f"Karsten",
-            value=f"March 25th\nDays left: {diff.days}{info}",
-            inline=False,
-        )
-        info = ""
-        diff = ian - today
-        if diff.days < 0:
-            info = "\nThis is outdated, please report it to codeman1o1#1450"
-        embed.add_field(
-            name=f"Ian",
-            value=f"March 26th\nDays left: {diff.days}{info}",
-            inline=False,
-        )
-        info = ""
-        diff = tim - today
-        if diff.days < 0:
-            info = "\nThis is outdated, please report it to codeman1o1#1450"
-        embed.add_field(
-            name=f"Tim",
-            value=f"December 15th\nDays left: {diff.days}{info}",
-            inline=False,
-        )
-        info = ""
-        diff = jacco - today
-        if diff.days < 0:
-            info = "\nThis is outdated, please report it to codeman1o1#1450"
-        embed.add_field(
-            name=f"Jacco",
-            value=f"May 27th\nDays left: {diff.days}{info}",
-            inline=False,
-        )
-        info = ""
-        diff = jurre - today
-        if diff.days < 0:
-            info = "\nThis is outdated, please report it to codeman1o1#1450"
-        embed.add_field(
-            name=f"Jurre",
-            value=f"Januari 24th\nDays left: {diff.days}{info}",
-            inline=False,
-        )
+        async with ctx.typing():
+            embed = nextcord.Embed(color=0x0DD91A)
+            indexes = UserData.find()
+            today = datetime.date.today()
+            for k in indexes:
+                try:
+                    user = self.bot.get_user(int(k["_id"]))
+                    birthday = k["birthday"]
+                    birthday2 = birthday.split("-")
+                    year = today.year
+                    date = datetime.date(year, int(birthday2[1]), int(birthday2[0]))
+                    diff = date - today
+                    while diff.days < 0:
+                        year += 1
+                        date = datetime.date(year, int(birthday2[1]), int(birthday2[0]))
+                        diff = date - today
+                    embed.add_field(
+                        name=f"{user.name}'s birthay is on",
+                        value=f"{birthday}-{year} ({diff.days} days left)",
+                        inline=False,
+                    )
+                except KeyError:
+                    pass
+        try:
+            await ctx.send(embed=embed)
+        except nextcord.errors.HTTPException:
+            embed = nextcord.Embed(color=0x0DD91A, title=f"No-one has a birthday set!")
+            await ctx.send(embed=embed)
+
+    @birthday.command(
+        name="set", description="Sets your birthday", brief="Sets your birthday"
+    )
+    async def set_birthday(self, ctx, date=None):
+        if not date:
+            embed = nextcord.Embed(color=0x0DD91A)
+            embed.add_field(
+                name=f"Type your birthday as following:",
+                value=f"day-month\nFor example: 22-05",
+                inline=False,
+            )
+        if date:
+            try:
+                today = datetime.date.today()
+                date2 = date.split("-")
+                datetime.date(today.year, int(date2[1]), int(date2[0]))
+            except (ValueError, IndexError):
+                embed = nextcord.Embed(
+                    color=0x0DD91A, title=f"{date} is not a valid date!"
+                )
+                await ctx.send(embed=embed)
+                return
+            query = {"_id": ctx.author.id}
+            if UserData.count_documents(query) == 0:
+                post = {"_id": ctx.author.id, "birthday": date}
+                UserData.insert_one(post)
+            else:
+                UserData.update_one(
+                    {"_id": ctx.author.id}, {"$set": {"birthday": date}}
+                )
+            embed = nextcord.Embed(
+                color=0x0DD91A, title=f"Your birthday is set to {date}!"
+            )
+        await ctx.send(embed=embed)
+
+    @birthday.command(
+        name="remove",
+        description="Removes your birthday",
+        brief="Removes your birthday",
+    )
+    async def remove_birthday(self, ctx):
+        UserData.update_one({"_id": ctx.author.id}, {"$unset": {"birthday": ""}})
+        embed = nextcord.Embed(color=0x0DD91A, title=f"Your birthday has been removed!")
         await ctx.send(embed=embed)
 
 

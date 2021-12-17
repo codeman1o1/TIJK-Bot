@@ -2,11 +2,14 @@
 
 import asyncio
 import os
+import datetime
+import time
 
 import nextcord
 import nextcord.ext.commands.errors
-from dotenv import load_dotenv
 from nextcord.ext import commands
+from nextcord.ext import tasks
+from dotenv import load_dotenv
 from pretty_help import PrettyHelp
 from pymongo import MongoClient
 
@@ -155,10 +158,42 @@ async def on_ready():
             type=nextcord.ActivityType.watching, name="the TIJK Server"
         )
     )
+    birthday.start()
     while True:
         await asyncio.sleep(10)
         with open("spam_detect.txt", "r+") as file:
             file.truncate(0)
+
+
+@tasks.loop(seconds=10)
+async def birthday():
+    if time.strftime("%H") == "12":
+        birthdays = []
+        indexes = UserData.find()
+        today = datetime.date.today()
+        for k in indexes:
+            try:
+                if k["birthday"]:
+                    birthday2 = k["birthday"].split("-")
+                    year = today.year
+                    date = datetime.date(year, int(birthday2[1]), int(birthday2[0]))
+                    if today == date:
+                        birthdays.append(k["_id"])
+            except KeyError:
+                pass
+        print(birthdays)
+        for member in birthdays:
+            embed = nextcord.Embed(color=0x0DD91A)
+            member = bot.get_user(member)
+            embed.add_field(
+                name=f"Happy birthday {member.name}!",
+                value=f"We hope you will have a great day!",
+                inline=False,
+            )
+            for guild in bot.guilds:
+                await guild.system_channel.send(embed=embed)
+        birthdays.clear()
+        birthday.cancel()
 
 
 @bot.event
