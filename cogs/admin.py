@@ -1,10 +1,12 @@
 import nextcord
 from nextcord.errors import HTTPException
 from nextcord.ext import commands
+from cogs.role_view import RoleView
 from dotenv import load_dotenv
 from pymongo import MongoClient
 import asyncio
 import os
+
 
 load_dotenv(os.path.join(os.getcwd() + "\.env"))
 
@@ -24,6 +26,24 @@ class admin(
 ):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        self.bot.add_view(RoleView())
+
+    @commands.command(
+        name="buttonroles",
+        description="Sends a message with buttons where people can get roles",
+        brief="Sends a message with buttons where people can get roles",
+        aliases=["br"],
+    )
+    @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    async def buttonroles(self, ctx):
+        await ctx.channel.purge(limit=1)
+        embed = nextcord.Embed(
+            color=0x0DD91A, title=f"Click a button to add/remove that role!"
+        )
+        await ctx.send(embed=embed, view=RoleView())
 
     @commands.command(
         name="shutdown",
