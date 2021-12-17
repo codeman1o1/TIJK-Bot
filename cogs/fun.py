@@ -181,13 +181,16 @@ class fun(
             embed = nextcord.Embed(color=0x0DD91A)
             indexes = UserData.find().sort("messages", pymongo.DESCENDING)
             for k in indexes:
-                user = self.bot.get_user(int(k["_id"]))
-                message = k["messages"]
-                embed.add_field(
-                    name=f"{user} has sent",
-                    value=f"{message} messages",
-                    inline=False,
-                )
+                try:
+                    user = self.bot.get_user(int(k["_id"]))
+                    message = k["messages"]
+                    embed.add_field(
+                        name=f"{user} has sent",
+                        value=f"{message} messages",
+                        inline=False,
+                    )
+                except KeyError:
+                    pass
         try:
             await ctx.send(embed=embed)
         except nextcord.errors.HTTPException:
