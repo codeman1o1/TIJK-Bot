@@ -141,7 +141,7 @@ class admin(
     )
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def shutdown(self, ctx):
-        mo = nextcord.utils.get(ctx.guild.channels, name="moderator-only")
+        logs = nextcord.utils.get(ctx.guild.channels, name="logs")
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name=f"TIJK Bot was shut down",
@@ -149,7 +149,7 @@ class admin(
             inline=False,
         )
         await ctx.send(embed=embed)
-        await mo.send(embed=embed)
+        await logs.send(embed=embed)
         codeman1o1 = self.bot.get_user(656950082431615057)
         dm = await codeman1o1.create_dm()
         await dm.send(embed=embed)
@@ -240,7 +240,7 @@ class admin(
                 await ctx.send(embed=embed)
                 muted = nextcord.utils.get(ctx.guild.roles, name="Muted")
                 if not muted in user.roles:
-                    mo = nextcord.utils.get(ctx.guild.channels, name="moderator-only")
+                    logs = nextcord.utils.get(ctx.guild.channels, name="logs")
                     await user.add_roles(muted)
                     embed = nextcord.Embed(color=0x0DD91A)
                     embed.add_field(
@@ -248,13 +248,13 @@ class admin(
                         value=f"{user.display_name} was muted for 10 minutes by Warn System",
                         inline=False,
                     )
-                    await mo.send(embed=embed)
+                    await logs.send(embed=embed)
                     await asyncio.sleep(600)
                     await user.remove_roles(muted)
                     embed = nextcord.Embed(
                         color=0x0DD91A, title=f"{user.display_name} is now unmuted!"
                     )
-                    await mo.send(embed=embed)
+                    await logs.send(embed=embed)
         except IndexError:
             embed = nextcord.Embed(
                 color=0x0DD91A, title=f"{rule_number} is not a valid rule number!"
@@ -271,7 +271,7 @@ class admin(
         mute_protection = [owner, admin]
         if not muted in user.roles:
             if not any(role in user.roles for role in mute_protection):
-                mo = nextcord.utils.get(ctx.guild.channels, name="moderator-only")
+                logs = nextcord.utils.get(ctx.guild.channels, name="logs")
                 await user.add_roles(muted)
                 embed = nextcord.Embed(color=0x0DD91A)
                 embed.add_field(
@@ -280,7 +280,7 @@ class admin(
                     inline=False,
                 )
                 await ctx.send(embed=embed)
-                await mo.send(embed=embed)
+                await logs.send(embed=embed)
             else:
                 embed = nextcord.Embed(color=0x0DD91A)
                 embed.add_field(
@@ -337,7 +337,7 @@ class admin(
             mute_protection = [owner, admin]
             if not muted in user.roles:
                 if not any(role in user.roles for role in mute_protection):
-                    mo = nextcord.utils.get(ctx.guild.channels, name="moderator-only")
+                    logs = nextcord.utils.get(ctx.guild.channels, name="logs")
                     await user.add_roles(muted)
                     embed = nextcord.Embed(color=0x0DD91A)
                     embed.add_field(
@@ -346,14 +346,14 @@ class admin(
                         inline=False,
                     )
                     await ctx.send(embed=embed)
-                    await mo.send(embed=embed)
+                    await logs.send(embed=embed)
                     await asyncio.sleep(time)
                     await user.remove_roles(muted)
                     embed = nextcord.Embed(
                         color=0x0DD91A, title=f"{user.display_name} is now unmuted!"
                     )
                     await ctx.send(embed=embed)
-                    await mo.send(embed=embed)
+                    await logs.send(embed=embed)
                 else:
                     embed = nextcord.Embed(color=0x0DD91A)
                     embed.add_field(
@@ -387,7 +387,7 @@ class admin(
     async def unmute(self, ctx, user: nextcord.Member):
         muted = nextcord.utils.get(ctx.guild.roles, name="Muted")
         if muted in user.roles:
-            mo = nextcord.utils.get(ctx.guild.channels, name="moderator-only")
+            logs = nextcord.utils.get(ctx.guild.channels, name="logs")
             await user.remove_roles(muted)
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
@@ -396,7 +396,7 @@ class admin(
                 inline=False,
             )
             await ctx.send(embed=embed)
-            await mo.send(embed=embed)
+            await logs.send(embed=embed)
         else:
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
@@ -436,7 +436,7 @@ class admin(
         if user == None:
             user = ctx.author
         if not role in user.roles:
-            mo = nextcord.utils.get(ctx.guild.channels, name="moderator-only")
+            logs = nextcord.utils.get(ctx.guild.channels, name="logs")
             await user.add_roles(role)
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
@@ -445,7 +445,7 @@ class admin(
                 inline=False,
             )
             await ctx.send(embed=embed)
-            await mo.send(embed=embed)
+            await logs.send(embed=embed)
 
         else:
             embed = nextcord.Embed(color=0x0DD91A)
@@ -468,7 +468,7 @@ class admin(
         if user == None:
             user = ctx.author
         if role in user.roles:
-            mo = nextcord.utils.get(ctx.guild.channels, name="moderator-only")
+            logs = nextcord.utils.get(ctx.guild.channels, name="logs")
             await user.remove_roles(role)
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
@@ -477,7 +477,7 @@ class admin(
                 inline=False,
             )
             await ctx.send(embed=embed)
-            await mo.send(embed=embed)
+            await logs.send(embed=embed)
 
         else:
             embed = nextcord.Embed(color=0x0DD91A)
@@ -515,7 +515,7 @@ class admin(
     @commands.bot_has_permissions(kick_members=True)
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def kick(self, ctx, user: nextcord.Member, *, reason="No reason provided"):
-        mo = nextcord.utils.get(ctx.guild.channels, name="moderator-only")
+        logs = nextcord.utils.get(ctx.guild.channels, name="logs")
         await user.kick(reason=reason)
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
@@ -524,7 +524,7 @@ class admin(
             inline=False,
         )
         await ctx.send(embed=embed)
-        await mo.send(embed=embed)
+        await logs.send(embed=embed)
 
     @commands.command(
         name="ban",
@@ -534,7 +534,7 @@ class admin(
     @commands.bot_has_permissions(ban_members=True)
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def ban(self, ctx, user: nextcord.Member, *, reason="No reason provided"):
-        mo = nextcord.utils.get(ctx.guild.channels, name="moderator-only")
+        logs = nextcord.utils.get(ctx.guild.channels, name="logs")
         await user.ban(reason=reason)
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
@@ -543,7 +543,7 @@ class admin(
             inline=False,
         )
         await ctx.send(embed=embed)
-        await mo.send(embed=embed)
+        await logs.send(embed=embed)
 
     @commands.command(
         name="unban",
@@ -557,14 +557,14 @@ class admin(
         embed = nextcord.Embed(color=0x0DD91A)
         bans = tuple(ban_entry.user for ban_entry in await ctx.guild.bans())
         if user in bans:
-            mo = nextcord.utils.get(ctx.guild.channels, name="moderator-only")
+            logs = nextcord.utils.get(ctx.guild.channels, name="logs")
             await ctx.guild.unban(user, reason=reason)
             embed.add_field(
                 name=f"User unbanned!",
                 value=f"{user.name}#{user.discriminator} has been unbanned by {ctx.author.name}#{ctx.author.discriminator} with the reason {reason}",
                 inline=False,
             )
-            await mo.send(embed=embed)
+            await logs.send(embed=embed)
         else:
             embed.add_field(
                 name=f"Unbanning failed!",
@@ -634,7 +634,7 @@ class admin(
                 await ctx.send(embed=embed)
                 muted = nextcord.utils.get(ctx.guild.roles, name="Muted")
                 if not muted in user.roles:
-                    mo = nextcord.utils.get(ctx.guild.channels, name="moderator-only")
+                    logs = nextcord.utils.get(ctx.guild.channels, name="logs")
                     await user.add_roles(muted)
                     embed = nextcord.Embed(color=0x0DD91A)
                     embed.add_field(
@@ -642,13 +642,13 @@ class admin(
                         value=f"{user.display_name} was muted for 10 minutes by Warn System",
                         inline=False,
                     )
-                    await mo.send(embed=embed)
+                    await logs.send(embed=embed)
                     await asyncio.sleep(600)
                     await user.remove_roles(muted)
                     embed = nextcord.Embed(
                         color=0x0DD91A, title=f"{user.display_name} is now unmuted!"
                     )
-                    await mo.send(embed=embed)
+                    await logs.send(embed=embed)
         await ctx.send(embed=embed)
 
     @warn.command(

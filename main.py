@@ -267,8 +267,8 @@ async def on_message(message):
                     await message.channel.send(embed=embed)
                     muted = nextcord.utils.get(message.author.guild.roles, name="Muted")
                     if not muted in message.author.roles:
-                        mo = nextcord.utils.get(
-                            message.author.guild.channels, name="moderator-only"
+                        logs = nextcord.utils.get(
+                            message.author.guild.channels, name="logs"
                         )
                         await message.author.add_roles(muted)
                         embed = nextcord.Embed(color=0x0DD91A)
@@ -277,14 +277,14 @@ async def on_message(message):
                             value=f"{message.author.display_name} was muted for 10 minutes by Warn System",
                             inline=False,
                         )
-                        await mo.send(embed=embed)
+                        await logs.send(embed=embed)
                         await asyncio.sleep(600)
                         await message.author.remove_roles(muted)
                         embed = nextcord.Embed(
                             color=0x0DD91A,
                             title=f"{message.author.display_name} is now unmuted!",
                         )
-                        await mo.send(embed=embed)
+                        await logs.send(embed=embed)
             except nextcord.errors.NotFound:
                 pass
         if file.filename.endswith((".exe", ".dll")):
@@ -347,8 +347,8 @@ async def on_message(message):
                     await message.channel.send(embed=embed)
                     muted = nextcord.utils.get(message.author.guild.roles, name="Muted")
                     if not muted in message.author.roles:
-                        mo = nextcord.utils.get(
-                            message.author.guild.channels, name="moderator-only"
+                        logs = nextcord.utils.get(
+                            message.author.guild.channels, name="logs"
                         )
                         await message.author.add_roles(muted)
                         embed = nextcord.Embed(color=0x0DD91A)
@@ -357,14 +357,14 @@ async def on_message(message):
                             value=f"{message.author.display_name} was muted for 10 minutes by Warn System",
                             inline=False,
                         )
-                        await mo.send(embed=embed)
+                        await logs.send(embed=embed)
                         await asyncio.sleep(600)
                         await message.author.remove_roles(muted)
                         embed = nextcord.Embed(
                             color=0x0DD91A,
                             title=f"{message.author.display_name} is now unmuted!",
                         )
-                        await mo.send(embed=embed)
+                        await logs.send(embed=embed)
             except nextcord.errors.NotFound:
                 pass
 
@@ -446,14 +446,14 @@ async def on_message(message):
                                     value=f"{message.author.display_name} was muted for 10 minutes by Warn System",
                                     inline=False,
                                 )
-                                await mo.send(embed=embed)
+                                await logs.send(embed=embed)
                                 await asyncio.sleep(600)
                                 await message.author.remove_roles(muted)
                                 embed = nextcord.Embed(
                                     color=0x0DD91A,
                                     title=f"{message.author.display_name} is now unmuted!",
                                 )
-                                await mo.send(embed=embed)
+                                await logs.send(embed=embed)
                     except nextcord.errors.NotFound:
                         pass
                 f.close()
@@ -529,14 +529,14 @@ async def on_message(message):
                         value=f"{message.author.display_name} was muted for 10 minutes by Warn System",
                         inline=False,
                     )
-                    await mo.send(embed=embed)
+                    await logs.send(embed=embed)
                     await asyncio.sleep(600)
                     await message.author.remove_roles(muted)
                     embed = nextcord.Embed(
                         color=0x0DD91A,
                         title=f"{message.author.display_name} is now unmuted!",
                     )
-                    await mo.send(embed=embed)
+                    await logs.send(embed=embed)
         except nextcord.errors.NotFound:
             pass
 
@@ -605,8 +605,8 @@ async def on_message(message):
                     await message.channel.send(embed=embed)
                     muted = nextcord.utils.get(message.author.guild.roles, name="Muted")
                     if not muted in message.author.roles:
-                        mo = nextcord.utils.get(
-                            message.author.guild.channels, name="moderator-only"
+                        logs = nextcord.utils.get(
+                            message.author.guild.channels, name="logs"
                         )
                         await message.author.add_roles(muted)
                         embed = nextcord.Embed(color=0x0DD91A)
@@ -615,14 +615,14 @@ async def on_message(message):
                             value=f"{message.author.display_name} was muted for 10 minutes by Warn System",
                             inline=False,
                         )
-                        await mo.send(embed=embed)
+                        await logs.send(embed=embed)
                         await asyncio.sleep(600)
                         await message.author.remove_roles(muted)
                         embed = nextcord.Embed(
                             color=0x0DD91A,
                             title=f"{message.author.display_name} is now unmuted!",
                         )
-                        await mo.send(embed=embed)
+                        await logs.send(embed=embed)
                 user = message.author
                 muted = nextcord.utils.get(user.guild.roles, name="Muted")
                 owner = nextcord.utils.get(user.guild.roles, name="Owner")
@@ -745,8 +745,8 @@ async def on_message_edit(before, after):
                     await after.channel.send(embed=embed)
                     muted = nextcord.utils.get(after.author.guild.roles, name="Muted")
                     if not muted in after.author.roles:
-                        mo = nextcord.utils.get(
-                            after.author.guild.channels, name="moderator-only"
+                        logs = nextcord.utils.get(
+                            after.author.guild.channels, name="logs"
                         )
                         await after.author.add_roles(muted)
                         embed = nextcord.Embed(color=0x0DD91A)
@@ -755,14 +755,14 @@ async def on_message_edit(before, after):
                             value=f"{after.author.display_name} was muted for 10 minutes by Warn System",
                             inline=False,
                         )
-                        await mo.send(embed=embed)
+                        await logs.send(embed=embed)
                         await asyncio.sleep(600)
                         await after.author.remove_roles(muted)
                         embed = nextcord.Embed(
                             color=0x0DD91A,
                             title=f"{after.author.display_name} is now unmuted!",
                         )
-                        await mo.send(embed=embed)
+                        await logs.send(embed=embed)
             except nextcord.errors.NotFound:
                 pass
 
@@ -835,14 +835,14 @@ async def on_message_edit(before, after):
                         value=f"{after.author.display_name} was muted for 10 minutes by Warn System",
                         inline=False,
                     )
-                    await mo.send(embed=embed)
+                    await logs.send(embed=embed)
                     await asyncio.sleep(600)
                     await after.author.remove_roles(muted)
                     embed = nextcord.Embed(
                         color=0x0DD91A,
                         title=f"{after.author.display_name} is now unmuted!",
                     )
-                    await mo.send(embed=embed)
+                    await logs.send(embed=embed)
         except nextcord.errors.NotFound:
             pass
 

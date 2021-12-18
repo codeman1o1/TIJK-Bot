@@ -20,7 +20,7 @@ class developer(
     )
     @commands.has_any_role("TIJK-Bot developer")
     async def restart(self, ctx):
-        mo = nextcord.utils.get(ctx.guild.channels, name="moderator-only")
+        logs = nextcord.utils.get(ctx.guild.channels, name="logs")
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name=f"TIJK Bot is restarting...",
@@ -28,7 +28,7 @@ class developer(
             inline=False,
         )
         await ctx.send(embed=embed)
-        await mo.send(embed=embed)
+        await logs.send(embed=embed)
         await self.bot.change_presence(
             activity=nextcord.Activity(
                 type=nextcord.ActivityType.playing, name="Restarting..."
