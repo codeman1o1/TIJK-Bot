@@ -182,7 +182,6 @@ async def birthday():
                         birthdays.append(k["_id"])
             except KeyError:
                 pass
-        print(birthdays)
         for member in birthdays:
             embed = nextcord.Embed(color=0x0DD91A)
             member = bot.get_user(member)
