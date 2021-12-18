@@ -28,19 +28,85 @@ class admin(
         self.bot = bot
         self.bot.add_view(RoleView())
 
-    @commands.command(
+    @commands.group(
         name="buttonroles",
         description="Sends a message with buttons where people can get roles",
         brief="Sends a message with buttons where people can get roles",
+        invoke_without_command=True,
         aliases=["br"],
     )
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def buttonroles(self, ctx):
-        await ctx.channel.purge(limit=1)
-        embed = nextcord.Embed(
-            color=0x0DD91A, title=f"Click a button to add/remove that role!"
-        )
-        await ctx.send(embed=embed, view=RoleView())
+        roles = BotData.find()
+        for k in roles:
+            roles = k["roles"]
+        if len(roles) == 0:
+            embed = nextcord.Embed(
+                color=0x0DD91A,
+                title=f"There are no roles selected!\nMake sure to add them by using `.br add <role>`",
+            )
+            await ctx.send(embed=embed)
+        elif len(roles) > 0:
+            await ctx.channel.purge(limit=1)
+            embed = nextcord.Embed(
+                color=0x0DD91A, title=f"Click a button to add/remove that role!"
+            )
+            await ctx.send(embed=embed, view=RoleView())
+
+    @buttonroles.command(
+        name="add", description="Adds a button role", brief="Adds a button role"
+    )
+    async def add_buttonroles(self, ctx, role: nextcord.Role):
+        role = str(role)
+        role = role.replace("@", "")
+        roles = BotData.find()
+        for k in roles:
+            roles = k["roles"]
+            if not role in roles:
+                roles.append(role)
+                BotData.update_one(
+                    {"_id": k["_id"]},
+                    {"$set": {"roles": roles}},
+                    upsert=False,
+                )
+                embed = nextcord.Embed(
+                    color=0x0DD91A,
+                    title=f'The "{role}" role has been added!\nMake sure to use `.buttonroles` again!',
+                )
+            elif role in roles:
+                embed = nextcord.Embed(
+                    color=0x0DD91A, title=f'The "{role}" role is already listed!'
+                )
+            await ctx.send(embed=embed)
+
+    @buttonroles.command(
+        name="remove",
+        description="Removes a button role",
+        brief="Removes a button role",
+    )
+    async def remove_buttonroles(self, ctx, role: nextcord.Role):
+        role = str(role)
+        role = role.replace("@", "")
+        roles = BotData.find()
+        for k in roles:
+            roles = k["roles"]
+            if role in roles:
+                roles.remove(role)
+                BotData.update_one(
+                    {"_id": k["_id"]},
+                    {"$set": {"roles": roles}},
+                    upsert=False,
+                )
+                embed = nextcord.Embed(
+                    color=0x0DD91A,
+                    title=f'The "{role}" role has been Removed!\nMake sure to use `.buttonroles` again!',
+                )
+                await ctx.send(embed=embed)
+            elif not role in roles:
+                embed = nextcord.Embed(
+                    color=0x0DD91A, title=f'The "{role}" role is not listed!'
+                )
+                await ctx.send(embed=embed)
 
     @commands.command(
         name="shutdown",
