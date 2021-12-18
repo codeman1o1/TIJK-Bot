@@ -54,8 +54,32 @@ class admin(
             await ctx.send(embed=embed, view=RoleView())
 
     @buttonroles.command(
+        name="list",
+        description="Lists all button roles",
+        brief="Lists all button roles",
+    )
+    @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    async def list_buttonroles(self, ctx):
+        embed = nextcord.Embed(color=0x0DD91A)
+        roles = BotData.find()
+        for k in roles:
+            roles = k["roles"]
+        roles = "> " + str(roles)
+        roles = roles.replace("[", "")
+        roles = roles.replace("]", "")
+        roles = roles.replace("'", "")
+        roles = roles.replace(",", "\n>")
+        embed.add_field(
+            name=f"The current button roles are:",
+            value=roles,
+            inline=False,
+        )
+        await ctx.send(embed=embed)
+
+    @buttonroles.command(
         name="add", description="Adds a button role", brief="Adds a button role"
     )
+    @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def add_buttonroles(self, ctx, role: nextcord.Role):
         role = str(role)
         role = role.replace("@", "")
@@ -84,6 +108,7 @@ class admin(
         description="Removes a button role",
         brief="Removes a button role",
     )
+    @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def remove_buttonroles(self, ctx, role: nextcord.Role):
         role = str(role)
         role = role.replace("@", "")
