@@ -168,29 +168,42 @@ class general(
         aliases=["bday"],
     )
     async def birthday(self, ctx):
-        async with ctx.typing():
-            embed = nextcord.Embed(color=0x0DD91A)
-            indexes = UserData.find()
-            today = datetime.date.today()
-            for k in indexes:
-                try:
-                    user = self.bot.get_user(int(k["_id"]))
-                    birthday = k["birthday"]
-                    birthday2 = birthday.split("-")
-                    year = today.year
+        birthdays = []
+        embed = nextcord.Embed(color=0x0DD91A)
+        indexes = UserData.find()
+        today = datetime.date.today()
+        for k in indexes:
+            try:
+                user = self.bot.get_user(int(k["_id"]))
+                birthday = k["birthday"]
+                birthday2 = birthday.split("-")
+                year = today.year
+                date = datetime.date(year, int(birthday2[1]), int(birthday2[0]))
+                diff = date - today
+                while diff.days < 0:
+                    year += 1
                     date = datetime.date(year, int(birthday2[1]), int(birthday2[0]))
                     diff = date - today
-                    while diff.days < 0:
-                        year += 1
-                        date = datetime.date(year, int(birthday2[1]), int(birthday2[0]))
-                        diff = date - today
-                    embed.add_field(
-                        name=f"{user.name}'s birthay is on",
-                        value=f"{birthday}-{year} ({diff.days} days left)",
-                        inline=False,
-                    )
-                except KeyError:
-                    pass
+                birthdaysDict = {
+                    "userName": user.name,
+                    "birthday": birthday,
+                    "year": year,
+                    "daysLeft": diff.days,
+                }
+                birthdays.append(birthdaysDict.copy())
+            except KeyError:
+                pass
+        birthdays = sorted(birthdays, key=lambda i: i["daysLeft"])
+        for k in birthdays:
+            userName = k["userName"]
+            birthday = k["birthday"]
+            year = k["year"]
+            daysLeft = k["daysLeft"]
+            embed.add_field(
+                name=f"{userName}'s birthay is on",
+                value=f"{birthday}-{year} ({daysLeft} days left)",
+                inline=False,
+            )
         try:
             await ctx.send(embed=embed)
         except nextcord.errors.HTTPException:
