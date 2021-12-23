@@ -32,18 +32,28 @@ class RoleView(nextcord.ui.View):
         role = nextcord.utils.get(interaction.guild.roles, name=button.label)
 
         if not role in interaction.user.roles:
-            await interaction.user.add_roles(role)
-            await interaction.response.send_message(
-                f'The "{button.label}" role has successfully been added!',
-                ephemeral=True,
-            )
+            try:
+                await interaction.user.add_roles(role)
+                await interaction.response.send_message(
+                    f'The "{button.label}" role has successfully been added!',
+                    ephemeral=True,
+                )
+            except AttributeError:
+                await interaction.response.send_message(
+                    f'The "{button.label}" role is not found', ephemeral=True
+                )
 
         elif role in interaction.user.roles:
-            await interaction.user.remove_roles(role)
-            await interaction.response.send_message(
-                f'The "{button.label}" role has successfully been removed!',
-                ephemeral=True,
-            )
+            try:
+                await interaction.user.remove_roles(role)
+                await interaction.response.send_message(
+                    f'The "{button.label}" role has successfully been removed!',
+                    ephemeral=True,
+                )
+            except AttributeError:
+                await interaction.response.send_message(
+                    f'The "{button.label}" role is not found', ephemeral=True
+                )
 
 
 class AddButton(nextcord.ui.Button):

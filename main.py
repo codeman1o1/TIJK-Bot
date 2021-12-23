@@ -144,7 +144,6 @@ async def on_ready():
     cogs = os.listdir("cogs")
     try:
         cogs.remove("__pycache__")
-        cogs.remove("role_view.py")
     except ValueError:
         pass
     for c in cogs:
@@ -934,7 +933,6 @@ async def load_cog(ctx, cog: str = None):
             cog = "developer"
     c = os.listdir("cogs")
     c.remove("__pycache__")
-    c.remove("role_view.py")
     c = str(c)
     c = c.replace(".py", "")
     c = c.replace("[", "")
@@ -981,7 +979,6 @@ async def reload_cog(ctx, cog: str = None):
             cog = "developer"
     c = os.listdir("cogs")
     c.remove("__pycache__")
-    c.remove("role_view.py")
     c = str(c)
     c = c.replace(".py", "")
     c = c.replace("[", "")
@@ -1029,7 +1026,6 @@ async def unload_cog(ctx, cog: str = None):
             cog = "developer"
     c = os.listdir("cogs")
     c.remove("__pycache__")
-    c.remove("role_view.py")
     c = str(c)
     c = c.replace(".py", "")
     c = c.replace("[", "")

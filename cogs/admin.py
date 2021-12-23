@@ -1,7 +1,7 @@
 import nextcord
 from nextcord.errors import HTTPException
 from nextcord.ext import commands
-from cogs.role_view import RoleView
+from views.button_roles import RoleView
 from dotenv import load_dotenv
 from pymongo import MongoClient
 import asyncio
