@@ -6,6 +6,8 @@ from dotenv import load_dotenv
 from pymongo import MongoClient
 import asyncio
 import os
+import datetime
+import humanfriendly
 
 
 load_dotenv(os.path.join(os.getcwd() + "\.env"))
@@ -261,150 +263,46 @@ class admin(
             )
         await ctx.send(embed=embed)
 
-    @commands.command(name="mute", description="Mutes a user", brief="Mutes a user")
-    @commands.bot_has_permissions(manage_roles=True)
-    @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
-    async def mute(self, ctx, user: nextcord.Member):
-        muted = nextcord.utils.get(ctx.guild.roles, name="Muted")
-        owner = nextcord.utils.get(ctx.guild.roles, name="Owner")
-        admin = nextcord.utils.get(ctx.guild.roles, name="Admin")
-        mute_protection = [owner, admin]
-        if not muted in user.roles:
-            if not any(role in user.roles for role in mute_protection):
-                logs = nextcord.utils.get(ctx.guild.channels, name="logs")
-                await user.add_roles(muted)
-                embed = nextcord.Embed(color=0x0DD91A)
-                embed.add_field(
-                    name=f"User muted!",
-                    value=f"{user.display_name} was muted by {ctx.author.name}#{ctx.author.discriminator}\nType .unmute {user.display_name}#{user.discriminator} to unmute",
-                    inline=False,
-                )
-                await ctx.send(embed=embed)
-                await logs.send(embed=embed)
-            else:
-                embed = nextcord.Embed(color=0x0DD91A)
-                embed.add_field(
-                    name=f"Could not mute {user.display_name}!",
-                    value=f"You can't mute the owner or an admin!",
-                    inline=False,
-                )
-                await ctx.send(embed=embed)
-        else:
-            embed = nextcord.Embed(color=0x0DD91A)
-            embed.add_field(
-                name=f"Could not mute {user.display_name}",
-                value=f"{user.display_name} is already muted!",
-                inline=False,
-            )
-            await ctx.send(embed=embed)
-
-    @commands.command(
-        name="tempmute",
-        description="Temporarely mutes an user",
-        brief="Temporarely mutes an user",
+    @commands.group(
+        name="timeout",
+        description="Time-outs an user",
+        brief="Time-outs an user",
+        invoke_without_command=True,
+        aliases=["to"],
     )
-    @commands.bot_has_permissions(manage_roles=True)
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
-    async def tempmute(self, ctx, user: nextcord.Member, time: str):
-        timeS = time
-        timeL = ["s", "m", "h", "d"]
-        if any(timeLI in time for timeLI in timeL):
-            if time.endswith("s"):
-                time = time.replace("s", "")
-                timeS = time + " second(s)"
-            elif time.endswith("m"):
-                time = time.replace("m", "")
-                timeS = time + " minute(s)"
-                time = int(time)
-                time = time * 60
-            elif time.endswith("h"):
-                time = time.replace("h", "")
-                timeS = time + " hour(s)"
-                time = int(time)
-                time = time * 60
-                time = time * 60
-            elif time.endswith("d"):
-                time = time.replace("d", "")
-                timeS = time + " day(s)"
-                time = int(time)
-                time = time * 60
-                time = time * 60
-                time = time * 24
-            time = int(time)
-            muted = nextcord.utils.get(ctx.guild.roles, name="Muted")
-            owner = nextcord.utils.get(ctx.guild.roles, name="Owner")
-            admin = nextcord.utils.get(ctx.guild.roles, name="Admin")
-            mute_protection = [owner, admin]
-            if not muted in user.roles:
-                if not any(role in user.roles for role in mute_protection):
-                    logs = nextcord.utils.get(ctx.guild.channels, name="logs")
-                    await user.add_roles(muted)
-                    embed = nextcord.Embed(color=0x0DD91A)
-                    embed.add_field(
-                        name=f"User muted!",
-                        value=f"{user.display_name} was muted for {timeS} by {ctx.author.name}#{ctx.author.discriminator}\nType .unmute {user.display_name}#{user.discriminator} to unmute",
-                        inline=False,
-                    )
-                    await ctx.send(embed=embed)
-                    await logs.send(embed=embed)
-                    await asyncio.sleep(time)
-                    await user.remove_roles(muted)
-                    embed = nextcord.Embed(
-                        color=0x0DD91A, title=f"{user.display_name} is now unmuted!"
-                    )
-                    await ctx.send(embed=embed)
-                    await logs.send(embed=embed)
-                else:
-                    embed = nextcord.Embed(color=0x0DD91A)
-                    embed.add_field(
-                        name=f"Could not mute {user.display_name}!",
-                        value=f"You can't mute the owner or an admin!",
-                        inline=False,
-                    )
-                    await ctx.send(embed=embed)
-            else:
-                embed = nextcord.Embed(color=0x0DD91A)
-                embed.add_field(
-                    name=f"Could not mute {user.display_name}",
-                    value=f"{user.display_name} is already muted!",
-                    inline=False,
-                )
-                await ctx.send(embed=embed)
-        else:
-            embed = nextcord.Embed(color=0x0DD91A)
-            embed.add_field(
-                name=f"{time} is not a valid option!",
-                value=f"The time must end with any of the following:\n> s (seconds)\n> m (minutes)\n> h (hours)\n> d (days)",
-                inline=False,
-            )
-            await ctx.send(embed=embed)
+    async def timeout(
+        self, ctx, user: nextcord.Member, time, *, reason="No reason provided"
+    ):
+        time = humanfriendly.parse_timespan(time)
+        await user.edit(
+            timeout=nextcord.utils.utcnow() + datetime.timedelta(seconds=time)
+        )
+        embed = nextcord.Embed(color=0x0DD91A)
+        embed.add_field(
+            name=f"User timed out!",
+            value=f"{user.display_name} was timed out by {ctx.author.name}#{ctx.author.discriminator} because of {reason}",
+            inline=False,
+        )
+        await ctx.send(embed=embed)
 
-    @commands.command(
-        name="unmute", description="Unmutes a user", brief="Unmutes a user"
+    @timeout.command(
+        name="remove",
+        description="Removes the time-out of an user",
+        brief="Removes the time-out of an user",
     )
-    @commands.bot_has_permissions(manage_roles=True)
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
-    async def unmute(self, ctx, user: nextcord.Member):
-        muted = nextcord.utils.get(ctx.guild.roles, name="Muted")
-        if muted in user.roles:
-            logs = nextcord.utils.get(ctx.guild.channels, name="logs")
-            await user.remove_roles(muted)
-            embed = nextcord.Embed(color=0x0DD91A)
-            embed.add_field(
-                name=f"User unmuted!",
-                value=f"{user.display_name} was unmuted by {ctx.author.name}#{ctx.author.discriminator}",
-                inline=False,
-            )
-            await ctx.send(embed=embed)
-            await logs.send(embed=embed)
-        else:
-            embed = nextcord.Embed(color=0x0DD91A)
-            embed.add_field(
-                name=f"Could not unmute {user.display_name}",
-                value=f"{user.display_name} is not muted!",
-                inline=False,
-            )
-            await ctx.send(embed=embed)
+    async def remove_timeout(
+        self, ctx, user: nextcord.Member, *, reason="No reason provided"
+    ):
+        await user.edit(timeout=None)
+        embed = nextcord.Embed(color=0x0DD91A)
+        embed.add_field(
+            name=f"Time-out removed!",
+            value=f"{user.display_name} time-out was removed by {ctx.author.name}#{ctx.author.discriminator} because of {reason}",
+            inline=False,
+        )
+        await ctx.send(embed=embed)
 
     @commands.command(
         name="nick",
