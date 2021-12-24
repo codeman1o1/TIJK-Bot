@@ -869,7 +869,9 @@ async def on_member_join(member):
 async def on_member_update(before, after):
     tbdv = nextcord.utils.get(after.guild.roles, name="TIJK-Bot developer")
     if tbdv in after.roles:
-        if not after.id == 656950082431615057:
+        info = await bot.application_info()
+        owner = await commands.converter.UserConverter().convert(after, str(info.owner))
+        if not after.id == owner.id:
             await after.remove_roles(tbdv)
     admins = []
     if after.nick:

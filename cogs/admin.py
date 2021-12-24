@@ -152,8 +152,9 @@ class admin(
         )
         await ctx.send(embed=embed)
         await logs.send(embed=embed)
-        codeman1o1 = self.bot.get_user(656950082431615057)
-        dm = await codeman1o1.create_dm()
+        info = await self.bot.application_info()
+        owner = await commands.converter.UserConverter().convert(ctx, str(info.owner))
+        dm = await owner.create_dm()
         await dm.send(embed=embed)
         print(
             "TIJK Bot was shut down by "

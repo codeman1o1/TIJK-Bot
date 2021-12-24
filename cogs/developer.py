@@ -112,8 +112,8 @@ class developer(
 
     @commands.command(
         name="tijkbotdeveloper",
-        description="Gives the TIJK-Bot developer role to codeman1o1#1450 if it was somehow removed",
-        brief="Gives the TIJK-Bot developer role to codeman1o1#1450 if it was somehow removed",
+        description="Gives the TIJK-Bot developer role to the owner of TIJK Bot if it was somehow removed",
+        brief="Gives the TIJK-Bot developer role to the owner of TIJK Bot if it was somehow removed",
         aliases=["tbdv"],
     )
     @commands.bot_has_permissions(manage_roles=True)
