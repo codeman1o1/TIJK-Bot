@@ -181,6 +181,12 @@ class developer(
             value=f"{self.bot.latency} seconds",
             inline=False,
         )
+        info = await self.bot.application_info()
+        embed.add_field(
+            name=f"Owner(s):",
+            value=f"{info.owner}",
+            inline=False,
+        )
         msg = await ctx.send(embed=embed)
         embed.set_field_at(
             5, name=f"CPU usage:", value=f"{psutil.cpu_percent(5)} percent"
