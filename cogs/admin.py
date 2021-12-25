@@ -4,6 +4,7 @@ from nextcord.ext import commands
 from views.button_roles import RoleView
 from dotenv import load_dotenv
 from pymongo import MongoClient
+import basic_logger as bl
 import asyncio
 import os
 import datetime
@@ -156,11 +157,11 @@ class admin(
         owner = await commands.converter.UserConverter().convert(ctx, str(info.owner))
         dm = await owner.create_dm()
         await dm.send(embed=embed)
-        print(
+        bl.info(
             "TIJK Bot was shut down by "
             + ctx.author.name
             + "#"
-            + ctx.author.discriminator
+            + ctx.author.discriminator, __file__
         )
         await self.bot.close()
 

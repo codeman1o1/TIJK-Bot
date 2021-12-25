@@ -4,6 +4,7 @@ import asyncio
 import os
 import datetime
 import time
+import basic_logger as bl
 
 import nextcord
 import nextcord.ext.commands.errors
@@ -138,7 +139,7 @@ async def filter(message):
 
 @bot.event
 async def on_ready():
-    print(f"Logged in as:\n{bot.user.name}")
+    bl.info(f"Logged in as {bot.user.name}#{bot.user.discriminator}", __file__)
     with open("spam_detect.txt", "r+") as file:
         file.truncate(0)
     cogs = os.listdir("cogs")
@@ -150,9 +151,9 @@ async def on_ready():
         try:
             c = c.strip(".py")
             bot.load_extension(f"cogs.{c}")
-            print(f"{c}.py loaded!")
+            bl.debug(f"{c}.py loaded!", __file__)
         except:
-            print(f"{c}.py couldn't be loaded!")
+            bl.error(f"{c}.py couldn't be loaded!", __file__)
     await bot.change_presence(
         activity=nextcord.Activity(
             type=nextcord.ActivityType.watching, name="the TIJK Server"
@@ -1145,6 +1146,7 @@ async def on_command_error(ctx, error):
         inline=True,
     )
     await ctx.send(embed=embed)
+    bl.error(error)
 
 
 bot.run(os.environ["BotToken"])
