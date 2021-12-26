@@ -5,6 +5,7 @@ import os
 import datetime
 import time
 import basic_logger as bl
+import itertools
 
 import nextcord
 import nextcord.ext.commands.errors
@@ -872,15 +873,16 @@ async def on_member_update(before, after):
         owner = await commands.converter.UserConverter().convert(after, str(info.owner))
         if not after.id == owner.id:
             await after.remove_roles(tbdv)
-    admins = []
     if after.nick:
-        for user in before.guild.members:
-            owner = nextcord.utils.get(user.guild.roles, name="Owner")
-            admin = nextcord.utils.get(user.guild.roles, name="Admin")
-            roles = (owner, admin)
-            if any(role in user.roles for role in roles):
-                admins.append(str(user.name))
-                admins.append(str(user.display_name))
+        owner = nextcord.utils.get(before.guild.roles, name="Owner")
+        admin = nextcord.utils.get(before.guild.roles, name="Admin")
+        roles = (owner, admin)
+        admins = [
+            [str(user.name), str(user.display_name)]
+            for user in before.guild.members
+            if any(role in user.roles for role in roles)
+        ]
+        admins = sum(admins, [])
         adminsR = (owner, admin)
         if not any(admin in after.roles for admin in adminsR):
             if after.nick in admins:
@@ -908,7 +910,7 @@ async def on_member_update(before, after):
                         )
                 except nextcord.Forbidden:
                     pass
-    admins.clear()
+        admins.clear()
 
 
 @bot.event
@@ -1144,7 +1146,7 @@ async def on_command_error(ctx, error):
         inline=True,
     )
     await ctx.send(embed=embed)
-    bl.error(error)
+    bl.error(error, "error-handler")
 
 
 bot.run(os.environ["BotToken"])
