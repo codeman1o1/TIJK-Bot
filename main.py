@@ -849,13 +849,13 @@ async def on_message_edit(before, after):
 async def on_member_join(member):
     user = bot.get_user(member.id)
     dm = await user.create_dm()
+    embed = nextcord.Embed(
+        color=0x0DD91A,
+        title=f"Hey {member.display_name} :wave:\nWelcome to {member.guild.name}!\nWe hope you enjoy your stay!",
+    )
+    await dm.send(embed=embed)
     if member.guild.system_channel:
-        embed = nextcord.Embed(
-            color=0x0DD91A,
-            title=f"Hey {member.display_name} :wave:\nWelcome to {member.guild.name}!\nWe hope you enjoy your stay!",
-        )
         await member.guild.system_channel.send(embed=embed)
-        await dm.send(embed=embed)
     if not member.bot:
         memberRole = nextcord.utils.get(member.guild.roles, name="Member")
         await member.add_roles(memberRole)
@@ -915,13 +915,13 @@ async def on_member_update(before, after):
 async def on_member_remove(member):
     user = bot.get_user(member.id)
     dm = await user.create_dm()
+    embed = nextcord.Embed(
+        color=0x0DD91A,
+        title=f"Bye {member.display_name} :wave:\nIt was great having you!!",
+    )
+    await dm.send(embed=embed)
     if member.guild.system_channel:
-        embed = nextcord.Embed(
-            color=0x0DD91A,
-            title=f"Bye {member.display_name} :wave:\nIt was great having you!!",
-        )
         await member.guild.system_channel.send(embed=embed)
-        await dm.send(embed=embed)
 
 
 @bot.command(
