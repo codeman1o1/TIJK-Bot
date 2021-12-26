@@ -436,8 +436,8 @@ async def on_message(message):
                                 message.author.guild.roles, name="Muted"
                             )
                             if not muted in message.author.roles:
-                                mo = nextcord.utils.get(
-                                    message.author.guild.channels, name="moderator-only"
+                                logs = nextcord.utils.get(
+                                    message.author.guild.channels, name="logs"
                                 )
                                 await message.author.add_roles(muted)
                                 embed = nextcord.Embed(color=0x0DD91A)
@@ -519,8 +519,8 @@ async def on_message(message):
                 await message.channel.send(embed=embed)
                 muted = nextcord.utils.get(message.author.guild.roles, name="Muted")
                 if not muted in message.author.roles:
-                    mo = nextcord.utils.get(
-                        message.author.guild.channels, name="moderator-only"
+                    logs = nextcord.utils.get(
+                        message.author.guild.channels, name="logs"
                     )
                     await message.author.add_roles(muted)
                     embed = nextcord.Embed(color=0x0DD91A)
@@ -825,9 +825,7 @@ async def on_message_edit(before, after):
                 await after.channel.send(embed=embed)
                 muted = nextcord.utils.get(after.author.guild.roles, name="Muted")
                 if not muted in after.author.roles:
-                    mo = nextcord.utils.get(
-                        after.author.guild.channels, name="moderator-only"
-                    )
+                    logs = nextcord.utils.get(after.author.guild.channels, name="logs")
                     await after.author.add_roles(muted)
                     embed = nextcord.Embed(color=0x0DD91A)
                     embed.add_field(
