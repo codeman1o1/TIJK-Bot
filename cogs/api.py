@@ -90,6 +90,7 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
                 inline=False,
             )
         except KeyError:
+            embed = nextcord.Embed(color=0xFF0000)
             embed.add_field(
                 name=f"Can't request info for {username}",
                 value="Error provided by the API:\n" + info["error"],
@@ -255,6 +256,7 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
                 inline=True,
             )
         except KeyError:
+            embed = nextcord.Embed(color=0xFF0000)
             embed.add_field(
                 name=f"Can't request info for the Pokémon {name}",
                 value="Error provided by the API:\n" + info["error"],

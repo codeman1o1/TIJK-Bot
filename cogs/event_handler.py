@@ -894,7 +894,7 @@ class event_handler(
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
-        embed = nextcord.Embed(color=0x0DD91A)
+        embed = nextcord.Embed(color=0xff0000)
         embed.add_field(
             name=f"An error occured!",
             value=f"{error}",

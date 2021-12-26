@@ -235,7 +235,7 @@ class general(
                 datetime.date(today.year, int(date2[1]), int(date2[0]))
             except (ValueError, IndexError):
                 embed = nextcord.Embed(
-                    color=0x0DD91A, title=f"{date} is not a valid date!"
+                    color=0xFFC800, title=f"{date} is not a valid date!"
                 )
                 await ctx.send(embed=embed)
                 return

@@ -259,7 +259,7 @@ class admin(
                     await logs_channel.send(embed=embed)
         except IndexError:
             embed = nextcord.Embed(
-                color=0x0DD91A, title=f"{rule_number} is not a valid rule number!"
+                color=0xFF0000, title=f"{rule_number} is not a valid rule number!"
             )
         await ctx.send(embed=embed)
 
