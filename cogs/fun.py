@@ -150,8 +150,7 @@ class fun(
     )
     async def messages(self, ctx):
         embed = nextcord.Embed(color=0x0DD91A)
-        indexes = UserData.find().sort("messages", pymongo.DESCENDING)
-        for k in indexes:
+        for k in UserData.find().sort("messages", pymongo.DESCENDING):
             try:
                 user = self.bot.get_user(int(k["_id"]))
                 message = k["messages"]

@@ -125,10 +125,8 @@ class event_handler(
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        cancel = False
         counter = 0
-        documents = BotData.find()
-        for k in documents:
+        for k in BotData.find():
             forbidden_word_list = k["forbidden_words"]
 
         filtered_message = await event_handler.message_filter(message)
@@ -138,7 +136,6 @@ class event_handler(
                 forbidden_word in file.filename
                 for forbidden_word in forbidden_word_list
             ):
-                cancel = True
                 try:
                     await message.delete()
                     embed = nextcord.Embed(color=0x0DD91A)
@@ -224,7 +221,6 @@ class event_handler(
                         f"Tried to delete message but message was not found", __file__
                     )
             if file.filename.endswith((".exe", ".dll")):
-                cancel = True
                 try:
                     await message.delete()
                     embed = nextcord.Embed(color=0x0DD91A)
@@ -318,7 +314,6 @@ class event_handler(
                         forbidden_word in lines
                         for forbidden_word in forbidden_word_list
                     ):
-                        cancel = True
                         try:
                             await message.delete()
                             embed = nextcord.Embed(color=0x0DD91A)
@@ -412,7 +407,6 @@ class event_handler(
         if any(
             forbidden_word in filtered_message for forbidden_word in forbidden_word_list
         ):
-            cancel = True
             try:
                 await message.delete()
                 embed = nextcord.Embed(color=0x0DD91A)
@@ -512,7 +506,6 @@ class event_handler(
                         counter += 1
                 file.writelines(f"{str(message.author.id)}\n")
                 if counter > 3:
-                    cancel = True
                     query = {"_id": message.author.id}
                     if UserData.count_documents(query) == 0:
                         post = {"_id": message.author.id, "warns": 1}
@@ -634,8 +627,7 @@ class event_handler(
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
-        documents = BotData.find()
-        for k in documents:
+        for k in BotData.find():
             forbidden_list = k["forbidden_words"]
 
         filtered_message = await event_handler.message_filter(after)
@@ -842,15 +834,15 @@ class event_handler(
             if not after.id == owner.id:
                 await after.remove_roles(tijk_bot_developer_role)
         if after.nick:
-            owner_role = nextcord.utils.get(before.guild.roles, name="Owner")
-            admin_role = nextcord.utils.get(before.guild.roles, name="Admin")
+            owner_role = nextcord.utils.get(after.guild.roles, name="Owner")
+            admin_role = nextcord.utils.get(after.guild.roles, name="Admin")
             roles = (owner_role, admin_role)
             admin_names = [
                 [str(user.name), str(user.display_name)]
-                for user in before.guild.members
+                for user in after.guild.members
                 if any(role in user.roles for role in roles)
             ]
-            admin_names = sum(admin_names, [])
+            admin_names = tuple(sum(admin_names, []))
             admin_roles = (owner_role, admin_role)
             if not any(admin_role in after.roles for admin_role in admin_roles):
                 if after.nick in admin_names:
@@ -894,7 +886,7 @@ class event_handler(
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
-        embed = nextcord.Embed(color=0xff0000)
+        embed = nextcord.Embed(color=0xFF0000)
         embed.add_field(
             name=f"An error occured!",
             value=f"{error}",

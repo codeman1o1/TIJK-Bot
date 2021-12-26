@@ -179,10 +179,9 @@ class general(
     async def birthday(self, ctx):
         birthdays = []
         embed = nextcord.Embed(color=0x0DD91A)
-        indexes = UserData.find()
         today = datetime.date.today()
         year = today.year
-        for k in indexes:
+        for k in UserData.find():
             try:
                 user = self.bot.get_user(int(k["_id"]))
                 birthday = k["birthday"]

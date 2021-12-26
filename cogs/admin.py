@@ -39,8 +39,7 @@ class admin(
     )
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def buttonroles(self, ctx):
-        roles = BotData.find()
-        for k in roles:
+        for k in BotData.find():
             roles = k["roles"]
         if len(roles) == 0:
             embed = nextcord.Embed(
@@ -63,8 +62,7 @@ class admin(
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def list_buttonroles(self, ctx):
         embed = nextcord.Embed(color=0x0DD91A)
-        documents = BotData.find()
-        for k in documents:
+        for k in BotData.find():
             roles = k["roles"]
         roles = "> " + str(roles)
         roles = roles.replace("[", "")
@@ -84,8 +82,7 @@ class admin(
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def add_buttonroles(self, ctx, role: nextcord.Role):
         role = role.name
-        documents = BotData.find()
-        for k in documents:
+        for k in BotData.find():
             roles = k["roles"]
             if not role in roles:
                 roles.append(role)
@@ -112,8 +109,7 @@ class admin(
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def remove_buttonroles(self, ctx, role: nextcord.Role):
         role = role.name
-        documents = BotData.find()
-        for k in documents:
+        for k in BotData.find():
             roles = k["roles"]
             if role in roles:
                 roles.remove(role)
@@ -595,8 +591,7 @@ class admin(
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def list_warn(self, ctx):
         embed = nextcord.Embed(color=0x0DD91A)
-        documents = UserData.find()
-        for k in documents:
+        for k in UserData.find():
             try:
                 user = self.bot.get_user(int(k["_id"]))
                 warns = k["warns"]
@@ -638,8 +633,7 @@ class admin(
         aliases=["fwords", "fword"],
     )
     async def forbiddenwords(self, ctx):
-        forbidden_words = BotData.find()
-        for k in forbidden_words:
+        for k in BotData.find():
             forbidden_words = k["forbidden_words"]
         forbidden_words2 = ""
         for k in forbidden_words:
@@ -660,8 +654,7 @@ class admin(
     )
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def add_forbiddenwords(self, ctx, *, word: str):
-        documents = BotData.find()
-        for k in documents:
+        for k in BotData.find():
             forbidden_words = k["forbidden_words"]
             forbidden_words.append(word)
             BotData.update_one(
@@ -679,8 +672,7 @@ class admin(
     )
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def remove_forbiddenwords(self, ctx, *, index: int):
-        documents = BotData.find()
-        for k in documents:
+        for k in BotData.find():
             forbidden_words = k["forbidden_words"]
             word = forbidden_words[index]
             forbidden_words.remove(forbidden_words[index])

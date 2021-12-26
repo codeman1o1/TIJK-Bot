@@ -19,8 +19,7 @@ class RoleView(nextcord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
 
-        documents = BotData.find()
-        for objects in documents:
+        for objects in BotData.find():
             for role in objects["roles"]:
                 self.add_item(
                     AddButton(label=role, style=ButtonStyle.primary, custom_id=role)

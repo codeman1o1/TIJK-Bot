@@ -71,21 +71,20 @@ async def on_ready():
 async def birthday_checker():
     if time.strftime("%H") == "12":
         birthdays = []
-        documents = UserData.find()
         today = datetime.date.today()
-        for k in documents:
+        year = today.year
+        for k in UserData.find():
             try:
                 if k["birthday"]:
                     birthday2 = k["birthday"].split("-")
-                    year = today.year
                     date = datetime.date(year, int(birthday2[1]), int(birthday2[0]))
                     if today == date:
                         birthdays.append(k["_id"])
             except KeyError:
                 pass
         for member in birthdays:
-            embed = nextcord.Embed(color=0x0DD91A)
             member = bot.get_user(member)
+            embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name=f"Happy birthday {member.name}!",
                 value=f"We hope you will have a great day!",
