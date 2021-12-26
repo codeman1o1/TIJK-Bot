@@ -161,7 +161,8 @@ class admin(
             "TIJK Bot was shut down by "
             + ctx.author.name
             + "#"
-            + ctx.author.discriminator, __file__
+            + ctx.author.discriminator,
+            __file__,
         )
         await self.bot.close()
 
@@ -333,7 +334,7 @@ class admin(
     @commands.bot_has_permissions(manage_roles=True)
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def assignrole(self, ctx, role: nextcord.Role, user: nextcord.Member = None):
-        if user == None:
+        if user is None:
             user = ctx.author
         if not role in user.roles:
             logs = nextcord.utils.get(ctx.guild.channels, name="logs")
@@ -365,7 +366,7 @@ class admin(
     @commands.bot_has_permissions(manage_roles=True)
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def removerole(self, ctx, role: nextcord.Role, user: nextcord.Member = None):
-        if user == None:
+        if user is None:
             user = ctx.author
         if role in user.roles:
             logs = nextcord.utils.get(ctx.guild.channels, name="logs")

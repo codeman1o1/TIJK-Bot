@@ -942,7 +942,7 @@ async def load_cog(ctx, cog: str = None):
     c = c.replace("]", "")
     c = c.replace("'", "")
     c = c.replace(",", "\n>")
-    if cog == None:
+    if cog is None:
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name=f"The available cogs are:",
@@ -988,7 +988,7 @@ async def reload_cog(ctx, cog: str = None):
     c = c.replace("]", "")
     c = c.replace("'", "")
     c = c.replace(",", "\n>")
-    if cog == None:
+    if cog is None:
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name=f"The available cogs are:",
@@ -1035,7 +1035,7 @@ async def unload_cog(ctx, cog: str = None):
     c = c.replace("]", "")
     c = c.replace("'", "")
     c = c.replace(",", "\n>")
-    if cog == None:
+    if cog is None:
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name=f"The available cogs are:",
@@ -1073,7 +1073,7 @@ async def unload_cog(ctx, cog: str = None):
 async def enable_command(ctx, *, command: str):
     command2 = command
     command = bot.get_command(command)
-    if command == None:
+    if command is None:
         embed = nextcord.Embed(
             color=0x0DD91A,
         )
@@ -1111,7 +1111,7 @@ async def disable_command(ctx, *, command: str):
     cmdLoad = bot.get_command("load_command")
     cmdUnload = bot.get_command("unload_command")
     antiDisable = [cogLoad, cogUnload, cmdLoad, cmdUnload]
-    if command == None:
+    if command is None:
         embed = nextcord.Embed(
             color=0x0DD91A,
         )
