@@ -54,7 +54,7 @@ class fun(
         choice = choice.lower()
         if choice == "scissor":
             choice = "scissors"
-        rpsChoices = ["rock", "paper", "scissors"]
+        rpsChoices = ("rock", "paper", "scissors")
         if choice.lower() in rpsChoices:
             rps = random.randint(0, 2)
             if rps == 0:

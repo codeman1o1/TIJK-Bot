@@ -48,7 +48,7 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
         brief="Uses an animal API to get information",
     )
     async def animal_api(self, ctx, *, animal):
-        animals = ["dog", "cat", "panda", "red_panda", "bird", "fox", "koala"]
+        animals = ("dog", "cat", "panda", "red_panda", "bird", "fox", "koala")
         animal = animal.replace(" ", "_")
         if animal.lower() in animals:
             async with aiohttp.ClientSession() as session:

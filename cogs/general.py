@@ -82,7 +82,7 @@ class general(
     async def admin(self, ctx, admin: nextcord.Member, *, message):
         ownerR = nextcord.utils.get(ctx.guild.roles, name="Owner")
         adminR = nextcord.utils.get(ctx.guild.roles, name="Admin")
-        roles = [ownerR, adminR]
+        roles = (ownerR, adminR)
         if any(roles in admin.roles for roles in roles):
             if admin == ctx.author:
                 embed = nextcord.Embed(color=0x0DD91A)
@@ -125,7 +125,7 @@ class general(
     async def urgent_admin(self, ctx, admin: nextcord.Member, *, message: str):
         ownerR = nextcord.utils.get(ctx.guild.roles, name="Owner")
         adminR = nextcord.utils.get(ctx.guild.roles, name="Admin")
-        roles = [ownerR, adminR]
+        roles = (ownerR, adminR)
         if any(roles in admin.roles for roles in roles):
             if admin == ctx.author:
                 embed = nextcord.Embed(color=0x0DD91A)

@@ -628,7 +628,7 @@ async def on_message(message):
                 owner = nextcord.utils.get(user.guild.roles, name="Owner")
                 admin = nextcord.utils.get(user.guild.roles, name="Admin")
                 tbdv = nextcord.utils.get(user.guild.roles, name="TIJK-Bot developer")
-                anti_mute = [owner, admin, tbdv]
+                anti_mute = (owner, admin, tbdv)
                 if not user.bot:
                     if any(role in user.roles for role in anti_mute):
                         return
@@ -877,11 +877,11 @@ async def on_member_update(before, after):
         for user in before.guild.members:
             owner = nextcord.utils.get(user.guild.roles, name="Owner")
             admin = nextcord.utils.get(user.guild.roles, name="Admin")
-            roles = [owner, admin]
+            roles = (owner, admin)
             if any(role in user.roles for role in roles):
                 admins.append(str(user.name))
                 admins.append(str(user.display_name))
-        adminsR = [owner, admin]
+        adminsR = (owner, admin)
         if not any(admin in after.roles for admin in adminsR):
             if after.nick in admins:
                 try:
@@ -1108,7 +1108,7 @@ async def disable_command(ctx, *, command: str):
     cogUnload = bot.get_command("unload_cog")
     cmdLoad = bot.get_command("load_command")
     cmdUnload = bot.get_command("unload_command")
-    antiDisable = [cogLoad, cogUnload, cmdLoad, cmdUnload]
+    antiDisable = (cogLoad, cogUnload, cmdLoad, cmdUnload)
     if command is None:
         embed = nextcord.Embed(
             color=0x0DD91A,
