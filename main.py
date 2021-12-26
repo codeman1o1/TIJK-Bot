@@ -212,7 +212,7 @@ async def unload_cog(ctx, cog: str = None):
         except ValueError:
             pass
         for cog in cogs:
-            cog = cogs.strip(".py")
+            cog = cog.strip(".py")
             bot.unload_extension(f"cogs.{cog}")
         embed = nextcord.Embed(color=0x0DD91A, title=f"All cogs have been unloaded!")
     else:
