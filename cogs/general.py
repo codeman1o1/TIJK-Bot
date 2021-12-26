@@ -49,13 +49,14 @@ class general(
         aliases=["hypixelp", "hpparty", "hpp"],
     )
     async def hypixelparty(self, ctx):
-        hpon = []
-        for user in ctx.guild.members:
-            if not user.bot:
-                if user.status != nextcord.Status.offline:
-                    hping = nextcord.utils.get(ctx.guild.roles, name="hypixel ping")
-                    if hping in user.roles:
-                        hpon.append(str(user.name) + "#" + str(user.discriminator))
+        hping = nextcord.utils.get(ctx.guild.roles, name="Hypixel Ping")
+        hpon = [
+            str(user.name) + "#" + str(user.discriminator)
+            for user in ctx.guild.members
+            if not user.bot
+            if user.status != nextcord.Status.offline
+            if hping in user.roles
+        ]
         if not len(hpon) == 0:
             embed = nextcord.Embed(color=0x0DD91A)
             randomInt = random.randint(0, len(hpon) - 1)
