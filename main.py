@@ -5,7 +5,6 @@ import os
 import datetime
 import time
 import basic_logger as bl
-import itertools
 
 import nextcord
 import nextcord.ext.commands.errors
