@@ -19,8 +19,8 @@ class RoleView(nextcord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
 
-        document = BotData.find()
-        for objects in document:
+        documents = BotData.find()
+        for objects in documents:
             for role in objects["roles"]:
                 self.add_item(
                     AddButton(label=role, style=ButtonStyle.primary, custom_id=role)
@@ -40,7 +40,8 @@ class RoleView(nextcord.ui.View):
                 )
             except AttributeError:
                 await interaction.response.send_message(
-                    f'The "{button.label}" role is not found', ephemeral=True
+                    f'The "{button.label}" role is not found\nPlease contact an admin to fix this',
+                    ephemeral=True,
                 )
 
         elif role in interaction.user.roles:
@@ -52,7 +53,8 @@ class RoleView(nextcord.ui.View):
                 )
             except AttributeError:
                 await interaction.response.send_message(
-                    f'The "{button.label}" role is not found', ephemeral=True
+                    f'The "{button.label}" role is not found\nPlease contact an admin to fix this',
+                    ephemeral=True,
                 )
 
 

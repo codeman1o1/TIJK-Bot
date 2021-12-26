@@ -1,12 +1,8 @@
 import nextcord
 from nextcord.ext import commands
 import aiohttp
-import requests
-import urllib.request
-import json
 import os
 from dotenv import load_dotenv
-from datetime import datetime
 
 load_dotenv(os.path.join(os.getcwd() + "\.env"))
 
@@ -25,19 +21,7 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name=f"Help with the .api command",
-            value=f"The .api command gets information from API's.\nI do not own any of the API's, so if there occurs an issue, I cannot help you with it.\nType `.help api` for all available subcommands",
-            inline=False,
-        )
-        await ctx.send(embed=embed)
-
-    @api.command(
-        name="help", description="Help command for .api", brief="Help command for .api"
-    )
-    async def help_api(self, ctx):
-        embed = nextcord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name=f"Help with the .api command",
-            value=f"The .api command gets information from API's.\n**I do not own any of the API's, so if there occurs an issue, I cannot help you with it.**\nType .help api for all available subcommands",
+            value=f"The .api command gets information from API's.\n**I do not own any of the API's, so if there occurs an issue, I can most likely not help you with it.**\nType `.help api` for all available subcommands",
             inline=False,
         )
         await ctx.send(embed=embed)
@@ -55,13 +39,11 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
                 request = await session.get(f"https://some-random-api.ml/img/{animal}")
                 info = await request.json()
             await ctx.send(info["link"])
-        else:
-            if animal == "":
-                subtype = "That"
+        elif not animal.lower() in animals:
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name=f"Can't request image!",
-                value=f"{subtype} is not a valid animal type **for the API**\nValid animal types are:\n> Dog\n> Cat\n> Panda\n> Red Panda\n> Bird\n> Fox\n> Koala",
+                value=f"{animal} is not a valid animal type __for the API__\nValid animal types are:\n> Dog\n> Cat\n> Panda\n> Red Panda\n> Bird\n> Fox\n> Koala",
                 inline=False,
             )
             await ctx.send(embed=embed)
@@ -81,15 +63,15 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
                 )
                 info = await request.json()
             name_history = info["name_history"]
-            for i in name_history:
+            for k in name_history:
                 if "[{" in str(name_history):
                     name_history = ""
                 name_history = (
                     str(name_history)
                     + "\nName: "
-                    + i["name"]
+                    + k["name"]
                     + "\nChanged at: "
-                    + i["changedToAt"]
+                    + k["changedToAt"]
                     + "\n"
                 )
             embed.add_field(
@@ -108,10 +90,9 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
                 inline=False,
             )
         except KeyError:
-            embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name=f"Can't request info for {username}",
-                value=info["error"],
+                value="Error provided by the API:\n" + info["error"],
                 inline=False,
             )
         await ctx.send(embed=embed)
@@ -150,7 +131,7 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
         name="pokedex",
         description="Uses a Pokémon API to get information",
         brief="Uses a Pokémon API to get information",
-        aliases=["pd"],
+        aliases=["pd", "pokemon", "pm"],
     )
     async def pokedex_api(self, ctx, *, name):
         embed = nextcord.Embed(color=0x0DD91A)
@@ -201,7 +182,7 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
                 evolutionLine = evolutionLine.replace("'", "")
                 evolutionLine = evolutionLine.replace(",", " ->")
                 familyText = f"Evolution Stage: {evolutionStage}\nEvolution Line: {evolutionLine}"
-            # Possible options: normal or animated
+            # Possible options: "normal" or "animated"
             embed.set_thumbnail(url=sprites["normal"])
             embed.add_field(
                 name=f"Name",
@@ -276,7 +257,7 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
         except KeyError:
             embed.add_field(
                 name=f"Can't request info for the Pokémon {name}",
-                value=info["error"],
+                value="Error provided by the API:\n" + info["error"],
                 inline=True,
             )
         await ctx.send(embed=embed)

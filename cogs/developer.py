@@ -20,7 +20,7 @@ class developer(
     )
     @commands.has_any_role("TIJK-Bot developer")
     async def restart(self, ctx):
-        logs = nextcord.utils.get(ctx.guild.channels, name="logs")
+        logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name=f"TIJK Bot is restarting...",
@@ -28,7 +28,7 @@ class developer(
             inline=False,
         )
         await ctx.send(embed=embed)
-        await logs.send(embed=embed)
+        await logs_channel.send(embed=embed)
         await self.bot.change_presence(
             activity=nextcord.Activity(
                 type=nextcord.ActivityType.playing, name="Restarting..."
@@ -119,21 +119,22 @@ class developer(
     @commands.bot_has_permissions(manage_roles=True)
     @commands.is_owner()
     async def tijkbotdeveloper(self, ctx):
-        tbdv = nextcord.utils.get(ctx.guild.roles, name="TIJK-Bot developer")
-        if not tbdv in ctx.author.roles:
-            await ctx.author.add_roles(tbdv)
+        tijk_bot_developer_role = nextcord.utils.get(
+            ctx.guild.roles, name="TIJK-Bot developer"
+        )
+        if not tijk_bot_developer_role in ctx.author.roles:
+            await ctx.author.add_roles(tijk_bot_developer_role)
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name="Done!",
                 value='You now have the "TIJK Bot developer" role!',
                 inline=False,
             )
-            await ctx.send(embed=embed)
-        else:
+        elif tijk_bot_developer_role in ctx.author.roles:
             embed = nextcord.Embed(
                 color=0x0DD91A, title='You already have the "TIJK-Bot developer" role'
             )
-            await ctx.send(embed=embed)
+        await ctx.send(embed=embed)
 
     @commands.command(
         name="stats",

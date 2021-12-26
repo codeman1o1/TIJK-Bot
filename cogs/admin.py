@@ -1,5 +1,4 @@
 import nextcord
-from nextcord.errors import HTTPException
 from nextcord.ext import commands
 from views.button_roles import RoleView
 from dotenv import load_dotenv
@@ -46,7 +45,7 @@ class admin(
         if len(roles) == 0:
             embed = nextcord.Embed(
                 color=0x0DD91A,
-                title=f"There are no roles selected!\nMake sure to add them by using `.br add <role>`",
+                title=f"There are no roles selected!\nMake sure to add them by using `.buttonroles add <role>`",
             )
             await ctx.send(embed=embed)
         elif len(roles) > 0:
@@ -64,8 +63,8 @@ class admin(
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def list_buttonroles(self, ctx):
         embed = nextcord.Embed(color=0x0DD91A)
-        roles = BotData.find()
-        for k in roles:
+        documents = BotData.find()
+        for k in documents:
             roles = k["roles"]
         roles = "> " + str(roles)
         roles = roles.replace("[", "")
@@ -84,10 +83,9 @@ class admin(
     )
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def add_buttonroles(self, ctx, role: nextcord.Role):
-        role = str(role)
-        role = role.replace("@", "")
-        roles = BotData.find()
-        for k in roles:
+        role = role.name
+        documents = BotData.find()
+        for k in documents:
             roles = k["roles"]
             if not role in roles:
                 roles.append(role)
@@ -113,10 +111,9 @@ class admin(
     )
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def remove_buttonroles(self, ctx, role: nextcord.Role):
-        role = str(role)
-        role = role.replace("@", "")
-        roles = BotData.find()
-        for k in roles:
+        role = role.name
+        documents = BotData.find()
+        for k in documents:
             roles = k["roles"]
             if role in roles:
                 roles.remove(role)
@@ -127,7 +124,7 @@ class admin(
                 )
                 embed = nextcord.Embed(
                     color=0x0DD91A,
-                    title=f'The "{role}" role has been Removed!\nMake sure to use `.buttonroles` again!',
+                    title=f'The "{role}" role has been removed!\nMake sure to use `.buttonroles` again!',
                 )
                 await ctx.send(embed=embed)
             elif not role in roles:
@@ -144,7 +141,7 @@ class admin(
     )
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def shutdown(self, ctx):
-        logs = nextcord.utils.get(ctx.guild.channels, name="logs")
+        logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name=f"TIJK Bot was shut down",
@@ -152,7 +149,7 @@ class admin(
             inline=False,
         )
         await ctx.send(embed=embed)
-        await logs.send(embed=embed)
+        await logs_channel.send(embed=embed)
         info = await self.bot.application_info()
         owner = await commands.converter.UserConverter().convert(ctx, str(info.owner))
         dm = await owner.create_dm()
@@ -171,11 +168,11 @@ class admin(
         description="Get the latency of TIJK Bot",
         brief="Get the latency of TIJK Bot",
     )
-    async def ping(self, ctx, roundNr: int = 1):
+    async def ping(self, ctx, decimals: int = 1):
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name=f"Pong!",
-            value=f"The latency is {round(self.bot.latency, roundNr)} seconds",
+            value=f"The latency is {round(self.bot.latency, decimals)} seconds",
             inline=False,
         )
         await ctx.send(embed=embed)
@@ -205,7 +202,7 @@ class admin(
             if UserData.count_documents(query) == 0:
                 post = {"_id": user.id, "warns": 1}
                 UserData.insert_one(post)
-                total = 1
+                total_warns = 1
             else:
                 user2 = UserData.find(query)
                 warns = 0
@@ -216,21 +213,21 @@ class admin(
                     pass
                 warns = warns + 1
                 UserData.update_one({"_id": user.id}, {"$set": {"warns": warns}})
-                total = warns
+                total_warns = warns
             embed = nextcord.Embed(color=0x0DD91A)
-            if total <= 8:
+            if total_warns <= 8:
                 embed.add_field(
                     name=f"{user.display_name} has been warned by Warn System",
-                    value=f"{user.display_name} has {10 - total} warns left!",
+                    value=f"{user.display_name} has {10 - total_warns} warns left!",
                     inline=False,
                 )
-            if total == 9:
+            if total_warns == 9:
                 embed.add_field(
                     name=f"{user.display_name} has been warned by Warn System",
                     value=f"{user.display_name} has no more warns left! Next time, he shall be punished!",
                     inline=False,
                 )
-            if total >= 10:
+            if total_warns >= 10:
                 query = {"_id": user.id}
                 if UserData.count_documents(query) == 0:
                     post = {"_id": user.id, "warns": 0}
@@ -243,23 +240,23 @@ class admin(
                     inline=False,
                 )
                 await ctx.send(embed=embed)
-                muted = nextcord.utils.get(ctx.guild.roles, name="Muted")
-                if not muted in user.roles:
-                    logs = nextcord.utils.get(ctx.guild.channels, name="logs")
-                    await user.add_roles(muted)
+                muted_role = nextcord.utils.get(ctx.guild.roles, name="Muted")
+                if not muted_role in user.roles:
+                    logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
+                    await user.add_roles(muted_role)
                     embed = nextcord.Embed(color=0x0DD91A)
                     embed.add_field(
                         name=f"User muted!",
                         value=f"{user.display_name} was muted for 10 minutes by Warn System",
                         inline=False,
                     )
-                    await logs.send(embed=embed)
+                    await logs_channel.send(embed=embed)
                     await asyncio.sleep(600)
-                    await user.remove_roles(muted)
+                    await user.remove_roles(muted_role)
                     embed = nextcord.Embed(
                         color=0x0DD91A, title=f"{user.display_name} is now unmuted!"
                     )
-                    await logs.send(embed=embed)
+                    await logs_channel.send(embed=embed)
         except IndexError:
             embed = nextcord.Embed(
                 color=0x0DD91A, title=f"{rule_number} is not a valid rule number!"
@@ -337,7 +334,7 @@ class admin(
         if user is None:
             user = ctx.author
         if not role in user.roles:
-            logs = nextcord.utils.get(ctx.guild.channels, name="logs")
+            logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
             await user.add_roles(role)
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
@@ -346,9 +343,9 @@ class admin(
                 inline=False,
             )
             await ctx.send(embed=embed)
-            await logs.send(embed=embed)
+            await logs_channel.send(embed=embed)
 
-        else:
+        elif role in user.roles:
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name=f"Could not assign that role!",
@@ -369,7 +366,7 @@ class admin(
         if user is None:
             user = ctx.author
         if role in user.roles:
-            logs = nextcord.utils.get(ctx.guild.channels, name="logs")
+            logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
             await user.remove_roles(role)
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
@@ -378,9 +375,9 @@ class admin(
                 inline=False,
             )
             await ctx.send(embed=embed)
-            await logs.send(embed=embed)
+            await logs_channel.send(embed=embed)
 
-        else:
+        elif not role in user.roles:
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name=f"Could not remove that role!",
@@ -396,8 +393,8 @@ class admin(
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def clear(self, ctx, amount: int = 10):
         extra = ""
-        if amount > 100:
-            amount = 100
+        if amount > 99:
+            amount = 99
             extra = " (only 100 messages can be deleted at the same time)"
         await ctx.channel.purge(limit=amount + 1)
         embed = nextcord.Embed(color=0x0DD91A)
@@ -416,7 +413,7 @@ class admin(
     @commands.bot_has_permissions(kick_members=True)
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def kick(self, ctx, user: nextcord.Member, *, reason="No reason provided"):
-        logs = nextcord.utils.get(ctx.guild.channels, name="logs")
+        logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
         await user.kick(reason=reason)
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
@@ -425,7 +422,7 @@ class admin(
             inline=False,
         )
         await ctx.send(embed=embed)
-        await logs.send(embed=embed)
+        await logs_channel.send(embed=embed)
 
     @commands.command(
         name="ban",
@@ -435,7 +432,7 @@ class admin(
     @commands.bot_has_permissions(ban_members=True)
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def ban(self, ctx, user: nextcord.Member, *, reason="No reason provided"):
-        logs = nextcord.utils.get(ctx.guild.channels, name="logs")
+        logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
         await user.ban(reason=reason)
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
@@ -444,7 +441,7 @@ class admin(
             inline=False,
         )
         await ctx.send(embed=embed)
-        await logs.send(embed=embed)
+        await logs_channel.send(embed=embed)
 
     @commands.command(
         name="unban",
@@ -453,20 +450,20 @@ class admin(
     )
     @commands.bot_has_permissions(ban_members=True)
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
-    async def unban(self, ctx, user, *, reason="No reason provided"):
+    async def unban(self, ctx, user: str, *, reason="No reason provided"):
         user = await commands.converter.UserConverter().convert(ctx, user)
         embed = nextcord.Embed(color=0x0DD91A)
         bans = tuple(ban_entry.user for ban_entry in await ctx.guild.bans())
         if user in bans:
-            logs = nextcord.utils.get(ctx.guild.channels, name="logs")
+            logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
             await ctx.guild.unban(user, reason=reason)
             embed.add_field(
                 name=f"User unbanned!",
                 value=f"{user.name}#{user.discriminator} has been unbanned by {ctx.author.name}#{ctx.author.discriminator} with the reason {reason}",
                 inline=False,
             )
-            await logs.send(embed=embed)
-        else:
+            await logs_channel.send(embed=embed)
+        elif not user in bans:
             embed.add_field(
                 name=f"Unbanning failed!",
                 value=f"{user.display_name} is not banned!",
@@ -490,66 +487,65 @@ class admin(
         *,
         reason="No reason provided",
     ):
-        async with ctx.typing():
+        query = {"_id": user.id}
+        if UserData.count_documents(query) == 0:
+            post = {"_id": user.id, "warns": 1}
+            UserData.insert_one(post)
+            total_warns = 0 + amount
+        else:
+            user2 = UserData.find(query)
+            warns = 0
+            try:
+                for result in user2:
+                    warns = result["warns"]
+            except KeyError:
+                pass
+            warns = warns + amount
+            UserData.update_one({"_id": user.id}, {"$set": {"warns": warns}})
+            total_warns = warns
+        embed = nextcord.Embed(color=0x0DD91A)
+        if total_warns <= 8:
+            embed.add_field(
+                name=f"{user.display_name} has been warned by {ctx.author.name}#{ctx.author.discriminator} for {reason}",
+                value=f"{user.display_name} has {10 - total_warns} warns left!",
+                inline=False,
+            )
+        if total_warns == 9:
+            embed.add_field(
+                name=f"{user.display_name} has been warned by {ctx.author.name}#{ctx.author.discriminator} for {reason}",
+                value=f"{user.display_name} has no more warns left! Next time, he shall be punished!",
+                inline=False,
+            )
+        if total_warns >= 10:
             query = {"_id": user.id}
             if UserData.count_documents(query) == 0:
-                post = {"_id": user.id, "warns": 1}
+                post = {"_id": user.id, "warns": 0}
                 UserData.insert_one(post)
-                total = 0 + amount
             else:
-                user2 = UserData.find(query)
-                warns = 0
-                try:
-                    for result in user2:
-                        warns = result["warns"]
-                except KeyError:
-                    pass
-                warns = warns + amount
-                UserData.update_one({"_id": user.id}, {"$set": {"warns": warns}})
-                total = warns
-            embed = nextcord.Embed(color=0x0DD91A)
-            if total <= 8:
+                UserData.update_one({"_id": user.id}, {"$set": {"warns": 0}})
+            embed.add_field(
+                name=f"{user.display_name} exceeded the warn limit!",
+                value=f"He shall be punished with a 10 minute mute!",
+                inline=False,
+            )
+            await ctx.send(embed=embed)
+            muted_role = nextcord.utils.get(ctx.guild.roles, name="Muted")
+            if not muted_role in user.roles:
+                logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
+                await user.add_roles(muted_role)
+                embed = nextcord.Embed(color=0x0DD91A)
                 embed.add_field(
-                    name=f"{user.display_name} has been warned by {ctx.author.name}#{ctx.author.discriminator} for {reason}",
-                    value=f"{user.display_name} has {10 - total} warns left!",
+                    name=f"User muted!",
+                    value=f"{user.display_name} was muted for 10 minutes by Warn System",
                     inline=False,
                 )
-            if total == 9:
-                embed.add_field(
-                    name=f"{user.display_name} has been warned by {ctx.author.name}#{ctx.author.discriminator} for {reason}",
-                    value=f"{user.display_name} has no more warns left! Next time, he shall be punished!",
-                    inline=False,
+                await logs_channel.send(embed=embed)
+                await asyncio.sleep(600)
+                await user.remove_roles(muted_role)
+                embed = nextcord.Embed(
+                    color=0x0DD91A, title=f"{user.display_name} is now unmuted!"
                 )
-            if total >= 10:
-                query = {"_id": user.id}
-                if UserData.count_documents(query) == 0:
-                    post = {"_id": user.id, "warns": 0}
-                    UserData.insert_one(post)
-                else:
-                    UserData.update_one({"_id": user.id}, {"$set": {"warns": 0}})
-                embed.add_field(
-                    name=f"{user.display_name} exceeded the warn limit!",
-                    value=f"He shall be punished with a 10 minute mute!",
-                    inline=False,
-                )
-                await ctx.send(embed=embed)
-                muted = nextcord.utils.get(ctx.guild.roles, name="Muted")
-                if not muted in user.roles:
-                    logs = nextcord.utils.get(ctx.guild.channels, name="logs")
-                    await user.add_roles(muted)
-                    embed = nextcord.Embed(color=0x0DD91A)
-                    embed.add_field(
-                        name=f"User muted!",
-                        value=f"{user.display_name} was muted for 10 minutes by Warn System",
-                        inline=False,
-                    )
-                    await logs.send(embed=embed)
-                    await asyncio.sleep(600)
-                    await user.remove_roles(muted)
-                    embed = nextcord.Embed(
-                        color=0x0DD91A, title=f"{user.display_name} is now unmuted!"
-                    )
-                    await logs.send(embed=embed)
+                await logs_channel.send(embed=embed)
         await ctx.send(embed=embed)
 
     @warn.command(
@@ -566,30 +562,29 @@ class admin(
         *,
         reason="No reason provided",
     ):
-        async with ctx.typing():
-            query = {"_id": user.id}
-            if UserData.count_documents(query) == 0:
-                post = {"_id": user.id, "warns": 0}
-                UserData.insert_one(post)
-            else:
-                user2 = UserData.find(query)
-                try:
-                    for result in user2:
-                        warns = result["warns"]
-                except KeyError:
-                    pass
-                warns2 = warns
-                warns = warns - amount
-                if warns < 0:
-                    warns = 0
-                    amount = 0 + warns2
-                UserData.update_one({"_id": user.id}, {"$set": {"warns": warns}})
-            embed = nextcord.Embed(color=0x0DD91A)
-            embed.add_field(
-                name=f"{user.display_name} now has {amount} warn(s) less because {reason}!",
-                value=f"{user.display_name} now has a total of {warns} warn(s)!",
-                inline=False,
-            )
+        query = {"_id": user.id}
+        if UserData.count_documents(query) == 0:
+            post = {"_id": user.id, "warns": 0}
+            UserData.insert_one(post)
+        else:
+            user2 = UserData.find(query)
+            try:
+                for result in user2:
+                    warns = result["warns"]
+            except KeyError:
+                pass
+            warns2 = warns
+            warns = warns - amount
+            if warns < 0:
+                warns = 0
+                amount = 0 + warns2
+            UserData.update_one({"_id": user.id}, {"$set": {"warns": warns}})
+        embed = nextcord.Embed(color=0x0DD91A)
+        embed.add_field(
+            name=f"{user.display_name} now has {amount} warn(s) less because {reason}!",
+            value=f"{user.display_name} now has a total of {warns} warn(s)!",
+            inline=False,
+        )
         await ctx.send(embed=embed)
 
     @warn.command(
@@ -599,44 +594,40 @@ class admin(
     )
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def list_warn(self, ctx):
-        async with ctx.typing():
-            embed = nextcord.Embed(color=0x0DD91A)
-            indexes = UserData.find()
-            for k in indexes:
-                try:
-                    user = self.bot.get_user(int(k["_id"]))
-                    warns = k["warns"]
-                    if not warns == 0:
-                        embed.add_field(
-                            name=f"{user} has",
-                            value=f"{warns} warns",
-                            inline=False,
-                        )
-                except KeyError:
-                    pass
-        try:
-            await ctx.send(embed=embed)
-        except HTTPException:
+        embed = nextcord.Embed(color=0x0DD91A)
+        documents = UserData.find()
+        for k in documents:
+            try:
+                user = self.bot.get_user(int(k["_id"]))
+                warns = k["warns"]
+                if not warns == 0:
+                    embed.add_field(
+                        name=f"{user} has",
+                        value=f"{warns} warns",
+                        inline=False,
+                    )
+            except KeyError:
+                pass
+        if embed.fields == 0:
             embed = nextcord.Embed(color=0x0DD91A, title=f"Nobody has warns!")
-            await ctx.send(embed=embed)
+        await ctx.send(embed=embed)
 
     @warn.command(
         name="get", description="Gets your warn points", brief="Gets your warn points"
     )
     async def get_warn(self, ctx):
-        async with ctx.typing():
-            for k in UserData.find({"_id": ctx.author.id}):
-                try:
-                    warns = k["warns"]
-                    embed = nextcord.Embed(
-                        color=0x0DD91A,
-                        title=f"You ({ctx.author.display_name}) have {warns} warn(s)!",
-                    )
-                except KeyError:
-                    embed = nextcord.Embed(
-                        color=0x0DD91A,
-                        title=f"You ({ctx.author.display_name}) have 0 warns!",
-                    )
+        for k in UserData.find({"_id": ctx.author.id}):
+            try:
+                warns = k["warns"]
+                embed = nextcord.Embed(
+                    color=0x0DD91A,
+                    title=f"You ({ctx.author.display_name}) have {warns} warn(s)!",
+                )
+            except KeyError:
+                embed = nextcord.Embed(
+                    color=0x0DD91A,
+                    title=f"You ({ctx.author.display_name}) have 0 warns!",
+                )
         await ctx.send(embed=embed)
 
     @commands.group(
@@ -655,9 +646,10 @@ class admin(
             forbidden_words2 = (
                 f"{forbidden_words2} \n> {k} (index number {forbidden_words.index(k)})"
             )
+
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
-            name=f"These are the forbidden words",
+            name=f"The foridden words are the following:",
             value=forbidden_words2,
             inline=False,
         )
@@ -668,8 +660,8 @@ class admin(
     )
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def add_forbiddenwords(self, ctx, *, word: str):
-        forbidden_words = BotData.find()
-        for k in forbidden_words:
+        documents = BotData.find()
+        for k in documents:
             forbidden_words = k["forbidden_words"]
             forbidden_words.append(word)
             BotData.update_one(
@@ -687,8 +679,8 @@ class admin(
     )
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def remove_forbiddenwords(self, ctx, *, index: int):
-        forbidden_words = BotData.find()
-        for k in forbidden_words:
+        documents = BotData.find()
+        for k in documents:
             forbidden_words = k["forbidden_words"]
             word = forbidden_words[index]
             forbidden_words.remove(forbidden_words[index])

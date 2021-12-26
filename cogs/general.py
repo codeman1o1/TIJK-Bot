@@ -3,7 +3,6 @@ from nextcord.ext import commands
 import os
 from dotenv import load_dotenv
 from pymongo import MongoClient
-import pymongo
 import random
 import datetime
 
@@ -46,32 +45,33 @@ class general(
         name="hypixelparty",
         description="Chooses randomly a player that can own the party",
         brief="Chooses randomly a player that can own the party",
-        aliases=["hypixelp", "hpparty", "hpp"],
+        aliases=["hpp"],
     )
     async def hypixelparty(self, ctx):
-        hping = nextcord.utils.get(ctx.guild.roles, name="Hypixel Ping")
-        hpon = [
+        await ctx.channel.purge(limit=1)
+        hypixel_ping = nextcord.utils.get(ctx.guild.roles, name="Hypixel Ping")
+        available = [
             str(user.name) + "#" + str(user.discriminator)
             for user in ctx.guild.members
             if not user.bot
             if user.status != nextcord.Status.offline
-            if hping in user.roles
+            if hypixel_ping in user.roles
         ]
-        if not len(hpon) == 0:
+        if not len(available) == 0:
             embed = nextcord.Embed(color=0x0DD91A)
-            randomInt = random.randint(0, len(hpon) - 1)
+            randomInt = random.randint(0, len(available) - 1)
             embed.add_field(
                 name=f"Party leader chosen!",
-                value=f"{hpon[randomInt]} will be the party leader!",
+                value=f"{available[randomInt]} will be the party leader!",
                 inline=False,
             )
-        else:
+        elif len(available) == 0:
             embed = nextcord.Embed(
                 color=0x0DD91A,
                 title=f"Nobody meets the requirements to be the party leader!",
             )
         await ctx.send(embed=embed, delete_after=300)
-        hpon.clear()
+        available.clear()
 
     @commands.group(
         name="admin",
@@ -81,10 +81,10 @@ class general(
     )
     @commands.cooldown(1, 120, commands.BucketType.user)
     async def admin(self, ctx, admin: nextcord.Member, *, message):
-        ownerR = nextcord.utils.get(ctx.guild.roles, name="Owner")
-        adminR = nextcord.utils.get(ctx.guild.roles, name="Admin")
-        roles = (ownerR, adminR)
-        if any(roles in admin.roles for roles in roles):
+        owner_role = nextcord.utils.get(ctx.guild.roles, name="Owner")
+        admin_role = nextcord.utils.get(ctx.guild.roles, name="Admin")
+        admin_roles = (owner_role, admin_role)
+        if any(roles in admin.roles for roles in admin_roles):
             if admin == ctx.author:
                 embed = nextcord.Embed(color=0x0DD91A)
                 embed.add_field(
@@ -93,7 +93,7 @@ class general(
                     inline=False,
                 )
                 await ctx.send(embed=embed)
-            else:
+            elif not admin == ctx.author:
                 embed = nextcord.Embed(color=0x0DD91A)
                 embed.add_field(
                     name=f"Someone needs your help!",
@@ -109,11 +109,9 @@ class general(
                 )
                 await ctx.send(embed=embed)
         else:
-            embed = nextcord.Embed(color=0x0DD91A)
-            embed.add_field(
-                name=f"That is not an admin!",
-                value=f"{admin.display_name} is not an admin!",
-                inline=False,
+            embed = nextcord.Embed(
+                color=0x0DD91A,
+                title=f"{admin.display_name} is not an admin!",
             )
             await ctx.send(embed=embed)
 
@@ -124,10 +122,10 @@ class general(
     )
     @commands.cooldown(1, 300, commands.BucketType.user)
     async def urgent_admin(self, ctx, admin: nextcord.Member, *, message: str):
-        ownerR = nextcord.utils.get(ctx.guild.roles, name="Owner")
-        adminR = nextcord.utils.get(ctx.guild.roles, name="Admin")
-        roles = (ownerR, adminR)
-        if any(roles in admin.roles for roles in roles):
+        owner_role = nextcord.utils.get(ctx.guild.roles, name="Owner")
+        admin_role = nextcord.utils.get(ctx.guild.roles, name="Admin")
+        admin_roles = (owner_role, admin_role)
+        if any(roles in admin.roles for roles in admin_roles):
             if admin == ctx.author:
                 embed = nextcord.Embed(color=0x0DD91A)
                 embed.add_field(
@@ -136,15 +134,14 @@ class general(
                     inline=False,
                 )
                 await ctx.send(embed=embed)
-            else:
+            elif not admin == ctx.author:
                 embed = nextcord.Embed(color=0x0DD91A)
                 embed.add_field(
                     name=f"Someone needs your urgent help!",
                     value=f"{ctx.author} needs your help with {message}",
                     inline=False,
                 )
-                await admin.send(admin.mention)
-                await admin.send(embed=embed)
+                await admin.send(f"{admin.mention}", embed=embed)
                 embed = nextcord.Embed(color=0x0DD91A)
                 embed.add_field(
                     name=f"Asked for urgent help!",
@@ -153,11 +150,9 @@ class general(
                 )
                 await ctx.send(embed=embed)
         else:
-            embed = nextcord.Embed(color=0x0DD91A)
-            embed.add_field(
-                name=f"That is not an admin!",
-                value=f"{admin.display_name} is not an admin!",
-                inline=False,
+            embed = nextcord.Embed(
+                color=0x0DD91A,
+                title=f"{admin.display_name} is not an admin!",
             )
             await ctx.send(embed=embed)
 
@@ -173,25 +168,25 @@ class general(
         embed = nextcord.Embed(color=0x0DD91A)
         indexes = UserData.find()
         today = datetime.date.today()
+        year = today.year
         for k in indexes:
             try:
                 user = self.bot.get_user(int(k["_id"]))
                 birthday = k["birthday"]
                 birthday2 = birthday.split("-")
-                year = today.year
                 date = datetime.date(year, int(birthday2[1]), int(birthday2[0]))
                 diff = date - today
                 while diff.days < 0:
                     year += 1
                     date = datetime.date(year, int(birthday2[1]), int(birthday2[0]))
                     diff = date - today
-                birthdaysDict = {
+                birthdays_dictionary = {
                     "userName": user.name,
                     "birthday": birthday,
                     "year": year,
                     "daysLeft": diff.days,
                 }
-                birthdays.append(birthdaysDict.copy())
+                birthdays.append(birthdays_dictionary.copy())
             except KeyError:
                 pass
         birthdays = sorted(birthdays, key=lambda i: i["daysLeft"])
@@ -205,11 +200,9 @@ class general(
                 value=f"{birthday}-{year} ({daysLeft} days left)",
                 inline=False,
             )
-        try:
-            await ctx.send(embed=embed)
-        except nextcord.errors.HTTPException:
+        if embed.fields == 0:
             embed = nextcord.Embed(color=0x0DD91A, title=f"No-one has a birthday set!")
-            await ctx.send(embed=embed)
+        await ctx.send(embed=embed)
 
     @birthday.command(
         name="set", description="Sets your birthday", brief="Sets your birthday"

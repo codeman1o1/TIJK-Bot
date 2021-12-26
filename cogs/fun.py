@@ -51,77 +51,51 @@ class fun(
         aliases=["rps"],
     )
     async def rockpaperscissors(self, ctx, choice):
+        embed = nextcord.Embed(color=0x0DD91A)
         choice = choice.lower()
         if choice == "scissor":
             choice = "scissors"
-        rpsChoices = ("rock", "paper", "scissors")
-        if choice.lower() in rpsChoices:
-            rps = random.randint(0, 2)
-            if rps == 0:
-                rps = "rock"
-            if rps == 1:
-                rps = "paper"
-            if rps == 2:
-                rps = "scissors"
+        rock_paper_scissors_choices = ("rock", "paper", "scissors")
+        if choice in rock_paper_scissors_choices:
+            random_number = random.randint(0, 2)
+            if random_number == 0:
+                random_number = "rock"
+            if random_number == 1:
+                random_number = "paper"
+            if random_number == 2:
+                random_number = "scissors"
             if choice == "rock":
-                if rps == "rock":
-                    wl = "it is a tie"
-                if rps == "paper":
-                    wl = "I win"
-                if rps == "scissors":
-                    wl = "you win"
+                if random_number == "rock":
+                    win_lose_or_tie = "it is a tie"
+                if random_number == "paper":
+                    win_lose_or_tie = "I win"
+                if random_number == "scissors":
+                    win_lose_or_tie = "you win"
             if choice == "paper":
-                if rps == "rock":
-                    wl = "you win"
-                if rps == "paper":
-                    wl = "it is a tie"
-                if rps == "scissors":
-                    wl = "I win"
+                if random_number == "rock":
+                    win_lose_or_tie = "you win"
+                if random_number == "paper":
+                    win_lose_or_tie = "it is a tie"
+                if random_number == "scissors":
+                    win_lose_or_tie = "I win"
             if choice == "scissors":
-                if rps == "rock":
-                    wl = "I win"
-                if rps == "paper":
-                    wl = "you win"
-                if rps == "scissors":
-                    wl = "it is a tie"
-            embed = nextcord.Embed(color=0x0DD91A)
+                if random_number == "rock":
+                    win_lose_or_tie = "I win"
+                if random_number == "paper":
+                    win_lose_or_tie = "you win"
+                if random_number == "scissors":
+                    win_lose_or_tie = "it is a tie"
             embed.add_field(
-                name=f"You had {choice} and I had {rps}",
-                value=f"That means that {wl}!",
+                name=f"You had {choice} and I had {random_number}",
+                value=f"That means that {win_lose_or_tie}!",
                 inline=False,
             )
-            await ctx.send(embed=embed)
-        else:
-            embed = nextcord.Embed(color=0x0DD91A)
+        elif not choice in rock_paper_scissors_choices:
             embed.add_field(
                 name=f"{choice} is not a valid option!",
                 value=f"You can choose between\n> Rock\n> Paper\n> Scissor(s)",
                 inline=False,
             )
-            await ctx.send(embed=embed)
-
-    @commands.command(name="glinko", description="Glinko", brief="Glinko")
-    async def glinko(self, ctx):
-        embed = nextcord.Embed(color=0x0DD91A, title="Glanko")
-        await ctx.send(embed=embed)
-
-    @commands.command(name="glanko", description="Glanko", brief="Glanko")
-    async def glanko(self, ctx):
-        embed = nextcord.Embed(color=0x0DD91A, title="Glinko")
-        await ctx.send(embed=embed)
-
-    @commands.command(
-        name="GlinkoGlanko", description="GlinkoGlanko", brief="GlinkoGlanko"
-    )
-    async def glinkoglanko(self, ctx):
-        embed = nextcord.Embed(color=0x0DD91A, title="GlankoGlinko")
-        await ctx.send(embed=embed)
-
-    @commands.command(
-        name="GlankoGlinko", description="GlankoGlinko", brief="GlankoGlinko"
-    )
-    async def glankoglinko(self, ctx):
-        embed = nextcord.Embed(color=0x0DD91A, title="GlinkoGlanko")
         await ctx.send(embed=embed)
 
     @commands.command(
@@ -129,8 +103,8 @@ class fun(
         description="Hack someone (totally real)",
         brief="Hack someone (totally real)",
     )
-    async def hack(self, ctx, user: nextcord.Member):
-        msg = await ctx.send(f"`Hacking {user.name}#{user.discriminator}...`")
+    async def hack(self, ctx, user):
+        msg = await ctx.send(f"`Hacking {user}`")
         delay = round(random.uniform(2, 5), 2)
         await asyncio.sleep(delay)
         await msg.edit(content=f"`Getting IP-addres...\n10% done`")
@@ -164,11 +138,9 @@ class fun(
         await msg.edit(
             content=f"`Deletion complete, Windows was removed...\n100% done`"
         )
-        delay = round(random.uniform(2, 5), 2)
+        delay = round(random.uniform(1, 2), 2)
         await asyncio.sleep(delay)
-        await msg.edit(
-            content=f"`{user.name}#{user.discriminator} has been totally legitimately hacked.`"
-        )
+        await msg.edit(content=f"`{user} has been totally legitimately hacked.`")
 
     @commands.command(
         name="messages",
@@ -177,27 +149,24 @@ class fun(
         aliases=["msg"],
     )
     async def messages(self, ctx):
-        async with ctx.typing():
-            embed = nextcord.Embed(color=0x0DD91A)
-            indexes = UserData.find().sort("messages", pymongo.DESCENDING)
-            for k in indexes:
-                try:
-                    user = self.bot.get_user(int(k["_id"]))
-                    message = k["messages"]
-                    embed.add_field(
-                        name=f"{user} has sent",
-                        value=f"{message} messages",
-                        inline=False,
-                    )
-                except KeyError:
-                    pass
-        try:
-            await ctx.send(embed=embed)
-        except nextcord.errors.HTTPException:
+        embed = nextcord.Embed(color=0x0DD91A)
+        indexes = UserData.find().sort("messages", pymongo.DESCENDING)
+        for k in indexes:
+            try:
+                user = self.bot.get_user(int(k["_id"]))
+                message = k["messages"]
+                embed.add_field(
+                    name=f"{user} has sent",
+                    value=f"{message} messages",
+                    inline=False,
+                )
+            except KeyError:
+                pass
+        if embed.fields == 0:
             embed = nextcord.Embed(
                 color=0x0DD91A, title=f"Nobody has sent any messages!"
             )
-            await ctx.send(embed=embed)
+        await ctx.send(embed=embed)
 
 
 def setup(bot: commands.Bot):
