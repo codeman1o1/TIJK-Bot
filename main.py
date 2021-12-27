@@ -127,7 +127,7 @@ async def load_cog(ctx, cog: str = None):
             cog = cog.strip(".py")
             bot.load_extension(f"cogs.{cog}")
         embed = nextcord.Embed(color=0x0DD91A, title=f"All cogs have been loaded!")
-        await ctx.send(embed=embed)
+        bl.debug(f"All cogs have been loaded!", __file__)
     else:
         if cog.lower() == "dev":
             cog = "developer"
@@ -135,7 +135,8 @@ async def load_cog(ctx, cog: str = None):
         embed = nextcord.Embed(
             color=0x0DD91A, title=f"Succesfully loaded {cog.lower()}.py"
         )
-        await ctx.send(embed=embed)
+        bl.debug(f"Succesfully loaded {cog.lower()}.py", __file__)
+    await ctx.send(embed=embed)
 
 
 @bot.command(
@@ -170,6 +171,7 @@ async def reload_cog(ctx, cog: str = None):
             cog = cog.strip(".py")
             bot.reload_extension(f"cogs.{cog}")
         embed = nextcord.Embed(color=0x0DD91A, title=f"All cogs have been reloaded!")
+        bl.debug(f"All cogs have been reloaded!", __file__)
     else:
         if cog.lower() == "dev":
             cog = "developer"
@@ -177,6 +179,7 @@ async def reload_cog(ctx, cog: str = None):
         embed = nextcord.Embed(
             color=0x0DD91A, title=f"Succesfully reloaded {cog.lower()}.py"
         )
+        bl.debug(f"Succesfully reloaded {cog.lower()}.py", __file__)
     await ctx.send(embed=embed)
 
 
@@ -207,13 +210,13 @@ async def unload_cog(ctx, cog: str = None):
         cogs = os.listdir("cogs")
         try:
             cogs.remove("__pycache__")
-            cogs.remove("role_view.py")
         except ValueError:
             pass
         for cog in cogs:
             cog = cog.strip(".py")
             bot.unload_extension(f"cogs.{cog}")
         embed = nextcord.Embed(color=0x0DD91A, title=f"All cogs have been unloaded!")
+        bl.debug(f"All cogs have been unloaded!", __file__)
     else:
         if cog.lower() == "dev":
             cog = "developer"
@@ -221,6 +224,7 @@ async def unload_cog(ctx, cog: str = None):
         embed = nextcord.Embed(
             color=0x0DD91A, title=f"Succesfully unloaded {cog.lower()}.py!"
         )
+        bl.debug(f"Succesfully unloaded {cog.lower()}.py!", __file__)
     await ctx.send(embed=embed)
 
 
@@ -244,6 +248,7 @@ async def enable_command(ctx, *, command: str):
             color=0x0DD91A,
             title=f"The .{command.qualified_name} command is now enabled!",
         )
+        bl.debug(f"The .{command.qualified_name} command is now enabled!", __file__)
     elif command.enabled:
         embed = nextcord.Embed(
             color=0x0DD91A,
@@ -283,12 +288,15 @@ async def disable_command(ctx, *, command: str):
                 color=0x0DD91A,
                 title=f"The .{command.qualified_name} command is now disabled!",
             )
+            bl.debug(
+                f"The .{command.qualified_name} command is now disabled!", __file__
+            )
         else:
             embed = nextcord.Embed(
                 color=0x0DD91A,
                 title=f"The .{command.qualified_name} command is already disabled!",
             )
-    if command in disable_prevention:
+    elif command in disable_prevention:
         embed = nextcord.Embed(color=0x0DD91A, title="Root commands can't be disabled!")
     await ctx.send(embed=embed)
 
