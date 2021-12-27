@@ -132,6 +132,8 @@ async def load_cog(ctx, cog: str = None):
         else:
             if cog.lower() == "dev":
                 cog = "developer"
+            if cog.lower() == "eh":
+                cog = "event_handler"
             bot.load_extension(f"cogs.{cog.lower()}")
             embed = nextcord.Embed(
                 color=0x0DD91A, title=f"Succesfully loaded {cog.lower()}.py"
@@ -181,6 +183,8 @@ async def reload_cog(ctx, cog: str = None):
         else:
             if cog.lower() == "dev":
                 cog = "developer"
+            if cog.lower() == "eh":
+                cog = "event_handler"
             bot.reload_extension(f"cogs.{cog.lower()}")
             embed = nextcord.Embed(
                 color=0x0DD91A, title=f"Succesfully reloaded {cog.lower()}.py"
@@ -231,6 +235,8 @@ async def unload_cog(ctx, cog: str = None):
         else:
             if cog.lower() == "dev":
                 cog = "developer"
+            if cog.lower() == "eh":
+                cog = "event_handler"
             bot.unload_extension(f"cogs.{cog.lower()}")
             embed = nextcord.Embed(
                 color=0x0DD91A, title=f"Succesfully unloaded {cog.lower()}.py!"
