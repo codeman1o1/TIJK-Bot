@@ -41,7 +41,7 @@ bot = commands.Bot(
 @bot.event
 async def on_ready():
     bl.info(f"Logged in as {bot.user.name}#{bot.user.discriminator}", __file__)
-    with open("spam_detect.txt", "r+") as file:
+    with open("spam_detect.txt", "a+") as file:
         file.truncate(0)
     cogs = os.listdir("cogs")
     try:
