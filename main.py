@@ -33,7 +33,7 @@ bot = commands.Bot(
     help_command=PrettyHelp(
         color=0x0DD91A,
         no_category="Root",
-        ending_note="Type .help command for more info on a command.\nIf you need help with any of our bots please type\n- !help for MEE6\n- pls help for Dank Memer\n- s!help for Statisfy\n- ,help for Hydra",
+        ending_note="Type .help <command> for more info on a command\nType .help <category> for more info on a category\nIf you need help with any of our bots please type\n- !help for MEE6\n- pls help for Dank Memer\n- s!help for Statisfy\n- ,help for Hydra",
     ),
 )
 
