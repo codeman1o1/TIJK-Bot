@@ -86,7 +86,7 @@ async def birthday_checker():
             member = bot.get_user(member)
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
-                name=f"Happy birthday {member.name}!",
+                name=f"Happy birthday {member.name} :tada:",
                 value=f"We hope you will have a great day!",
                 inline=False,
             )
