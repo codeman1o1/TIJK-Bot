@@ -1,6 +1,6 @@
 import nextcord
 from nextcord.ext import commands
-from nextcord import ButtonStyle
+from views.github_button import github_button
 import os
 from dotenv import load_dotenv
 from pymongo import MongoClient
@@ -17,18 +17,6 @@ cluster = MongoClient(f"mongodb+srv://{MongoUsername}:{MongoPassword}@{MongoWebs
 Data = cluster["Data"]
 UserData = Data["UserData"]
 BotData = Data["BotData"]
-
-
-class general_buttons(nextcord.ui.View):
-    def __init__(self):
-        super().__init__()
-        self.add_item(
-            nextcord.ui.Button(
-                label="Open in browser",
-                url="https://github.com/codeman1o1/TIJK-Bot",
-                style=ButtonStyle.url,
-            )
-        )
 
 
 class general(
@@ -52,7 +40,7 @@ class general(
             value=f"https://github.com/codeman1o1/TIJK-Bot",
             inline=False,
         )
-        await ctx.send(embed=embed, view=general_buttons())
+        await ctx.send(embed=embed, view=github_button())
 
     @commands.command(
         name="hypixelparty",
