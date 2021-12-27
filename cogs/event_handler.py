@@ -498,13 +498,16 @@ class event_handler(
         if any(
             key.lower() in message.content.lower() for key in reaction_messages_keys
         ):
-            index = reaction_messages_keys.index(message.content.lower())
-            corresponding_message = str(reaction_messages_values[index])
-            if "{user}" in corresponding_message:
-                corresponding_message = corresponding_message.replace(
-                    "{user}", message.author.display_name
-                )
-            await message.channel.send(corresponding_message)
+            try:
+                index = reaction_messages_keys.index(message.content.lower())
+                corresponding_message = str(reaction_messages_values[index])
+                if "{user}" in corresponding_message:
+                    corresponding_message = corresponding_message.replace(
+                        "{user}", message.author.display_name
+                    )
+                await message.channel.send(corresponding_message)
+            except ValueError:
+                pass
 
         with open("spam_detect.txt", "r+") as file:
             if not message.author.bot:
