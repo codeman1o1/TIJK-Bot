@@ -1,5 +1,7 @@
 import os
 
+os.system("color")
+
 
 def info(msg, name):
     print(f"\u001b[34m[INFO]\u001b[0m {msg} ({os.path.basename(name)})")
