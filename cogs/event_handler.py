@@ -2,6 +2,7 @@ import nextcord
 from nextcord.ext import commands
 from dotenv import load_dotenv
 from pymongo import MongoClient
+import json
 import basic_logger as bl
 import os
 import asyncio
@@ -128,6 +129,10 @@ class event_handler(
         counter = 0
         for k in BotData.find():
             forbidden_word_list = k["forbidden_words"]
+            reaction_messages = k["reactionmessages"]
+            reaction_messages = dict(json.loads(reaction_messages))
+            reaction_messages_keys = list(reaction_messages.keys())
+            reaction_messages_values = list(reaction_messages.values())
 
         filtered_message = await event_handler.message_filter(message)
 
@@ -490,14 +495,16 @@ class event_handler(
                     f"Tried to delete message but message was not found", __file__
                 )
 
-        if filtered_message == "banaan" or filtered_message == "banana":
-            await message.channel.send(
-                "https://i5.walmartimages.com/asr/209bb8a0-30ab-46be-b38d-58c2feb93e4a_1.1a15fb5bcbecbadd4a45822a11bf6257.jpeg"
-            )
-        if filtered_message == "bananen" or filtered_message == "bananas":
-            await message.channel.send(
-                "https://static.libertyprim.com/files/familles/banane-large.jpg?1569271725"
-            )
+        if any(
+            key.lower() in message.content.lower() for key in reaction_messages_keys
+        ):
+            index = reaction_messages_keys.index(message.content.lower())
+            corresponding_message = str(reaction_messages_values[index])
+            if "{user}" in corresponding_message:
+                corresponding_message = corresponding_message.replace(
+                    "{user}", message.author.display_name
+                )
+            await message.channel.send(corresponding_message)
 
         with open("spam_detect.txt", "r+") as file:
             if not message.author.bot:
