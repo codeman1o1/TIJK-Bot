@@ -880,7 +880,6 @@ class event_handler(
                             )
                     except nextcord.Forbidden:
                         bl.error(f"Couldn't change nickname", __file__)
-            admin_names.clear()
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
