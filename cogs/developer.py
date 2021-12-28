@@ -179,6 +179,7 @@ class developer(
         await ctx.send(embed=embed)
 
     @reactionmessages.command(name="add", description="", brief="")
+    @commands.is_owner()
     async def add_reactionmessages(self, ctx, message: str, reaction: str):
         message = message.lower()
         new_dictionary = {message: reaction}
@@ -200,6 +201,7 @@ class developer(
         await ctx.send(embed=embed)
 
     @reactionmessages.command(name="remove", description="", brief="")
+    @commands.is_owner()
     async def remove_reactionmessages(self, ctx, message: str):
         try:
             message = message.lower()
