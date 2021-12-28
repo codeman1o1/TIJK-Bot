@@ -259,16 +259,15 @@ class admin(
             )
         await ctx.send(embed=embed)
 
-    @commands.group(
+    @commands.command(
         name="timeout",
-        description="Time-outs an user",
-        brief="Time-outs an user",
-        invoke_without_command=True,
+        description="Mute a user",
+        brief="Mutes a user",
         aliases=["to"],
     )
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     @commands.bot_has_permissions(moderate_members=True)
-    async def timeout(
+    async def mute(
         self, ctx, user: nextcord.Member, time, *, reason="No reason provided"
     ):
         time = humanfriendly.parse_timespan(time)
@@ -277,27 +276,25 @@ class admin(
         )
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
-            name=f"User timed out!",
-            value=f"{user.display_name} was timed out by {ctx.author.name}#{ctx.author.discriminator} because of {reason}",
+            name=f"User muted!",
+            value=f"{user.display_name} was muted by {ctx.author.name}#{ctx.author.discriminator} because of {reason}",
             inline=False,
         )
         await ctx.send(embed=embed)
 
-    @timeout.command(
-        name="remove",
-        description="Removes the time-out of an user",
-        brief="Removes the time-out of an user",
+    @commands.command(
+        name="unmute",
+        description="Unmutes a user",
+        brief="Unmutes a user",
     )
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     @commands.bot_has_permissions(moderate_members=True)
-    async def remove_timeout(
-        self, ctx, user: nextcord.Member, *, reason="No reason provided"
-    ):
+    async def unmute(self, ctx, user: nextcord.Member, *, reason="No reason provided"):
         await user.edit(timeout=None)
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
-            name=f"Time-out removed!",
-            value=f"{user.display_name} time-out was removed by {ctx.author.name}#{ctx.author.discriminator} because of {reason}",
+            name=f"User unmuted!",
+            value=f"{user.display_name} was unmuted by {ctx.author.name}#{ctx.author.discriminator} because of {reason}",
             inline=False,
         )
         await ctx.send(embed=embed)
