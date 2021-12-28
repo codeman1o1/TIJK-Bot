@@ -4,7 +4,6 @@ from views.button_roles import RoleView
 from dotenv import load_dotenv
 from pymongo import MongoClient
 import basic_logger as bl
-import asyncio
 import os
 import datetime
 import humanfriendly

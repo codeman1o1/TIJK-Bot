@@ -6,7 +6,6 @@ from pymongo import MongoClient
 import json
 import basic_logger as bl
 import os
-import asyncio
 
 load_dotenv(os.path.join(os.getcwd() + "\.env"))
 
