@@ -4,6 +4,7 @@ from views.button_roles import RoleView
 from dotenv import load_dotenv
 from pymongo import MongoClient
 import basic_logger as bl
+from cogs import event_handler
 import os
 import datetime
 import humanfriendly
@@ -193,64 +194,12 @@ class admin(
             )
             embed.set_footer(text="You also received 1 warn!")
             await ctx.send(embed=embed)
-            query = {"_id": user.id}
-            if UserData.count_documents(query) == 0:
-                post = {"_id": user.id, "warns": 1}
-                UserData.insert_one(post)
-                total_warns = 1
-            else:
-                user2 = UserData.find(query)
-                warns = 0
-                try:
-                    for result in user2:
-                        warns = result["warns"]
-                except KeyError:
-                    pass
-                warns = warns + 1
-                UserData.update_one({"_id": user.id}, {"$set": {"warns": warns}})
-                total_warns = warns
-            embed = nextcord.Embed(color=0x0DD91A)
-            if total_warns <= 8:
-                embed.add_field(
-                    name=f"{user.display_name} has been warned by Warn System",
-                    value=f"{user.display_name} has {10 - total_warns} warns left!",
-                    inline=False,
-                )
-            if total_warns == 9:
-                embed.add_field(
-                    name=f"{user.display_name} has been warned by Warn System",
-                    value=f"{user.display_name} has no more warns left! Next time, he shall be punished!",
-                    inline=False,
-                )
-            if total_warns >= 10:
-                query = {"_id": user.id}
-                if UserData.count_documents(query) == 0:
-                    post = {"_id": user.id, "warns": 0}
-                    UserData.insert_one(post)
-                else:
-                    UserData.update_one({"_id": user.id}, {"$set": {"warns": 0}})
-                embed.add_field(
-                    name=f"{user.display_name} exceeded the warn limit!",
-                    value=f"He shall be punished with a 10 minute mute!",
-                    inline=False,
-                )
-                await ctx.send(embed=embed)
-                await ctx.author.edit(
-                    timeout=nextcord.utils.utcnow() + datetime.timedelta(seconds=600)
-                )
-                logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
-                embed = nextcord.Embed(color=0x0DD91A)
-                embed.add_field(
-                    name=f"User muted!",
-                    value=f"{user.display_name} was muted for 10 minutes by Warn System",
-                    inline=False,
-                )
-                await logs_channel.send(embed=embed)
+            await event_handler.event_handler.warn_system(ctx, user)
         except IndexError:
             embed = nextcord.Embed(
                 color=0xFF0000, title=f"{rule_number} is not a valid rule number!"
             )
-        await ctx.send(embed=embed)
+            await ctx.send(embed=embed)
 
     @commands.command(
         name="timeout",
@@ -472,63 +421,8 @@ class admin(
         ctx,
         user: nextcord.Member,
         amount: int = 1,
-        *,
-        reason="No reason provided",
     ):
-        query = {"_id": user.id}
-        if UserData.count_documents(query) == 0:
-            post = {"_id": user.id, "warns": 1}
-            UserData.insert_one(post)
-            total_warns = 0 + amount
-        else:
-            user2 = UserData.find(query)
-            warns = 0
-            try:
-                for result in user2:
-                    warns = result["warns"]
-            except KeyError:
-                pass
-            warns = warns + amount
-            UserData.update_one({"_id": user.id}, {"$set": {"warns": warns}})
-            total_warns = warns
-        embed = nextcord.Embed(color=0x0DD91A)
-        if total_warns <= 8:
-            embed.add_field(
-                name=f"{user.display_name} has been warned by {ctx.author.name}#{ctx.author.discriminator} for {reason}",
-                value=f"{user.display_name} has {10 - total_warns} warns left!",
-                inline=False,
-            )
-        if total_warns == 9:
-            embed.add_field(
-                name=f"{user.display_name} has been warned by {ctx.author.name}#{ctx.author.discriminator} for {reason}",
-                value=f"{user.display_name} has no more warns left! Next time, he shall be punished!",
-                inline=False,
-            )
-        if total_warns >= 10:
-            query = {"_id": user.id}
-            if UserData.count_documents(query) == 0:
-                post = {"_id": user.id, "warns": 0}
-                UserData.insert_one(post)
-            else:
-                UserData.update_one({"_id": user.id}, {"$set": {"warns": 0}})
-            embed.add_field(
-                name=f"{user.display_name} exceeded the warn limit!",
-                value=f"He shall be punished with a 10 minute mute!",
-                inline=False,
-            )
-            await ctx.send(embed=embed)
-            await ctx.author.edit(
-                timeout=nextcord.utils.utcnow() + datetime.timedelta(seconds=600)
-            )
-            logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
-            embed = nextcord.Embed(color=0x0DD91A)
-            embed.add_field(
-                name=f"User muted!",
-                value=f"{user.display_name} was muted for 10 minutes by Warn System",
-                inline=False,
-            )
-            await logs_channel.send(embed=embed)
-        await ctx.send(embed=embed)
+        await event_handler.event_handler.warn_system(ctx, user, amount)
 
     @warn.command(
         name="remove",

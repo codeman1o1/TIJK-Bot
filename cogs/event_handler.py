@@ -124,6 +124,49 @@ class event_handler(
         message = message.decode()
         return message
 
+    async def warn_system(event, user, amount: int = 1):
+        query = {"_id": user.id}
+        if UserData.count_documents(query) == 0:
+            post = {"_id": user.id, "warns": amount}
+            UserData.insert_one(post)
+            total_warns = amount
+        else:
+            user2 = UserData.find(query)
+            try:
+                for result in user2:
+                    warns = result["warns"]
+            except KeyError:
+                pass
+            total_warns = warns + amount
+            UserData.update_one({"_id": user.id}, {"$set": {"warns": total_warns}})
+        embed = nextcord.Embed(color=0x0DD91A)
+        if total_warns <= 9:
+            embed.add_field(
+                name=f"{user.display_name} has been warned by Warn System",
+                value=f"{user.display_name} has {10 - total_warns} warns left!",
+                inline=False,
+            )
+            await event.channel.send(embed=embed)
+        if total_warns >= 10:
+            UserData.update_one({"_id": user.id}, {"$set": {"warns": 0}})
+            embed.add_field(
+                name=f"{user.display_name} exceeded the warn limit!",
+                value=f"He shall be punished with a 10 minute mute!",
+                inline=False,
+            )
+            await event.channel.send(embed=embed)
+            await user.edit(
+                timeout=nextcord.utils.utcnow() + datetime.timedelta(seconds=600)
+            )
+            logs_channel = nextcord.utils.get(user.guild.channels, name="logs")
+            embed = nextcord.Embed(color=0x0DD91A)
+            embed.add_field(
+                name=f"User muted!",
+                value=f"{user.display_name} was muted for 10 minutes by Warn System",
+                inline=False,
+            )
+            await logs_channel.send(embed=embed)
+
     @commands.Cog.listener()
     async def on_message(self, message):
         counter = 0
@@ -153,66 +196,7 @@ class event_handler(
                         text="This message wil delete itself after 5 seconds"
                     )
                     await message.channel.send(embed=embed, delete_after=5)
-                    query = {"_id": message.author.id}
-                    if UserData.count_documents(query) == 0:
-                        post = {"_id": message.author.id, "warns": 1}
-                        UserData.insert_one(post)
-                        total_warns = 1
-                    else:
-                        user2 = UserData.find(query)
-                        warns = 0
-                        try:
-                            for result in user2:
-                                warns = result["warns"]
-                        except KeyError:
-                            pass
-                        warns = warns + 1
-                        UserData.update_one(
-                            {"_id": message.author.id}, {"$set": {"warns": warns}}
-                        )
-                        total_warns = warns
-                    embed = nextcord.Embed(color=0x0DD91A)
-                    if total_warns <= 8:
-                        embed.add_field(
-                            name=f"{message.author.display_name} has been warned by Warn System",
-                            value=f"{message.author.display_name} has {10 - total_warns} warns left!",
-                            inline=False,
-                        )
-                    if total_warns == 9:
-                        embed.add_field(
-                            name=f"{message.author.display_name} has been warned by Warn System",
-                            value=f"{message.author.display_name} has no more warns left! Next time, he shall be punished!",
-                            inline=False,
-                        )
-                    if total_warns >= 10:
-                        query = {"_id": message.author.id}
-                        if UserData.count_documents(query) == 0:
-                            post = {"_id": message.author.id, "warns": 0}
-                            UserData.insert_one(post)
-                        else:
-                            UserData.update_one(
-                                {"_id": message.author.id}, {"$set": {"warns": 0}}
-                            )
-                        embed.add_field(
-                            name=f"{message.author.display_name} exceeded the warn limit!",
-                            value=f"He shall be punished with a 10 minute mute!",
-                            inline=False,
-                        )
-                        await message.channel.send(embed=embed)
-                        await message.author.edit(
-                            timeout=nextcord.utils.utcnow()
-                            + datetime.timedelta(seconds=600)
-                        )
-                        logs_channel = nextcord.utils.get(
-                            message.author.guild.channels, name="logs"
-                        )
-                        embed = nextcord.Embed(color=0x0DD91A)
-                        embed.add_field(
-                            name=f"User muted!",
-                            value=f"{message.author.display_name} was muted for 10 minutes by Warn System",
-                            inline=False,
-                        )
-                        await logs_channel.send(embed=embed)
+                    await event_handler.warn_system(message, message.author)
                 except nextcord.errors.NotFound:
                     bl.warning(
                         f"Tried to delete message but message was not found", __file__
@@ -230,66 +214,7 @@ class event_handler(
                         text="This message wil delete itself after 5 seconds"
                     )
                     await message.channel.send(embed=embed, delete_after=5)
-                    query = {"_id": message.author.id}
-                    if UserData.count_documents(query) == 0:
-                        post = {"_id": message.author.id, "warns": 1}
-                        UserData.insert_one(post)
-                        total_warns = 1
-                    else:
-                        user2 = UserData.find(query)
-                        warns = 0
-                        try:
-                            for result in user2:
-                                warns = result["warns"]
-                        except KeyError:
-                            pass
-                        warns = warns + 1
-                        UserData.update_one(
-                            {"_id": message.author.id}, {"$set": {"warns": warns}}
-                        )
-                        total_warns = warns
-                    embed = nextcord.Embed(color=0x0DD91A)
-                    if total_warns <= 8:
-                        embed.add_field(
-                            name=f"{message.author.display_name} has been warned by Warn System",
-                            value=f"{message.author.display_name} has {10 - total_warns} warns left!",
-                            inline=False,
-                        )
-                    if total_warns == 9:
-                        embed.add_field(
-                            name=f"{message.author.display_name} has been warned by Warn System",
-                            value=f"{message.author.display_name} has no more warns left! Next time, he shall be punished!",
-                            inline=False,
-                        )
-                    if total_warns >= 10:
-                        query = {"_id": message.author.id}
-                        if UserData.count_documents(query) == 0:
-                            post = {"_id": message.author.id, "warns": 0}
-                            UserData.insert_one(post)
-                        else:
-                            UserData.update_one(
-                                {"_id": message.author.id}, {"$set": {"warns": 0}}
-                            )
-                        embed.add_field(
-                            name=f"{message.author.display_name} exceeded the warn limit!",
-                            value=f"He shall be punished with a 10 minute mute!",
-                            inline=False,
-                        )
-                        await message.channel.send(embed=embed)
-                        await message.author.edit(
-                            timeout=nextcord.utils.utcnow()
-                            + datetime.timedelta(seconds=600)
-                        )
-                        logs_channel = nextcord.utils.get(
-                            message.author.guild.channels, name="logs"
-                        )
-                        embed = nextcord.Embed(color=0x0DD91A)
-                        embed.add_field(
-                            name=f"User muted!",
-                            value=f"{message.author.display_name} was muted for 10 minutes by Warn System",
-                            inline=False,
-                        )
-                        await logs_channel.send(embed=embed)
+                    await event_handler.warn_system(message, message.author)
                 except nextcord.errors.NotFound:
                     bl.warning(
                         f"Tried to delete message but message was not found", __file__
@@ -315,68 +240,7 @@ class event_handler(
                                 text="This message wil delete itself after 5 seconds"
                             )
                             await message.channel.send(embed=embed, delete_after=5)
-                            query = {"_id": message.author.id}
-                            if UserData.count_documents(query) == 0:
-                                post = {"_id": message.author.id, "warns": 1}
-                                UserData.insert_one(post)
-                                total_warns = 1
-                            else:
-                                user2 = UserData.find(query)
-                                warns = 0
-                                try:
-                                    for result in user2:
-                                        warns = result["warns"]
-                                except KeyError:
-                                    pass
-                                warns = warns + 1
-                                UserData.update_one(
-                                    {"_id": message.author.id},
-                                    {"$set": {"warns": warns}},
-                                )
-                                total_warns = warns
-                            embed = nextcord.Embed(color=0x0DD91A)
-                            if total_warns <= 8:
-                                embed.add_field(
-                                    name=f"{message.author.display_name} has been warned by Warn System",
-                                    value=f"{message.author.display_name} has {10 - total_warns} warns left!",
-                                    inline=False,
-                                )
-                            if total_warns == 9:
-                                embed.add_field(
-                                    name=f"{message.author.display_name} has been warned by Warn System",
-                                    value=f"{message.author.display_name} has no more warns left! Next time, he shall be punished!",
-                                    inline=False,
-                                )
-                            if total_warns >= 10:
-                                query = {"_id": message.author.id}
-                                if UserData.count_documents(query) == 0:
-                                    post = {"_id": message.author.id, "warns": 0}
-                                    UserData.insert_one(post)
-                                else:
-                                    UserData.update_one(
-                                        {"_id": message.author.id},
-                                        {"$set": {"warns": 0}},
-                                    )
-                                embed.add_field(
-                                    name=f"{message.author.display_name} exceeded the warn limit!",
-                                    value=f"He shall be punished with a 10 minute mute!",
-                                    inline=False,
-                                )
-                                await message.channel.send(embed=embed)
-                                await message.author.edit(
-                                    timeout=nextcord.utils.utcnow()
-                                    + datetime.timedelta(seconds=600)
-                                )
-                                logs_channel = nextcord.utils.get(
-                                    message.author.guild.channels, name="logs"
-                                )
-                                embed = nextcord.Embed(color=0x0DD91A)
-                                embed.add_field(
-                                    name=f"User muted!",
-                                    value=f"{message.author.display_name} was muted for 10 minutes by Warn System",
-                                    inline=False,
-                                )
-                                await logs_channel.send(embed=embed)
+                            await event_handler.warn_system(message, message.author)
                         except nextcord.errors.NotFound:
                             bl.warning(
                                 f"Tried to delete message but message was not found",
@@ -398,66 +262,7 @@ class event_handler(
                 )
                 embed.set_footer(text="This message wil delete itself after 5 seconds")
                 await message.channel.send(embed=embed, delete_after=5)
-                query = {"_id": message.author.id}
-                if UserData.count_documents(query) == 0:
-                    post = {"_id": message.author.id, "warns": 1}
-                    UserData.insert_one(post)
-                    total_warns = 1
-                else:
-                    user2 = UserData.find(query)
-                    warns = 0
-                    try:
-                        for result in user2:
-                            warns = result["warns"]
-                    except KeyError:
-                        pass
-                    warns = warns + 1
-                    UserData.update_one(
-                        {"_id": message.author.id}, {"$set": {"warns": warns}}
-                    )
-                    total_warns = warns
-                embed = nextcord.Embed(color=0x0DD91A)
-                if total_warns <= 8:
-                    embed.add_field(
-                        name=f"{message.author.display_name} has been warned by Warn System",
-                        value=f"{message.author.display_name} has {10 - total_warns} warns left!",
-                        inline=False,
-                    )
-                if total_warns == 9:
-                    embed.add_field(
-                        name=f"{message.author.display_name} has been warned by Warn System",
-                        value=f"{message.author.display_name} has no more warns left! Next time, he shall be punished!",
-                        inline=False,
-                    )
-                if total_warns >= 10:
-                    query = {"_id": message.author.id}
-                    if UserData.count_documents(query) == 0:
-                        post = {"_id": message.author.id, "warns": 0}
-                        UserData.insert_one(post)
-                    else:
-                        UserData.update_one(
-                            {"_id": message.author.id}, {"$set": {"warns": 0}}
-                        )
-                    embed.add_field(
-                        name=f"{message.author.display_name} exceeded the warn limit!",
-                        value=f"He shall be punished with a 10 minute mute!",
-                        inline=False,
-                    )
-                    await message.channel.send(embed=embed)
-                    await message.author.edit(
-                        timeout=nextcord.utils.utcnow()
-                        + datetime.timedelta(seconds=600)
-                    )
-                    logs_channel = nextcord.utils.get(
-                        message.author.guild.channels, name="logs"
-                    )
-                    embed = nextcord.Embed(color=0x0DD91A)
-                    embed.add_field(
-                        name=f"User muted!",
-                        value=f"{message.author.display_name} was muted for 10 minutes by Warn System",
-                        inline=False,
-                    )
-                    await logs_channel.send(embed=embed)
+                await event_handler.warn_system(message, message.author)
             except nextcord.errors.NotFound:
                 bl.warning(
                     f"Tried to delete message but message was not found", __file__
@@ -484,66 +289,6 @@ class event_handler(
                         counter += 1
                 file.writelines(f"{str(message.author.id)}\n")
                 if counter > 3:
-                    query = {"_id": message.author.id}
-                    if UserData.count_documents(query) == 0:
-                        post = {"_id": message.author.id, "warns": 1}
-                        UserData.insert_one(post)
-                        total_warns = 1
-                    else:
-                        user2 = UserData.find(query)
-                        warns = 0
-                        try:
-                            for result in user2:
-                                warns = result["warns"]
-                        except KeyError:
-                            pass
-                        warns = warns + 1
-                        UserData.update_one(
-                            {"_id": message.author.id}, {"$set": {"warns": warns}}
-                        )
-                        total_warns = warns
-                    embed = nextcord.Embed(color=0x0DD91A)
-                    if total_warns <= 8:
-                        embed.add_field(
-                            name=f"{message.author.display_name} has been warned by Warn System",
-                            value=f"{message.author.display_name} has {10 - total_warns} warns left!",
-                            inline=False,
-                        )
-                    if total_warns == 9:
-                        embed.add_field(
-                            name=f"{message.author.display_name} has been warned by Warn System",
-                            value=f"{message.author.display_name} has no more warns left! Next time, he shall be punished!",
-                            inline=False,
-                        )
-                    if total_warns >= 10:
-                        query = {"_id": message.author.id}
-                        if UserData.count_documents(query) == 0:
-                            post = {"_id": message.author.id, "warns": 0}
-                            UserData.insert_one(post)
-                        else:
-                            UserData.update_one(
-                                {"_id": message.author.id}, {"$set": {"warns": 0}}
-                            )
-                        embed.add_field(
-                            name=f"{message.author.display_name} exceeded the warn limit!",
-                            value=f"He shall be punished with a 10 minute mute!",
-                            inline=False,
-                        )
-                        await message.channel.send(embed=embed)
-                        await message.author.edit(
-                            timeout=nextcord.utils.utcnow()
-                            + datetime.timedelta(seconds=600)
-                        )
-                        logs_channel = nextcord.utils.get(
-                            message.author.guild.channels, name="logs"
-                        )
-                        embed = nextcord.Embed(color=0x0DD91A)
-                        embed.add_field(
-                            name=f"User muted!",
-                            value=f"{message.author.display_name} was muted for 10 minutes by Warn System",
-                            inline=False,
-                        )
-                        await logs_channel.send(embed=embed)
                     user = message.author
                     owner_role = nextcord.utils.get(user.guild.roles, name="Owner")
                     admin_role = nextcord.utils.get(user.guild.roles, name="Admin")
@@ -552,9 +297,7 @@ class event_handler(
                     )
                     anti_mute = (owner_role, admin_role, tijk_bot_developer_role)
                     if not user.bot:
-                        if any(role in user.roles for role in anti_mute):
-                            return
-                        else:
+                        if not any(role in user.roles for role in anti_mute):
                             await message.author.edit(
                                 timeout=nextcord.utils.utcnow()
                                 + datetime.timedelta(seconds=600)
@@ -606,66 +349,7 @@ class event_handler(
                         text="This message wil delete itself after 5 seconds"
                     )
                     await after.channel.send(embed=embed, delete_after=5)
-                    query = {"_id": after.author.id}
-                    if UserData.count_documents(query) == 0:
-                        post = {"_id": after.author.id, "warns": 1}
-                        UserData.insert_one(post)
-                        total_warns = 1
-                    else:
-                        user2 = UserData.find(query)
-                        warns = 0
-                        try:
-                            for result in user2:
-                                warns = result["warns"]
-                        except KeyError:
-                            pass
-                        warns = warns + 1
-                        UserData.update_one(
-                            {"_id": after.author.id}, {"$set": {"warns": warns}}
-                        )
-                        total_warns = warns
-                    embed = nextcord.Embed(color=0x0DD91A)
-                    if total_warns <= 8:
-                        embed.add_field(
-                            name=f"{after.author.display_name} has been warned by Warn System",
-                            value=f"{after.author.display_name} has {10 - total_warns} warns left!",
-                            inline=False,
-                        )
-                    if total_warns == 9:
-                        embed.add_field(
-                            name=f"{after.author.display_name} has been warned by Warn System",
-                            value=f"{after.author.display_name} has no more warns left! Next time, he shall be punished!",
-                            inline=False,
-                        )
-                    if total_warns >= 10:
-                        query = {"_id": after.author.id}
-                        if UserData.count_documents(query) == 0:
-                            post = {"_id": after.author.id, "warns": 0}
-                            UserData.insert_one(post)
-                        else:
-                            UserData.update_one(
-                                {"_id": after.author.id}, {"$set": {"warns": 0}}
-                            )
-                        embed.add_field(
-                            name=f"{after.author.display_name} exceeded the warn limit!",
-                            value=f"He shall be punished with a 10 minute mute!",
-                            inline=False,
-                        )
-                        await after.channel.send(embed=embed)
-                        await after.author.edit(
-                            timeout=nextcord.utils.utcnow()
-                            + datetime.timedelta(seconds=600)
-                        )
-                        logs_channel = nextcord.utils.get(
-                            after.author.guild.channels, name="logs"
-                        )
-                        embed = nextcord.Embed(color=0x0DD91A)
-                        embed.add_field(
-                            name=f"User muted!",
-                            value=f"{after.author.display_name} was muted for 10 minutes by Warn System",
-                            inline=False,
-                        )
-                        await logs_channel.send(embed=embed)
+                    await event_handler.warn_system(after, after.author)
                 except nextcord.errors.NotFound:
                     bl.warning(
                         f"Tried to delete message but message was not found", __file__
@@ -682,66 +366,7 @@ class event_handler(
                 )
                 embed.set_footer(text="This message wil delete itself after 5 seconds")
                 await after.channel.send(embed=embed, delete_after=5)
-                query = {"_id": after.author.id}
-                if UserData.count_documents(query) == 0:
-                    post = {"_id": after.author.id, "warns": 1}
-                    UserData.insert_one(post)
-                    total_warns = 1
-                else:
-                    user2 = UserData.find(query)
-                    warns = 0
-                    try:
-                        for result in user2:
-                            warns = result["warns"]
-                    except KeyError:
-                        pass
-                    warns = warns + 1
-                    UserData.update_one(
-                        {"_id": after.author.id}, {"$set": {"warns": warns}}
-                    )
-                    total_warns = warns
-                embed = nextcord.Embed(color=0x0DD91A)
-                if total_warns <= 8:
-                    embed.add_field(
-                        name=f"{after.author.display_name} has been warned by Warn System",
-                        value=f"{after.author.display_name} has {10 - total_warns} warns left!",
-                        inline=False,
-                    )
-                if total_warns == 9:
-                    embed.add_field(
-                        name=f"{after.author.display_name} has been warned by Warn System",
-                        value=f"{after.author.display_name} has no more warns left! Next time, he shall be punished!",
-                        inline=False,
-                    )
-                if total_warns >= 10:
-                    query = {"_id": after.author.id}
-                    if UserData.count_documents(query) == 0:
-                        post = {"_id": after.author.id, "warns": 0}
-                        UserData.insert_one(post)
-                    else:
-                        UserData.update_one(
-                            {"_id": after.author.id}, {"$set": {"warns": 0}}
-                        )
-                    embed.add_field(
-                        name=f"{after.author.display_name} exceeded the warn limit!",
-                        value=f"He shall be punished with a 10 minute mute!",
-                        inline=False,
-                    )
-                    await after.channel.send(embed=embed)
-                    await after.author.edit(
-                        timeout=nextcord.utils.utcnow()
-                        + datetime.timedelta(seconds=600)
-                    )
-                    logs_channel = nextcord.utils.get(
-                        after.author.guild.channels, name="logs"
-                    )
-                    embed = nextcord.Embed(color=0x0DD91A)
-                    embed.add_field(
-                        name=f"User muted!",
-                        value=f"{after.author.display_name} was muted for 10 minutes by Warn System",
-                        inline=False,
-                    )
-                    await logs_channel.send(embed=embed)
+                await event_handler.warn_system(after, after.author)
             except nextcord.errors.NotFound:
                 bl.warning(
                     f"Tried to delete message but message was not found", __file__
