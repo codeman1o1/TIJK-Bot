@@ -267,6 +267,7 @@ class admin(
         aliases=["to"],
     )
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    @commands.bot_has_permissions(moderate_members=True)
     async def timeout(
         self, ctx, user: nextcord.Member, time, *, reason="No reason provided"
     ):
@@ -288,6 +289,7 @@ class admin(
         brief="Removes the time-out of an user",
     )
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    @commands.bot_has_permissions(moderate_members=True)
     async def remove_timeout(
         self, ctx, user: nextcord.Member, *, reason="No reason provided"
     ):
