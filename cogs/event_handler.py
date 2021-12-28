@@ -1,3 +1,4 @@
+import datetime
 import nextcord
 from nextcord.ext import commands
 from dotenv import load_dotenv
@@ -199,28 +200,20 @@ class event_handler(
                             inline=False,
                         )
                         await message.channel.send(embed=embed)
-                        muted_role = nextcord.utils.get(
-                            message.author.guild.roles, name="Muted"
+                        await message.author.edit(
+                            timeout=nextcord.utils.utcnow()
+                            + datetime.timedelta(seconds=600)
                         )
-                        if not muted_role in message.author.roles:
-                            logs_channel = nextcord.utils.get(
-                                message.author.guild.channels, name="logs"
-                            )
-                            await message.author.add_roles(muted_role)
-                            embed = nextcord.Embed(color=0x0DD91A)
-                            embed.add_field(
-                                name=f"User muted!",
-                                value=f"{message.author.display_name} was muted for 10 minutes by Warn System",
-                                inline=False,
-                            )
-                            await logs_channel.send(embed=embed)
-                            await asyncio.sleep(600)
-                            await message.author.remove_roles(muted_role)
-                            embed = nextcord.Embed(
-                                color=0x0DD91A,
-                                title=f"{message.author.display_name} is now unmuted!",
-                            )
-                            await logs_channel.send(embed=embed)
+                        logs_channel = nextcord.utils.get(
+                            message.author.guild.channels, name="logs"
+                        )
+                        embed = nextcord.Embed(color=0x0DD91A)
+                        embed.add_field(
+                            name=f"User muted!",
+                            value=f"{message.author.display_name} was muted for 10 minutes by Warn System",
+                            inline=False,
+                        )
+                        await logs_channel.send(embed=embed)
                 except nextcord.errors.NotFound:
                     bl.warning(
                         f"Tried to delete message but message was not found", __file__
@@ -284,28 +277,20 @@ class event_handler(
                             inline=False,
                         )
                         await message.channel.send(embed=embed)
-                        muted_role = nextcord.utils.get(
-                            message.author.guild.roles, name="Muted"
+                        await message.author.edit(
+                            timeout=nextcord.utils.utcnow()
+                            + datetime.timedelta(seconds=600)
                         )
-                        if not muted_role in message.author.roles:
-                            logs_channel = nextcord.utils.get(
-                                message.author.guild.channels, name="logs"
-                            )
-                            await message.author.add_roles(muted_role)
-                            embed = nextcord.Embed(color=0x0DD91A)
-                            embed.add_field(
-                                name=f"User muted!",
-                                value=f"{message.author.display_name} was muted for 10 minutes by Warn System",
-                                inline=False,
-                            )
-                            await logs_channel.send(embed=embed)
-                            await asyncio.sleep(600)
-                            await message.author.remove_roles(muted_role)
-                            embed = nextcord.Embed(
-                                color=0x0DD91A,
-                                title=f"{message.author.display_name} is now unmuted!",
-                            )
-                            await logs_channel.send(embed=embed)
+                        logs_channel = nextcord.utils.get(
+                            message.author.guild.channels, name="logs"
+                        )
+                        embed = nextcord.Embed(color=0x0DD91A)
+                        embed.add_field(
+                            name=f"User muted!",
+                            value=f"{message.author.display_name} was muted for 10 minutes by Warn System",
+                            inline=False,
+                        )
+                        await logs_channel.send(embed=embed)
                 except nextcord.errors.NotFound:
                     bl.warning(
                         f"Tried to delete message but message was not found", __file__
@@ -379,28 +364,20 @@ class event_handler(
                                     inline=False,
                                 )
                                 await message.channel.send(embed=embed)
-                                muted_role = nextcord.utils.get(
-                                    message.author.guild.roles, name="Muted"
+                                await message.author.edit(
+                                    timeout=nextcord.utils.utcnow()
+                                    + datetime.timedelta(seconds=600)
                                 )
-                                if not muted_role in message.author.roles:
-                                    logs_channel = nextcord.utils.get(
-                                        message.author.guild.channels, name="logs"
-                                    )
-                                    await message.author.add_roles(muted_role)
-                                    embed = nextcord.Embed(color=0x0DD91A)
-                                    embed.add_field(
-                                        name=f"User muted!",
-                                        value=f"{message.author.display_name} was muted for 10 minutes by Warn System",
-                                        inline=False,
-                                    )
-                                    await logs_channel.send(embed=embed)
-                                    await asyncio.sleep(600)
-                                    await message.author.remove_roles(muted_role)
-                                    embed = nextcord.Embed(
-                                        color=0x0DD91A,
-                                        title=f"{message.author.display_name} is now unmuted!",
-                                    )
-                                    await logs_channel.send(embed=embed)
+                                logs_channel = nextcord.utils.get(
+                                    message.author.guild.channels, name="logs"
+                                )
+                                embed = nextcord.Embed(color=0x0DD91A)
+                                embed.add_field(
+                                    name=f"User muted!",
+                                    value=f"{message.author.display_name} was muted for 10 minutes by Warn System",
+                                    inline=False,
+                                )
+                                await logs_channel.send(embed=embed)
                         except nextcord.errors.NotFound:
                             bl.warning(
                                 f"Tried to delete message but message was not found",
@@ -468,28 +445,20 @@ class event_handler(
                         inline=False,
                     )
                     await message.channel.send(embed=embed)
-                    muted_role = nextcord.utils.get(
-                        message.author.guild.roles, name="Muted"
+                    await message.author.edit(
+                        timeout=nextcord.utils.utcnow()
+                        + datetime.timedelta(seconds=600)
                     )
-                    if not muted_role in message.author.roles:
-                        logs_channel = nextcord.utils.get(
-                            message.author.guild.channels, name="logs"
-                        )
-                        await message.author.add_roles(muted_role)
-                        embed = nextcord.Embed(color=0x0DD91A)
-                        embed.add_field(
-                            name=f"User muted!",
-                            value=f"{message.author.display_name} was muted for 10 minutes by Warn System",
-                            inline=False,
-                        )
-                        await logs_channel.send(embed=embed)
-                        await asyncio.sleep(600)
-                        await message.author.remove_roles(muted_role)
-                        embed = nextcord.Embed(
-                            color=0x0DD91A,
-                            title=f"{message.author.display_name} is now unmuted!",
-                        )
-                        await logs_channel.send(embed=embed)
+                    logs_channel = nextcord.utils.get(
+                        message.author.guild.channels, name="logs"
+                    )
+                    embed = nextcord.Embed(color=0x0DD91A)
+                    embed.add_field(
+                        name=f"User muted!",
+                        value=f"{message.author.display_name} was muted for 10 minutes by Warn System",
+                        inline=False,
+                    )
+                    await logs_channel.send(embed=embed)
             except nextcord.errors.NotFound:
                 bl.warning(
                     f"Tried to delete message but message was not found", __file__
@@ -562,30 +531,21 @@ class event_handler(
                             inline=False,
                         )
                         await message.channel.send(embed=embed)
-                        muted_role = nextcord.utils.get(
-                            message.author.guild.roles, name="Muted"
+                        await message.author.edit(
+                            timeout=nextcord.utils.utcnow()
+                            + datetime.timedelta(seconds=600)
                         )
-                        if not muted_role in message.author.roles:
-                            logs_channel = nextcord.utils.get(
-                                message.author.guild.channels, name="logs"
-                            )
-                            await message.author.add_roles(muted_role)
-                            embed = nextcord.Embed(color=0x0DD91A)
-                            embed.add_field(
-                                name=f"User muted!",
-                                value=f"{message.author.display_name} was muted for 10 minutes by Warn System",
-                                inline=False,
-                            )
-                            await logs_channel.send(embed=embed)
-                            await asyncio.sleep(600)
-                            await message.author.remove_roles(muted_role)
-                            embed = nextcord.Embed(
-                                color=0x0DD91A,
-                                title=f"{message.author.display_name} is now unmuted!",
-                            )
-                            await logs_channel.send(embed=embed)
+                        logs_channel = nextcord.utils.get(
+                            message.author.guild.channels, name="logs"
+                        )
+                        embed = nextcord.Embed(color=0x0DD91A)
+                        embed.add_field(
+                            name=f"User muted!",
+                            value=f"{message.author.display_name} was muted for 10 minutes by Warn System",
+                            inline=False,
+                        )
+                        await logs_channel.send(embed=embed)
                     user = message.author
-                    muted_role = nextcord.utils.get(user.guild.roles, name="Muted")
                     owner_role = nextcord.utils.get(user.guild.roles, name="Owner")
                     admin_role = nextcord.utils.get(user.guild.roles, name="Admin")
                     tijk_bot_developer_role = nextcord.utils.get(
@@ -596,26 +556,17 @@ class event_handler(
                         if any(role in user.roles for role in anti_mute):
                             return
                         else:
-                            if muted_role in user.roles:
-                                return
-                            else:
-                                await message.author.add_roles(muted_role)
-                                embed = nextcord.Embed(color=0x0DD91A)
-                                embed.add_field(
-                                    name=f"You ({message.author.display_name}) have been muted",
-                                    value=f"You have been muted for 5 minutes.\nIf you think this was a mistake, please contact an owner or admin\nBecause of this action, you received 1 warn",
-                                    inline=True,
-                                )
-                                await message.channel.send(embed=embed)
-                                await asyncio.sleep(300)
-                                await user.remove_roles(muted_role)
-                                embed = nextcord.Embed(color=0x0DD91A)
-                                embed.add_field(
-                                    name=f"{message.author.display_name} is now unmuted",
-                                    value=f"You have been unmuted. Please don't spam again!",
-                                    inline=True,
-                                )
-                                await message.channel.send(embed=embed)
+                            await message.author.edit(
+                                timeout=nextcord.utils.utcnow()
+                                + datetime.timedelta(seconds=600)
+                            )
+                            embed = nextcord.Embed(color=0x0DD91A)
+                            embed.add_field(
+                                name=f"You ({message.author.display_name}) have been muted",
+                                value=f"You have been muted for 10 minutes.\nIf you think this was a mistake, please contact an owner or admin\nBecause of this action, you received 1 warn",
+                                inline=True,
+                            )
+                            await message.channel.send(embed=embed)
         user = self.bot.get_user(message.author.id)
         if not user is None:
             query = {"_id": message.author.id}
@@ -702,28 +653,20 @@ class event_handler(
                             inline=False,
                         )
                         await after.channel.send(embed=embed)
-                        muted_role = nextcord.utils.get(
-                            after.author.guild.roles, name="Muted"
+                        await after.author.edit(
+                            timeout=nextcord.utils.utcnow()
+                            + datetime.timedelta(seconds=600)
                         )
-                        if not muted_role in after.author.roles:
-                            logs_channel = nextcord.utils.get(
-                                after.author.guild.channels, name="logs"
-                            )
-                            await after.author.add_roles(muted_role)
-                            embed = nextcord.Embed(color=0x0DD91A)
-                            embed.add_field(
-                                name=f"User muted!",
-                                value=f"{after.author.display_name} was muted for 10 minutes by Warn System",
-                                inline=False,
-                            )
-                            await logs_channel.send(embed=embed)
-                            await asyncio.sleep(600)
-                            await after.author.remove_roles(muted_role)
-                            embed = nextcord.Embed(
-                                color=0x0DD91A,
-                                title=f"{after.author.display_name} is now unmuted!",
-                            )
-                            await logs_channel.send(embed=embed)
+                        logs_channel = nextcord.utils.get(
+                            after.author.guild.channels, name="logs"
+                        )
+                        embed = nextcord.Embed(color=0x0DD91A)
+                        embed.add_field(
+                            name=f"User muted!",
+                            value=f"{after.author.display_name} was muted for 10 minutes by Warn System",
+                            inline=False,
+                        )
+                        await logs_channel.send(embed=embed)
                 except nextcord.errors.NotFound:
                     bl.warning(
                         f"Tried to delete message but message was not found", __file__
@@ -786,28 +729,20 @@ class event_handler(
                         inline=False,
                     )
                     await after.channel.send(embed=embed)
-                    muted_role = nextcord.utils.get(
-                        after.author.guild.roles, name="Muted"
+                    await after.author.edit(
+                        timeout=nextcord.utils.utcnow()
+                        + datetime.timedelta(seconds=600)
                     )
-                    if not muted_role in after.author.roles:
-                        logs_channel = nextcord.utils.get(
-                            after.author.guild.channels, name="logs"
-                        )
-                        await after.author.add_roles(muted_role)
-                        embed = nextcord.Embed(color=0x0DD91A)
-                        embed.add_field(
-                            name=f"User muted!",
-                            value=f"{after.author.display_name} was muted for 10 minutes by Warn System",
-                            inline=False,
-                        )
-                        await logs_channel.send(embed=embed)
-                        await asyncio.sleep(600)
-                        await after.author.remove_roles(muted_role)
-                        embed = nextcord.Embed(
-                            color=0x0DD91A,
-                            title=f"{after.author.display_name} is now unmuted!",
-                        )
-                        await logs_channel.send(embed=embed)
+                    logs_channel = nextcord.utils.get(
+                        after.author.guild.channels, name="logs"
+                    )
+                    embed = nextcord.Embed(color=0x0DD91A)
+                    embed.add_field(
+                        name=f"User muted!",
+                        value=f"{after.author.display_name} was muted for 10 minutes by Warn System",
+                        inline=False,
+                    )
+                    await logs_channel.send(embed=embed)
             except nextcord.errors.NotFound:
                 bl.warning(
                     f"Tried to delete message but message was not found", __file__

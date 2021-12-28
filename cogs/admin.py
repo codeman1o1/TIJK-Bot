@@ -236,23 +236,17 @@ class admin(
                     inline=False,
                 )
                 await ctx.send(embed=embed)
-                muted_role = nextcord.utils.get(ctx.guild.roles, name="Muted")
-                if not muted_role in user.roles:
-                    logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
-                    await user.add_roles(muted_role)
-                    embed = nextcord.Embed(color=0x0DD91A)
-                    embed.add_field(
-                        name=f"User muted!",
-                        value=f"{user.display_name} was muted for 10 minutes by Warn System",
-                        inline=False,
-                    )
-                    await logs_channel.send(embed=embed)
-                    await asyncio.sleep(600)
-                    await user.remove_roles(muted_role)
-                    embed = nextcord.Embed(
-                        color=0x0DD91A, title=f"{user.display_name} is now unmuted!"
-                    )
-                    await logs_channel.send(embed=embed)
+                await ctx.author.edit(
+                    timeout=nextcord.utils.utcnow() + datetime.timedelta(seconds=600)
+                )
+                logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
+                embed = nextcord.Embed(color=0x0DD91A)
+                embed.add_field(
+                    name=f"User muted!",
+                    value=f"{user.display_name} was muted for 10 minutes by Warn System",
+                    inline=False,
+                )
+                await logs_channel.send(embed=embed)
         except IndexError:
             embed = nextcord.Embed(
                 color=0xFF0000, title=f"{rule_number} is not a valid rule number!"
@@ -524,23 +518,17 @@ class admin(
                 inline=False,
             )
             await ctx.send(embed=embed)
-            muted_role = nextcord.utils.get(ctx.guild.roles, name="Muted")
-            if not muted_role in user.roles:
-                logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
-                await user.add_roles(muted_role)
-                embed = nextcord.Embed(color=0x0DD91A)
-                embed.add_field(
-                    name=f"User muted!",
-                    value=f"{user.display_name} was muted for 10 minutes by Warn System",
-                    inline=False,
-                )
-                await logs_channel.send(embed=embed)
-                await asyncio.sleep(600)
-                await user.remove_roles(muted_role)
-                embed = nextcord.Embed(
-                    color=0x0DD91A, title=f"{user.display_name} is now unmuted!"
-                )
-                await logs_channel.send(embed=embed)
+            await ctx.author.edit(
+                timeout=nextcord.utils.utcnow() + datetime.timedelta(seconds=600)
+            )
+            logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
+            embed = nextcord.Embed(color=0x0DD91A)
+            embed.add_field(
+                name=f"User muted!",
+                value=f"{user.display_name} was muted for 10 minutes by Warn System",
+                inline=False,
+            )
+            await logs_channel.send(embed=embed)
         await ctx.send(embed=embed)
 
     @warn.command(
