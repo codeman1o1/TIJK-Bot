@@ -433,7 +433,7 @@ class admin(
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name=f"User banned!",
-            value=f"{user.name}#{user.discriminator} has been banned by {ctx.author.name}#{ctx.author.discriminator} with the reason {reason}",
+            value=f"{user.name}#{user.discriminator} has been banned by {ctx.author.name}#{ctx.author.discriminator} with the reason {reason}\nUse `.unban {user.name}#{user.discriminator}` to unban {user.display_name}",
             inline=False,
         )
         await ctx.send(embed=embed)
