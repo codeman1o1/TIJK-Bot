@@ -26,104 +26,6 @@ class event_handler(
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    async def message_filter(message):
-        message = message.content.lower()
-        message = message.replace(" ", "")
-        message = message.replace(".", "")
-        message = message.replace(",", "")
-        message = message.replace("_", "")
-        message = message.replace("@", "a")
-        message = message.replace("ä", "a")
-        message = message.replace("á", "a")
-        message = message.replace("à", "a")
-        message = message.replace("â", "a")
-        message = message.replace("ã", "a")
-        message = message.replace("å", "a")
-        message = message.replace("ª", "a")
-        message = message.replace("ą", "a")
-        message = message.replace("ă", "a")
-        message = message.replace("ā", "a")
-        message = message.replace("æ", "a")
-        message = message.replace("ß", "b")
-        message = message.replace("þ", "b")
-        message = message.replace("ç", "c")
-        message = message.replace("ć", "c")
-        message = message.replace("č", "c")
-        message = message.replace("ď", "d")
-        message = message.replace("đ", "d")
-        message = message.replace("3", "e")
-        message = message.replace("€", "e")
-        message = message.replace("ë", "e")
-        message = message.replace("ė", "e")
-        message = message.replace("é", "e")
-        message = message.replace("è", "e")
-        message = message.replace("ê", "e")
-        message = message.replace("ē", "e")
-        message = message.replace("ę", "e")
-        message = message.replace("ě", "e")
-        message = message.replace("ĕ", "e")
-        message = message.replace("ə", "e")
-        message = message.replace("£", "f")
-        message = message.replace("ģ", "g")
-        message = message.replace("ğ", "g")
-        message = message.replace("!", "i")
-        message = message.replace("í", "i")
-        message = message.replace("ì", "i")
-        message = message.replace("ï", "i")
-        message = message.replace("¡", "i")
-        message = message.replace("î", "i")
-        message = message.replace("ī", "i")
-        message = message.replace("į", "i")
-        message = message.replace("ķ", "k")
-        message = message.replace("ĺ", "l")
-        message = message.replace("ļ", "l")
-        message = message.replace("ľ", "l")
-        message = message.replace("ł", "l")
-        message = message.replace("ñ", "n")
-        message = message.replace("ń", "n")
-        message = message.replace("ņ", "n")
-        message = message.replace("ň", "n")
-        message = message.replace("№", "n")
-        message = message.replace("ö", "o")
-        message = message.replace("ó", "o")
-        message = message.replace("ò", "o")
-        message = message.replace("ô", "o")
-        message = message.replace("õ", "o")
-        message = message.replace("ø", "o")
-        message = message.replace("ō", "o")
-        message = message.replace("ő", "o")
-        message = message.replace("œ", "o")
-        message = message.replace("•", "o")
-        message = message.replace("○", "o")
-        message = message.replace("●", "o")
-        message = message.replace("ŕ", "r")
-        message = message.replace("ř", "r")
-        message = message.replace("$", "s")
-        message = message.replace("§", "s")
-        message = message.replace("ś", "s")
-        message = message.replace("š", "s")
-        message = message.replace("ş", "s")
-        message = message.replace("ť", "t")
-        message = message.replace("ț", "t")
-        message = message.replace("ţ", "t")
-        message = message.replace("ü", "u")
-        message = message.replace("ū", "u")
-        message = message.replace("ů", "u")
-        message = message.replace("ű", "u")
-        message = message.replace("ų", "u")
-        message = message.replace("û", "u")
-        message = message.replace("ù", "u")
-        message = message.replace("ú", "u")
-        message = message.replace("₩", "w")
-        message = message.replace("ý", "y")
-        message = message.replace("¥", "y")
-        message = message.replace("ź", "z")
-        message = message.replace("ż", "z")
-        message = message.replace("ž", "z")
-        message = message.encode("ascii", "ignore")
-        message = message.decode()
-        return message
-
     async def warn_system(event, user, amount: int = 1):
         query = {"_id": user.id}
         if UserData.count_documents(query) == 0:
@@ -169,7 +71,7 @@ class event_handler(
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        counter = 0
+        user = message.author
 
         for k in BotData.find():
             reaction_messages = dict(json.loads(k["reactionmessages"]))
@@ -177,61 +79,49 @@ class event_handler(
         reaction_messages_values = list(reaction_messages.values())
 
         if any(
-            key.lower() in message.content.lower() for key in reaction_messages_keys
+            key.lower() == message.content.lower() for key in reaction_messages_keys
         ):
-            try:
-                index = reaction_messages_keys.index(message.content.lower())
-                corresponding_message = str(reaction_messages_values[index])
-                if "{user}" in corresponding_message:
-                    corresponding_message = corresponding_message.replace(
-                        "{user}", message.author.display_name
-                    )
-                await message.channel.send(corresponding_message)
-            except ValueError:
-                pass
+            index = reaction_messages_keys.index(message.content.lower())
+            corresponding_message = reaction_messages_values[index]
+            if "{user}" in corresponding_message:
+                corresponding_message = corresponding_message.replace(
+                    "{user}", user.display_name
+                )
+            await message.channel.send(corresponding_message)
 
-        with open("spam_detect.txt", "r+") as file:
-            if not message.author.bot:
-                for lines in file:
-                    if lines.strip("\n") == str(message.author.id):
-                        counter += 1
-                file.writelines(f"{message.author.id}\n")
-                if counter > 3:
-                    user = message.author
-                    owner_role = nextcord.utils.get(user.guild.roles, name="Owner")
-                    admin_role = nextcord.utils.get(user.guild.roles, name="Admin")
-                    tijk_bot_developer_role = nextcord.utils.get(
-                        user.guild.roles, name="TIJK-Bot developer"
+        if not user.bot:
+            with open("spam_detect.txt", "r+") as file:
+                file.writelines(f"{user.id}\n")
+                counter = sum(lines.strip("\n") == str(user.id) for lines in file)
+            if counter > 3:
+                owner_role = nextcord.utils.get(user.guild.roles, name="Owner")
+                admin_role = nextcord.utils.get(user.guild.roles, name="Admin")
+                tijk_bot_developer_role = nextcord.utils.get(
+                    user.guild.roles, name="TIJK-Bot developer"
+                )
+                anti_mute = (owner_role, admin_role, tijk_bot_developer_role)
+                if all(role not in user.roles for role in anti_mute):
+                    await user.edit(
+                        timeout=nextcord.utils.utcnow()
+                        + datetime.timedelta(seconds=600)
                     )
-                    anti_mute = (owner_role, admin_role, tijk_bot_developer_role)
-                    if not user.bot and all(
-                        role not in user.roles for role in anti_mute
-                    ):
-                        await message.author.edit(
-                            timeout=nextcord.utils.utcnow()
-                            + datetime.timedelta(seconds=600)
-                        )
-                        embed = nextcord.Embed(color=0x0DD91A)
-                        embed.add_field(
-                            name=f"You ({message.author.display_name}) have been muted",
-                            value=f"You have been muted for 10 minutes.\nIf you think this was a mistake, please contact an owner or admin\nBecause of this action, you received 1 warn",
-                            inline=True,
-                        )
-                        await message.channel.send(embed=embed)
-        user = self.bot.get_user(message.author.id)
+                    embed = nextcord.Embed(color=0x0DD91A)
+                    embed.add_field(
+                        name=f"You ({user.display_name}) have been muted",
+                        value=f"You have been muted for 10 minutes.\nIf you think this was a mistake, please contact an owner or admin\nBecause of this action, you received 1 warn",
+                        inline=True,
+                    )
+                    await message.channel.send(embed=embed)
+                    await event_handler.warn_system(message, user)
+
         if user is not None:
-            query = {"_id": message.author.id}
+            query = {"_id": user.id}
             if UserData.count_documents(query) == 0:
-                post = {"_id": message.author.id, "messages": 1}
+                post = {"_id": user.id, "messages": 1}
                 UserData.insert_one(post)
             else:
-                user = UserData.find(query)
-                messages = 0
-                try:
-                    for result in user:
-                        messages = result["messages"]
-                except KeyError:
-                    pass
+                for result in UserData.find(query):
+                    messages = result["messages"]
                 messages = messages + 1
                 UserData.update_one(
                     {"_id": message.author.id}, {"$set": {"messages": messages}}
