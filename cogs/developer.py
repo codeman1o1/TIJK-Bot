@@ -1,13 +1,14 @@
-import nextcord
-from nextcord.ext import commands
-from dotenv import load_dotenv
-from pymongo import MongoClient
-import uptime
-import time
-import psutil
+import json
 import os
 import sys
-import json
+import time
+
+import nextcord
+import psutil
+import uptime
+from dotenv import load_dotenv
+from nextcord.ext import commands
+from pymongo import MongoClient
 
 load_dotenv(os.path.join(os.getcwd() + "\.env"))
 

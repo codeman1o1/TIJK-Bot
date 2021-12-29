@@ -1,18 +1,18 @@
 # TIJK-Bot is made and maintaned by codeman1o1 (https://github.com/codeman1o1)
 
 import asyncio
-import os
 import datetime
+import os
 import time
-import basic_logger as bl
 
 import nextcord
 import nextcord.ext.commands.errors
-from nextcord.ext import commands
-from nextcord.ext import tasks
 from dotenv import load_dotenv
+from nextcord.ext import commands, tasks
 from pretty_help import PrettyHelp
 from pymongo import MongoClient
+
+import basic_logger as bl
 
 load_dotenv(os.path.join(".env"))
 

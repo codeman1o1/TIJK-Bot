@@ -1,8 +1,9 @@
-import nextcord
-from nextcord.ext import commands
-import aiohttp
 import os
+
+import aiohttp
+import nextcord
 from dotenv import load_dotenv
+from nextcord.ext import commands
 
 load_dotenv(os.path.join(os.getcwd() + "\.env"))
 

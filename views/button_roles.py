@@ -1,8 +1,9 @@
-import nextcord
-from nextcord import ButtonStyle
-from dotenv import load_dotenv
-from pymongo import MongoClient
 import os
+
+import nextcord
+from dotenv import load_dotenv
+from nextcord import ButtonStyle
+from pymongo import MongoClient
 
 load_dotenv(os.path.join(os.getcwd() + "\.env"))
 

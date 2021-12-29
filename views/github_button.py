@@ -1,6 +1,7 @@
 import nextcord
 from nextcord import ButtonStyle
 
+
 class github_button(nextcord.ui.View):
     def __init__(self):
         super().__init__()
