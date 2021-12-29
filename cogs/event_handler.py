@@ -172,102 +172,9 @@ class event_handler(
         counter = 0
 
         for k in BotData.find():
-            forbidden_word_list = k["forbidden_words"]
-            reaction_messages = k["reactionmessages"]
-            reaction_messages = dict(json.loads(reaction_messages))
-            reaction_messages_keys = list(reaction_messages.keys())
-            reaction_messages_values = list(reaction_messages.values())
-
-        filtered_message = await event_handler.message_filter(message)
-
-        for file in message.attachments:
-            if any(
-                forbidden_word in file.filename
-                for forbidden_word in forbidden_word_list
-            ):
-                try:
-                    await message.delete()
-                    embed = nextcord.Embed(color=0x0DD91A)
-                    embed.add_field(
-                        name=f"Hey, don't send that!",
-                        value=f"Because of this action, you received 1 warn",
-                        inline=True,
-                    )
-                    embed.set_footer(
-                        text="This message wil delete itself after 5 seconds"
-                    )
-                    await message.channel.send(embed=embed, delete_after=5)
-                    await event_handler.warn_system(message, message.author)
-                except nextcord.errors.NotFound:
-                    bl.warning(
-                        f"Tried to delete message but message was not found", __file__
-                    )
-            if file.filename.endswith((".exe", ".dll")):
-                try:
-                    await message.delete()
-                    embed = nextcord.Embed(color=0x0DD91A)
-                    embed.add_field(
-                        name=f"Hey, don't send that!",
-                        value=f"Because of this action, you received 1 warn",
-                        inline=True,
-                    )
-                    embed.set_footer(
-                        text="This message wil delete itself after 5 seconds"
-                    )
-                    await message.channel.send(embed=embed, delete_after=5)
-                    await event_handler.warn_system(message, message.author)
-                except nextcord.errors.NotFound:
-                    bl.warning(
-                        f"Tried to delete message but message was not found", __file__
-                    )
-
-            if file.filename.endswith(".txt"):
-                await file.save("file.txt")
-                with open("file.txt") as f:
-                    lines = f.readlines()
-                    if any(
-                        forbidden_word in lines
-                        for forbidden_word in forbidden_word_list
-                    ):
-                        try:
-                            await message.delete()
-                            embed = nextcord.Embed(color=0x0DD91A)
-                            embed.add_field(
-                                name=f"Hey, don't send that!",
-                                value=f"Because of this action, you received 1 warn",
-                                inline=True,
-                            )
-                            embed.set_footer(
-                                text="This message wil delete itself after 5 seconds"
-                            )
-                            await message.channel.send(embed=embed, delete_after=5)
-                            await event_handler.warn_system(message, message.author)
-                        except nextcord.errors.NotFound:
-                            bl.warning(
-                                f"Tried to delete message but message was not found",
-                                __file__,
-                            )
-                    f.close()
-                os.remove("file.txt")
-
-        if any(
-            forbidden_word in filtered_message for forbidden_word in forbidden_word_list
-        ):
-            try:
-                await message.delete()
-                embed = nextcord.Embed(color=0x0DD91A)
-                embed.add_field(
-                    name=f"Hey, don't say that!",
-                    value=f"Because of this action, you received 1 warn",
-                    inline=True,
-                )
-                embed.set_footer(text="This message wil delete itself after 5 seconds")
-                await message.channel.send(embed=embed, delete_after=5)
-                await event_handler.warn_system(message, message.author)
-            except nextcord.errors.NotFound:
-                bl.warning(
-                    f"Tried to delete message but message was not found", __file__
-                )
+            reaction_messages = dict(json.loads(k["reactionmessages"]))
+        reaction_messages_keys = list(reaction_messages.keys())
+        reaction_messages_values = list(reaction_messages.values())
 
         if any(
             key.lower() in message.content.lower() for key in reaction_messages_keys
@@ -328,50 +235,6 @@ class event_handler(
                 messages = messages + 1
                 UserData.update_one(
                     {"_id": message.author.id}, {"$set": {"messages": messages}}
-                )
-
-    @commands.Cog.listener()
-    async def on_message_edit(self, before, after):
-        for k in BotData.find():
-            forbidden_list = k["forbidden_words"]
-
-        filtered_message = await event_handler.message_filter(after)
-
-        for file in after.attachments:
-            if file.filename.endswith((".exe", ".dll")):
-                try:
-                    await after.delete()
-                    embed = nextcord.Embed(color=0x0DD91A)
-                    embed.add_field(
-                        name=f"Hey, don't send that!",
-                        value=f"Because of this action, you received 1 warn",
-                        inline=True,
-                    )
-                    embed.set_footer(
-                        text="This message wil delete itself after 5 seconds"
-                    )
-                    await after.channel.send(embed=embed, delete_after=5)
-                    await event_handler.warn_system(after, after.author)
-                except nextcord.errors.NotFound:
-                    bl.warning(
-                        f"Tried to delete message but message was not found", __file__
-                    )
-
-        if any(forbidden_word in filtered_message for forbidden_word in forbidden_list):
-            try:
-                await after.delete()
-                embed = nextcord.Embed(color=0x0DD91A)
-                embed.add_field(
-                    name=f"Hey, don't say that!",
-                    value=f"Because of this action, you received 1 warn",
-                    inline=True,
-                )
-                embed.set_footer(text="This message wil delete itself after 5 seconds")
-                await after.channel.send(embed=embed, delete_after=5)
-                await event_handler.warn_system(after, after.author)
-            except nextcord.errors.NotFound:
-                bl.warning(
-                    f"Tried to delete message but message was not found", __file__
                 )
 
     @commands.Cog.listener()
