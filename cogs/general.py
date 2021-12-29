@@ -58,7 +58,7 @@ class general(
             if user.status != nextcord.Status.offline
             if hypixel_ping in user.roles
         ]
-        if not len(available) == 0:
+        if available:
             embed = nextcord.Embed(color=0x0DD91A)
             randomInt = random.randint(0, len(available) - 1)
             embed.add_field(
@@ -66,7 +66,7 @@ class general(
                 value=f"{available[randomInt]} will be the party leader!",
                 inline=False,
             )
-        elif len(available) == 0:
+        else:
             embed = nextcord.Embed(
                 color=0x0DD91A,
                 title=f"Nobody meets the requirements to be the party leader!",
@@ -93,8 +93,7 @@ class general(
                     value=f"Get some help",
                     inline=False,
                 )
-                await ctx.send(embed=embed)
-            elif not admin == ctx.author:
+            else:
                 embed = nextcord.Embed(color=0x0DD91A)
                 embed.add_field(
                     name=f"Someone needs your help!",
@@ -108,13 +107,13 @@ class general(
                     value=f"Asked {admin.display_name} for help with the  message {message}",
                     inline=False,
                 )
-                await ctx.send(embed=embed)
         else:
             embed = nextcord.Embed(
                 color=0x0DD91A,
                 title=f"{admin.display_name} is not an admin!",
             )
-            await ctx.send(embed=embed)
+
+        await ctx.send(embed=embed)
 
     @admin.command(
         name="urgent",
@@ -134,8 +133,7 @@ class general(
                     value=f"Get some urgent help",
                     inline=False,
                 )
-                await ctx.send(embed=embed)
-            elif not admin == ctx.author:
+            else:
                 embed = nextcord.Embed(color=0x0DD91A)
                 embed.add_field(
                     name=f"Someone needs your urgent help!",
@@ -149,13 +147,13 @@ class general(
                     value=f"Asked {admin.display_name} for help with the  message {message}",
                     inline=False,
                 )
-                await ctx.send(embed=embed)
         else:
             embed = nextcord.Embed(
                 color=0x0DD91A,
                 title=f"{admin.display_name} is not an admin!",
             )
-            await ctx.send(embed=embed)
+
+        await ctx.send(embed=embed)
 
     @commands.group(
         name="birthday",

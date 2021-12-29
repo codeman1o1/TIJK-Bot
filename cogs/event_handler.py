@@ -170,6 +170,7 @@ class event_handler(
     @commands.Cog.listener()
     async def on_message(self, message):
         counter = 0
+
         for k in BotData.find():
             forbidden_word_list = k["forbidden_words"]
             reaction_messages = k["reactionmessages"]
@@ -287,7 +288,7 @@ class event_handler(
                 for lines in file:
                     if lines.strip("\n") == str(message.author.id):
                         counter += 1
-                file.writelines(f"{str(message.author.id)}\n")
+                file.writelines(f"{message.author.id}\n")
                 if counter > 3:
                     user = message.author
                     owner_role = nextcord.utils.get(user.guild.roles, name="Owner")
@@ -296,21 +297,22 @@ class event_handler(
                         user.guild.roles, name="TIJK-Bot developer"
                     )
                     anti_mute = (owner_role, admin_role, tijk_bot_developer_role)
-                    if not user.bot:
-                        if not any(role in user.roles for role in anti_mute):
-                            await message.author.edit(
-                                timeout=nextcord.utils.utcnow()
-                                + datetime.timedelta(seconds=600)
-                            )
-                            embed = nextcord.Embed(color=0x0DD91A)
-                            embed.add_field(
-                                name=f"You ({message.author.display_name}) have been muted",
-                                value=f"You have been muted for 10 minutes.\nIf you think this was a mistake, please contact an owner or admin\nBecause of this action, you received 1 warn",
-                                inline=True,
-                            )
-                            await message.channel.send(embed=embed)
+                    if not user.bot and all(
+                        role not in user.roles for role in anti_mute
+                    ):
+                        await message.author.edit(
+                            timeout=nextcord.utils.utcnow()
+                            + datetime.timedelta(seconds=600)
+                        )
+                        embed = nextcord.Embed(color=0x0DD91A)
+                        embed.add_field(
+                            name=f"You ({message.author.display_name}) have been muted",
+                            value=f"You have been muted for 10 minutes.\nIf you think this was a mistake, please contact an owner or admin\nBecause of this action, you received 1 warn",
+                            inline=True,
+                        )
+                        await message.channel.send(embed=embed)
         user = self.bot.get_user(message.author.id)
-        if not user is None:
+        if user is not None:
             query = {"_id": message.author.id}
             if UserData.count_documents(query) == 0:
                 post = {"_id": message.author.id, "messages": 1}
@@ -389,7 +391,7 @@ class event_handler(
         if not member.bot:
             member_role = nextcord.utils.get(member.guild.roles, name="Member")
             await member.add_roles(member_role)
-        elif member.bot:
+        else:
             bot_role = nextcord.utils.get(member.guild.roles, name="Bot")
             await member.add_roles(bot_role)
 
@@ -403,7 +405,7 @@ class event_handler(
             owner = await commands.converter.UserConverter().convert(
                 after, str(info.owner)
             )
-            if not after.id == owner.id:
+            if after.id != owner.id:
                 await after.remove_roles(tijk_bot_developer_role)
         if after.nick:
             owner_role = nextcord.utils.get(after.guild.roles, name="Owner")
@@ -416,32 +418,34 @@ class event_handler(
             ]
             admin_names = tuple(sum(admin_names, []))
             admin_roles = (owner_role, admin_role)
-            if not any(admin_role in after.roles for admin_role in admin_roles):
-                if after.nick in admin_names:
-                    try:
-                        user = self.bot.get_user(int(after.id))
-                        if before.nick:
-                            await after.edit(nick=before.nick)
-                        else:
-                            await after.edit(nick=before.name)
-                        query = {"_id": after.id}
-                        if UserData.count_documents(query) == 0:
-                            post = {"_id": after.id, "warns": 1}
-                            UserData.insert_one(post)
-                        else:
-                            user = UserData.find(query)
-                            warns = 0
-                            try:
-                                for result in user:
-                                    warns = result["warns"]
-                            except KeyError:
-                                pass
-                            warns = warns + 1
-                            UserData.update_one(
-                                {"_id": after.id}, {"$set": {"warns": warns}}
-                            )
-                    except nextcord.Forbidden:
-                        bl.error(f"Couldn't change nickname", __file__)
+            if (
+                all(admin_role not in after.roles for admin_role in admin_roles)
+                and after.nick in admin_names
+            ):
+                try:
+                    user = self.bot.get_user(int(after.id))
+                    if before.nick:
+                        await after.edit(nick=before.nick)
+                    else:
+                        await after.edit(nick=before.name)
+                    query = {"_id": after.id}
+                    if UserData.count_documents(query) == 0:
+                        post = {"_id": after.id, "warns": 1}
+                        UserData.insert_one(post)
+                    else:
+                        user = UserData.find(query)
+                        warns = 0
+                        try:
+                            for result in user:
+                                warns = result["warns"]
+                        except KeyError:
+                            pass
+                        warns = warns + 1
+                        UserData.update_one(
+                            {"_id": after.id}, {"$set": {"warns": warns}}
+                        )
+                except nextcord.Forbidden:
+                    bl.error(f"Couldn't change nickname", __file__)
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):

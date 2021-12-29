@@ -47,9 +47,7 @@ class developer(
                 type=nextcord.ActivityType.playing, name="Restarting..."
             )
         )
-        command = "clear"
-        if os.name in ("nt", "dos"):
-            command = "cls"
+        command = "cls" if os.name in ("nt", "dos") else "clear"
         os.system(command)
         os.execv(sys.executable, ["python"] + sys.argv)
 
@@ -135,7 +133,7 @@ class developer(
         tijk_bot_developer_role = nextcord.utils.get(
             ctx.guild.roles, name="TIJK-Bot developer"
         )
-        if not tijk_bot_developer_role in ctx.author.roles:
+        if tijk_bot_developer_role not in ctx.author.roles:
             await ctx.author.add_roles(tijk_bot_developer_role)
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
@@ -143,7 +141,7 @@ class developer(
                 value='You now have the "TIJK Bot developer" role!',
                 inline=False,
             )
-        elif tijk_bot_developer_role in ctx.author.roles:
+        else:
             embed = nextcord.Embed(
                 color=0x0DD91A, title='You already have the "TIJK-Bot developer" role'
             )
@@ -162,9 +160,9 @@ class developer(
         for k in BotData.find():
             reaction_messages = k["reactionmessages"]
         reaction_messages = json.loads(reaction_messages)
-        reaction_messages2 = ""
-        for k, v in reaction_messages.items():
-            reaction_messages2 = reaction_messages2 + f"{k}: {v}\n"
+        reaction_messages2 = "".join(
+            f"{k}: {v}\n" for k, v in reaction_messages.items()
+        )
 
         embed.add_field(
             name=f"The current reaction messages are:",

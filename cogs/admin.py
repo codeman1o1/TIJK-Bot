@@ -84,7 +84,7 @@ class admin(
         role = role.name
         for k in BotData.find():
             roles = k["roles"]
-            if not role in roles:
+            if role not in roles:
                 roles.append(role)
                 BotData.update_one(
                     {"_id": k["_id"]},
@@ -95,7 +95,7 @@ class admin(
                     color=0x0DD91A,
                     title=f'The "{role}" role has been added!\nMake sure to use `.buttonroles` again!',
                 )
-            elif role in roles:
+            else:
                 embed = nextcord.Embed(
                     color=0x0DD91A, title=f'The "{role}" role is already listed!'
                 )
@@ -122,12 +122,11 @@ class admin(
                     color=0x0DD91A,
                     title=f'The "{role}" role has been removed!\nMake sure to use `.buttonroles` again!',
                 )
-                await ctx.send(embed=embed)
-            elif not role in roles:
+            else:
                 embed = nextcord.Embed(
                     color=0x0DD91A, title=f'The "{role}" role is not listed!'
                 )
-                await ctx.send(embed=embed)
+            await ctx.send(embed=embed)
 
     @commands.command(
         name="shutdown",
@@ -270,7 +269,7 @@ class admin(
     async def assignrole(self, ctx, role: nextcord.Role, user: nextcord.Member = None):
         if user is None:
             user = ctx.author
-        if not role in user.roles:
+        if role not in user.roles:
             logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
             await user.add_roles(role)
             embed = nextcord.Embed(color=0x0DD91A)
@@ -282,7 +281,7 @@ class admin(
             await ctx.send(embed=embed)
             await logs_channel.send(embed=embed)
 
-        elif role in user.roles:
+        else:
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name=f"Could not assign that role!",
@@ -314,7 +313,7 @@ class admin(
             await ctx.send(embed=embed)
             await logs_channel.send(embed=embed)
 
-        elif not role in user.roles:
+        else:
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name=f"Could not remove that role!",
@@ -400,7 +399,7 @@ class admin(
                 inline=False,
             )
             await logs_channel.send(embed=embed)
-        elif not user in bans:
+        else:
             embed.add_field(
                 name=f"Unbanning failed!",
                 value=f"{user.display_name} is not banned!",
@@ -475,7 +474,7 @@ class admin(
             try:
                 user = self.bot.get_user(int(k["_id"]))
                 warns = k["warns"]
-                if not warns == 0:
+                if warns != 0:
                     embed.add_field(
                         name=f"{user} has",
                         value=f"{warns} warns",
@@ -555,7 +554,7 @@ class admin(
         for k in BotData.find():
             forbidden_words = k["forbidden_words"]
             word = forbidden_words[index]
-            forbidden_words.remove(forbidden_words[index])
+            forbidden_words.remove(word)
             BotData.update_one(
                 {"_id": k["_id"]},
                 {"$set": {"forbidden_words": forbidden_words}},

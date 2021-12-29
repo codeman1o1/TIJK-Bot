@@ -39,7 +39,7 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
                 request = await session.get(f"https://some-random-api.ml/img/{animal}")
                 info = await request.json()
             await ctx.send(info["link"])
-        elif not animal.lower() in animals:
+        elif animal.lower() not in animals:
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name=f"Can't request image!",

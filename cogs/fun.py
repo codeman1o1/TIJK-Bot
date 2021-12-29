@@ -64,33 +64,33 @@ class fun(
                 random_number = "paper"
             if random_number == 2:
                 random_number = "scissors"
-            if choice == "rock":
-                if random_number == "rock":
-                    win_lose_or_tie = "it is a tie"
-                if random_number == "paper":
-                    win_lose_or_tie = "I win"
-                if random_number == "scissors":
-                    win_lose_or_tie = "you win"
             if choice == "paper":
-                if random_number == "rock":
-                    win_lose_or_tie = "you win"
                 if random_number == "paper":
                     win_lose_or_tie = "it is a tie"
-                if random_number == "scissors":
+                elif random_number == "rock":
+                    win_lose_or_tie = "you win"
+                elif random_number == "scissors":
                     win_lose_or_tie = "I win"
-            if choice == "scissors":
-                if random_number == "rock":
+            elif choice == "rock":
+                if random_number == "paper":
                     win_lose_or_tie = "I win"
+                elif random_number == "rock":
+                    win_lose_or_tie = "it is a tie"
+                elif random_number == "scissors":
+                    win_lose_or_tie = "you win"
+            elif choice == "scissors":
                 if random_number == "paper":
                     win_lose_or_tie = "you win"
-                if random_number == "scissors":
+                elif random_number == "rock":
+                    win_lose_or_tie = "I win"
+                elif random_number == "scissors":
                     win_lose_or_tie = "it is a tie"
             embed.add_field(
                 name=f"You had {choice} and I had {random_number}",
                 value=f"That means that {win_lose_or_tie}!",
                 inline=False,
             )
-        elif not choice in rock_paper_scissors_choices:
+        else:
             embed.add_field(
                 name=f"{choice} is not a valid option!",
                 value=f"You can choose between\n> Rock\n> Paper\n> Scissor(s)",

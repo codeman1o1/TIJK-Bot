@@ -70,31 +70,33 @@ async def on_ready():
 
 @tasks.loop(seconds=10)
 async def birthday_checker():
-    if time.strftime("%H") == "12":
-        birthdays = []
-        today = datetime.date.today()
-        year = today.year
-        for k in UserData.find():
-            try:
-                if k["birthday"]:
-                    birthday2 = k["birthday"].split("-")
-                    date = datetime.date(year, int(birthday2[1]), int(birthday2[0]))
-                    if today == date:
-                        birthdays.append(k["_id"])
-            except KeyError:
-                pass
-        for member in birthdays:
-            member = bot.get_user(member)
-            embed = nextcord.Embed(color=0x0DD91A)
-            embed.add_field(
-                name=f"Happy birthday {member.name} :tada:",
-                value=f"We hope you will have a great day!",
-                inline=False,
-            )
-            for guild in bot.guilds:
-                await guild.system_channel.send(embed=embed)
-        birthdays.clear()
-        birthday_checker.cancel()
+    if time.strftime("%H") != "12":
+        return
+
+    birthdays = []
+    today = datetime.date.today()
+    year = today.year
+    for k in UserData.find():
+        try:
+            if k["birthday"]:
+                birthday2 = k["birthday"].split("-")
+                date = datetime.date(year, int(birthday2[1]), int(birthday2[0]))
+                if today == date:
+                    birthdays.append(k["_id"])
+        except KeyError:
+            pass
+    for member in birthdays:
+        member = bot.get_user(member)
+        embed = nextcord.Embed(color=0x0DD91A)
+        embed.add_field(
+            name=f"Happy birthday {member.name} :tada:",
+            value=f"We hope you will have a great day!",
+            inline=False,
+        )
+        for guild in bot.guilds:
+            await guild.system_channel.send(embed=embed)
+    birthdays.clear()
+    birthday_checker.cancel()
 
 
 @bot.command(
@@ -293,7 +295,7 @@ async def enable_command(ctx, *, command: str):
             title=f"The .{command.qualified_name} command is now enabled!",
         )
         bl.debug(f"The .{command.qualified_name} command is now enabled!", __file__)
-    elif command.enabled:
+    else:
         embed = nextcord.Embed(
             color=0x0DD91A,
             title=f"The .{command.qualified_name} command is already enabled!",
@@ -325,7 +327,7 @@ async def disable_command(ctx, *, command: str):
         embed = nextcord.Embed(
             color=0x0DD91A, title=f"The .{command_name} command is not found"
         )
-    elif not command in disable_prevention:
+    elif command not in disable_prevention:
         if command.enabled:
             command.enabled = False
             embed = nextcord.Embed(
@@ -340,7 +342,7 @@ async def disable_command(ctx, *, command: str):
                 color=0x0DD91A,
                 title=f"The .{command.qualified_name} command is already disabled!",
             )
-    elif command in disable_prevention:
+    else:
         embed = nextcord.Embed(color=0x0DD91A, title="Root commands can't be disabled!")
     await ctx.send(embed=embed)
 

@@ -30,7 +30,7 @@ class RoleView(nextcord.ui.View):
     ):
         role = nextcord.utils.get(interaction.guild.roles, name=button.label)
 
-        if not role in interaction.user.roles:
+        if role not in interaction.user.roles:
             try:
                 await interaction.user.add_roles(role)
                 await interaction.response.send_message(
@@ -43,7 +43,7 @@ class RoleView(nextcord.ui.View):
                     ephemeral=True,
                 )
 
-        elif role in interaction.user.roles:
+        else:
             try:
                 await interaction.user.remove_roles(role)
                 await interaction.response.send_message(
