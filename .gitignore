@@ -129,8 +129,9 @@ dmypy.json
 .pyre/
 
 # Chatbot files
-.pkl
-.h5
+assistant_model_classes.pkl
+assistant_model_words.pkl
+assistant_model.h5
 
 spam_detect.txt
 file.txt
