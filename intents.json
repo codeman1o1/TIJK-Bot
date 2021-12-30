@@ -2,12 +2,12 @@
   "intents": [
     {
       "tag": "greetings",
-      "patterns": ["Hi", "Hello", "Hey"],
+      "patterns": ["hi", "hello", "hey"],
       "responses": ["Hello {user}!"]
     },
     {
       "tag": "name",
-      "patterns": ["What is your name?", "What should I call you?"],
+      "patterns": ["your name", "call you"],
       "responses": ["I am TIJK Bot", "My name is TIJK Bot"]
     }
   ]

@@ -74,22 +74,6 @@ class event_handler(
     async def on_message(self, message):
         user = message.author
 
-        for k in BotData.find():
-            reaction_messages = dict(json.loads(k["reactionmessages"]))
-        reaction_messages_keys = list(reaction_messages.keys())
-        reaction_messages_values = list(reaction_messages.values())
-
-        if any(
-            key.lower() == message.content.lower() for key in reaction_messages_keys
-        ):
-            index = reaction_messages_keys.index(message.content.lower())
-            corresponding_message = reaction_messages_values[index]
-            if "{user}" in corresponding_message:
-                corresponding_message = corresponding_message.replace(
-                    "{user}", user.display_name
-                )
-            await message.channel.send(corresponding_message)
-
         if not user.bot:
             with open("spam_detect.txt", "r+") as file:
                 file.writelines(f"{user.id}\n")
