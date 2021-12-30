@@ -6,7 +6,7 @@ import nextcord
 from dotenv import load_dotenv
 from nextcord.ext import commands
 from pymongo import MongoClient
-from views.github_button import github_button
+from views.github import github_button
 
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(BASEDIR, ".env"))
