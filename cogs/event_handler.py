@@ -76,28 +76,29 @@ class event_handler(
     async def on_message(self, message):
         user = message.author
 
-        hypixel_ping = nextcord.utils.get(user.guild.roles, name="Hypixel Ping")
-        if message.content == f"<@&{hypixel_ping.id}>" and not user.bot:
-            embed = nextcord.Embed(
-                color=0x0DD91A, title=f"{user.display_name} has Hypixel Pinged"
-            )
-            embed.add_field(
-                name=f"Accepted",
-                value=f"None",
-            )
-            embed.add_field(
-                name=f"In a moment",
-                value=f"None",
-            )
-            embed.add_field(
-                name=f"Denied",
-                value=f"None",
-            )
-            await message.channel.send(
-                embed=embed,
-                delete_after=300,
-                view=hypixel_ping_buttons(),
-            )
+        if not user.bot:
+            hypixel_ping = nextcord.utils.get(user.guild.roles, name="Hypixel Ping")
+            if message.content == f"<@&{hypixel_ping.id}>":
+                embed = nextcord.Embed(
+                    color=0x0DD91A, title=f"{user.display_name} has Hypixel Pinged"
+                )
+                embed.add_field(
+                    name=f"Accepted",
+                    value=f"None",
+                )
+                embed.add_field(
+                    name=f"In a moment",
+                    value=f"None",
+                )
+                embed.add_field(
+                    name=f"Denied",
+                    value=f"None",
+                )
+                await message.channel.send(
+                    embed=embed,
+                    delete_after=300,
+                    view=hypixel_ping_buttons(),
+                )
 
         if not user.bot:
             with open("spam_detect.txt", "r+") as file:
