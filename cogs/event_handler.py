@@ -96,7 +96,7 @@ class event_handler(
                 )
                 await message.channel.send(
                     embed=embed,
-                    delete_after=300,
+                    delete_after=600,
                     view=hypixel_ping_buttons(),
                 )
 
