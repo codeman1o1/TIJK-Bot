@@ -37,6 +37,7 @@ class event_handler(
             total_warns = amount
         else:
             user2 = UserData.find(query)
+            warns = 0
             try:
                 for result in user2:
                     warns = result["warns"]
