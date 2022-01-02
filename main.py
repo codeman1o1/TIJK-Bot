@@ -146,7 +146,7 @@ async def load_cog(ctx, cog: str = None):
         else:
             if cog.lower() == "dev":
                 cog = "developer"
-            if cog.lower() == "eh":
+            elif cog.lower() == "eh":
                 cog = "event_handler"
             bot.load_extension(f"cogs.{cog.lower()}")
             embed = nextcord.Embed(
