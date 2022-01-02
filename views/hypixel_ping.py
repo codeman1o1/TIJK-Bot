@@ -23,7 +23,7 @@ class hypixel_ping_buttons(nextcord.ui.View):
                 if embed_value_1 == "":
                     embed_value_1 = "None"
                 embed.set_field_at(1, name=embed_name_1, value=embed_value_1)
-            if interaction.user.display_name in embed_value_2:
+            elif interaction.user.display_name in embed_value_2:
                 embed_value_2 = embed_value_2.strip(
                     "\n" + interaction.user.display_name
                 )
@@ -41,7 +41,7 @@ class hypixel_ping_buttons(nextcord.ui.View):
                 if embed_value_1 == "":
                     embed_value_1 = "None"
                 embed.set_field_at(1, name=embed_name_1, value=embed_value_1)
-            if interaction.user.display_name in embed_value_2:
+            elif interaction.user.display_name in embed_value_2:
                 embed_value_2 = embed_value_2.strip(
                     "\n" + interaction.user.display_name
                 )
@@ -77,7 +77,7 @@ class hypixel_ping_buttons(nextcord.ui.View):
                 if embed_value_0 == "":
                     embed_value_0 = "None"
                 embed.set_field_at(0, name=embed_name_0, value=embed_value_0)
-            if interaction.user.display_name in embed_value_2:
+            elif interaction.user.display_name in embed_value_2:
                 embed_value_2 = embed_value_2.strip(
                     "\n" + interaction.user.display_name
                 )
@@ -95,7 +95,7 @@ class hypixel_ping_buttons(nextcord.ui.View):
                 if embed_value_0 == "":
                     embed_value_0 = "None"
                 embed.set_field_at(0, name=embed_name_0, value=embed_value_0)
-            if interaction.user.display_name in embed_value_2:
+            elif interaction.user.display_name in embed_value_2:
                 embed_value_2 = embed_value_2.strip(
                     "\n" + interaction.user.display_name
                 )
@@ -127,7 +127,7 @@ class hypixel_ping_buttons(nextcord.ui.View):
                 if embed_value_0 == "":
                     embed_value_0 = "None"
                 embed.set_field_at(0, name=embed_name_0, value=embed_value_0)
-            if interaction.user.display_name in embed_value_1:
+            elif interaction.user.display_name in embed_value_1:
                 embed_value_1 = embed_value_1.strip(
                     "\n" + interaction.user.display_name
                 )
@@ -145,7 +145,7 @@ class hypixel_ping_buttons(nextcord.ui.View):
                 if embed_value_0 == "":
                     embed_value_0 = "None"
                 embed.set_field_at(0, name=embed_name_0, value=embed_value_0)
-            if interaction.user.display_name in embed_value_1:
+            elif interaction.user.display_name in embed_value_1:
                 embed_value_1 = embed_value_1.strip(
                     "\n" + interaction.user.display_name
                 )
