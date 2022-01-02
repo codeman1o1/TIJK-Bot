@@ -24,6 +24,8 @@ Data = cluster["Data"]
 UserData = Data["UserData"]
 BotData = Data["BotData"]
 
+##made by codeman1o1
+
 client = nextcord.Client()
 bot = commands.Bot(
     command_prefix=".",
