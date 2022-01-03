@@ -45,14 +45,16 @@ class admin(
         if len(roles) == 0:
             embed = nextcord.Embed(
                 color=0x0DD91A,
-                title=f"There are no roles selected!\nMake sure to add them by using `.buttonroles add <role>`",
+                title='There are no roles selected!\nMake sure to add them by using `.buttonroles add <role>`',
             )
+
             await ctx.send(embed=embed)
         elif len(roles) > 0:
             await ctx.channel.purge(limit=1)
             embed = nextcord.Embed(
-                color=0x0DD91A, title=f"Click a button to add/remove that role!"
+                color=0x0DD91A, title='Click a button to add/remove that role!'
             )
+
             await ctx.send(embed=embed, view=RoleView())
 
     @buttonroles.command(
@@ -71,10 +73,9 @@ class admin(
         roles = roles.replace("'", "")
         roles = roles.replace(",", "\n>")
         embed.add_field(
-            name=f"The current button roles are:",
-            value=roles,
-            inline=False,
+            name='The current button roles are:', value=roles, inline=False
         )
+
         await ctx.send(embed=embed)
 
     @buttonroles.command(
@@ -140,10 +141,11 @@ class admin(
         logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
-            name=f"TIJK Bot was shut down",
+            name='TIJK Bot was shut down',
             value=f"TIJK Bot was shut down by {ctx.author.name}#{ctx.author.discriminator}",
             inline=False,
         )
+
         await ctx.send(embed=embed)
         await logs_channel.send(embed=embed)
         info = await self.bot.application_info()
@@ -167,10 +169,11 @@ class admin(
     async def ping(self, ctx, decimals: int = 1):
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
-            name=f"Pong!",
+            name='Pong!',
             value=f"The latency is {round(self.bot.latency, decimals)} seconds",
             inline=False,
         )
+
         await ctx.send(embed=embed)
 
     @commands.command(
@@ -218,10 +221,11 @@ class admin(
         )
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
-            name=f"User muted!",
+            name='User muted!',
             value=f"{user.display_name} was muted by {ctx.author.name}#{ctx.author.discriminator} because of {reason}",
             inline=False,
         )
+
         await ctx.send(embed=embed)
 
     @commands.command(
@@ -235,10 +239,11 @@ class admin(
         await user.edit(timeout=None)
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
-            name=f"User unmuted!",
+            name='User unmuted!',
             value=f"{user.display_name} was unmuted by {ctx.author.name}#{ctx.author.discriminator} because of {reason}",
             inline=False,
         )
+
         await ctx.send(embed=embed)
 
     @commands.command(
@@ -253,10 +258,11 @@ class admin(
         await user.edit(nick=name)
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
-            name=f"Nickname changed!",
+            name='Nickname changed!',
             value=f"{original_name}'s nickname has been changed to {name}",
             inline=False,
         )
+
         await ctx.send(embed=embed)
 
     @commands.command(
@@ -275,20 +281,22 @@ class admin(
             await user.add_roles(role)
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
-                name=f"Role assigned!",
+                name='Role assigned!',
                 value=f'Role "{role}" has been assigned to {user.display_name} by {ctx.author.name}#{ctx.author.discriminator}',
                 inline=False,
             )
+
             await ctx.send(embed=embed)
             await logs_channel.send(embed=embed)
 
         else:
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
-                name=f"Could not assign that role!",
+                name='Could not assign that role!',
                 value=f'{user.display_name} already has the "{role}" role',
                 inline=False,
             )
+
             await ctx.send(embed=embed)
 
     @commands.command(
@@ -307,20 +315,22 @@ class admin(
             await user.remove_roles(role)
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
-                name=f"Role removed!",
+                name='Role removed!',
                 value=f'Role "{role}" has been removed from {user.display_name} by {ctx.author.name}#{ctx.author.discriminator}',
                 inline=False,
             )
+
             await ctx.send(embed=embed)
             await logs_channel.send(embed=embed)
 
         else:
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
-                name=f"Could not remove that role!",
+                name='Could not remove that role!',
                 value=f'{user.display_name} does not have the "{role}" role',
                 inline=False,
             )
+
             await ctx.send(embed=embed)
 
     @commands.command(
@@ -337,9 +347,10 @@ class admin(
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name=f"{amount}{extra} messages cleared!",
-            value=f"This message wil delete itself after 5 seconds",
+            value='This message wil delete itself after 5 seconds',
             inline=False,
         )
+
         await ctx.send(embed=embed, delete_after=5)
 
     @commands.command(
@@ -354,10 +365,11 @@ class admin(
         await user.kick(reason=reason)
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
-            name=f"User kicked!",
+            name='User kicked!',
             value=f"{user.display_name} has been kicked by {ctx.author.name}#{ctx.author.discriminator} with the reason {reason}",
             inline=False,
         )
+
         await ctx.send(embed=embed)
         await logs_channel.send(embed=embed)
 
@@ -373,10 +385,11 @@ class admin(
         await user.ban(reason=reason)
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
-            name=f"User banned!",
+            name='User banned!',
             value=f"{user.name}#{user.discriminator} has been banned by {ctx.author.name}#{ctx.author.discriminator} with the reason {reason}\nUse `.unban {user.name}#{user.discriminator}` to unban {user.display_name}",
             inline=False,
         )
+
         await ctx.send(embed=embed)
         await logs_channel.send(embed=embed)
 
@@ -395,17 +408,19 @@ class admin(
             logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
             await ctx.guild.unban(user, reason=reason)
             embed.add_field(
-                name=f"User unbanned!",
+                name='User unbanned!',
                 value=f"{user.name}#{user.discriminator} has been unbanned by {ctx.author.name}#{ctx.author.discriminator} with the reason {reason}",
                 inline=False,
             )
+
             await logs_channel.send(embed=embed)
         else:
             embed.add_field(
-                name=f"Unbanning failed!",
+                name='Unbanning failed!',
                 value=f"{user.display_name} is not banned!",
                 inline=False,
             )
+
 
         await ctx.send(embed=embed)
 
@@ -484,7 +499,7 @@ class admin(
             except KeyError:
                 pass
         if embed.fields == 0:
-            embed = nextcord.Embed(color=0x0DD91A, title=f"Nobody has warns!")
+            embed = nextcord.Embed(color=0x0DD91A, title='Nobody has warns!')
         await ctx.send(embed=embed)
 
     @warn.command(
