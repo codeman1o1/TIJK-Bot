@@ -94,7 +94,7 @@ class event_handler(
                     embed.add_field(name="Denied", value="None")
                     await message.channel.send(
                         embed=embed,
-                        delete_after=600,
+                        delete_after=900,
                         view=ping_buttons(),
                     )
 
