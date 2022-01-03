@@ -90,7 +90,7 @@ async def birthday_checker():
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name=f"Happy birthday {member.name} :tada:",
-            value='We hope you will have a great day!',
+            value="We hope you will have a great day!",
             inline=False,
         )
 
@@ -98,6 +98,11 @@ async def birthday_checker():
             await guild.system_channel.send(embed=embed)
     birthdays.clear()
     birthday_checker.cancel()
+
+
+@bot.event
+async def on_message(message):
+    return
 
 
 @bot.command(
@@ -120,7 +125,7 @@ async def load_cog(ctx, cog: str = None):
             cogs = cogs.replace(",", "\n>")
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
-                name='The available cogs are:',
+                name="The available cogs are:",
                 value=f"> all\n> {cogs}",
                 inline=False,
             )
@@ -136,11 +141,15 @@ async def load_cog(ctx, cog: str = None):
                     if cog.endswith(".py"):
                         cog2 = cog.strip(".py")
                         bot.load_extension(f"cogs.{cog2}")
-                embed = nextcord.Embed(color=0x0DD91A, title='All cogs have been loaded')
-                bl.debug('All cogs have been loaded', __file__)
+                embed = nextcord.Embed(
+                    color=0x0DD91A, title="All cogs have been loaded"
+                )
+                bl.debug("All cogs have been loaded", __file__)
             except:
-                embed = nextcord.Embed(color=0xFF0000, title='Not all cogs could be loaded')
-                bl.warning('Not all cogs could be loaded', __file__)
+                embed = nextcord.Embed(
+                    color=0xFF0000, title="Not all cogs could be loaded"
+                )
+                bl.warning("Not all cogs could be loaded", __file__)
         else:
             if cog.lower() == "dev":
                 cog = "developer"
@@ -177,7 +186,7 @@ async def reload_cog(ctx, cog: str = None):
         if cog is None:
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
-                name='The available cogs are:',
+                name="The available cogs are:",
                 value=f"> all\n> {cogs}",
                 inline=False,
             )
@@ -193,11 +202,15 @@ async def reload_cog(ctx, cog: str = None):
                     if cog.endswith(".py"):
                         cog2 = cog.strip(".py")
                         bot.reload_extension(f"cogs.{cog2}")
-                embed = nextcord.Embed(color=0x0DD91A, title='All cogs have been reloaded')
-                bl.debug('All cogs have been reloaded', __file__)
+                embed = nextcord.Embed(
+                    color=0x0DD91A, title="All cogs have been reloaded"
+                )
+                bl.debug("All cogs have been reloaded", __file__)
             except:
-                embed = nextcord.Embed(color=0xFF0000, title='Not all cogs could be reloaded')
-                bl.warning('Not all cogs could be reloaded', __file__)
+                embed = nextcord.Embed(
+                    color=0xFF0000, title="Not all cogs could be reloaded"
+                )
+                bl.warning("Not all cogs could be reloaded", __file__)
         else:
             if cog.lower() == "dev":
                 cog = "developer"
@@ -235,7 +248,7 @@ async def unload_cog(ctx, cog: str = None):
         if cog is None:
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
-                name='The available cogs are:',
+                name="The available cogs are:",
                 value=f"> all\n> {cogs}",
                 inline=False,
             )
@@ -250,11 +263,15 @@ async def unload_cog(ctx, cog: str = None):
                 for cog in cogs:
                     cog2 = cog.strip(".py")
                     bot.unload_extension(f"cogs.{cog2}")
-                embed = nextcord.Embed(color=0x0DD91A, title='All cogs have been unloaded')
-                bl.debug('All cogs have been unloaded', __file__)
+                embed = nextcord.Embed(
+                    color=0x0DD91A, title="All cogs have been unloaded"
+                )
+                bl.debug("All cogs have been unloaded", __file__)
             except:
-                embed = nextcord.Embed(color=0xFF0000, title='Not all cogs could be unloaded')
-                bl.warning('Not all cogs could be unloaded', __file__)
+                embed = nextcord.Embed(
+                    color=0xFF0000, title="Not all cogs could be unloaded"
+                )
+                bl.warning("Not all cogs could be unloaded", __file__)
         else:
             if cog.lower() == "dev":
                 cog = "developer"

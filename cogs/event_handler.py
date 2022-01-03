@@ -60,7 +60,7 @@ class event_handler(
             UserData.update_one({"_id": user.id}, {"$set": {"warns": 0}})
             embed.add_field(
                 name=f"{user.display_name} exceeded the warn limit!",
-                value='He shall be punished with a 10 minute mute!',
+                value="He shall be punished with a 10 minute mute!",
                 inline=False,
             )
 
@@ -71,7 +71,7 @@ class event_handler(
             logs_channel = nextcord.utils.get(user.guild.channels, name="logs")
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
-                name='User muted!',
+                name="User muted!",
                 value=f"{user.display_name} was muted for 10 minutes by Warn System",
                 inline=False,
             )
@@ -88,9 +88,9 @@ class event_handler(
                 embed = nextcord.Embed(
                     color=0x0DD91A, title=f"{user.display_name} has Hypixel Pinged"
                 )
-                embed.add_field(name='Accepted', value='None')
-                embed.add_field(name='In a moment', value='None')
-                embed.add_field(name='Denied', value='None')
+                embed.add_field(name="Accepted", value="None")
+                embed.add_field(name="In a moment", value="None")
+                embed.add_field(name="Denied", value="None")
                 await message.channel.send(
                     embed=embed,
                     delete_after=600,
@@ -102,16 +102,15 @@ class event_handler(
                 embed = nextcord.Embed(
                     color=0x0DD91A, title=f"{user.display_name} has SMP Pinged"
                 )
-                embed.add_field(name='Accepted', value='None')
-                embed.add_field(name='In a moment', value='None')
-                embed.add_field(name='Denied', value='None')
+                embed.add_field(name="Accepted", value="None")
+                embed.add_field(name="In a moment", value="None")
+                embed.add_field(name="Denied", value="None")
                 await message.channel.send(
                     embed=embed,
                     delete_after=600,
                     view=SMP_ping_buttons(),
                 )
 
-        if not user.bot:
             with open("spam_detect.txt", "r+") as file:
                 file.writelines(f"{user.id}\n")
                 counter = sum(lines.strip("\n") == str(user.id) for lines in file)
@@ -130,12 +129,15 @@ class event_handler(
                     embed = nextcord.Embed(color=0x0DD91A)
                     embed.add_field(
                         name=f"You ({user.display_name}) have been muted",
-                        value='You have been muted for 10 minutes.\nIf you think this was a mistake, please contact an owner or admin\nBecause of this action, you received 1 warn',
+                        value="You have been muted for 10 minutes.\nIf you think this was a mistake, please contact an owner or admin\nBecause of this action, you received 1 warn",
                         inline=True,
                     )
 
                     await message.channel.send(embed=embed)
                     await event_handler.warn_system(message, user)
+
+            if not message.content.startswith(".."):
+                await self.bot.process_commands(message)
 
         if user is not None:
             query = {"_id": user.id}
@@ -241,7 +243,7 @@ class event_handler(
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         embed = nextcord.Embed(color=0xFF0000)
-        embed.add_field(name='An error occured!', value=f"{error}", inline=True)
+        embed.add_field(name="An error occured!", value=f"{error}", inline=True)
         await ctx.send(embed=embed)
         bl.error(error, __file__)
 
