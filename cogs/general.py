@@ -37,10 +37,11 @@ class general(
     async def github(self, ctx):
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
-            name=f"View the official TIJK Bot code now!",
-            value=f"https://github.com/codeman1o1/TIJK-Bot",
+            name='View the official TIJK Bot code now!',
+            value='https://github.com/codeman1o1/TIJK-Bot',
             inline=False,
         )
+
         await ctx.send(embed=embed, view=github_button())
 
     @commands.command(
@@ -63,15 +64,17 @@ class general(
             embed = nextcord.Embed(color=0x0DD91A)
             randomInt = random.randint(0, len(available) - 1)
             embed.add_field(
-                name=f"Party leader chosen!",
+                name='Party leader chosen!',
                 value=f"{available[randomInt]} will be the party leader!",
                 inline=False,
             )
+
         else:
             embed = nextcord.Embed(
                 color=0x0DD91A,
-                title=f"Nobody meets the requirements to be the party leader!",
+                title='Nobody meets the requirements to be the party leader!',
             )
+
         await ctx.send(embed=embed, delete_after=300)
         available.clear()
 
@@ -89,25 +92,23 @@ class general(
         if any(roles in admin.roles for roles in admin_roles):
             if admin == ctx.author:
                 embed = nextcord.Embed(color=0x0DD91A)
-                embed.add_field(
-                    name=f"Bruh",
-                    value=f"Get some help",
-                    inline=False,
-                )
+                embed.add_field(name='Bruh', value='Get some help', inline=False)
             else:
                 embed = nextcord.Embed(color=0x0DD91A)
                 embed.add_field(
-                    name=f"Someone needs your help!",
+                    name='Someone needs your help!',
                     value=f"{ctx.author} needs your help with {message}",
                     inline=False,
                 )
+
                 await admin.send(embed=embed)
                 embed = nextcord.Embed(color=0x0DD91A)
                 embed.add_field(
-                    name=f"Asked for help!",
+                    name='Asked for help!',
                     value=f"Asked {admin.display_name} for help with the  message {message}",
                     inline=False,
                 )
+
         else:
             embed = nextcord.Embed(
                 color=0x0DD91A,
@@ -129,25 +130,23 @@ class general(
         if any(roles in admin.roles for roles in admin_roles):
             if admin == ctx.author:
                 embed = nextcord.Embed(color=0x0DD91A)
-                embed.add_field(
-                    name=f"Bruh",
-                    value=f"Get some urgent help",
-                    inline=False,
-                )
+                embed.add_field(name='Bruh', value='Get some urgent help', inline=False)
             else:
                 embed = nextcord.Embed(color=0x0DD91A)
                 embed.add_field(
-                    name=f"Someone needs your urgent help!",
+                    name='Someone needs your urgent help!',
                     value=f"{ctx.author} needs your help with {message}",
                     inline=False,
                 )
+
                 await admin.send(f"{admin.mention}", embed=embed)
                 embed = nextcord.Embed(color=0x0DD91A)
                 embed.add_field(
-                    name=f"Asked for urgent help!",
+                    name='Asked for urgent help!',
                     value=f"Asked {admin.display_name} for help with the  message {message}",
                     inline=False,
                 )
+
         else:
             embed = nextcord.Embed(
                 color=0x0DD91A,
@@ -200,7 +199,7 @@ class general(
                 inline=False,
             )
         if embed.fields == 0:
-            embed = nextcord.Embed(color=0x0DD91A, title=f"No-one has a birthday set!")
+            embed = nextcord.Embed(color=0x0DD91A, title='No-one has a birthday set!')
         await ctx.send(embed=embed)
 
     @birthday.command(
@@ -210,10 +209,11 @@ class general(
         if not date:
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
-                name=f"Type your birthday as following:",
-                value=f"day-month\nFor example: 22-05",
+                name='Type your birthday as following:',
+                value='day-month\nFor example: 22-05',
                 inline=False,
             )
+
         if date:
             try:
                 today = datetime.date.today()
@@ -245,7 +245,7 @@ class general(
     )
     async def remove_birthday(self, ctx):
         UserData.update_one({"_id": ctx.author.id}, {"$unset": {"birthday": ""}})
-        embed = nextcord.Embed(color=0x0DD91A, title=f"Your birthday has been removed!")
+        embed = nextcord.Embed(color=0x0DD91A, title='Your birthday has been removed!')
         await ctx.send(embed=embed)
 
 

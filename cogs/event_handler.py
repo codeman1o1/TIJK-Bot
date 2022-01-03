@@ -60,9 +60,10 @@ class event_handler(
             UserData.update_one({"_id": user.id}, {"$set": {"warns": 0}})
             embed.add_field(
                 name=f"{user.display_name} exceeded the warn limit!",
-                value=f"He shall be punished with a 10 minute mute!",
+                value='He shall be punished with a 10 minute mute!',
                 inline=False,
             )
+
             await event.channel.send(embed=embed)
             await user.edit(
                 timeout=nextcord.utils.utcnow() + datetime.timedelta(seconds=600)
@@ -70,10 +71,11 @@ class event_handler(
             logs_channel = nextcord.utils.get(user.guild.channels, name="logs")
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
-                name=f"User muted!",
+                name='User muted!',
                 value=f"{user.display_name} was muted for 10 minutes by Warn System",
                 inline=False,
             )
+
             await logs_channel.send(embed=embed)
 
     @commands.Cog.listener()
@@ -86,41 +88,23 @@ class event_handler(
                 embed = nextcord.Embed(
                     color=0x0DD91A, title=f"{user.display_name} has Hypixel Pinged"
                 )
-                embed.add_field(
-                    name=f"Accepted",
-                    value=f"None",
-                )
-                embed.add_field(
-                    name=f"In a moment",
-                    value=f"None",
-                )
-                embed.add_field(
-                    name=f"Denied",
-                    value=f"None",
-                )
+                embed.add_field(name='Accepted', value='None')
+                embed.add_field(name='In a moment', value='None')
+                embed.add_field(name='Denied', value='None')
                 await message.channel.send(
                     embed=embed,
                     delete_after=600,
                     view=hypixel_ping_buttons(),
                 )
-                
+
             SMP_ping = nextcord.utils.get(user.guild.roles, name="SMP Ping")
             if message.content == f"<@&{SMP_ping.id}>":
                 embed = nextcord.Embed(
                     color=0x0DD91A, title=f"{user.display_name} has SMP Pinged"
                 )
-                embed.add_field(
-                    name=f"Accepted",
-                    value=f"None",
-                )
-                embed.add_field(
-                    name=f"In a moment",
-                    value=f"None",
-                )
-                embed.add_field(
-                    name=f"Denied",
-                    value=f"None",
-                )
+                embed.add_field(name='Accepted', value='None')
+                embed.add_field(name='In a moment', value='None')
+                embed.add_field(name='Denied', value='None')
                 await message.channel.send(
                     embed=embed,
                     delete_after=600,
@@ -146,9 +130,10 @@ class event_handler(
                     embed = nextcord.Embed(color=0x0DD91A)
                     embed.add_field(
                         name=f"You ({user.display_name}) have been muted",
-                        value=f"You have been muted for 10 minutes.\nIf you think this was a mistake, please contact an owner or admin\nBecause of this action, you received 1 warn",
+                        value='You have been muted for 10 minutes.\nIf you think this was a mistake, please contact an owner or admin\nBecause of this action, you received 1 warn',
                         inline=True,
                     )
+
                     await message.channel.send(embed=embed)
                     await event_handler.warn_system(message, user)
 
@@ -236,7 +221,7 @@ class event_handler(
                             {"_id": after.id}, {"$set": {"warns": warns}}
                         )
                 except nextcord.Forbidden:
-                    bl.error(f"Couldn't change nickname", __file__)
+                    bl.error("Couldn't change nickname", __file__)
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
@@ -256,11 +241,7 @@ class event_handler(
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         embed = nextcord.Embed(color=0xFF0000)
-        embed.add_field(
-            name=f"An error occured!",
-            value=f"{error}",
-            inline=True,
-        )
+        embed.add_field(name='An error occured!', value=f"{error}", inline=True)
         await ctx.send(embed=embed)
         bl.error(error, __file__)
 

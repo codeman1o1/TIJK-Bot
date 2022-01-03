@@ -94,9 +94,10 @@ class fun(
         else:
             embed.add_field(
                 name=f"{choice} is not a valid option!",
-                value=f"You can choose between\n> Rock\n> Paper\n> Scissor(s)",
+                value='You can choose between\n> Rock\n> Paper\n> Scissor(s)',
                 inline=False,
             )
+
         await ctx.send(embed=embed)
 
     @commands.command(
@@ -108,37 +109,38 @@ class fun(
         msg = await ctx.send(f"`Hacking {user}`")
         delay = round(random.uniform(2, 5), 2)
         await asyncio.sleep(delay)
-        await msg.edit(content=f"`Getting IP-addres...\n10% done`")
+        await msg.edit(content='`Getting IP-addres...\n10% done`')
         delay = round(random.uniform(2, 5), 2)
         ip = socket.inet_ntoa(struct.pack(">I", random.randint(1, 0xFFFFFFFF)))
         await asyncio.sleep(delay)
         await msg.edit(content=f"`IP-addres found: {ip}\n20% done`")
         delay = round(random.uniform(2, 5), 2)
         await asyncio.sleep(delay)
-        await msg.edit(content=f"`Buying data from the dark web...\n30% done`")
+        await msg.edit(content='`Buying data from the dark web...\n30% done`')
         delay = round(random.uniform(2, 5), 2)
         await asyncio.sleep(delay)
-        await msg.edit(content=f"`Installing trojan on PC...\n40% done`")
+        await msg.edit(content='`Installing trojan on PC...\n40% done`')
         delay = round(random.uniform(2, 5), 2)
         await asyncio.sleep(delay)
-        await msg.edit(content=f"`Getting into OS...\n50% done`")
+        await msg.edit(content='`Getting into OS...\n50% done`')
         delay = round(random.uniform(2, 5), 2)
         await asyncio.sleep(delay)
-        await msg.edit(content=f"`Installing 24 virusses on PC...\n60% done`")
+        await msg.edit(content='`Installing 24 virusses on PC...\n60% done`')
         delay = round(random.uniform(2, 5), 2)
         await asyncio.sleep(delay)
-        await msg.edit(content=f"`Slowly taking RAM...\n70% done`")
+        await msg.edit(content='`Slowly taking RAM...\n70% done`')
         delay = round(random.uniform(2, 5), 2)
         await asyncio.sleep(delay)
-        await msg.edit(content=f"`Showing personal data to scare you...\n80% done`")
+        await msg.edit(content='`Showing personal data to scare you...\n80% done`')
         delay = round(random.uniform(2, 5), 2)
         await asyncio.sleep(delay)
-        await msg.edit(content=f"`Deleting Windows...\n90% done`")
+        await msg.edit(content='`Deleting Windows...\n90% done`')
         delay = round(random.uniform(2, 5), 2)
         await asyncio.sleep(delay)
         await msg.edit(
-            content=f"`Deletion complete, Windows was removed...\n100% done`"
+            content='`Deletion complete, Windows was removed...\n100% done`'
         )
+
         delay = round(random.uniform(1, 2), 2)
         await asyncio.sleep(delay)
         await msg.edit(content=f"`{user} has been totally legitimately hacked.`")
@@ -163,9 +165,7 @@ class fun(
             except KeyError:
                 pass
         if embed.fields == 0:
-            embed = nextcord.Embed(
-                color=0x0DD91A, title=f"Nobody has sent any messages!"
-            )
+            embed = nextcord.Embed(color=0x0DD91A, title='Nobody has sent any messages!')
         await ctx.send(embed=embed)
 
 

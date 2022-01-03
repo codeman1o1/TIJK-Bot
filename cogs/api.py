@@ -21,10 +21,11 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
     async def api(self, ctx):
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
-            name=f"Help with the .api command",
-            value=f"The .api command gets information from API's.\n**I do not own any of the API's, so if there occurs an issue, I can most likely not help you with it.**\nType `.help api` for all available subcommands",
+            name='Help with the .api command',
+            value="The .api command gets information from API's.\n**I do not own any of the API's, so if there occurs an issue, I can most likely not help you with it.**\nType `.help api` for all available subcommands",
             inline=False,
         )
+
         await ctx.send(embed=embed)
 
     @api.command(
@@ -43,10 +44,11 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
         elif animal.lower() not in animals:
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
-                name=f"Can't request image!",
+                name="Can't request image!",
                 value=f"{animal} is not a valid animal type __for the API__\nValid animal types are:\n> Dog\n> Cat\n> Panda\n> Red Panda\n> Bird\n> Fox\n> Koala",
                 inline=False,
             )
+
             await ctx.send(embed=embed)
 
     @api.command(
@@ -75,21 +77,9 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
                     + k["changedToAt"]
                     + "\n"
                 )
-            embed.add_field(
-                name=f"Username",
-                value=info["username"],
-                inline=False,
-            )
-            embed.add_field(
-                name=f"UUID",
-                value=info["uuid"],
-                inline=False,
-            )
-            embed.add_field(
-                name=f"Name History",
-                value=name_history,
-                inline=False,
-            )
+            embed.add_field(name='Username', value=info["username"], inline=False)
+            embed.add_field(name='UUID', value=info["uuid"], inline=False)
+            embed.add_field(name='Name History', value=name_history, inline=False)
         except KeyError:
             embed = nextcord.Embed(color=0xFF0000)
             embed.add_field(
@@ -106,14 +96,10 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
     )
     async def joke_api(self, ctx):
         async with aiohttp.ClientSession() as session:
-            request = await session.get(f"https://some-random-api.ml/joke")
+            request = await session.get('https://some-random-api.ml/joke')
             info = await request.json()
         embed = nextcord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name=f"Here is a joke!",
-            value=info["joke"],
-            inline=False,
-        )
+        embed.add_field(name='Here is a joke!', value=info["joke"], inline=False)
         await ctx.send(embed=embed)
 
     @api.command(
@@ -123,7 +109,7 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
     )
     async def meme_api(self, ctx):
         async with aiohttp.ClientSession() as session:
-            request = await session.get(f"https://some-random-api.ml/meme")
+            request = await session.get('https://some-random-api.ml/meme')
             info = await request.json()
         embed = nextcord.Embed(color=0x0DD91A, title=info["caption"])
         embed.set_image(url=info["image"])
@@ -186,76 +172,33 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
                 familyText = f"Evolution Stage: {evolutionStage}\nEvolution Line: {evolutionLine}"
             # Possible options: "normal" or "animated"
             embed.set_thumbnail(url=sprites["normal"])
+            embed.add_field(name='Name', value=info["name"].capitalize(), inline=True)
+            embed.add_field(name='ID', value=info["id"], inline=True)
+            embed.add_field(name='Type', value=type, inline=True)
+            embed.add_field(name='Species', value=species, inline=True)
+            embed.add_field(name='Abilities', value=abilities, inline=True)
+            embed.add_field(name='Height', value=info["height"], inline=True)
+            embed.add_field(name='Weight', value=info["weight"], inline=True)
             embed.add_field(
-                name=f"Name",
-                value=info["name"].capitalize(),
-                inline=True,
+                name='Base Experience', value=info["base_experience"], inline=True
             )
+
+            embed.add_field(name='Gender', value=gender, inline=True)
+            embed.add_field(name='Egg Groups', value=egg_groups, inline=True)
             embed.add_field(
-                name=f"ID",
-                value=info["id"],
-                inline=True,
-            )
-            embed.add_field(
-                name=f"Type",
-                value=type,
-                inline=True,
-            )
-            embed.add_field(
-                name=f"Species",
-                value=species,
-                inline=True,
-            )
-            embed.add_field(
-                name=f"Abilities",
-                value=abilities,
-                inline=True,
-            )
-            embed.add_field(
-                name=f"Height",
-                value=info["height"],
-                inline=True,
-            )
-            embed.add_field(
-                name=f"Weight",
-                value=info["weight"],
-                inline=True,
-            )
-            embed.add_field(
-                name=f"Base Experience",
-                value=info["base_experience"],
-                inline=True,
-            )
-            embed.add_field(
-                name=f"Gender",
-                value=gender,
-                inline=True,
-            )
-            embed.add_field(
-                name=f"Egg Groups",
-                value=egg_groups,
-                inline=True,
-            )
-            embed.add_field(
-                name=f"Stats",
+                name='Stats',
                 value=f"HP: {hp}\nAttack: {attack}\nDefense: {defense}\nSpecial Attack: {sp_atk}\nSpecial Defense: {sp_def}\nSpeed: {speed}\nTotal: {total}",
                 inline=True,
             )
+
+            embed.add_field(name='Family', value=familyText, inline=True)
             embed.add_field(
-                name=f"Family",
-                value=familyText,
-                inline=True,
-            )
-            embed.add_field(
-                name=f"Description",
+                name='Description',
                 value=info["description"].replace(". ", ".\n"),
                 inline=True,
             )
-            embed.add_field(
-                name=f"Generation",
-                value=info["generation"],
-                inline=True,
-            )
+
+            embed.add_field(name='Generation', value=info["generation"], inline=True)
         except KeyError:
             embed = nextcord.Embed(color=0xFF0000)
             embed.add_field(

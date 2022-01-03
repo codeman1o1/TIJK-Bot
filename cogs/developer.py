@@ -37,10 +37,11 @@ class developer(
         logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
-            name=f"TIJK Bot is restarting...",
+            name='TIJK Bot is restarting...',
             value=f"TIJK Bot was restarted by {ctx.author.display_name}",
             inline=False,
         )
+
         await ctx.send(embed=embed)
         await logs_channel.send(embed=embed)
         await self.bot.change_presence(
@@ -97,29 +98,32 @@ class developer(
             )
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
-                name=f"Status changed!",
-                value=f"Reset the status to **watching the TIJK Server**",
+                name='Status changed!',
+                value='Reset the status to **watching the TIJK Server**',
                 inline=False,
             )
+
             await ctx.send(embed=embed)
             return
 
         else:
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
-                name=f"Could not change te status!",
+                name='Could not change te status!',
                 value=f"{type} is not a valid activity",
                 inline=False,
             )
+
             await ctx.send(embed=embed)
             return
 
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
-            name=f"Status changed!",
+            name='Status changed!',
             value=f"Changed the status to **{type} {text}**",
             inline=False,
         )
+
         await ctx.send(embed=embed)
 
     @commands.command(
@@ -155,49 +159,37 @@ class developer(
     )
     async def stats(self, ctx):
         embed = nextcord.Embed(
-            color=0x0DD91A, title=f"Here are some stats for TIJK Bot!"
+            color=0x0DD91A, title='Here are some stats for TIJK Bot!'
         )
+
         embed.add_field(
-            name=f"Total commands:",
-            value=f"{len(self.bot.commands)}",
-            inline=False,
+            name='Total commands:', value=f"{len(self.bot.commands)}", inline=False
         )
+
         uptime2 = time.strftime("%H:%M:%S", time.gmtime(uptime.uptime()))
+        embed.add_field(name='Uptime:', value=f"{uptime2}", inline=False)
+        embed.add_field(name='Guilds:', value=f"{len(self.bot.guilds)}", inline=False)
+        embed.add_field(name='Users:', value=f"{len(self.bot.users)}", inline=False)
         embed.add_field(
-            name=f"Uptime:",
-            value=f"{uptime2}",
-            inline=False,
+            name='Cogs loaded:', value=f"{len(self.bot.cogs)}", inline=False
         )
-        embed.add_field(
-            name=f"Guilds:",
-            value=f"{len(self.bot.guilds)}",
-            inline=False,
-        )
-        embed.add_field(
-            name=f"Users:",
-            value=f"{len(self.bot.users)}",
-            inline=False,
-        )
-        embed.add_field(
-            name=f"Cogs loaded:",
-            value=f"{len(self.bot.cogs)}",
-            inline=False,
-        )
+
         # CPU usage is index nr. 5
         embed.add_field(
-            name=f"CPU usage:",
-            value=f"`Please wait 5 seconds for accurate usage`",
+            name='CPU usage:',
+            value='`Please wait 5 seconds for accurate usage`',
             inline=False,
         )
+
         embed.add_field(
-            name=f"Latency:",
-            value=f"{self.bot.latency} seconds",
-            inline=False,
+            name='Latency:', value=f"{self.bot.latency} seconds", inline=False
         )
+
         msg = await ctx.send(embed=embed)
         embed.set_field_at(
-            5, name=f"CPU usage:", value=f"{psutil.cpu_percent(5)} percent"
+            5, name='CPU usage:', value=f"{psutil.cpu_percent(5)} percent"
         )
+
         await msg.edit(embed=embed)
 
 
