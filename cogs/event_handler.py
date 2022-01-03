@@ -8,6 +8,8 @@ from dotenv import load_dotenv
 from nextcord.ext import commands
 from pymongo import MongoClient
 from views.hypixel_ping import hypixel_ping_buttons
+from views.SMP_ping import SMP_ping_buttons
+
 
 load_dotenv(os.path.join(os.getcwd() + "\.env"))
 
@@ -28,6 +30,10 @@ class event_handler(
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.bot.add_view(hypixel_ping_buttons())
+    
+    def __init__(self, bot: commands.Bot):
+        self.bot = bot
+        self.bot.add_view(SMP_ping_buttons())
 
     async def warn_system(event, user, amount: int = 1):
         query = {"_id": user.id}
@@ -99,6 +105,33 @@ class event_handler(
                     embed=embed,
                     delete_after=600,
                     view=hypixel_ping_buttons(),
+                )
+         @commands.Cog.listener()
+    async def on_message(self, message):
+        user = message.author
+
+        if not user.bot:
+            SMP_ping = nextcord.utils.get(user.guild.roles, name="SMP Ping")
+            if message.content == f"<@&{SMP_ping.id}>":
+                embed = nextcord.Embed(
+                    color=0x0DD91A, title=f"{user.display_name} has SMP Pinged"
+                )
+                embed.add_field(
+                    name=f"Accepted",
+                    value=f"None",
+                )
+                embed.add_field(
+                    name=f"In a moment",
+                    value=f"None",
+                )
+                embed.add_field(
+                    name=f"Denied",
+                    value=f"None",
+                )
+                await message.channel.send(
+                    embed=embed,
+                    delete_after=600,
+                    view=SMP_ping_buttons(),
                 )
 
         if not user.bot:
