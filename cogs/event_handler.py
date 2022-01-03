@@ -9,7 +9,7 @@ from nextcord.ext import commands
 from pymongo import MongoClient
 from views.hypixel_ping import hypixel_ping_buttons
 from views.SMP_ping import SMP_ping_buttons
-
+from views.Clash_ping import Clash_ping_buttons
 
 load_dotenv(os.path.join(os.getcwd() + "\.env"))
 
@@ -31,6 +31,7 @@ class event_handler(
         self.bot = bot
         self.bot.add_view(hypixel_ping_buttons())
         self.bot.add_view(SMP_ping_buttons())
+        self.bot.add_view(Clash_ping_buttons())
 
     async def warn_system(event, user, amount: int = 1):
         query = {"_id": user.id}
@@ -109,6 +110,19 @@ class event_handler(
                     embed=embed,
                     delete_after=600,
                     view=SMP_ping_buttons(),
+                )
+            Clash_ping = nextcord.utils.get(user.guild.roles, name="Clash Ping")
+            if message.content == f"<@&{CLash_ping.id}>":
+                embed = nextcord.Embed(
+                    color=0x0DD91A, title=f"{user.display_name} has Clash royale Pinged"
+                )
+                embed.add_field(name="Accepted", value="None")
+                embed.add_field(name="In a moment", value="None")
+                embed.add_field(name="Denied", value="None")
+                await message.channel.send(
+                    embed=embed,
+                    delete_after=600,
+                    view=Clash_ping_buttons(),
                 )
 
             with open("spam_detect.txt", "r+") as file:
