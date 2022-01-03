@@ -103,8 +103,7 @@ class event_handler(
                     delete_after=600,
                     view=hypixel_ping_buttons(),
                 )
-
-        if not user.bot:
+                
             SMP_ping = nextcord.utils.get(user.guild.roles, name="SMP Ping")
             if message.content == f"<@&{SMP_ping.id}>":
                 embed = nextcord.Embed(
