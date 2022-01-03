@@ -30,9 +30,6 @@ class event_handler(
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.bot.add_view(hypixel_ping_buttons())
-    
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
         self.bot.add_view(SMP_ping_buttons())
 
     async def warn_system(event, user, amount: int = 1):
@@ -106,9 +103,6 @@ class event_handler(
                     delete_after=600,
                     view=hypixel_ping_buttons(),
                 )
-         @commands.Cog.listener()
-    async def on_message(self, message):
-        user = message.author
 
         if not user.bot:
             SMP_ping = nextcord.utils.get(user.guild.roles, name="SMP Ping")
