@@ -112,7 +112,7 @@ class event_handler(
                     view=SMP_ping_buttons(),
                 )
             Clash_ping = nextcord.utils.get(user.guild.roles, name="Clash Royale Ping")
-            if message.content == f"<@&{CLash_ping.id}>":
+            if message.content == f"<@&{Clash_ping.id}>":
                 embed = nextcord.Embed(
                     color=0x0DD91A, title=f"{user.display_name} has Clash Royale Pinged"
                 )
