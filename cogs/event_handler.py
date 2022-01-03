@@ -114,7 +114,7 @@ class event_handler(
             Clash_ping = nextcord.utils.get(user.guild.roles, name="Clash Royale Ping")
             if message.content == f"<@&{CLash_ping.id}>":
                 embed = nextcord.Embed(
-                    color=0x0DD91A, title=f"{user.display_name} has Clash royale Pinged"
+                    color=0x0DD91A, title=f"{user.display_name} has Clash Royale Pinged"
                 )
                 embed.add_field(name="Accepted", value="None")
                 embed.add_field(name="In a moment", value="None")
