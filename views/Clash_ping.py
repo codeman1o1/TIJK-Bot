@@ -2,7 +2,7 @@ import nextcord
 from nextcord import ButtonStyle
 
 
-class Clash_ping_buttons(nextcord.ui.View):
+class clash_ping_buttons(nextcord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
 
