@@ -2,7 +2,7 @@ import nextcord
 from nextcord import ButtonStyle
 
 
-class clash_ping_buttons(nextcord.ui.View):
+class ping_buttons(nextcord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
 
@@ -31,8 +31,6 @@ class clash_ping_buttons(nextcord.ui.View):
                     embed_value_2 = "None"
                 embed.set_field_at(2, name=embed_name_2, value=embed_value_2)
             embed_value_0 = interaction.user.display_name
-            embed.set_field_at(0, name=embed_name_0, value=embed_value_0)
-            await interaction.message.edit(embed=embed)
         elif interaction.user.display_name not in embed_value_0:
             if interaction.user.display_name in embed_value_1:
                 embed_value_1 = embed_value_1.strip(
@@ -49,12 +47,13 @@ class clash_ping_buttons(nextcord.ui.View):
                     embed_value_2 = "None"
                 embed.set_field_at(2, name=embed_name_2, value=embed_value_2)
             embed_value_0 = embed_value_0 + "\n" + interaction.user.display_name
-            embed.set_field_at(0, name=embed_name_0, value=embed_value_0)
-            await interaction.message.edit(embed=embed)
         else:
-            await interaction.response.send_message(
-                f"You are already in the `{embed_name_0}` category!", ephemeral=True
-            )
+            embed_value_0 = embed_value_0.strip("\n" + interaction.user.display_name)
+            if embed_value_0 == "":
+                embed_value_0 = "None"
+
+        embed.set_field_at(0, name=embed_name_0, value=embed_value_0)
+        await interaction.message.edit(embed=embed)
 
     @nextcord.ui.button(
         label="In a moment", style=ButtonStyle.blurple, custom_id="in_a_moment"
@@ -85,8 +84,6 @@ class clash_ping_buttons(nextcord.ui.View):
                     embed_value_2 = "None"
                 embed.set_field_at(2, name=embed_name_2, value=embed_value_2)
             embed_value_1 = interaction.user.display_name
-            embed.set_field_at(1, name=embed_name_1, value=embed_value_1)
-            await interaction.message.edit(embed=embed)
         elif interaction.user.display_name not in embed_value_1:
             if interaction.user.display_name in embed_value_0:
                 embed_value_0 = embed_value_0.strip(
@@ -103,12 +100,12 @@ class clash_ping_buttons(nextcord.ui.View):
                     embed_value_2 = "None"
                 embed.set_field_at(2, name=embed_name_2, value=embed_value_2)
             embed_value_1 = embed_value_1 + "\n" + interaction.user.display_name
-            embed.set_field_at(1, name=embed_name_1, value=embed_value_1)
-            await interaction.message.edit(embed=embed)
         else:
-            await interaction.response.send_message(
-                f"You are already in the `{embed_name_1}` category!", ephemeral=True
-            )
+            embed_value_1 = embed_value_1.strip("\n" + interaction.user.display_name)
+            if embed_value_1 == "":
+                embed_value_1 = "None"
+        embed.set_field_at(1, name=embed_name_1, value=embed_value_1)
+        await interaction.message.edit(embed=embed)
 
     @nextcord.ui.button(label="Deny", style=ButtonStyle.red, custom_id="deny")
     async def deny(self, button: nextcord.Button, interaction: nextcord.Interaction):
@@ -135,8 +132,6 @@ class clash_ping_buttons(nextcord.ui.View):
                     embed_value_1 = "None"
                 embed.set_field_at(1, name=embed_name_1, value=embed_value_1)
             embed_value_2 = interaction.user.display_name
-            embed.set_field_at(2, name=embed_name_2, value=embed_value_2)
-            await interaction.message.edit(embed=embed)
         elif interaction.user.display_name not in embed_value_2:
             if interaction.user.display_name in embed_value_0:
                 embed_value_0 = embed_value_0.strip(
@@ -153,9 +148,9 @@ class clash_ping_buttons(nextcord.ui.View):
                     embed_value_1 = "None"
                 embed.set_field_at(1, name=embed_name_1, value=embed_value_1)
             embed_value_2 = embed_value_2 + "\n" + interaction.user.display_name
-            embed.set_field_at(2, name=embed_name_2, value=embed_value_2)
-            await interaction.message.edit(embed=embed)
         else:
-            await interaction.response.send_message(
-                f"You are already in the `{embed_name_2}` category!", ephemeral=True
-            )
+            embed_value_2 = embed_value_2.strip("\n" + interaction.user.display_name)
+            if embed_value_2 == "":
+                embed_value_2 = "None"
+        embed.set_field_at(2, name=embed_name_2, value=embed_value_2)
+        await interaction.message.edit(embed=embed)
