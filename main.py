@@ -58,7 +58,7 @@ async def on_ready():
                 bl.error(f"{cog} couldn't be loaded", __file__)
     await bot.change_presence(
         activity=nextcord.Activity(
-            type=nextcord.ActivityType.watching, name="the TIJK Server"
+            type=nextcord.ActivityType.watching, name="over the TIJK Server"
         )
     )
     birthday_checker.start()
