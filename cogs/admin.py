@@ -40,19 +40,18 @@ class admin(
     )
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def buttonroles(self, ctx):
-        for k in BotData.find():
-            roles = k["roles"]
+        roles = BotData.find()[0]["roles"]
         if len(roles) == 0:
             embed = nextcord.Embed(
                 color=0x0DD91A,
-                title='There are no roles selected!\nMake sure to add them by using `.buttonroles add <role>`',
+                title="There are no roles selected!\nMake sure to add them by using `.buttonroles add <role>`",
             )
 
             await ctx.send(embed=embed)
         elif len(roles) > 0:
             await ctx.channel.purge(limit=1)
             embed = nextcord.Embed(
-                color=0x0DD91A, title='Click a button to add/remove that role!'
+                color=0x0DD91A, title="Click a button to add/remove that role!"
             )
 
             await ctx.send(embed=embed, view=RoleView())
@@ -65,16 +64,13 @@ class admin(
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def list_buttonroles(self, ctx):
         embed = nextcord.Embed(color=0x0DD91A)
-        for k in BotData.find():
-            roles = k["roles"]
+        roles = BotData.find()[0]["roles"]
         roles = "> " + str(roles)
         roles = roles.replace("[", "")
         roles = roles.replace("]", "")
         roles = roles.replace("'", "")
         roles = roles.replace(",", "\n>")
-        embed.add_field(
-            name='The current button roles are:', value=roles, inline=False
-        )
+        embed.add_field(name="The current button roles are:", value=roles, inline=False)
 
         await ctx.send(embed=embed)
 
@@ -84,24 +80,23 @@ class admin(
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def add_buttonroles(self, ctx, role: nextcord.Role):
         role = role.name
-        for k in BotData.find():
-            roles = k["roles"]
-            if role not in roles:
-                roles.append(role)
-                BotData.update_one(
-                    {"_id": k["_id"]},
-                    {"$set": {"roles": roles}},
-                    upsert=False,
-                )
-                embed = nextcord.Embed(
-                    color=0x0DD91A,
-                    title=f'The "{role}" role has been added!\nMake sure to use `.buttonroles` again!',
-                )
-            else:
-                embed = nextcord.Embed(
-                    color=0x0DD91A, title=f'The "{role}" role is already listed!'
-                )
-            await ctx.send(embed=embed)
+        roles = BotData.find()[0]["roles"]
+        if role not in roles:
+            roles.append(role)
+            BotData.update_one(
+                {"_id": BotData.find()[0]["_id"]},
+                {"$set": {"roles": roles}},
+                upsert=False,
+            )
+            embed = nextcord.Embed(
+                color=0x0DD91A,
+                title=f'The "{role}" role has been added!\nMake sure to use `.buttonroles` again!',
+            )
+        else:
+            embed = nextcord.Embed(
+                color=0x0DD91A, title=f'The "{role}" role is already listed!'
+            )
+        await ctx.send(embed=embed)
 
     @buttonroles.command(
         name="remove",
@@ -111,24 +106,23 @@ class admin(
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def remove_buttonroles(self, ctx, role: nextcord.Role):
         role = role.name
-        for k in BotData.find():
-            roles = k["roles"]
-            if role in roles:
-                roles.remove(role)
-                BotData.update_one(
-                    {"_id": k["_id"]},
-                    {"$set": {"roles": roles}},
-                    upsert=False,
-                )
-                embed = nextcord.Embed(
-                    color=0x0DD91A,
-                    title=f'The "{role}" role has been removed!\nMake sure to use `.buttonroles` again!',
-                )
-            else:
-                embed = nextcord.Embed(
-                    color=0x0DD91A, title=f'The "{role}" role is not listed!'
-                )
-            await ctx.send(embed=embed)
+        roles = BotData.find()[0]["roles"]
+        if role in roles:
+            roles.remove(role)
+            BotData.update_one(
+                {"_id": BotData.find()[0]["_id"]},
+                {"$set": {"roles": roles}},
+                upsert=False,
+            )
+            embed = nextcord.Embed(
+                color=0x0DD91A,
+                title=f'The "{role}" role has been removed!\nMake sure to use `.buttonroles` again!',
+            )
+        else:
+            embed = nextcord.Embed(
+                color=0x0DD91A, title=f'The "{role}" role is not listed!'
+            )
+        await ctx.send(embed=embed)
 
     @commands.command(
         name="shutdown",
@@ -141,7 +135,7 @@ class admin(
         logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
-            name='TIJK Bot was shut down',
+            name="TIJK Bot was shut down",
             value=f"TIJK Bot was shut down by {ctx.author.name}#{ctx.author.discriminator}",
             inline=False,
         )
@@ -169,7 +163,7 @@ class admin(
     async def ping(self, ctx, decimals: int = 1):
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
-            name='Pong!',
+            name="Pong!",
             value=f"The latency is {round(self.bot.latency, decimals)} seconds",
             inline=False,
         )
@@ -221,7 +215,7 @@ class admin(
         )
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
-            name='User muted!',
+            name="User muted!",
             value=f"{user.display_name} was muted by {ctx.author.name}#{ctx.author.discriminator} because of {reason}",
             inline=False,
         )
@@ -239,7 +233,7 @@ class admin(
         await user.edit(timeout=None)
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
-            name='User unmuted!',
+            name="User unmuted!",
             value=f"{user.display_name} was unmuted by {ctx.author.name}#{ctx.author.discriminator} because of {reason}",
             inline=False,
         )
@@ -258,7 +252,7 @@ class admin(
         await user.edit(nick=name)
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
-            name='Nickname changed!',
+            name="Nickname changed!",
             value=f"{original_name}'s nickname has been changed to {name}",
             inline=False,
         )
@@ -281,7 +275,7 @@ class admin(
             await user.add_roles(role)
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
-                name='Role assigned!',
+                name="Role assigned!",
                 value=f'Role "{role}" has been assigned to {user.display_name} by {ctx.author.name}#{ctx.author.discriminator}',
                 inline=False,
             )
@@ -292,7 +286,7 @@ class admin(
         else:
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
-                name='Could not assign that role!',
+                name="Could not assign that role!",
                 value=f'{user.display_name} already has the "{role}" role',
                 inline=False,
             )
@@ -315,7 +309,7 @@ class admin(
             await user.remove_roles(role)
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
-                name='Role removed!',
+                name="Role removed!",
                 value=f'Role "{role}" has been removed from {user.display_name} by {ctx.author.name}#{ctx.author.discriminator}',
                 inline=False,
             )
@@ -326,7 +320,7 @@ class admin(
         else:
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
-                name='Could not remove that role!',
+                name="Could not remove that role!",
                 value=f'{user.display_name} does not have the "{role}" role',
                 inline=False,
             )
@@ -347,7 +341,7 @@ class admin(
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name=f"{amount}{extra} messages cleared!",
-            value='This message wil delete itself after 5 seconds',
+            value="This message wil delete itself after 5 seconds",
             inline=False,
         )
 
@@ -365,7 +359,7 @@ class admin(
         await user.kick(reason=reason)
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
-            name='User kicked!',
+            name="User kicked!",
             value=f"{user.display_name} has been kicked by {ctx.author.name}#{ctx.author.discriminator} with the reason {reason}",
             inline=False,
         )
@@ -385,7 +379,7 @@ class admin(
         await user.ban(reason=reason)
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
-            name='User banned!',
+            name="User banned!",
             value=f"{user.name}#{user.discriminator} has been banned by {ctx.author.name}#{ctx.author.discriminator} with the reason {reason}\nUse `.unban {user.name}#{user.discriminator}` to unban {user.display_name}",
             inline=False,
         )
@@ -408,7 +402,7 @@ class admin(
             logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
             await ctx.guild.unban(user, reason=reason)
             embed.add_field(
-                name='User unbanned!',
+                name="User unbanned!",
                 value=f"{user.name}#{user.discriminator} has been unbanned by {ctx.author.name}#{ctx.author.discriminator} with the reason {reason}",
                 inline=False,
             )
@@ -416,11 +410,10 @@ class admin(
             await logs_channel.send(embed=embed)
         else:
             embed.add_field(
-                name='Unbanning failed!',
+                name="Unbanning failed!",
                 value=f"{user.display_name} is not banned!",
                 inline=False,
             )
-
 
         await ctx.send(embed=embed)
 
@@ -499,7 +492,7 @@ class admin(
             except KeyError:
                 pass
         if embed.fields == 0:
-            embed = nextcord.Embed(color=0x0DD91A, title='Nobody has warns!')
+            embed = nextcord.Embed(color=0x0DD91A, title="Nobody has warns!")
         await ctx.send(embed=embed)
 
     @warn.command(
