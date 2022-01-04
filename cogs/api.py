@@ -21,7 +21,7 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
     async def api(self, ctx):
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
-            name='Help with the .api command',
+            name="Help with the .api command",
             value="The .api command gets information from API's.\n**I do not own any of the API's, so if there occurs an issue, I can most likely not help you with it.**\nType `.help api` for all available subcommands",
             inline=False,
         )
@@ -65,21 +65,19 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
                     f"https://some-random-api.ml/mc?username={username}"
                 )
                 info = await request.json()
-            name_history = info["name_history"]
-            for k in name_history:
-                if "[{" in str(name_history):
-                    name_history = ""
-                name_history = (
-                    str(name_history)
+            name_history2 = ""
+            for k in info["name_history"]:
+                name_history2 = (
+                    name_history2
                     + "\nName: "
                     + k["name"]
                     + "\nChanged at: "
                     + k["changedToAt"]
                     + "\n"
                 )
-            embed.add_field(name='Username', value=info["username"], inline=False)
-            embed.add_field(name='UUID', value=info["uuid"], inline=False)
-            embed.add_field(name='Name History', value=name_history, inline=False)
+            embed.add_field(name="Username", value=info["username"], inline=False)
+            embed.add_field(name="UUID", value=info["uuid"], inline=False)
+            embed.add_field(name="Name History", value=name_history2, inline=False)
         except KeyError:
             embed = nextcord.Embed(color=0xFF0000)
             embed.add_field(
@@ -96,10 +94,10 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
     )
     async def joke_api(self, ctx):
         async with aiohttp.ClientSession() as session:
-            request = await session.get('https://some-random-api.ml/joke')
+            request = await session.get("https://some-random-api.ml/joke")
             info = await request.json()
         embed = nextcord.Embed(color=0x0DD91A)
-        embed.add_field(name='Here is a joke!', value=info["joke"], inline=False)
+        embed.add_field(name="Here is a joke!", value=info["joke"], inline=False)
         await ctx.send(embed=embed)
 
     @api.command(
@@ -109,7 +107,7 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
     )
     async def meme_api(self, ctx):
         async with aiohttp.ClientSession() as session:
-            request = await session.get('https://some-random-api.ml/meme')
+            request = await session.get("https://some-random-api.ml/meme")
             info = await request.json()
         embed = nextcord.Embed(color=0x0DD91A, title=info["caption"])
         embed.set_image(url=info["image"])
@@ -129,27 +127,25 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
                     f"https://some-random-api.ml/pokedex?pokemon={name}"
                 )
                 info = await request.json()
-            type = str(info["type"])
-            type = type.replace("[", "")
-            type = type.replace("]", "")
-            type = type.replace("'", "")
-            species = str(info["species"])
-            species = species.replace("[", "")
-            species = species.replace("]", "")
-            species = species.replace("'", "")
-            species = species.replace(",", "")
-            abilities = str(info["abilities"])
-            abilities = abilities.replace("[", "")
-            abilities = abilities.replace("]", "")
-            abilities = abilities.replace("'", "")
-            gender = str(info["gender"])
-            gender = gender.replace("[", "")
-            gender = gender.replace("]", "")
-            gender = gender.replace("'", "")
-            egg_groups = str(info["egg_groups"])
-            egg_groups = egg_groups.replace("[", "")
-            egg_groups = egg_groups.replace("]", "")
-            egg_groups = egg_groups.replace("'", "")
+            type = ""
+            for k in info["type"]:
+                type = type + k + ", "
+            type = type[:-2]
+            species = ""
+            for k in info["species"]:
+                species = species + k + " "
+            abilities = ""
+            for k in info["abilities"]:
+                abilities = abilities + k + ", "
+            abilities = abilities[:-2]
+            gender = ""
+            for k in info["gender"]:
+                gender = gender + k + ", "
+            gender = gender[:-2]
+            egg_groups = ""
+            for k in info["egg_groups"]:
+                egg_groups = egg_groups + k + ", "
+            egg_groups = egg_groups[:-2]
             sprites = info["sprites"]
             stats = info["stats"]
             hp = stats["hp"]
@@ -160,45 +156,45 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
             speed = stats["speed"]
             total = stats["total"]
             family = info["family"]
-            evolutionStage = str(family["evolutionStage"])
-            evolutionLine = str(family["evolutionLine"])
-            if evolutionLine == "[]":
-                familyText = f"Evolution Stage: {evolutionStage}\nThis Pokémon has no evolution line"
+            evolutionStage = family["evolutionStage"]
+            evolutionLine = family["evolutionLine"]
+            if not evolutionLine:
+                familyText = f"This Pokémon has no evolution line"
             else:
-                evolutionLine = evolutionLine.replace("[", "")
-                evolutionLine = evolutionLine.replace("]", "")
-                evolutionLine = evolutionLine.replace("'", "")
-                evolutionLine = evolutionLine.replace(",", " ->")
-                familyText = f"Evolution Stage: {evolutionStage}\nEvolution Line: {evolutionLine}"
+                evolutionLine2 = ""
+                for k in evolutionLine:
+                    evolutionLine2 = evolutionLine2 + k + " -> "
+                evolutionLine2 = evolutionLine2[:-4]
+                familyText = f"Evolution Stage: {evolutionStage}\nEvolution Line: {evolutionLine2}"
             # Possible options: "normal" or "animated"
             embed.set_thumbnail(url=sprites["normal"])
-            embed.add_field(name='Name', value=info["name"].capitalize(), inline=True)
-            embed.add_field(name='ID', value=info["id"], inline=True)
-            embed.add_field(name='Type', value=type, inline=True)
-            embed.add_field(name='Species', value=species, inline=True)
-            embed.add_field(name='Abilities', value=abilities, inline=True)
-            embed.add_field(name='Height', value=info["height"], inline=True)
-            embed.add_field(name='Weight', value=info["weight"], inline=True)
+            embed.add_field(name="Name", value=info["name"].capitalize(), inline=True)
+            embed.add_field(name="ID", value=info["id"], inline=True)
+            embed.add_field(name="Type", value=type, inline=True)
+            embed.add_field(name="Species", value=species, inline=True)
+            embed.add_field(name="Abilities", value=abilities, inline=True)
+            embed.add_field(name="Height", value=info["height"], inline=True)
+            embed.add_field(name="Weight", value=info["weight"], inline=True)
             embed.add_field(
-                name='Base Experience', value=info["base_experience"], inline=True
+                name="Base Experience", value=info["base_experience"], inline=True
             )
 
-            embed.add_field(name='Gender', value=gender, inline=True)
-            embed.add_field(name='Egg Groups', value=egg_groups, inline=True)
+            embed.add_field(name="Gender", value=gender, inline=True)
+            embed.add_field(name="Egg Groups", value=egg_groups, inline=True)
             embed.add_field(
-                name='Stats',
+                name="Stats",
                 value=f"HP: {hp}\nAttack: {attack}\nDefense: {defense}\nSpecial Attack: {sp_atk}\nSpecial Defense: {sp_def}\nSpeed: {speed}\nTotal: {total}",
                 inline=True,
             )
 
-            embed.add_field(name='Family', value=familyText, inline=True)
+            embed.add_field(name="Family", value=familyText, inline=True)
             embed.add_field(
-                name='Description',
+                name="Description",
                 value=info["description"].replace(". ", ".\n"),
                 inline=True,
             )
 
-            embed.add_field(name='Generation', value=info["generation"], inline=True)
+            embed.add_field(name="Generation", value=info["generation"], inline=True)
         except KeyError:
             embed = nextcord.Embed(color=0xFF0000)
             embed.add_field(

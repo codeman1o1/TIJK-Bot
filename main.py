@@ -117,16 +117,13 @@ async def load_cog(ctx, cog: str = None):
                 cogs.remove("__pycache__")
             except ValueError:
                 pass
-            cogs = str(cogs)
-            cogs = cogs.replace(".py", "")
-            cogs = cogs.replace("[", "")
-            cogs = cogs.replace("]", "")
-            cogs = cogs.replace("'", "")
-            cogs = cogs.replace(",", "\n>")
+            cogs2 = "> all"
+            for k in cogs:
+                cogs2 = cogs2 + "\n> " + k.strip(".py")
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name="The available cogs are:",
-                value=f"> all\n> {cogs}",
+                value=cogs2,
                 inline=False,
             )
 
@@ -177,17 +174,14 @@ async def reload_cog(ctx, cog: str = None):
     try:
         cogs = os.listdir("cogs")
         cogs.remove("__pycache__")
-        cogs = str(cogs)
-        cogs = cogs.replace(".py", "")
-        cogs = cogs.replace("[", "")
-        cogs = cogs.replace("]", "")
-        cogs = cogs.replace("'", "")
-        cogs = cogs.replace(",", "\n>")
+        cogs2 = "> all"
+        for k in cogs:
+            cogs2 = cogs2 + "\n> " + k.strip(".py")
         if cog is None:
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name="The available cogs are:",
-                value=f"> all\n> {cogs}",
+                value=cogs2,
                 inline=False,
             )
 
@@ -239,17 +233,14 @@ async def unload_cog(ctx, cog: str = None):
     try:
         cogs = os.listdir("cogs")
         cogs.remove("__pycache__")
-        cogs = str(cogs)
-        cogs = cogs.replace(".py", "")
-        cogs = cogs.replace("[", "")
-        cogs = cogs.replace("]", "")
-        cogs = cogs.replace("'", "")
-        cogs = cogs.replace(",", "\n>")
+        cogs2 = "> all"
+        for k in cogs:
+            cogs2 = cogs2 + "\n> " + k.strip(".py")
         if cog is None:
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name="The available cogs are:",
-                value=f"> all\n> {cogs}",
+                value=cogs2,
                 inline=False,
             )
 

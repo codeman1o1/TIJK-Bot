@@ -167,9 +167,7 @@ class event_handler(
         )
         if tijk_bot_developer_role in after.roles:
             info = await self.bot.application_info()
-            owner = await commands.converter.UserConverter().convert(
-                after, str(info.owner)
-            )
+            owner = info.owner
             if after.id != owner.id:
                 await after.remove_roles(tijk_bot_developer_role)
         if after.nick:
@@ -177,7 +175,7 @@ class event_handler(
             admin_role = nextcord.utils.get(after.guild.roles, name="Admin")
             roles = (owner_role, admin_role)
             admin_names = [
-                [str(user.name), str(user.display_name)]
+                [user.name, user.display_name]
                 for user in after.guild.members
                 if any(role in user.roles for role in roles)
             ]

@@ -65,12 +65,12 @@ class admin(
     async def list_buttonroles(self, ctx):
         embed = nextcord.Embed(color=0x0DD91A)
         roles = BotData.find()[0]["roles"]
-        roles = "> " + str(roles)
-        roles = roles.replace("[", "")
-        roles = roles.replace("]", "")
-        roles = roles.replace("'", "")
-        roles = roles.replace(",", "\n>")
-        embed.add_field(name="The current button roles are:", value=roles, inline=False)
+        roles2 = ""
+        for k in roles:
+            roles2 = roles2 + "\n> " + k.strip(".py")
+        embed.add_field(
+            name="The current button roles are:", value=roles2, inline=False
+        )
 
         await ctx.send(embed=embed)
 
