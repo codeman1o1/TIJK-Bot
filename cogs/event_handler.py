@@ -80,23 +80,23 @@ class event_handler(
         user = message.author
 
         if not user.bot:
-            hypixel_ping = nextcord.utils.get(user.guild.roles, name="Hypixel Ping")
-            SMP_ping = nextcord.utils.get(user.guild.roles, name="SMP Ping")
-            clash_ping = nextcord.utils.get(user.guild.roles, name="Clash Royale Ping")
-            pings = (hypixel_ping, SMP_ping, clash_ping)
-            for ping in pings:
-                if message.content == f"<@&{ping.id}>":
-                    embed = nextcord.Embed(
-                        color=0x0DD91A, title=f"{user.display_name} has {ping.name}ed"
-                    )
-                    embed.add_field(name="Accepted", value="None")
-                    embed.add_field(name="In a moment", value="None")
-                    embed.add_field(name="Denied", value="None")
-                    await message.channel.send(
-                        embed=embed,
-                        delete_after=900,
-                        view=ping_buttons(),
-                    )
+            pings = list(BotData.find()[0]["pingpolls"])
+            if pings:
+                for k in pings:
+                    role = nextcord.utils.get(user.guild.roles, name=k)
+                    if message.content == f"<@&{role.id}>":
+                        embed = nextcord.Embed(
+                            color=0x0DD91A,
+                            title=f"{user.display_name} has {role.name}ed",
+                        )
+                        embed.add_field(name="Accepted", value="None")
+                        embed.add_field(name="In a moment", value="None")
+                        embed.add_field(name="Denied", value="None")
+                        await message.channel.send(
+                            embed=embed,
+                            delete_after=900,
+                            view=ping_buttons(),
+                        )
 
             with open("spam_detect.txt", "r+") as file:
                 file.writelines(f"{user.id}\n")

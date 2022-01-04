@@ -37,7 +37,7 @@ class developer(
         logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
-            name='TIJK Bot is restarting...',
+            name="TIJK Bot is restarting...",
             value=f"TIJK Bot was restarted by {ctx.author.display_name}",
             inline=False,
         )
@@ -98,8 +98,8 @@ class developer(
             )
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
-                name='Status changed!',
-                value='Reset the status to **watching the TIJK Server**',
+                name="Status changed!",
+                value="Reset the status to **watching the TIJK Server**",
                 inline=False,
             )
 
@@ -109,7 +109,7 @@ class developer(
         else:
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
-                name='Could not change te status!',
+                name="Could not change te status!",
                 value=f"{type} is not a valid activity",
                 inline=False,
             )
@@ -119,7 +119,7 @@ class developer(
 
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
-            name='Status changed!',
+            name="Status changed!",
             value=f"Changed the status to **{type} {text}**",
             inline=False,
         )
@@ -152,6 +152,89 @@ class developer(
             )
         await ctx.send(embed=embed)
 
+    @commands.group(
+        name="pingpoll",
+        description="Modify the roles used in Ping Poll",
+        brief="Modify the roles used in Ping Poll",
+        invoke_without_command=True,
+        aliases=["pp"],
+    )
+    @commands.is_owner()
+    async def pingpoll(self, ctx):
+        embed = nextcord.Embed(
+            color=0xFFC800, title="Please select an argument from `.help pingpoll`"
+        )
+        await ctx.send(embed=embed)
+
+    @pingpoll.command(
+        name="add",
+        description="Add roles used in Ping Poll",
+        brief="Add roles used in Ping Poll",
+    )
+    @commands.is_owner()
+    async def add_pingpoll(self, ctx, role: nextcord.Role):
+        pingpolls = list(BotData.find()[0]["pingpolls"])
+        if role.name not in pingpolls:
+            pingpolls.append(role.name)
+            BotData.update_one(
+                {"_id": BotData.find()[0]["_id"]},
+                {"$set": {"pingpolls": pingpolls}},
+                upsert=False,
+            )
+            embed = nextcord.Embed(
+                color=0x0DD91A, title=f"Role `{role.name}` added to PingPolls!"
+            )
+        else:
+            embed = nextcord.Embed(
+                color=0xFFC800, title=f"Role `{role.name}` is already in PingPolls!"
+            )
+        await ctx.send(embed=embed)
+
+    @pingpoll.command(
+        name="remove",
+        description="Remove roles used in Ping Poll",
+        brief="Remove roles used in Ping Poll",
+    )
+    @commands.is_owner()
+    async def remove_pingpoll(self, ctx, role: nextcord.Role):
+        pingpolls = list(BotData.find()[0]["pingpolls"])
+        if role.name in pingpolls:
+            pingpolls.remove(role.name)
+            embed = nextcord.Embed(
+                color=0x0DD91A, title=f"Role `{role.name}` is removed from PingPolls"
+            )
+            BotData.update_one(
+                {"_id": BotData.find()[0]["_id"]},
+                {"$set": {"pingpolls": pingpolls}},
+                upsert=False,
+            )
+        else:
+            embed = nextcord.Embed(
+                color=0xFFC800, title=f"The `{role.name}` is not in PingPolls"
+            )
+        await ctx.send(embed=embed)
+
+    @pingpoll.command(
+        name="list",
+        description="List the roles used in Ping Poll",
+        brief="List the roles used in Ping Poll",
+    )
+    async def list_pingpoll(self, ctx):
+        pingpolls = list(BotData.find()[0]["pingpolls"])
+        if not pingpolls:
+            embed = nextcord.Embed(color=0x0DD91A, title="There are no PingPolls!")
+        else:
+            pingpolls2 = ""
+            for k in pingpolls:
+                pingpolls2 = pingpolls2 + "\n> " + k
+            embed = nextcord.Embed(color=0x0DD91A)
+            embed.add_field(
+                name="The current PingPolls are",
+                value=pingpolls2,
+                inline=False,
+            )
+        await ctx.send(embed=embed)
+
     @commands.command(
         name="stats",
         description="Shows the stats of TIJK Bot",
@@ -159,35 +242,35 @@ class developer(
     )
     async def stats(self, ctx):
         embed = nextcord.Embed(
-            color=0x0DD91A, title='Here are some stats for TIJK Bot!'
+            color=0x0DD91A, title="Here are some stats for TIJK Bot!"
         )
 
         embed.add_field(
-            name='Total commands:', value=f"{len(self.bot.commands)}", inline=False
+            name="Total commands:", value=f"{len(self.bot.commands)}", inline=False
         )
 
         uptime2 = time.strftime("%H:%M:%S", time.gmtime(uptime.uptime()))
-        embed.add_field(name='Uptime:', value=f"{uptime2}", inline=False)
-        embed.add_field(name='Guilds:', value=f"{len(self.bot.guilds)}", inline=False)
-        embed.add_field(name='Users:', value=f"{len(self.bot.users)}", inline=False)
+        embed.add_field(name="Uptime:", value=f"{uptime2}", inline=False)
+        embed.add_field(name="Guilds:", value=f"{len(self.bot.guilds)}", inline=False)
+        embed.add_field(name="Users:", value=f"{len(self.bot.users)}", inline=False)
         embed.add_field(
-            name='Cogs loaded:', value=f"{len(self.bot.cogs)}", inline=False
+            name="Cogs loaded:", value=f"{len(self.bot.cogs)}", inline=False
         )
 
         # CPU usage is index nr. 5
         embed.add_field(
-            name='CPU usage:',
-            value='`Please wait 5 seconds for accurate usage`',
+            name="CPU usage:",
+            value="`Please wait 5 seconds for accurate usage`",
             inline=False,
         )
 
         embed.add_field(
-            name='Latency:', value=f"{self.bot.latency} seconds", inline=False
+            name="Latency:", value=f"{self.bot.latency} seconds", inline=False
         )
 
         msg = await ctx.send(embed=embed)
         embed.set_field_at(
-            5, name='CPU usage:', value=f"{psutil.cpu_percent(5)} percent"
+            5, name="CPU usage:", value=f"{psutil.cpu_percent(5)} percent"
         )
 
         await msg.edit(embed=embed)
