@@ -143,7 +143,7 @@ class admin(
         await ctx.send(embed=embed)
         await logs_channel.send(embed=embed)
         info = await self.bot.application_info()
-        owner = await commands.converter.UserConverter().convert(ctx, str(info.owner))
+        owner = info.owner
         dm = await owner.create_dm()
         await dm.send(embed=embed)
         bl.info(
