@@ -351,4 +351,17 @@ async def disable_command(ctx, *, command: str):
     await ctx.send(embed=embed)
 
 
+slash = os.listdir("slash")
+try:
+    slash.remove("__pycache__")
+except ValueError:
+    pass
+for file in slash:
+    if file.endswith(".py"):
+        try:
+            file2 = file.strip(".py")
+            bot.load_extension(f"slash.{file2}")
+            bl.debug(f"{file} loaded", __file__)
+        except:
+            bl.error(f"{file} couldn't be loaded", __file__)
 bot.run(os.environ["BotToken"])
