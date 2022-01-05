@@ -332,7 +332,7 @@ class admin(
     )
     @commands.bot_has_permissions(manage_messages=True)
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
-    async def clear(self, ctx, amount: int = 10):
+    async def clear(self, ctx, amount: int):
         extra = ""
         if amount > 99:
             amount = 99
@@ -345,6 +345,28 @@ class admin(
             inline=False,
         )
 
+        await ctx.send(embed=embed, delete_after=5)
+
+    @commands.command(
+        name="clean", description="Cleans the chat from bot messages", brief="Cleans the chat from bot messages"
+    )
+    @commands.bot_has_permissions(manage_messages=True)
+    @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    async def clean(self, ctx, multiplier: int = 1):
+        async with ctx.typing():
+
+            def check(message: nextcord.Message):
+                return message.author.bot
+
+            deleted_messages = await ctx.channel.purge(
+                limit=100 * multiplier, check=check
+            )
+            embed = nextcord.Embed(color=0x0DD91A)
+            embed.add_field(
+                name=f"{len(deleted_messages)} messages cleaned!",
+                value="This message wil delete itself after 5 seconds",
+                inline=False,
+            )
         await ctx.send(embed=embed, delete_after=5)
 
     @commands.command(
