@@ -38,6 +38,12 @@ bot = commands.Bot(
 )
 
 
+async def remove_invalid_users():
+    for k in UserData.find():
+        if not bot.get_user(k["_id"]):
+            UserData.delete_one({"_id": k["_id"]})
+
+
 @bot.event
 async def on_ready():
     bl.info(f"Logged in as {bot.user.name}#{bot.user.discriminator}", __file__)
@@ -61,6 +67,7 @@ async def on_ready():
             type=nextcord.ActivityType.watching, name="over the TIJK Server"
         )
     )
+    await remove_invalid_users()
     birthday_checker.start()
     while True:
         await asyncio.sleep(10)
