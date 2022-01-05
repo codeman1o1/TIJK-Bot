@@ -332,7 +332,7 @@ class admin(
     )
     @commands.bot_has_permissions(manage_messages=True)
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
-    async def clear(self, ctx, amount: int = 10):
+    async def clear(self, ctx, amount: int):
         extra = ""
         if amount > 99:
             amount = 99
