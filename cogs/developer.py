@@ -32,7 +32,7 @@ class developer(
     @commands.command(
         name="restart", description="Restarts TIJK Bot", brief="Restarts TIJK Bot"
     )
-    @commands.has_any_role("TIJK-Bot developer")
+    @commands.is_owner()
     async def restart(self, ctx):
         logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
         embed = nextcord.Embed(color=0x0DD91A)
