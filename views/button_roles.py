@@ -20,11 +20,10 @@ class RoleView(nextcord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
 
-        for objects in BotData.find():
-            for role in objects["roles"]:
-                self.add_item(
-                    AddButton(label=role, style=ButtonStyle.primary, custom_id=role)
-                )
+        for role in BotData.find()[0]["roles"]:
+            self.add_item(
+                AddButton(label=role, style=ButtonStyle.primary, custom_id=role)
+            )
 
     async def handle_click(
         self, button: nextcord.ui.Button, interaction: nextcord.Interaction
