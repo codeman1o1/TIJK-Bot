@@ -41,35 +41,46 @@ class developer_slash(commands.Cog):
             name="value3", description="The value of the 3d field", required=False
         ),
     ):
-        try:
-            if not color:
-                color = 0x0DD91A
-            if title:
-                embed = nextcord.Embed(color=color, title=title)
-            else:
-                embed = nextcord.Embed(color=color)
-            if name1 and value1:
-                embed.add_field(
-                    name=name1,
-                    value=value1,
-                    inline=False,
+        owner = nextcord.utils.get(interaction.guild.roles, name="Owner")
+        admin = nextcord.utils.get(interaction.guild.roles, name="Admin")
+        tijk_bot_developer = nextcord.utils.get(
+            interaction.guild.roles, name="TIJK-Bot developer"
+        )
+        admins = (owner, admin, tijk_bot_developer)
+        if any(role in interaction.user.roles for role in admins):
+            try:
+                if not color:
+                    color = 0x0DD91A
+                if title:
+                    embed = nextcord.Embed(color=color, title=title)
+                else:
+                    embed = nextcord.Embed(color=color)
+                if name1 and value1:
+                    embed.add_field(
+                        name=name1,
+                        value=value1,
+                        inline=False,
+                    )
+                if name2 and value2:
+                    embed.add_field(
+                        name=name2,
+                        value=value2,
+                        inline=False,
+                    )
+                if name3 and value3:
+                    embed.add_field(
+                        name=name3,
+                        value=value3,
+                        inline=False,
+                    )
+                await interaction.response.send_message(embed=embed)
+            except nextcord.errors.HTTPException:
+                await interaction.response.send_message(
+                    "The embed is invalid", ephemeral=True
                 )
-            if name2 and value2:
-                embed.add_field(
-                    name=name2,
-                    value=value2,
-                    inline=False,
-                )
-            if name3 and value3:
-                embed.add_field(
-                    name=name3,
-                    value=value3,
-                    inline=False,
-                )
-            await interaction.response.send_message(embed=embed)
-        except nextcord.errors.HTTPException:
+        else:
             await interaction.response.send_message(
-                "The embed is invalid", ephemeral=True
+                "You do not have permission to perform this task", ephemeral=True
             )
 
 
