@@ -98,17 +98,17 @@ class event_handler(
                             view=ping_buttons(),
                         )
 
-            with open("spam_detect.txt", "r+") as file:
-                file.writelines(f"{user.id}\n")
-                counter = sum(lines.strip("\n") == str(user.id) for lines in file)
-            if counter > 3:
-                owner_role = nextcord.utils.get(user.guild.roles, name="Owner")
-                admin_role = nextcord.utils.get(user.guild.roles, name="Admin")
-                tijk_bot_developer_role = nextcord.utils.get(
-                    user.guild.roles, name="TIJK-Bot developer"
-                )
-                anti_mute = (owner_role, admin_role, tijk_bot_developer_role)
-                if all(role not in user.roles for role in anti_mute):
+            owner_role = nextcord.utils.get(user.guild.roles, name="Owner")
+            admin_role = nextcord.utils.get(user.guild.roles, name="Admin")
+            tijk_bot_developer_role = nextcord.utils.get(
+                user.guild.roles, name="TIJK-Bot developer"
+            )
+            anti_mute = (owner_role, admin_role, tijk_bot_developer_role)
+            if all(role not in user.roles for role in anti_mute):
+                with open("spam_detect.txt", "r+") as file:
+                    file.writelines(f"{user.id}\n")
+                    counter = sum(lines.strip("\n") == str(user.id) for lines in file)
+                if counter > 3:
                     await user.edit(
                         timeout=nextcord.utils.utcnow()
                         + datetime.timedelta(seconds=600)
@@ -119,7 +119,6 @@ class event_handler(
                         value="You have been muted for 10 minutes.\nIf you think this was a mistake, please contact an owner or admin\nBecause of this action, you received 1 warn",
                         inline=True,
                     )
-
                     await message.channel.send(embed=embed)
                     await event_handler.warn_system(message, user)
 
@@ -224,6 +223,7 @@ class event_handler(
             await dm.send(embed=embed)
         except nextcord.errors.HTTPException:
             pass
+
 
 def setup(bot: commands.Bot):
     bot.add_cog(event_handler(bot))
