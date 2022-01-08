@@ -84,7 +84,7 @@ class event_handler(
             if pings:
                 for k in pings:
                     role = nextcord.utils.get(user.guild.roles, name=k)
-                    if message.content == f"<@&{role.id}>":
+                    if role and message.content == f"<@&{role.id}>":
                         embed = nextcord.Embed(
                             color=0x0DD91A,
                             title=f"{user.display_name} has {role.name}ed",
