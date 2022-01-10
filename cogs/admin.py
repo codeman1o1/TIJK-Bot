@@ -36,7 +36,7 @@ class admin(
         description="Sends a message with buttons where people can get roles",
         brief="Sends a message with buttons where people can get roles",
         invoke_without_command=True,
-        aliases=["br"],
+        aliases=["br","brole","broles","buttonr"],
     )
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def buttonroles(self, ctx):
@@ -90,7 +90,7 @@ class admin(
             )
             embed = nextcord.Embed(
                 color=0x0DD91A,
-                title=f'The "{role}" role has been added!\nMake sure to use `.buttonroles` again!',
+                title=f'The "{role}" role has been added!\nMake sure to use the command `.buttonroles` again!',
             )
         else:
             embed = nextcord.Embed(
@@ -100,8 +100,8 @@ class admin(
 
     @buttonroles.command(
         name="remove",
-        description="Removes a button role",
-        brief="Removes a button role",
+        description="Removes a set button role",
+        brief="Removes a set button role",
     )
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def remove_buttonroles(self, ctx, role: nextcord.Role):
@@ -116,7 +116,7 @@ class admin(
             )
             embed = nextcord.Embed(
                 color=0x0DD91A,
-                title=f'The "{role}" role has been removed!\nMake sure to use `.buttonroles` again!',
+                title=f'The "{role}" role has been removed!\nMake sure to use the command `.buttonroles` again!',
             )
         else:
             embed = nextcord.Embed(
@@ -128,15 +128,15 @@ class admin(
         name="shutdown",
         description="Shuts down TIJK Bot",
         brief="Shuts down TIJK Bot",
-        aliases=["stop"],
+        aliases=["stop","stopbot"],
     )
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def shutdown(self, ctx):
         logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
-            name="TIJK Bot was shut down",
-            value=f"TIJK Bot was shut down by {ctx.author.name}#{ctx.author.discriminator}",
+            name="TIJK Bot has been shut down",
+            value=f"TIJK Bot has been shut down by {ctx.author.name}#{ctx.author.discriminator}",
             inline=False,
         )
 
@@ -147,7 +147,7 @@ class admin(
         dm = await owner.create_dm()
         await dm.send(embed=embed)
         bl.info(
-            "TIJK Bot was shut down by "
+            "TIJK Bot has been shut down by "
             + ctx.author.name
             + "#"
             + ctx.author.discriminator,
