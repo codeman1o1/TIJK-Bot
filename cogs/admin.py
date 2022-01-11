@@ -36,7 +36,7 @@ class admin(
         description="Sends a message with buttons where people can get roles",
         brief="Sends a message with buttons where people can get roles",
         invoke_without_command=True,
-        aliases=["br","brole","broles","buttonr"],
+        aliases=["br"],
     )
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def buttonroles(self, ctx):
@@ -202,7 +202,7 @@ class admin(
         name="timeout",
         description="Mute a user",
         brief="Mutes a user",
-        aliases=["to"],
+        aliases=["to","mute"],
     )
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     @commands.bot_has_permissions(moderate_members=True)
@@ -234,7 +234,7 @@ class admin(
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="User unmuted!",
-            value=f"{user.display_name} was unmuted by {ctx.author.name}#{ctx.author.discriminator} because of {reason}",
+            value=f"{user.display_name} has been unmuted by {ctx.author.name}#{ctx.author.discriminator} because of {reason}",
             inline=False,
         )
 
