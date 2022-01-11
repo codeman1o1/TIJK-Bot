@@ -57,7 +57,7 @@ class event_handler(
             UserData.update_one({"_id": user.id}, {"$set": {"warns": 0}})
             embed.add_field(
                 name=f"{user.display_name} exceeded the warn limit!",
-                value="He shall be punished with a 10 minute mute!",
+                value="He shall be punished!!! ...with a 10 minute mute.",
                 inline=False,
             )
 
