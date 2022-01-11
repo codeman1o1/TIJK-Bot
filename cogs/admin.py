@@ -201,8 +201,8 @@ class admin(
     @commands.command(
         name="timeout",
         description="Mute a user",
-        brief="Mutes a user",
-        aliases=["to","mute"],
+        brief="This command mutes a user",
+        aliases=["to"],
     )
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     @commands.bot_has_permissions(moderate_members=True)
@@ -216,7 +216,7 @@ class admin(
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="User muted!",
-            value=f"{user.display_name} was muted by {ctx.author.name}#{ctx.author.discriminator} because of {reason}",
+            value=f"{user.display_name} has been hit by the mute hammer by {ctx.author.name}#{ctx.author.discriminator} because of {reason}",
             inline=False,
         )
 
