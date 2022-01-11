@@ -201,7 +201,7 @@ class admin(
     @commands.command(
         name="timeout",
         description="Mute a user",
-        brief="This command mutes a user",
+        brief="mutes a user",
         aliases=["to"],
     )
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
@@ -400,7 +400,7 @@ class admin(
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="User banned!",
-            value=f"{user.name}#{user.discriminator} has been banned by {ctx.author.name}#{ctx.author.discriminator} with the reason {reason}\nUse `.unban {user.name}#{user.discriminator}` to unban {user.display_name}",
+            value=f"{user.name}#{user.discriminator} has been yeeted out by {ctx.author.name}#{ctx.author.discriminator} with the reason {reason}\nUse `.unban {user.name}#{user.discriminator}` to unban {user.display_name}",
             inline=False,
         )
 
@@ -422,7 +422,7 @@ class admin(
             logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
             await ctx.guild.unban(user, reason=reason)
             embed.add_field(
-                name="User unbanned!",
+                name="User has been unbanned!",
                 value=f"{user.name}#{user.discriminator} has been unbanned by {ctx.author.name}#{ctx.author.discriminator} with the reason {reason}",
                 inline=False,
             )
@@ -430,7 +430,7 @@ class admin(
             await logs_channel.send(embed=embed)
         else:
             embed.add_field(
-                name="Unbanning failed!",
+                name="The unbanning failed!",
                 value=f"{user.display_name} is not banned!",
                 inline=False,
             )
