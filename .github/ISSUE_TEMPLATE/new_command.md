@@ -2,9 +2,10 @@
 name: Suggest new command
 about: Create a new command to help us improve
 title: "[COMMAND]"
-labels: Command
-assignees: ''
+labels: waiting
+assignees: ""
 ---
+
 **Describe the reasoning**
 A clear description why you would like to add this command to TIJK-Bot.
 **The command and how it should work**

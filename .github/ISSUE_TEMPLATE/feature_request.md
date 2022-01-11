@@ -2,9 +2,8 @@
 name: Feature request
 about: Suggest an idea for TIJK Bot
 title: "[SUGGESTION]"
-labels: suggestion
-assignees: ''
-
+labels: waiting
+assignees: ""
 ---
 
 **Is your feature request related to a problem? If so, please describe. If not, skip this part**
