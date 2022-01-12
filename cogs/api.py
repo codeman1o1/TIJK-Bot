@@ -159,7 +159,7 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
             evolutionStage = family["evolutionStage"]
             evolutionLine = family["evolutionLine"]
             if not evolutionLine:
-                familyText = f"This Pokémon has no evolution line"
+                familyText = 'This Pokémon has no evolution line'
             else:
                 evolutionLine2 = ""
                 for k in evolutionLine:
