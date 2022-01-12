@@ -80,7 +80,7 @@ class developer_slash(commands.Cog):
                 )
         else:
             await interaction.response.send_message(
-                "You do not have permission to perform this task", ephemeral=True
+                "You currently do not have permission to perform this task", ephemeral=True
             )
 
 
