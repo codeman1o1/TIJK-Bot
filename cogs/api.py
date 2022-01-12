@@ -22,7 +22,7 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="Help with the .api command",
-            value="The .api command gets information from API's.\n**I do not own any of the API's, so if there occurs an issue, I can most likely not help you with it.**\nType `.help api` for all available subcommands",
+            value="The .api command gets information from API's.\n**I do not own any of the API's, so if there occurs an issue, I most likely cannot help you with it.**\nType `.help api` for all available subcommands",
             inline=False,
         )
 
