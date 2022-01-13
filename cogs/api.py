@@ -2,10 +2,15 @@ import os
 
 import aiohttp
 import nextcord
+import requests
 from dotenv import load_dotenv
 from nextcord.ext import commands
+from datetime import datetime
+from mojang import MojangAPI
+import math
 
 load_dotenv(os.path.join(os.getcwd() + "\.env"))
+hypixel_api_key = os.environ["hypixel_api_key"]
 
 
 class api(commands.Cog, name="API", description="A seperate cog for the API command"):
@@ -201,6 +206,111 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
                 name=f"Can't request info for the Pokémon {name}",
                 value="Error provided by the API:\n" + info["error"],
                 inline=True,
+            )
+        await ctx.send(embed=embed)
+
+    @api.command(
+        name="hypixel",
+        description="Gets information from the official Hypixel API",
+        brief="Get information from the official Hypixel API",
+        aliases=["hp"],
+    )
+    async def hypixel(self, ctx, username: str):
+        uuid = MojangAPI.get_uuid(username)
+        data = requests.get(
+            f"https://api.hypixel.net/player?key={hypixel_api_key}&uuid={uuid}"
+        ).json()
+        data_friends = requests.get(
+            f"https://api.hypixel.net/friends?key={hypixel_api_key}&uuid={uuid}"
+        ).json()
+        data_guild = requests.get(
+            f"https://api.hypixel.net/guild?key={hypixel_api_key}&player={uuid}"
+        ).json()
+        if data["success"] == True:
+            player_data = data["player"]
+            if "rank" in player_data:
+                rank = player_data["rank"]
+            elif "monthlyPackageRank" in player_data:
+                rank = player_data["monthlyPackageRank"].replace("_PLUS", "+")
+            elif "newPackageRank" in player_data:
+                rank = player_data["newPackageRank"].replace("_PLUS", "+")
+            else:
+                rank = ""
+            display_name = data["player"]["displayname"]
+            embed = nextcord.Embed(
+                color=0x0DD91A,
+                title=f"Here is information for **{rank} {display_name}**:",
+            )
+            if "lastLogout" in player_data:
+                logouttime = player_data["lastLogout"]
+                logintime = player_data["lastLogin"]
+                if logouttime < logintime:
+                    embed.add_field(
+                        name="Last online:",
+                        value=f"{display_name} is currently online",
+                        inline=False,
+                    )
+                else:
+                    offline_for = datetime.fromtimestamp(
+                        datetime.now().timestamp() - (logouttime / 1000)
+                    ).strftime("%d days and %H hours")
+                    embed.add_field(
+                        name="Last online:",
+                        value=datetime.fromtimestamp(logouttime / 1000).strftime(
+                            "%Y-%m-%d %H:%M:%S"
+                        )
+                        + "\n Offline for: "
+                        + offline_for,
+                        inline=False,
+                    )
+            else:
+                embed.add_field(
+                    name="Last online:",
+                    value="This is not enabled for this player",
+                    inline=False,
+                )
+            embed.add_field(
+                name="Friends:", value=len(data_friends["records"]), inline=False
+            )
+            if data_guild["success"] == True and data_guild["guild"] is not None:
+                name = data_guild["guild"]["name"]
+                members = str(len(data_guild["guild"]["members"]))
+                embed.add_field(
+                    name="Guild:",
+                    value=f"{name} ({members} members)",
+                    inline=False,
+                )
+            else:
+                embed.add_field(
+                    name="Guild:",
+                    value=f"{display_name} is not in a guild",
+                    inline=False,
+                )
+            if "socialMedia" in player_data and "links" in player_data["socialMedia"]:
+                social_media = "".join(
+                    f"{k.capitalize()}: {i}\n"
+                    for k, i in player_data["socialMedia"]["links"].items()
+                )
+                if social_media == "":
+                    social_media = "This player has no Social Media linked"
+                embed.add_field(name="Social Media", value=social_media, inline=False)
+            else:
+                embed.add_field(
+                    name="Social Media",
+                    value="This player has no Social Media linked",
+                    inline=False,
+                )
+            network_experience = player_data["networkExp"]
+            network_level = (math.sqrt((2 * network_experience) + 30625) / 50) - 2.5
+            network_level = round(network_level, 2)
+            embed.add_field(name="Network Level", value=network_level, inline=False)
+            karma = player_data["karma"]
+            embed.add_field(name="Karma", value=f"{karma:,}", inline=False)
+        else:
+            error = data["cause"]
+            embed = nextcord.Embed(color=0xFF0000)
+            embed.add_field(
+                name="An error occured!", value=f"Error provided by the API:\n{error}"
             )
         await ctx.send(embed=embed)
 

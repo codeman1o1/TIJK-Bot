@@ -7,3 +7,4 @@ dnspython==2.1.0
 uptime==3.0.1
 psutil==5.8.0
 humanfriendly==10.0
+mojang==0.2.0
