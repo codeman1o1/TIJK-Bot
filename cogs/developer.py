@@ -251,7 +251,10 @@ class developer(
 
         uptime2 = time.strftime("%H:%M:%S", time.gmtime(uptime.uptime()))
         embed.add_field(name="Uptime:", value=f"{uptime2}", inline=False)
-        embed.add_field(name="Guilds:", value=f"{len(self.bot.guilds)}", inline=False)
+        guilds = "\n".join(f"{k.name} ({k.id})\n" for k in self.bot.guilds)
+        embed.add_field(
+            name="Guilds:", value=f"{len(self.bot.guilds)}\n{guilds}", inline=False
+        )
         embed.add_field(name="Users:", value=f"{len(self.bot.users)}", inline=False)
         embed.add_field(
             name="Cogs loaded:", value=f"{len(self.bot.cogs)}", inline=False
