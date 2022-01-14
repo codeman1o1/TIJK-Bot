@@ -110,7 +110,10 @@ async def birthday_checker():
 
 @bot.event
 async def on_message(message):
-    return
+    if "Event Handler" in bot.cogs:
+        return
+    else:
+        await bot.process_commands(message)
 
 
 @bot.event
