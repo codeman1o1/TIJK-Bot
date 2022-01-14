@@ -2,6 +2,7 @@ import nextcord
 from nextcord.ext import commands
 from nextcord import Interaction
 from nextcord.application_command import SlashOption
+import os, sys
 
 
 class developer_slash(
@@ -79,6 +80,35 @@ class developer_slash(
                 await interaction.response.send_message(
                     "The embed is invalid", ephemeral=True
                 )
+        else:
+            await interaction.response.send_message(
+                "You do not have permission to perform this task", ephemeral=True
+            )
+
+    @nextcord.slash_command(
+        name="restart",
+        description="Restarts TIJK Bot",
+        guild_ids=[870973430114181141, 865146077236822017],
+    )
+    async def restart(self, interaction: nextcord.Interaction):
+        if await self.bot.is_owner(interaction.user):
+            logs_channel = nextcord.utils.get(interaction.guild.channels, name="logs")
+            embed = nextcord.Embed(color=0x0DD91A)
+            embed.add_field(
+                name="TIJK Bot is restarting...",
+                value=f"TIJK Bot was restarted by {interaction.user.display_name}",
+                inline=False,
+            )
+            await interaction.response.send_message(embed=embed)
+            await logs_channel.send(embed=embed)
+            await self.bot.change_presence(
+                activity=nextcord.Activity(
+                    type=nextcord.ActivityType.playing, name="Restarting..."
+                )
+            )
+            command = "cls" if os.name in ("nt", "dos") else "clear"
+            os.system(command)
+            os.execv(sys.executable, ["python"] + sys.argv)
         else:
             await interaction.response.send_message(
                 "You do not have permission to perform this task", ephemeral=True
