@@ -4,7 +4,11 @@ from nextcord import Interaction
 from nextcord.application_command import SlashOption
 
 
-class developer_slash(commands.Cog):
+class developer_slash(
+    commands.Cog,
+    name="Developer Slash Commands",
+    description="Slash commands for developers",
+):
     @nextcord.slash_command(
         name="embed",
         description="Generate an embed",
