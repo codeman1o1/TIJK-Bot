@@ -259,7 +259,7 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
                         value=datetime.fromtimestamp(logouttime / 1000).strftime(
                             "%Y-%m-%d %H:%M:%S"
                         )
-                        + "\n Offline for: "
+                        + "\nOffline for: "
                         + offline_for,
                         inline=False,
                     )
