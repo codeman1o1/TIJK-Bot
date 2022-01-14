@@ -7,6 +7,8 @@ from dotenv import load_dotenv
 from nextcord.ext import commands
 from pymongo import MongoClient
 from views.github import github_button
+import requests
+from mojang import MojangAPI
 
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(BASEDIR, ".env"))
@@ -18,6 +20,7 @@ cluster = MongoClient(f"mongodb+srv://{MongoUsername}:{MongoPassword}@{MongoWebs
 Data = cluster["Data"]
 UserData = Data["UserData"]
 BotData = Data["BotData"]
+hypixel_api_key = os.environ["hypixel_api_key"]
 
 
 class general(
@@ -44,10 +47,11 @@ class general(
 
         await ctx.send(embed=embed, view=github_button())
 
-    @commands.command(
+    @commands.group(
         name="hypixelparty",
         description="Chooses randomly a player that can own the party",
         brief="Chooses randomly a player that can own the party",
+        invoke_without_command=True,
         aliases=["hpp"],
     )
     async def hypixelparty(self, ctx):
@@ -61,6 +65,26 @@ class general(
             if hypixel_ping in user.roles
         ]
         if available:
+            for k in available:
+                user = await commands.converter.UserConverter().convert(ctx, k)
+                query = {"_id": user.id}
+                if UserData.count_documents(query) != 0:
+                    for k in UserData.find(query):
+                        if "minecraft_account" in k:
+                            username = k["minecraft_account"]
+                            uuid = MojangAPI.get_uuid(username)
+                            data = requests.get(
+                                f"https://api.hypixel.net/player?key={hypixel_api_key}&uuid={uuid}"
+                            ).json()
+                            logouttime = data["player"]["lastLogout"]
+                            logintime = data["player"]["lastLogin"]
+                            if not logouttime < logintime or data["success"] == False:
+                                available.remove(str(user))
+                        else:
+                            available.remove(str(user))
+                else:
+                    available.remove(k)
+        if available:
             embed = nextcord.Embed(color=0x0DD91A)
             randomInt = random.randint(0, len(available) - 1)
             embed.add_field(
@@ -68,15 +92,95 @@ class general(
                 value=f"{available[randomInt]} will be the party leader!",
                 inline=False,
             )
-
         else:
             embed = nextcord.Embed(
                 color=0x0DD91A,
                 title="Nobody meets the requirements to be the party leader!",
             )
-
         await ctx.send(embed=embed, delete_after=300)
         available.clear()
+
+    @hypixelparty.command(
+        name="link",
+        description="Link your Minecraft account",
+        brief="Link your Minecraft account",
+    )
+    async def link_hypixelparty(self, ctx, username: str):
+        if username.lower() == "remove":
+            query = {"_id": ctx.author.id}
+            if UserData.count_documents(query) == 0:
+                embed = nextcord.Embed(
+                    color=0xFFC800,
+                    title="You don't have your Minecraft account linked!",
+                )
+            else:
+                for k in UserData.find(query):
+                    if k["minecraft_account"]:
+                        account = k["minecraft_account"]
+                        UserData.update_one(
+                            {"_id": ctx.author.id},
+                            {"$unset": {"minecraft_account": account}},
+                        )
+                    else:
+                        embed = nextcord.Embed(
+                            color=0xFFC800,
+                            title="You don't have your Minecraft account linked!",
+                        )
+            embed = nextcord.Embed(
+                color=0x0DD91A, title="Successfully removed your Minecraft account"
+            )
+        else:
+            uuid = MojangAPI.get_uuid(username)
+            data = requests.get(
+                f"https://api.hypixel.net/player?key={hypixel_api_key}&uuid={uuid}"
+            ).json()
+            if data["success"] == True:
+                try:
+                    if "DISCORD" in data["player"]["socialMedia"]["links"].keys():
+                        if (
+                            data["player"]["socialMedia"]["links"]["DISCORD"]
+                            == f"{ctx.author.name}#{ctx.author.discriminator}"
+                        ):
+                            query = {"_id": ctx.author.id}
+                            if UserData.count_documents(query) == 0:
+                                post = {
+                                    "_id": ctx.author.id,
+                                    "minecraft_account": username,
+                                }
+                                UserData.insert_one(post)
+                            else:
+                                UserData.update_one(
+                                    {"_id": ctx.author.id},
+                                    {"$set": {"minecraft_account": username}},
+                                )
+                            embed = nextcord.Embed(
+                                color=0x0DD91A,
+                                title=f"Linked your account to **{username}**",
+                            )
+                        else:
+                            embed = nextcord.Embed(
+                                color=0xFFC800,
+                                title="The user's Discord is not linked to this account!",
+                            )
+                    else:
+                        embed = nextcord.Embed(
+                            color=0xFFC800,
+                            title="Make sure to link your Discord account in Hypixel by using `/discord` in-game!",
+                        )
+                except KeyError:
+                    embed = nextcord.Embed(
+                        color=0xFFC800,
+                        title="This account has no Social Media linked!",
+                    )
+            else:
+                cause = data["cause"]
+                embed = nextcord.Embed(color=0xFF0000)
+                embed.add_field(
+                    name="An error occured!",
+                    value=f"Error provided by the offical Hypixel API:\n{cause}",
+                    inline=False,
+                )
+        await ctx.send(embed=embed)
 
     @commands.group(
         name="admin",
