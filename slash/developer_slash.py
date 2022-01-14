@@ -49,7 +49,7 @@ class developer_slash(
             name="value3", description="The value of the 3d field", required=False
         ),
     ):
-        if self.bot.is_owner(interaction.user):
+        if await self.bot.is_owner(interaction.user):
             try:
                 if not color:
                     color = 0x0DD91A
