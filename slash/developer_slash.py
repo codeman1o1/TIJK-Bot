@@ -9,6 +9,9 @@ class developer_slash(
     name="Developer Slash Commands",
     description="Slash commands for developers",
 ):
+    def __init__(self, bot: commands.Bot):
+        self.bot = bot
+
     @nextcord.slash_command(
         name="embed",
         description="Generate an embed",
@@ -45,13 +48,7 @@ class developer_slash(
             name="value3", description="The value of the 3d field", required=False
         ),
     ):
-        owner = nextcord.utils.get(interaction.guild.roles, name="Owner")
-        admin = nextcord.utils.get(interaction.guild.roles, name="Admin")
-        tijk_bot_developer = nextcord.utils.get(
-            interaction.guild.roles, name="TIJK-Bot developer"
-        )
-        admins = (owner, admin, tijk_bot_developer)
-        if any(role in interaction.user.roles for role in admins):
+        if self.bot.is_owner(interaction.user):
             try:
                 if not color:
                     color = 0x0DD91A
