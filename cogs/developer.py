@@ -6,19 +6,9 @@ import time
 import nextcord
 import psutil
 import uptime
-from dotenv import load_dotenv
 from nextcord.ext import commands
-from pymongo import MongoClient
 
-load_dotenv(os.path.join(os.getcwd() + "\.env"))
-
-MongoPassword = os.environ["MongoPassword"]
-MongoUsername = os.environ["MongoUsername"]
-MongoWebsite = os.environ["MongoWebsite"]
-cluster = MongoClient(f"mongodb+srv://{MongoUsername}:{MongoPassword}@{MongoWebsite}")
-Data = cluster["Data"]
-UserData = Data["UserData"]
-BotData = Data["BotData"]
+from main import BOT_DATA
 
 
 class developer(
@@ -173,11 +163,11 @@ class developer(
     )
     @commands.is_owner()
     async def add_pingpoll(self, ctx, role: nextcord.Role):
-        pingpolls = list(BotData.find()[0]["pingpolls"])
+        pingpolls = list(BOT_DATA.find()[0]["pingpolls"])
         if role.name not in pingpolls:
             pingpolls.append(role.name)
-            BotData.update_one(
-                {"_id": BotData.find()[0]["_id"]},
+            BOT_DATA.update_one(
+                {"_id": BOT_DATA.find()[0]["_id"]},
                 {"$set": {"pingpolls": pingpolls}},
                 upsert=False,
             )
@@ -197,14 +187,14 @@ class developer(
     )
     @commands.is_owner()
     async def remove_pingpoll(self, ctx, role: nextcord.Role):
-        pingpolls = list(BotData.find()[0]["pingpolls"])
+        pingpolls = list(BOT_DATA.find()[0]["pingpolls"])
         if role.name in pingpolls:
             pingpolls.remove(role.name)
             embed = nextcord.Embed(
                 color=0x0DD91A, title=f"Role `{role.name}` is removed from PingPolls"
             )
-            BotData.update_one(
-                {"_id": BotData.find()[0]["_id"]},
+            BOT_DATA.update_one(
+                {"_id": BOT_DATA.find()[0]["_id"]},
                 {"$set": {"pingpolls": pingpolls}},
                 upsert=False,
             )
@@ -220,7 +210,7 @@ class developer(
         brief="List the roles used in Ping Poll",
     )
     async def list_pingpoll(self, ctx):
-        pingpolls = list(BotData.find()[0]["pingpolls"])
+        pingpolls = list(BOT_DATA.find()[0]["pingpolls"])
         if not pingpolls:
             embed = nextcord.Embed(color=0x0DD91A, title="There are no PingPolls!")
         else:

@@ -4,20 +4,10 @@ import os
 
 import basic_logger as bl
 import nextcord
-from dotenv import load_dotenv
 from nextcord.ext import commands
-from pymongo import MongoClient
 from views.pings import ping_buttons
 
-load_dotenv(os.path.join(os.getcwd() + "\.env"))
-
-MongoPassword = os.environ["MongoPassword"]
-MongoUsername = os.environ["MongoUsername"]
-MongoWebsite = os.environ["MongoWebsite"]
-cluster = MongoClient(f"mongodb+srv://{MongoUsername}:{MongoPassword}@{MongoWebsite}")
-Data = cluster["Data"]
-UserData = Data["UserData"]
-BotData = Data["BotData"]
+from main import BOT_DATA, USER_DATA
 
 
 class event_handler(
@@ -31,12 +21,12 @@ class event_handler(
 
     async def warn_system(event, user, amount: int = 1):
         query = {"_id": user.id}
-        if UserData.count_documents(query) == 0:
+        if USER_DATA.count_documents(query) == 0:
             post = {"_id": user.id, "warns": amount}
-            UserData.insert_one(post)
+            USER_DATA.insert_one(post)
             total_warns = amount
         else:
-            user2 = UserData.find(query)
+            user2 = USER_DATA.find(query)
             warns = 0
             try:
                 for result in user2:
@@ -44,7 +34,7 @@ class event_handler(
             except KeyError:
                 pass
             total_warns = warns + amount
-            UserData.update_one({"_id": user.id}, {"$set": {"warns": total_warns}})
+            USER_DATA.update_one({"_id": user.id}, {"$set": {"warns": total_warns}})
         embed = nextcord.Embed(color=0x0DD91A)
         if total_warns <= 9:
             embed.add_field(
@@ -54,7 +44,7 @@ class event_handler(
             )
             await event.channel.send(embed=embed)
         if total_warns >= 10:
-            UserData.update_one({"_id": user.id}, {"$set": {"warns": 0}})
+            USER_DATA.update_one({"_id": user.id}, {"$set": {"warns": 0}})
             embed.add_field(
                 name=f"{user.display_name} exceeded the warn limit!",
                 value="He shall be punished with a 10 minute mute!",
@@ -80,7 +70,7 @@ class event_handler(
         user = message.author
 
         if not user.bot:
-            pings = list(BotData.find()[0]["pingpolls"])
+            pings = list(BOT_DATA.find()[0]["pingpolls"])
             if pings:
                 for k in pings:
                     role = nextcord.utils.get(user.guild.roles, name=k)
@@ -127,14 +117,14 @@ class event_handler(
 
         if user is not None:
             query = {"_id": user.id}
-            if UserData.count_documents(query) == 0:
+            if USER_DATA.count_documents(query) == 0:
                 post = {"_id": user.id, "messages": 1}
-                UserData.insert_one(post)
+                USER_DATA.insert_one(post)
             else:
-                for result in UserData.find(query):
+                for result in USER_DATA.find(query):
                     messages = result["messages"]
                 messages = messages + 1
-                UserData.update_one(
+                USER_DATA.update_one(
                     {"_id": message.author.id}, {"$set": {"messages": messages}}
                 )
 
@@ -191,11 +181,11 @@ class event_handler(
                     else:
                         await after.edit(nick=before.name)
                     query = {"_id": after.id}
-                    if UserData.count_documents(query) == 0:
+                    if USER_DATA.count_documents(query) == 0:
                         post = {"_id": after.id, "warns": 1}
-                        UserData.insert_one(post)
+                        USER_DATA.insert_one(post)
                     else:
-                        user = UserData.find(query)
+                        user = USER_DATA.find(query)
                         warns = 0
                         try:
                             for result in user:
@@ -203,7 +193,7 @@ class event_handler(
                         except KeyError:
                             pass
                         warns = warns + 1
-                        UserData.update_one(
+                        USER_DATA.update_one(
                             {"_id": after.id}, {"$set": {"warns": warns}}
                         )
                 except nextcord.Forbidden:

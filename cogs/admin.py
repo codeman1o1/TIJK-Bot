@@ -4,24 +4,14 @@ import os
 import basic_logger as bl
 import humanfriendly
 import nextcord
-from dotenv import load_dotenv
 from nextcord.ext import commands
-from pymongo import MongoClient
 from views.button_roles import RoleView
 from typing import Union
 import json
 
-from cogs import event_handler
+from cogs.event_handler import event_handler
 
-load_dotenv(os.path.join(os.getcwd() + "\.env"))
-
-MongoPassword = os.environ["MongoPassword"]
-MongoUsername = os.environ["MongoUsername"]
-MongoWebsite = os.environ["MongoWebsite"]
-cluster = MongoClient(f"mongodb+srv://{MongoUsername}:{MongoPassword}@{MongoWebsite}")
-Data = cluster["Data"]
-UserData = Data["UserData"]
-BotData = Data["BotData"]
+from main import BOT_DATA, USER_DATA
 
 root = os.path.abspath(os.getcwd())
 prefixes = open(os.path.join(root, "bot_prefixes.json"))
@@ -46,7 +36,7 @@ class admin(
     )
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def buttonroles(self, ctx):
-        roles = BotData.find()[0]["roles"]
+        roles = BOT_DATA.find()[0]["roles"]
         if len(roles) == 0:
             embed = nextcord.Embed(
                 color=0x0DD91A,
@@ -70,7 +60,7 @@ class admin(
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def list_buttonroles(self, ctx):
         embed = nextcord.Embed(color=0x0DD91A)
-        roles = BotData.find()[0]["roles"]
+        roles = BOT_DATA.find()[0]["roles"]
         roles2 = ""
         for k in roles:
             roles2 = roles2 + "\n> " + k.strip(".py")
@@ -86,11 +76,11 @@ class admin(
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def add_buttonroles(self, ctx, role: nextcord.Role):
         role = role.name
-        roles = BotData.find()[0]["roles"]
+        roles = BOT_DATA.find()[0]["roles"]
         if role not in roles:
             roles.append(role)
-            BotData.update_one(
-                {"_id": BotData.find()[0]["_id"]},
+            BOT_DATA.update_one(
+                {"_id": BOT_DATA.find()[0]["_id"]},
                 {"$set": {"roles": roles}},
                 upsert=False,
             )
@@ -112,11 +102,11 @@ class admin(
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def remove_buttonroles(self, ctx, role: nextcord.Role):
         role = role.name
-        roles = BotData.find()[0]["roles"]
+        roles = BOT_DATA.find()[0]["roles"]
         if role in roles:
             roles.remove(role)
-            BotData.update_one(
-                {"_id": BotData.find()[0]["_id"]},
+            BOT_DATA.update_one(
+                {"_id": BOT_DATA.find()[0]["_id"]},
                 {"$set": {"roles": roles}},
                 upsert=False,
             )
@@ -197,7 +187,7 @@ class admin(
             )
             embed.set_footer(text="You also received 1 warn!")
             await ctx.send(embed=embed)
-            await event_handler.event_handler.warn_system(ctx, user)
+            await event_handler.warn_system(ctx, user)
         except IndexError:
             embed = nextcord.Embed(
                 color=0xFF0000, title=f"{rule_number} is not a valid rule number!"
@@ -458,7 +448,7 @@ class admin(
         user: nextcord.Member,
         amount: int = 1,
     ):
-        await event_handler.event_handler.warn_system(ctx, user, amount)
+        await event_handler.warn_system(ctx, user, amount)
 
     @warn.command(
         name="remove",
@@ -475,11 +465,11 @@ class admin(
         reason="No reason provided",
     ):
         query = {"_id": user.id}
-        if UserData.count_documents(query) == 0:
+        if USER_DATA.count_documents(query) == 0:
             post = {"_id": user.id, "warns": 0}
-            UserData.insert_one(post)
+            USER_DATA.insert_one(post)
         else:
-            user2 = UserData.find(query)
+            user2 = USER_DATA.find(query)
             try:
                 for result in user2:
                     warns = result["warns"]
@@ -490,7 +480,7 @@ class admin(
             if warns < 0:
                 warns = 0
                 amount = 0 + warns2
-            UserData.update_one({"_id": user.id}, {"$set": {"warns": warns}})
+            USER_DATA.update_one({"_id": user.id}, {"$set": {"warns": warns}})
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name=f"{user.display_name} now has {amount} warn(s) less because {reason}!",
@@ -507,7 +497,7 @@ class admin(
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def list_warn(self, ctx):
         embed = nextcord.Embed(color=0x0DD91A)
-        for k in UserData.find():
+        for k in USER_DATA.find():
             try:
                 user = self.bot.get_user(int(k["_id"]))
                 warns = k["warns"]
@@ -527,7 +517,7 @@ class admin(
         name="get", description="Gets your warn points", brief="Gets your warn points"
     )
     async def get_warn(self, ctx):
-        for k in UserData.find({"_id": ctx.author.id}):
+        for k in USER_DATA.find({"_id": ctx.author.id}):
             try:
                 warns = k["warns"]
                 embed = nextcord.Embed(

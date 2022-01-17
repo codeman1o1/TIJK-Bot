@@ -1,26 +1,16 @@
 import os
 
 import nextcord
-from dotenv import load_dotenv
 from nextcord import ButtonStyle
-from pymongo import MongoClient
 
-load_dotenv(os.path.join(os.getcwd() + "\.env"))
-
-MongoPassword = os.environ["MongoPassword"]
-MongoUsername = os.environ["MongoUsername"]
-MongoWebsite = os.environ["MongoWebsite"]
-cluster = MongoClient(f"mongodb+srv://{MongoUsername}:{MongoPassword}@{MongoWebsite}")
-Data = cluster["Data"]
-UserData = Data["UserData"]
-BotData = Data["BotData"]
+from main import BOT_DATA
 
 
 class RoleView(nextcord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
 
-        for role in BotData.find()[0]["roles"]:
+        for role in BOT_DATA.find()[0]["roles"]:
             self.add_item(
                 AddButton(label=role, style=ButtonStyle.primary, custom_id=role)
             )

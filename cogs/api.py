@@ -3,14 +3,12 @@ import os
 import aiohttp
 import nextcord
 import requests
-from dotenv import load_dotenv
 from nextcord.ext import commands
 from datetime import datetime
 from mojang import MojangAPI
 import math
 
-load_dotenv(os.path.join(os.getcwd() + "\.env"))
-hypixel_api_key = os.environ["hypixel_api_key"]
+from main import HYPIXEL_API_KEY
 
 
 class api(commands.Cog, name="API", description="A seperate cog for the API command"):
@@ -218,13 +216,13 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
     async def hypixel(self, ctx, username: str):
         uuid = MojangAPI.get_uuid(username)
         data = requests.get(
-            f"https://api.hypixel.net/player?key={hypixel_api_key}&uuid={uuid}"
+            f"https://api.hypixel.net/player?key={HYPIXEL_API_KEY}&uuid={uuid}"
         ).json()
         data_friends = requests.get(
-            f"https://api.hypixel.net/friends?key={hypixel_api_key}&uuid={uuid}"
+            f"https://api.hypixel.net/friends?key={HYPIXEL_API_KEY}&uuid={uuid}"
         ).json()
         data_guild = requests.get(
-            f"https://api.hypixel.net/guild?key={hypixel_api_key}&player={uuid}"
+            f"https://api.hypixel.net/guild?key={HYPIXEL_API_KEY}&player={uuid}"
         ).json()
         if data["success"] == True:
             player_data = data["player"]

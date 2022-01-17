@@ -3,24 +3,13 @@ import os
 import random
 
 import nextcord
-from dotenv import load_dotenv
 from nextcord.ext import commands
 from pymongo import MongoClient
 from views.github import github_button
 import requests
 from mojang import MojangAPI
 
-BASEDIR = os.path.abspath(os.path.dirname(__file__))
-load_dotenv(os.path.join(BASEDIR, ".env"))
-
-MongoPassword = os.environ["MongoPassword"]
-MongoUsername = os.environ["MongoUsername"]
-MongoWebsite = os.environ["MongoWebsite"]
-cluster = MongoClient(f"mongodb+srv://{MongoUsername}:{MongoPassword}@{MongoWebsite}")
-Data = cluster["Data"]
-UserData = Data["UserData"]
-BotData = Data["BotData"]
-hypixel_api_key = os.environ["hypixel_api_key"]
+from main import USER_DATA, HYPIXEL_API_KEY
 
 
 class general(
@@ -68,13 +57,13 @@ class general(
             for k in available:
                 user = await commands.converter.UserConverter().convert(ctx, k)
                 query = {"_id": user.id}
-                if UserData.count_documents(query) != 0:
-                    for k in UserData.find(query):
+                if USER_DATA.count_documents(query) != 0:
+                    for k in USER_DATA.find(query):
                         if "minecraft_account" in k:
                             username = k["minecraft_account"]
                             uuid = MojangAPI.get_uuid(username)
                             data = requests.get(
-                                f"https://api.hypixel.net/player?key={hypixel_api_key}&uuid={uuid}"
+                                f"https://api.hypixel.net/player?key={HYPIXEL_API_KEY}&uuid={uuid}"
                             ).json()
                             logouttime = data["player"]["lastLogout"]
                             logintime = data["player"]["lastLogin"]
@@ -108,16 +97,16 @@ class general(
     async def link_hypixelparty(self, ctx, username: str):
         if username.lower() == "remove":
             query = {"_id": ctx.author.id}
-            if UserData.count_documents(query) == 0:
+            if USER_DATA.count_documents(query) == 0:
                 embed = nextcord.Embed(
                     color=0xFFC800,
                     title="You don't have your Minecraft account linked!",
                 )
             else:
-                for k in UserData.find(query):
+                for k in USER_DATA.find(query):
                     if k["minecraft_account"]:
                         account = k["minecraft_account"]
-                        UserData.update_one(
+                        USER_DATA.update_one(
                             {"_id": ctx.author.id},
                             {"$unset": {"minecraft_account": account}},
                         )
@@ -132,7 +121,7 @@ class general(
         else:
             uuid = MojangAPI.get_uuid(username)
             data = requests.get(
-                f"https://api.hypixel.net/player?key={hypixel_api_key}&uuid={uuid}"
+                f"https://api.hypixel.net/player?key={HYPIXEL_API_KEY}&uuid={uuid}"
             ).json()
             if data["success"] == True:
                 try:
@@ -142,14 +131,14 @@ class general(
                             == f"{ctx.author.name}#{ctx.author.discriminator}"
                         ):
                             query = {"_id": ctx.author.id}
-                            if UserData.count_documents(query) == 0:
+                            if USER_DATA.count_documents(query) == 0:
                                 post = {
                                     "_id": ctx.author.id,
                                     "minecraft_account": username,
                                 }
-                                UserData.insert_one(post)
+                                USER_DATA.insert_one(post)
                             else:
-                                UserData.update_one(
+                                USER_DATA.update_one(
                                     {"_id": ctx.author.id},
                                     {"$set": {"minecraft_account": username}},
                                 )
@@ -271,7 +260,7 @@ class general(
         embed = nextcord.Embed(color=0x0DD91A)
         today = datetime.date.today()
         year = today.year
-        for k in UserData.find():
+        for k in USER_DATA.find():
             try:
                 user = self.bot.get_user(int(k["_id"]))
                 birthday = k["birthday"]
@@ -330,11 +319,11 @@ class general(
                 await ctx.send(embed=embed)
                 return
             query = {"_id": ctx.author.id}
-            if UserData.count_documents(query) == 0:
+            if USER_DATA.count_documents(query) == 0:
                 post = {"_id": ctx.author.id, "birthday": date}
-                UserData.insert_one(post)
+                USER_DATA.insert_one(post)
             else:
-                UserData.update_one(
+                USER_DATA.update_one(
                     {"_id": ctx.author.id}, {"$set": {"birthday": date}}
                 )
             embed = nextcord.Embed(
@@ -348,7 +337,7 @@ class general(
         brief="Removes your birthday",
     )
     async def remove_birthday(self, ctx):
-        UserData.update_one({"_id": ctx.author.id}, {"$unset": {"birthday": ""}})
+        USER_DATA.update_one({"_id": ctx.author.id}, {"$unset": {"birthday": ""}})
         embed = nextcord.Embed(color=0x0DD91A, title="Your birthday has been removed!")
         await ctx.send(embed=embed)
 

@@ -6,20 +6,9 @@ import struct
 
 import nextcord
 import pymongo
-from dotenv import load_dotenv
 from nextcord.ext import commands
-from pymongo import MongoClient
 
-BASEDIR = os.path.abspath(os.path.dirname(__file__))
-load_dotenv(os.path.join(BASEDIR, ".env"))
-
-MongoPassword = os.environ["MongoPassword"]
-MongoUsername = os.environ["MongoUsername"]
-MongoWebsite = os.environ["MongoWebsite"]
-cluster = MongoClient(f"mongodb+srv://{MongoUsername}:{MongoPassword}@{MongoWebsite}")
-Data = cluster["Data"]
-UserData = Data["UserData"]
-BotData = Data["BotData"]
+from main import USER_DATA
 
 
 class fun(
@@ -94,7 +83,7 @@ class fun(
         else:
             embed.add_field(
                 name=f"{choice} is not a valid option!",
-                value='You can choose between\n> Rock\n> Paper\n> Scissor(s)',
+                value="You can choose between\n> Rock\n> Paper\n> Scissor(s)",
                 inline=False,
             )
 
@@ -109,37 +98,35 @@ class fun(
         msg = await ctx.send(f"`Hacking {user}`")
         delay = round(random.uniform(2, 5), 2)
         await asyncio.sleep(delay)
-        await msg.edit(content='`Getting IP-addres...\n10% done`')
+        await msg.edit(content="`Getting IP-addres...\n10% done`")
         delay = round(random.uniform(2, 5), 2)
         ip = socket.inet_ntoa(struct.pack(">I", random.randint(1, 0xFFFFFFFF)))
         await asyncio.sleep(delay)
         await msg.edit(content=f"`IP-addres found: {ip}\n20% done`")
         delay = round(random.uniform(2, 5), 2)
         await asyncio.sleep(delay)
-        await msg.edit(content='`Buying data from the dark web...\n30% done`')
+        await msg.edit(content="`Buying data from the dark web...\n30% done`")
         delay = round(random.uniform(2, 5), 2)
         await asyncio.sleep(delay)
-        await msg.edit(content='`Installing trojan on PC...\n40% done`')
+        await msg.edit(content="`Installing trojan on PC...\n40% done`")
         delay = round(random.uniform(2, 5), 2)
         await asyncio.sleep(delay)
-        await msg.edit(content='`Getting into OS...\n50% done`')
+        await msg.edit(content="`Getting into OS...\n50% done`")
         delay = round(random.uniform(2, 5), 2)
         await asyncio.sleep(delay)
-        await msg.edit(content='`Installing 24 virusses on PC...\n60% done`')
+        await msg.edit(content="`Installing 24 virusses on PC...\n60% done`")
         delay = round(random.uniform(2, 5), 2)
         await asyncio.sleep(delay)
-        await msg.edit(content='`Slowly taking RAM...\n70% done`')
+        await msg.edit(content="`Slowly taking RAM...\n70% done`")
         delay = round(random.uniform(2, 5), 2)
         await asyncio.sleep(delay)
-        await msg.edit(content='`Showing personal data to scare you...\n80% done`')
+        await msg.edit(content="`Showing personal data to scare you...\n80% done`")
         delay = round(random.uniform(2, 5), 2)
         await asyncio.sleep(delay)
-        await msg.edit(content='`Deleting Windows...\n90% done`')
+        await msg.edit(content="`Deleting Windows...\n90% done`")
         delay = round(random.uniform(2, 5), 2)
         await asyncio.sleep(delay)
-        await msg.edit(
-            content='`Deletion complete, Windows was removed...\n100% done`'
-        )
+        await msg.edit(content="`Deletion complete, Windows was removed...\n100% done`")
 
         delay = round(random.uniform(1, 2), 2)
         await asyncio.sleep(delay)
@@ -153,7 +140,7 @@ class fun(
     )
     async def messages(self, ctx):
         embed = nextcord.Embed(color=0x0DD91A)
-        for k in UserData.find().sort("messages", pymongo.DESCENDING):
+        for k in USER_DATA.find().sort("messages", pymongo.DESCENDING):
             try:
                 user = self.bot.get_user(int(k["_id"]))
                 message = k["messages"]
@@ -165,7 +152,9 @@ class fun(
             except KeyError:
                 pass
         if embed.fields == 0:
-            embed = nextcord.Embed(color=0x0DD91A, title='Nobody has sent any messages!')
+            embed = nextcord.Embed(
+                color=0x0DD91A, title="Nobody has sent any messages!"
+            )
         await ctx.send(embed=embed)
 
 

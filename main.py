@@ -14,15 +14,13 @@ from pymongo import MongoClient
 
 import basic_logger as bl
 
-load_dotenv(os.path.join(".env"))
-
-MongoPassword = os.environ["MongoPassword"]
-MongoUsername = os.environ["MongoUsername"]
-MongoWebsite = os.environ["MongoWebsite"]
-cluster = MongoClient(f"mongodb+srv://{MongoUsername}:{MongoPassword}@{MongoWebsite}")
-Data = cluster["Data"]
-UserData = Data["UserData"]
-BotData = Data["BotData"]
+load_dotenv(".env")
+BOT_TOKEN = os.environ["BotToken"]
+HYPIXEL_API_KEY = os.environ["HypixelApiKey"]
+CLUSTER = MongoClient(os.environ["MongoURL"])
+DATA = CLUSTER["Data"]
+BOT_DATA = DATA["BotData"]
+USER_DATA = DATA["UserData"]
 
 client = nextcord.Client()
 bot = commands.Bot(
@@ -41,8 +39,6 @@ bot = commands.Bot(
 @bot.event
 async def on_ready():
     bl.info(f"Logged in as {bot.user.name}#{bot.user.discriminator}", __file__)
-    with open("spam_detect.txt", "a+") as file:
-        file.truncate(0)
     cogs = os.listdir("cogs")
     try:
         cogs.remove("__pycache__")
@@ -54,8 +50,11 @@ async def on_ready():
                 cog2 = cog.strip(".py")
                 bot.load_extension(f"cogs.{cog2}")
                 bl.debug(f"{cog} loaded", __file__)
-            except:
+            except Exception as e:
+                print(e)
                 bl.error(f"{cog} couldn't be loaded", __file__)
+    with open("spam_detect.txt", "a+") as file:
+        file.truncate(0)
     await bot.change_presence(
         activity=nextcord.Activity(
             type=nextcord.ActivityType.watching, name="over the TIJK Server"
@@ -71,9 +70,9 @@ async def on_ready():
 
 @tasks.loop(hours=1)
 async def remove_invalid_users():
-    for k in UserData.find():
+    for k in USER_DATA.find():
         if not bot.get_user(k["_id"]):
-            UserData.delete_one({"_id": k["_id"]})
+            USER_DATA.delete_one({"_id": k["_id"]})
 
 
 @tasks.loop(seconds=10)
@@ -84,7 +83,7 @@ async def birthday_checker():
     birthdays = []
     today = datetime.date.today()
     year = today.year
-    for k in UserData.find():
+    for k in USER_DATA.find():
         try:
             if k["birthday"]:
                 birthday2 = k["birthday"].split("-")
@@ -370,17 +369,19 @@ async def disable_command(ctx, *, command: str):
     await ctx.send(embed=embed)
 
 
-slash = os.listdir("slash")
-try:
-    slash.remove("__pycache__")
-except ValueError:
-    pass
-for file in slash:
-    if file.endswith(".py"):
-        try:
-            file2 = file.strip(".py")
-            bot.load_extension(f"slash.{file2}")
-            bl.debug(f"{file} loaded", __file__)
-        except:
-            bl.error(f"{file} couldn't be loaded", __file__)
-bot.run(os.environ["BotToken"])
+if __name__ == "__main__":
+    slash = os.listdir("slash")
+    try:
+        slash.remove("__pycache__")
+    except ValueError:
+        pass
+    for file in slash:
+        if file.endswith(".py"):
+            try:
+                file2 = file.strip(".py")
+                bot.load_extension(f"slash.{file2}")
+                bl.debug(f"{file} loaded", __file__)
+            except:
+                bl.error(f"{file} couldn't be loaded", __file__)
+
+    bot.run(BOT_TOKEN)
