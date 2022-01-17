@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from nextcord.ext import commands
 from pymongo import MongoClient
 from views.button_roles import RoleView
+from typing import Union
 import json
 
 from cogs import event_handler
@@ -357,7 +358,9 @@ class admin(
         async with ctx.typing():
 
             def check(message: nextcord.Message):
-                return bool(message.author.bot or message.content.lower().startswith(prefixes))
+                return bool(
+                    message.author.bot or message.content.lower().startswith(prefixes)
+                )
 
             deleted_messages = await ctx.channel.purge(
                 limit=100 * multiplier, check=check
@@ -533,6 +536,130 @@ class admin(
                 embed = nextcord.Embed(
                     color=0x0DD91A,
                     title=f"You ({ctx.author.display_name}) have 0 warns!",
+                )
+        await ctx.send(embed=embed)
+
+    @commands.command(
+        name="role-info",
+        description="Shows information about a role",
+        brief="Shows information about a role",
+        aliases=["ri"],
+    )
+    @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    async def role_info(self, ctx, role: nextcord.Role):
+        embed = nextcord.Embed(
+            color=0x0DD91A, title=f"Here is information about the {role.name} role"
+        )
+        embed.add_field(name="Role name", value=role.name, inline=True)
+        embed.add_field(name="Role ID", value=role.id, inline=True)
+        embed.add_field(
+            name="Role color",
+            value="#" + hex(role._colour).replace("0x", "").upper(),
+            inline=True,
+        )
+        embed.add_field(
+            name="Users with this role", value=len(role.members), inline=True
+        )
+        await ctx.send(embed=embed)
+
+    @commands.command(
+        name="server-info",
+        description="Shows information about a server",
+        brief="Shows information about a server",
+        aliases=["si"],
+    )
+    @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    async def server_info(self, ctx, id: int = None):
+        if id is None:
+            id = ctx.guild.id
+        guild = self.bot.get_guild(id)
+        if guild is not None:
+            embed = nextcord.Embed(
+                color=0x0DD91A,
+                title=f"Here is information about the {guild.name} server",
+            )
+            if guild.icon:
+                embed.set_thumbnail(url=guild.icon)
+            embed.add_field(name="Server name", value=guild.name, inline=True)
+            embed.add_field(name="Server ID", value=guild.id, inline=True)
+            if guild.owner.name == guild.owner.display_name:
+                embed.add_field(
+                    name="Owner", value=guild.owner.display_name, inline=True
+                )
+            else:
+                embed.add_field(
+                    name="Owner",
+                    value=f"{guild.owner.display_name} ({guild.owner.name})",
+                )
+            embed.add_field(name="Total members", value=len(guild.members), inline=True)
+            embed.add_field(name="Total humans", value=len(guild.humans), inline=True)
+            embed.add_field(name="Total bots", value=len(guild.bots), inline=True)
+            embed.add_field(name="Total roles", value=len(guild.roles), inline=True)
+            try:
+                bans = 0
+                for _ in await guild.bans():
+                    bans += 1
+                embed.add_field(name="Total bans", value=bans, inline=True)
+            except nextcord.Forbidden:
+                pass
+        else:
+            embed = nextcord.Embed(color=0xFFC800, title="I can not access that guild!")
+        await ctx.send(embed=embed)
+
+    @commands.command(
+        name="user-info",
+        description="Shows information about a user",
+        brief="Shows information about a user",
+        aliases=["ui"],
+    )
+    @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    async def user_info(self, ctx, user: Union[nextcord.Member, int] = None):
+        if user is None:
+            user = ctx.author
+        if type(user) == int:
+            user = self.bot.get_user(user)
+        if user is not None:
+            embed = nextcord.Embed(
+                color=0x0DD91A, title=f"Here is information for {user.name}"
+            )
+            if user.avatar:
+                embed.set_thumbnail(url=user.avatar)
+            embed.add_field(
+                name="Name", value=user.name + "#" + user.discriminator, inline=True
+            )
+            embed.add_field(name="In mutual guilds", value=len(user.mutual_guilds))
+        else:
+            embed = nextcord.Embed(color=0xFFC800, title="I can not acces that user!")
+        await ctx.send(embed=embed)
+
+    @commands.command(
+        name="slowmode",
+        description="Enables slowmode for a channel",
+        brief="Enables slowmode for a channel",
+        aliases=["slow", "sm"],
+    )
+    @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    async def slowmode(
+        self, ctx, time, channel: Union[nextcord.TextChannel, int] = None
+    ):
+        if channel is None:
+            channel = ctx.channel
+        if isinstance(channel, int):
+            embed = nextcord.Embed(
+                color=0xFFC800, title="Channel is not found or not a text channel!"
+            )
+        else:
+            time_seconds = int(humanfriendly.parse_timespan(time))
+            time = humanfriendly.format_timespan(time_seconds)
+            if time_seconds <= 21600:
+                await channel.edit(slowmode_delay=time_seconds)
+                embed = nextcord.Embed(
+                    color=0x0DD91A,
+                    title=f"Set the slowmode for the {channel.name} channel to {time}",
+                )
+            else:
+                embed = nextcord.Embed(
+                    color=0xFFC800, title="The limit for slowmode is 6 hours"
                 )
         await ctx.send(embed=embed)
 
