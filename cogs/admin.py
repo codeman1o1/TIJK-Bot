@@ -22,7 +22,9 @@ cluster = MongoClient(f"mongodb+srv://{MongoUsername}:{MongoPassword}@{MongoWebs
 Data = cluster["Data"]
 UserData = Data["UserData"]
 BotData = Data["BotData"]
-prefixes = open(os.path.join(os.getcwd() + "\\bot_prefixes.json"))
+
+root = os.path.abspath(os.getcwd())
+prefixes = open(os.path.join(root, "bot_prefixes.json"))
 prefixes = tuple(json.load(prefixes)["prefixes"])
 
 
