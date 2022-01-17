@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from nextcord.ext import commands
 from pymongo import MongoClient
 from views.button_roles import RoleView
+import json
 
 from cogs import event_handler
 
@@ -20,6 +21,8 @@ cluster = MongoClient(f"mongodb+srv://{MongoUsername}:{MongoPassword}@{MongoWebs
 Data = cluster["Data"]
 UserData = Data["UserData"]
 BotData = Data["BotData"]
+prefixes = open(os.path.join(os.getcwd() + "\\bot_prefixes.json"))
+prefixes = tuple(json.load(prefixes)["prefixes"])
 
 
 class admin(
@@ -354,7 +357,7 @@ class admin(
         async with ctx.typing():
 
             def check(message: nextcord.Message):
-                return message.author.bot
+                return bool(message.author.bot or message.content.lower().startswith(prefixes))
 
             deleted_messages = await ctx.channel.purge(
                 limit=100 * multiplier, check=check
