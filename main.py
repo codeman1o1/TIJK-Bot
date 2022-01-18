@@ -160,7 +160,8 @@ async def load_cog(ctx, cog: str = None):
                     color=0x0DD91A, title="All cogs have been loaded"
                 )
                 bl.debug("All cogs have been loaded", __file__)
-            except:
+            except Exception as e:
+                print(e)
                 embed = nextcord.Embed(
                     color=0xFF0000, title="Not all cogs could be loaded"
                 )
@@ -218,7 +219,8 @@ async def reload_cog(ctx, cog: str = None):
                     color=0x0DD91A, title="All cogs have been reloaded"
                 )
                 bl.debug("All cogs have been reloaded", __file__)
-            except:
+            except Exception as e:
+                print(e)
                 embed = nextcord.Embed(
                     color=0xFF0000, title="Not all cogs could be reloaded"
                 )
@@ -276,7 +278,8 @@ async def unload_cog(ctx, cog: str = None):
                     color=0x0DD91A, title="All cogs have been unloaded"
                 )
                 bl.debug("All cogs have been unloaded", __file__)
-            except:
+            except Exception as e:
+                print(e)
                 embed = nextcord.Embed(
                     color=0xFF0000, title="Not all cogs could be unloaded"
                 )
@@ -381,7 +384,8 @@ if __name__ == "__main__":
                 file2 = file.strip(".py")
                 bot.load_extension(f"slash.{file2}")
                 bl.debug(f"{file} loaded", __file__)
-            except:
+            except Exception as e:
+                print(e)
                 bl.error(f"{file} couldn't be loaded", __file__)
 
     bot.run(BOT_TOKEN)
