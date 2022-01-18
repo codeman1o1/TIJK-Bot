@@ -6,7 +6,6 @@ import humanfriendly
 import nextcord
 from nextcord.ext import commands
 from views.button_roles import RoleView
-from typing import Union
 import json
 
 from cogs.event_handler import event_handler
@@ -605,7 +604,7 @@ class admin(
         aliases=["ui"],
     )
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
-    async def user_info(self, ctx, user: Union[nextcord.Member, int] = None):
+    async def user_info(self, ctx, user: nextcord.Member = None):
         if user is None:
             user = ctx.author
         if type(user) == int:
@@ -631,15 +630,9 @@ class admin(
         aliases=["slow", "sm"],
     )
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
-    async def slowmode(
-        self, ctx, time, channel: Union[nextcord.TextChannel, int] = None
-    ):
+    async def slowmode(self, ctx, time, channel: nextcord.TextChannel = None):
         if channel is None:
             channel = ctx.channel
-        if isinstance(channel, int):
-            embed = nextcord.Embed(
-                color=0xFFC800, title="Channel is not found or not a text channel!"
-            )
         else:
             time_seconds = int(humanfriendly.parse_timespan(time))
             time = humanfriendly.format_timespan(time_seconds)
