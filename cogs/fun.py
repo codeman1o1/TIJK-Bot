@@ -23,7 +23,7 @@ class fun(
         name="headsortails",
         description="Flips a coin",
         brief="Flips a coin",
-        aliases=["hot"],
+        aliases=["hot","fac"],
     )
     async def headsortails(self, ctx):
         hot = random.randint(0, 1)
