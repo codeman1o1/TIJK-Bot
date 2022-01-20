@@ -106,11 +106,10 @@ class event_handler(
                     embed = nextcord.Embed(color=0x0DD91A)
                     embed.add_field(
                         name=f"You ({user.display_name}) have been muted",
-                        value="You have been muted for 10 minutes.\nIf you think this was a mistake, please contact an owner or admin\nBecause of this action, you received 1 warn",
+                        value="You have been muted for 10 minutes.\nIf you think this was a mistake, please contact an owner or admin",
                         inline=True,
                     )
                     await message.channel.send(embed=embed)
-                    await event_handler.warn_system(message, user)
 
             if not message.content.startswith(".."):
                 await self.bot.process_commands(message)
