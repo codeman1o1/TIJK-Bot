@@ -53,7 +53,7 @@ class event_handler(
 
             await event.channel.send(embed=embed)
             await user.edit(
-                timeout=nextcord.utils.utcnow() + datetime.timedelta(seconds=600)
+                timeout=nextcord.utils.utcnow() + datetime.timedelta(seconds=1200)
             )
             logs_channel = nextcord.utils.get(user.guild.channels, name="logs")
             embed = nextcord.Embed(color=0x0DD91A)
