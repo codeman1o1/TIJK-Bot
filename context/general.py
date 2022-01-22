@@ -12,10 +12,21 @@ class general_ctx(commands.Cog):
         name="Warn user", guild_ids=[870973430114181141, 865146077236822017]
     )
     async def warn(self, interaction: Interaction, user: nextcord.Member):
-        await interaction.response.send_message(
-            f"Warned {user.display_name}", ephemeral=True
+        owner_role = nextcord.utils.get(interaction.user.guild.roles, name="Owner")
+        admin_role = nextcord.utils.get(interaction.user.guild.roles, name="Admin")
+        tijk_bot_developer_role = nextcord.utils.get(
+            interaction.user.guild.roles, name="TIJK-Bot developer"
         )
-        await event_handler.warn_system(interaction, user)
+        admin_roles = (owner_role, admin_role, tijk_bot_developer_role)
+        if any(role in interaction.user.roles for role in admin_roles):
+            await interaction.response.send_message(
+                f"Warned {user.display_name}", ephemeral=True
+            )
+            await event_handler.warn_system(interaction, user)
+        else:
+            await interaction.response.send_message(
+                "You do not have permission to perform this task", ephemeral=True
+            )
 
 
 def setup(bot: commands.Bot):
