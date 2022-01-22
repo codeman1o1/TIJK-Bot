@@ -169,24 +169,31 @@ class admin(
         name="readtherules",
         description="Tells a user to read the rules",
         brief="Tells a user to read the rules",
-        aliases=["rtr"],
+        aliases=["rtr", "rule"],
     )
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
-    async def read_the_rules(self, ctx, rule_number: int, user: nextcord.Member):
+    async def read_the_rules(self, ctx, rule_number: int, user: nextcord.Member = None):
         channel = nextcord.utils.get(ctx.guild.channels, name="rules")
         messages = await channel.history(limit=50).flatten()
         messages.reverse()
         await ctx.channel.purge(limit=1)
         try:
             embed = nextcord.Embed(color=0x0DD91A)
-            embed.add_field(
-                name=f"Hey {user.display_name}, please read rule number {rule_number}!",
-                value=f"{messages[rule_number - 1].content}",
-                inline=False,
-            )
-            embed.set_footer(text="You also received 1 warn!")
+            if user:
+                embed.add_field(
+                    name=f"Hey {user.display_name}, please read rule number {rule_number}!",
+                    value=messages[rule_number - 1].content,
+                    inline=False,
+                )
+                embed.set_footer(text="You also received 1 warn!")
+                await event_handler.warn_system(ctx, user)
+            else:
+                embed.add_field(
+                    name=f"Here is rule number {rule_number}:",
+                    value=messages[rule_number - 1].content,
+                    inline=False,
+                )
             await ctx.send(embed=embed)
-            await event_handler.warn_system(ctx, user)
         except IndexError:
             embed = nextcord.Embed(
                 color=0xFF0000, title=f"{rule_number} is not a valid rule number!"
