@@ -368,10 +368,6 @@ async def disable_command(ctx, *, command: str):
 
 if __name__ == "__main__":
     slash = os.listdir("slash")
-    try:
-        slash.remove("__pycache__")
-    except ValueError:
-        pass
     for file in slash:
         if file.endswith(".py"):
             try:
