@@ -40,10 +40,6 @@ bot = commands.Bot(
 async def on_ready():
     bl.info(f"Logged in as {bot.user.name}#{bot.user.discriminator}", __file__)
     cogs = os.listdir("cogs")
-    try:
-        cogs.remove("__pycache__")
-    except ValueError:
-        pass
     for cog in cogs:
         if cog.endswith(".py"):
             try:
