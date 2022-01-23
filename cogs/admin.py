@@ -186,7 +186,7 @@ class admin(
                     inline=False,
                 )
                 embed.set_footer(text="You also received 1 warn!")
-                await event_handler.warn_system(ctx, user)
+                await event_handler.warn_system(ctx, user, invoker_username=ctx.author.display_name)
             else:
                 embed.add_field(
                     name=f"Here is rule number {rule_number}:",
@@ -454,7 +454,7 @@ class admin(
         user: nextcord.Member,
         amount: int = 1,
     ):
-        await event_handler.warn_system(ctx, user, amount)
+        await event_handler.warn_system(ctx, user, amount, user.display_name)
 
     @warn.command(
         name="remove",

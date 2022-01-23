@@ -19,7 +19,7 @@ class event_handler(
         self.bot = bot
         self.bot.add_view(ping_buttons())
 
-    async def warn_system(event, user, amount: int = 1):
+    async def warn_system(event, user, amount: int = 1, invoker_username: str = "Warn System"):
         query = {"_id": user.id}
         if USER_DATA.count_documents(query) == 0:
             post = {"_id": user.id, "warns": amount}
@@ -38,7 +38,7 @@ class event_handler(
         embed = nextcord.Embed(color=0x0DD91A)
         if total_warns <= 9:
             embed.add_field(
-                name=f"{user.display_name} has been warned by Warn System",
+                name=f"{user.display_name} has been warned by {invoker_username}",
                 value=f"{user.display_name} has {10 - total_warns} warns left!",
                 inline=False,
             )

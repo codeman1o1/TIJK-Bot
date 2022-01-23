@@ -22,7 +22,9 @@ class general_ctx(commands.Cog):
             await interaction.response.send_message(
                 f"Warned {user.display_name}", ephemeral=True
             )
-            await event_handler.warn_system(interaction, user)
+            await event_handler.warn_system(
+                interaction, user, invoker_username=interaction.user.display_name
+            )
         else:
             await interaction.response.send_message(
                 "You do not have permission to perform this task", ephemeral=True
