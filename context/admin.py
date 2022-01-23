@@ -4,7 +4,7 @@ from nextcord.interactions import Interaction
 from cogs.event_handler import event_handler
 
 
-class general_ctx(commands.Cog):
+class admin_ctx(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
@@ -32,4 +32,4 @@ class general_ctx(commands.Cog):
 
 
 def setup(bot: commands.Bot):
-    bot.add_cog(general_ctx(bot))
+    bot.add_cog(admin_ctx(bot))
