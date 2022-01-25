@@ -19,7 +19,9 @@ class event_handler(
         self.bot = bot
         self.bot.add_view(ping_buttons())
 
-    async def warn_system(event, user, amount: int = 1, invoker_username: str = "Warn System"):
+    async def warn_system(
+        event, user, amount: int = 1, invoker_username: str = "Warn System"
+    ):
         query = {"_id": user.id}
         if USER_DATA.count_documents(query) == 0:
             post = {"_id": user.id, "warns": amount}
@@ -141,10 +143,7 @@ class event_handler(
             await dm.send(embed=embed)
         except nextcord.errors.HTTPException:
             pass
-        if not member.bot:
-            member_role = nextcord.utils.get(member.guild.roles, name="Member")
-            await member.add_roles(member_role)
-        else:
+        if member.bot:
             bot_role = nextcord.utils.get(member.guild.roles, name="Bot")
             await member.add_roles(bot_role)
 

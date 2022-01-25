@@ -6,6 +6,7 @@ import humanfriendly
 import nextcord
 from nextcord.ext import commands
 from views.button_roles import RoleView
+from views.verify import VerifyView
 import json
 
 from cogs.event_handler import event_handler
@@ -25,6 +26,7 @@ class admin(
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.bot.add_view(RoleView())
+        self.bot.add_view(VerifyView())
 
     @commands.group(
         name="buttonroles",
@@ -165,6 +167,29 @@ class admin(
 
         await ctx.send(embed=embed)
 
+    @commands.group(name="verify", invoke_without_command=True)
+    @commands.bot_has_permissions(manage_roles=True)
+    @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    async def verify(self, ctx, user: nextcord.Member):
+        member_role = nextcord.utils.get(ctx.guild.roles, name="Member")
+        if member_role not in user.roles:
+            await user.add_roles(member_role)
+            embed = nextcord.Embed(
+                color=0x0DD91A, title=f"Verified {user.display_name}!"
+            )
+        else:
+            embed = nextcord.Embed(
+                color=0xFFC800, title=f"{user.display_name} is already verified!"
+            )
+        await ctx.send(embed=embed)
+
+    @verify.command(name="send")
+    @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    async def send_verify(self, ctx):
+        await ctx.channel.purge(limit=1)
+        embed = nextcord.Embed(color=0x0DD91A, title="Click the button below to verify")
+        await ctx.send(embed=embed, view=VerifyView())
+
     @commands.command(
         name="readtherules",
         description="Tells a user to read the rules",
@@ -186,7 +211,9 @@ class admin(
                     inline=False,
                 )
                 embed.set_footer(text="You also received 1 warn!")
-                await event_handler.warn_system(ctx, user, invoker_username=ctx.author.display_name)
+                await event_handler.warn_system(
+                    ctx, user, invoker_username=ctx.author.display_name
+                )
             else:
                 embed.add_field(
                     name=f"Here is rule number {rule_number}:",
