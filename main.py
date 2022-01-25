@@ -111,10 +111,8 @@ async def on_message(message):
 
 @bot.event
 async def on_command_error(ctx, error):
-    embed = nextcord.Embed(color=0xFF0000)
-    embed.add_field(name="An error occured!", value=error, inline=True)
-    await ctx.send(embed=embed)
-    bl.error(error, __file__)
+    if "Event Handler" not in bot.cogs:
+        bl.error(error, __file__)
 
 
 @bot.command(

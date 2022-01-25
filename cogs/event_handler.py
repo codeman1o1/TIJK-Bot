@@ -1,6 +1,7 @@
 import datetime
 import json
 import os
+from difflib import SequenceMatcher
 
 import basic_logger as bl
 import nextcord
@@ -211,6 +212,28 @@ class event_handler(
             await dm.send(embed=embed)
         except nextcord.errors.HTTPException:
             pass
+
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx, error):
+        error2 = error
+        if isinstance(error, commands.CommandNotFound):
+            message = ctx.message.content[1:]
+            cmds = {
+                k: round(SequenceMatcher(None, k, message).ratio() * 100, 1)
+                for k in self.bot.all_commands.keys()
+            }
+            sorted_keys = list(sorted(cmds, key=cmds.get))
+            sorted_keys.reverse()
+            sorted_cmds = {w: cmds[w] for w in sorted_keys}
+            best_cmd = list(sorted_cmds.keys())[0]
+            best_cmd_perc = list(sorted_cmds.values())[0]
+            error2 = (
+                str(error) + f"\nDid you mean `.{best_cmd}`? ({best_cmd_perc}% match)"
+            )
+        embed = nextcord.Embed(color=0xFF0000)
+        embed.add_field(name="An error occured!", value=error2, inline=True)
+        await ctx.send(embed=embed)
+        bl.error(error, __file__)
 
 
 def setup(bot: commands.Bot):
