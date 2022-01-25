@@ -1,5 +1,6 @@
 import asyncio
 import os
+import json
 import random
 import socket
 import struct
@@ -9,6 +10,10 @@ import pymongo
 from nextcord.ext import commands
 
 from main import USER_DATA
+
+root = os.path.abspath(os.getcwd())
+eight_ball_responses = open(os.path.join(root, "8ball_responses.json"))
+eight_ball_responses = tuple(json.load(eight_ball_responses)["responses"])
 
 
 class fun(
@@ -23,7 +28,7 @@ class fun(
         name="headsortails",
         description="Flips a coin",
         brief="Flips a coin",
-        aliases=["hot","fac"],
+        aliases=["hot", "fac"],
     )
     async def headsortails(self, ctx):
         hot = random.randint(0, 1)
@@ -155,6 +160,12 @@ class fun(
             embed = nextcord.Embed(
                 color=0x0DD91A, title="Nobody has sent any messages!"
             )
+        await ctx.send(embed=embed)
+
+    @commands.command(name="8ball")
+    async def eight_ball(self, ctx, question: str):
+        random_int = random.randint(0, len(eight_ball_responses) - 1)
+        embed = nextcord.Embed(color=0x0DD91A, title=eight_ball_responses[random_int])
         await ctx.send(embed=embed)
 
 
