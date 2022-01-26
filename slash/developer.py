@@ -18,7 +18,7 @@ class developer_slash(
         description="Generate an embed",
         guild_ids=[870973430114181141, 865146077236822017],
     )
-    async def title(
+    async def embed(
         self,
         interaction: Interaction,
         title: str = SlashOption(
