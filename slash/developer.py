@@ -49,7 +49,13 @@ class developer_slash(
             name="value3", description="The value of the 3d field", required=False
         ),
     ):
-        if await self.bot.is_owner(interaction.user):
+        owner = nextcord.utils.get(interaction.guild.roles, name="Owner")
+        admin = nextcord.utils.get(interaction.guild.roles, name="Admin")
+        tijk_bot_developer = nextcord.utils.get(
+            interaction.guild.roles, name="TIJK-Bot developer"
+        )
+        admins = (owner, admin, tijk_bot_developer)
+        if any(role in interaction.user.roles for role in admins):
             try:
                 if not color:
                     color = 0x0DD91A
