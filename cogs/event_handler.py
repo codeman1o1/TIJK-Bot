@@ -161,7 +161,7 @@ class event_handler(commands.Cog, name="Event Handler"):
             await member.add_roles(bot_role)
 
     @commands.Cog.listener()
-    async def on_member_update(self, before, after):
+    async def on_member_update(self, before: Context, after: Context):
         """Called when a member updates"""
         tijk_bot_developer_role = nextcord.utils.get(
             after.guild.roles, name="TIJK-Bot developer"
