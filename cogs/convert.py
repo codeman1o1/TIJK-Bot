@@ -1,5 +1,6 @@
 import nextcord
 from nextcord.ext import commands
+from nextcord.ext.commands import Context
 import os
 from PIL import Image
 
@@ -17,7 +18,7 @@ class convert(
         invoke_without_command=True,
         aliases=["cv"],
     )
-    async def convert(self, ctx):
+    async def convert(self, ctx: Context):
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="Help with the convert command",
@@ -32,7 +33,7 @@ class convert(
         brief="Convert PNG files to JPG images",
         aliases=["jpeg"],
     )
-    async def jpg(self, ctx):
+    async def jpg(self, ctx: Context):
         if ctx.message.attachments:
             for file in ctx.message.attachments:
                 if file.filename.endswith(".png"):
@@ -63,7 +64,7 @@ class convert(
         description="Convert JPG/JPEG files to PNG images",
         brief="Convert JPG/JPEG files to PNG images",
     )
-    async def png(self, ctx):
+    async def png(self, ctx: Context):
         if ctx.message.attachments:
             for file in ctx.message.attachments:
                 if file.filename.endswith((".jpg", ".jpeg")):

@@ -4,6 +4,7 @@ import random
 
 import nextcord
 from nextcord.ext import commands
+from nextcord.ext.commands import Context
 from pymongo import MongoClient
 from views.github import github_button
 import requests
@@ -26,7 +27,7 @@ class general(
         brief="Sends a link to the official TIJK Bot GitHub page",
         aliases=["git", "source"],
     )
-    async def github(self, ctx):
+    async def github(self, ctx: Context):
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="View the official TIJK Bot code now!",
@@ -43,7 +44,7 @@ class general(
         invoke_without_command=True,
         aliases=["hpp"],
     )
-    async def hypixelparty(self, ctx):
+    async def hypixelparty(self, ctx: Context):
         await ctx.channel.purge(limit=1)
         hypixel_ping = nextcord.utils.get(ctx.guild.roles, name="Hypixel Ping")
         available = [
@@ -94,7 +95,7 @@ class general(
         description="Link your Minecraft account",
         brief="Link your Minecraft account",
     )
-    async def link_hypixelparty(self, ctx, username: str):
+    async def link_hypixelparty(self, ctx: Context, username: str):
         if username.lower() == "remove":
             query = {"_id": ctx.author.id}
             if USER_DATA.count_documents(query) == 0:
@@ -178,7 +179,7 @@ class general(
         invoke_without_command=True,
     )
     @commands.cooldown(1, 120, commands.BucketType.user)
-    async def admin(self, ctx, admin: nextcord.Member, *, message):
+    async def admin(self, ctx: Context, admin: nextcord.Member, *, message: str):
         owner_role = nextcord.utils.get(ctx.guild.roles, name="Owner")
         admin_role = nextcord.utils.get(ctx.guild.roles, name="Admin")
         admin_roles = (owner_role, admin_role)
@@ -216,7 +217,7 @@ class general(
         brief="Makes the .admin command urgent",
     )
     @commands.cooldown(1, 300, commands.BucketType.user)
-    async def urgent_admin(self, ctx, admin: nextcord.Member, *, message: str):
+    async def urgent_admin(self, ctx: Context, admin: nextcord.Member, *, message: str):
         owner_role = nextcord.utils.get(ctx.guild.roles, name="Owner")
         admin_role = nextcord.utils.get(ctx.guild.roles, name="Admin")
         admin_roles = (owner_role, admin_role)
@@ -255,7 +256,7 @@ class general(
         invoke_without_command=True,
         aliases=["bday"],
     )
-    async def birthday(self, ctx):
+    async def birthday(self, ctx: Context):
         birthdays = []
         embed = nextcord.Embed(color=0x0DD91A)
         today = datetime.date.today()
@@ -298,7 +299,7 @@ class general(
     @birthday.command(
         name="set", description="Sets your birthday", brief="Sets your birthday"
     )
-    async def set_birthday(self, ctx, date=None):
+    async def set_birthday(self, ctx: Context, date=None):
         if not date:
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
@@ -336,7 +337,7 @@ class general(
         description="Removes your birthday",
         brief="Removes your birthday",
     )
-    async def remove_birthday(self, ctx):
+    async def remove_birthday(self, ctx: Context):
         USER_DATA.update_one({"_id": ctx.author.id}, {"$unset": {"birthday": ""}})
         embed = nextcord.Embed(color=0x0DD91A, title="Your birthday has been removed!")
         await ctx.send(embed=embed)

@@ -7,6 +7,7 @@ import time
 
 import nextcord
 import nextcord.ext.commands.errors
+from nextcord.ext.commands import Context
 from dotenv import load_dotenv
 from nextcord.ext import commands, tasks
 from pretty_help import PrettyHelp
@@ -110,7 +111,7 @@ async def on_message(message):
 
 
 @bot.event
-async def on_command_error(ctx, error):
+async def on_command_error(ctx: Context, error: commands.CommandError):
     if "Event Handler" not in bot.cogs:
         bl.error(error, __file__)
 
@@ -119,7 +120,7 @@ async def on_command_error(ctx, error):
     name="load_cog", description="Loads a cog", brief="Loads a cog", aliases=["lc"]
 )
 @commands.is_owner()
-async def load_cog(ctx, cog: str = None):
+async def load_cog(ctx: Context, cog: str = None):
     try:
         if cog is None:
             cogs = os.listdir("cogs")
@@ -181,7 +182,7 @@ async def load_cog(ctx, cog: str = None):
     brief="Reloads a cog",
     aliases=["rlc", "rc"],
 )
-async def reload_cog(ctx, cog: str = None):
+async def reload_cog(ctx: Context, cog: str = None):
     try:
         cogs = os.listdir("cogs")
         cogs.remove("__pycache__")
@@ -241,7 +242,7 @@ async def reload_cog(ctx, cog: str = None):
     aliases=["ulc", "uc"],
 )
 @commands.is_owner()
-async def unload_cog(ctx, cog: str = None):
+async def unload_cog(ctx: Context, cog: str = None):
     try:
         cogs = os.listdir("cogs")
         cogs.remove("__pycache__")
@@ -298,7 +299,7 @@ async def unload_cog(ctx, cog: str = None):
     aliases=["ec"],
 )
 @commands.is_owner()
-async def enable_command(ctx, *, command: str):
+async def enable_command(ctx: Context, *, command: str):
     command_name = command
     command = bot.get_command(command)
     if command is None:
@@ -327,7 +328,7 @@ async def enable_command(ctx, *, command: str):
     aliases=["dc"],
 )
 @commands.is_owner()
-async def disable_command(ctx, *, command: str):
+async def disable_command(ctx: Context, *, command: str):
     command_name = command
     command = bot.get_command(command)
     load_cog_command = bot.get_command("load_cog")

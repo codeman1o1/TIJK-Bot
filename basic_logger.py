@@ -3,23 +3,23 @@ import os
 os.system("color")
 
 
-def info(msg, name):
+def info(msg: str, name: str):
     print(f"\u001b[34m[INFO]\u001b[0m {msg} ({os.path.basename(name)})")
 
 
-def debug(msg, name):
+def debug(msg: str, name: str):
     print(f"\u001b[33m[DEBUG]\u001b[0m {msg} ({os.path.basename(name)})")
 
 
-def warning(msg, name):
+def warning(msg: str, name: str):
     print(f"\u001b[31;1m[WARNING]\u001b[0m {msg} ({os.path.basename(name)})")
 
 
-def error(msg, name):
+def error(msg: str, name: str):
     print(f"\u001b[31m[ERROR]\u001b[0m {msg} ({os.path.basename(name)})")
 
 
-def critical(msg, name):
+def critical(msg: str, name: str):
     print(f"\u001b[35m[CRITICAL]\u001b[0m {msg} ({os.path.basename(name)})")
 
 

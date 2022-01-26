@@ -7,6 +7,7 @@ import nextcord
 import psutil
 import uptime
 from nextcord.ext import commands
+from nextcord.ext.commands import Context
 
 from main import BOT_DATA
 
@@ -23,7 +24,7 @@ class developer(
         name="restart", description="Restarts TIJK Bot", brief="Restarts TIJK Bot"
     )
     @commands.is_owner()
-    async def restart(self, ctx):
+    async def restart(self, ctx: Context):
         logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
@@ -49,7 +50,7 @@ class developer(
         brief="Sets the status of TIJK Bot",
     )
     @commands.is_owner()
-    async def status(self, ctx, type, *, text: str = "the TIJK Server"):
+    async def status(self, ctx: Context, type: str, *, text: str = "the TIJK Server"):
         if type == "watching":
             await self.bot.change_presence(
                 activity=nextcord.Activity(
@@ -124,7 +125,7 @@ class developer(
     )
     @commands.bot_has_permissions(manage_roles=True)
     @commands.is_owner()
-    async def tijkbotdeveloper(self, ctx):
+    async def tijkbotdeveloper(self, ctx: Context):
         tijk_bot_developer_role = nextcord.utils.get(
             ctx.guild.roles, name="TIJK-Bot developer"
         )
@@ -150,7 +151,7 @@ class developer(
         aliases=["pp"],
     )
     @commands.is_owner()
-    async def pingpoll(self, ctx):
+    async def pingpoll(self, ctx: Context):
         embed = nextcord.Embed(
             color=0xFFC800, title="Please select an argument from `.help pingpoll`"
         )
@@ -162,7 +163,7 @@ class developer(
         brief="Add roles used in Ping Poll",
     )
     @commands.is_owner()
-    async def add_pingpoll(self, ctx, role: nextcord.Role):
+    async def add_pingpoll(self, ctx: Context, role: nextcord.Role):
         pingpolls = list(BOT_DATA.find()[0]["pingpolls"])
         if role.name not in pingpolls:
             pingpolls.append(role.name)
@@ -186,7 +187,7 @@ class developer(
         brief="Remove roles used in Ping Poll",
     )
     @commands.is_owner()
-    async def remove_pingpoll(self, ctx, role: nextcord.Role):
+    async def remove_pingpoll(self, ctx: Context, role: nextcord.Role):
         pingpolls = list(BOT_DATA.find()[0]["pingpolls"])
         if role.name in pingpolls:
             pingpolls.remove(role.name)
@@ -209,7 +210,7 @@ class developer(
         description="List the roles used in Ping Poll",
         brief="List the roles used in Ping Poll",
     )
-    async def list_pingpoll(self, ctx):
+    async def list_pingpoll(self, ctx: Context):
         pingpolls = list(BOT_DATA.find()[0]["pingpolls"])
         if not pingpolls:
             embed = nextcord.Embed(color=0x0DD91A, title="There are no PingPolls!")
@@ -230,7 +231,7 @@ class developer(
         description="Shows the stats of TIJK Bot",
         brief="Shows the stats of TIJK Bot",
     )
-    async def stats(self, ctx):
+    async def stats(self, ctx: Context):
         embed = nextcord.Embed(
             color=0x0DD91A, title="Here are some stats for TIJK Bot!"
         )

@@ -4,6 +4,7 @@ import aiohttp
 import nextcord
 import requests
 from nextcord.ext import commands
+from nextcord.ext.commands import Context
 from datetime import datetime
 from mojang import MojangAPI
 import math
@@ -21,7 +22,7 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
         brief="Uses API's to get information",
         invoke_without_command=True,
     )
-    async def api(self, ctx):
+    async def api(self, ctx: Context):
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="Help with the .api command",
@@ -36,7 +37,7 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
         description="Uses an animal API to get information",
         brief="Uses an animal API to get information",
     )
-    async def animal_api(self, ctx, *, animal):
+    async def animal_api(self, ctx: Context, *, animal: str):
         animals = ("dog", "cat", "panda", "red_panda", "bird", "fox", "koala")
         animal = animal.replace(" ", "_")
         if animal.lower() in animals:
@@ -60,7 +61,7 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
         brief="Uses an Minecraft API to get information",
         aliases=["mc"],
     )
-    async def mc_api(self, ctx, *, username):
+    async def mc_api(self, ctx: Context, *, username: str):
         embed = nextcord.Embed(color=0x0DD91A)
         try:
             async with aiohttp.ClientSession() as session:
@@ -95,7 +96,7 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
         description="Uses a joke API to get information",
         brief="Uses an joke API to get information",
     )
-    async def joke_api(self, ctx):
+    async def joke_api(self, ctx: Context):
         async with aiohttp.ClientSession() as session:
             request = await session.get("https://some-random-api.ml/joke")
             info = await request.json()
@@ -108,7 +109,7 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
         description="Uses an meme API to get information",
         brief="Uses an meme API to get information",
     )
-    async def meme_api(self, ctx):
+    async def meme_api(self, ctx: Context):
         async with aiohttp.ClientSession() as session:
             request = await session.get("https://some-random-api.ml/meme")
             info = await request.json()
@@ -122,7 +123,7 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
         brief="Uses a Pokémon API to get information",
         aliases=["pd", "pokemon", "pm"],
     )
-    async def pokedex_api(self, ctx, *, name):
+    async def pokedex_api(self, ctx: Context, *, name: str):
         embed = nextcord.Embed(color=0x0DD91A)
         try:
             async with aiohttp.ClientSession() as session:
@@ -213,7 +214,7 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
         brief="Get information from the official Hypixel API",
         aliases=["hp"],
     )
-    async def hypixel(self, ctx, username: str):
+    async def hypixel(self, ctx: Context, username: str):
         uuid = MojangAPI.get_uuid(username)
         data = requests.get(
             f"https://api.hypixel.net/player?key={HYPIXEL_API_KEY}&uuid={uuid}"

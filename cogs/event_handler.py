@@ -7,6 +7,7 @@ import basic_logger as bl
 import nextcord
 from nextcord.ext import commands
 from views.pings import ping_buttons
+from nextcord.ext.commands import Context
 
 from main import BOT_DATA, USER_DATA
 
@@ -80,7 +81,7 @@ class event_handler(
             await logs_channel.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_message(self, message):
+    async def on_message(self, message: nextcord.Message):
         user = message.author
 
         if not user.bot:
@@ -142,7 +143,7 @@ class event_handler(
                 )
 
     @commands.Cog.listener()
-    async def on_member_join(self, member):
+    async def on_member_join(self, member: nextcord.Member):
         try:
             user = self.bot.get_user(member.id)
             embed = nextcord.Embed(
@@ -210,7 +211,7 @@ class event_handler(
                     bl.error("Couldn't change nickname", __file__)
 
     @commands.Cog.listener()
-    async def on_member_remove(self, member):
+    async def on_member_remove(self, member: nextcord.Member):
         try:
             user = self.bot.get_user(member.id)
             embed = nextcord.Embed(
@@ -225,7 +226,7 @@ class event_handler(
             pass
 
     @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):
+    async def on_command_error(self, ctx: Context, error: commands.CommandError):
         error2 = error
         if isinstance(error, commands.CommandNotFound):
             message = ctx.message.content[1:]

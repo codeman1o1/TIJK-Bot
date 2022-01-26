@@ -8,6 +8,7 @@ import struct
 import nextcord
 import pymongo
 from nextcord.ext import commands
+from nextcord.ext.commands import Context
 
 from main import USER_DATA
 
@@ -30,7 +31,7 @@ class fun(
         brief="Flips a coin",
         aliases=["hot", "fac"],
     )
-    async def headsortails(self, ctx):
+    async def headsortails(self, ctx: Context):
         hot = random.randint(0, 1)
         if hot == 0:
             hot = "heads"
@@ -45,7 +46,7 @@ class fun(
         brief="Play Rock Paper Scissors",
         aliases=["rps"],
     )
-    async def rockpaperscissors(self, ctx, choice):
+    async def rockpaperscissors(self, ctx: Context, choice: str):
         embed = nextcord.Embed(color=0x0DD91A)
         choice = choice.lower()
         if choice == "scissor":
@@ -99,7 +100,7 @@ class fun(
         description="Hack someone (totally real)",
         brief="Hack someone (totally real)",
     )
-    async def hack(self, ctx, user):
+    async def hack(self, ctx: Context, user: str):
         msg = await ctx.send(f"`Hacking {user}`")
         delay = round(random.uniform(2, 5), 2)
         await asyncio.sleep(delay)
@@ -143,7 +144,7 @@ class fun(
         brief="Shows the amount of messages everyone set",
         aliases=["msg"],
     )
-    async def messages(self, ctx):
+    async def messages(self, ctx: Context):
         embed = nextcord.Embed(color=0x0DD91A)
         for k in USER_DATA.find().sort("messages", pymongo.DESCENDING):
             try:
@@ -163,7 +164,7 @@ class fun(
         await ctx.send(embed=embed)
 
     @commands.command(name="8ball")
-    async def eight_ball(self, ctx, question: str):
+    async def eight_ball(self, ctx: Context, question: str):
         random_int = random.randint(0, len(eight_ball_responses) - 1)
         embed = nextcord.Embed(color=0x0DD91A, title=eight_ball_responses[random_int])
         await ctx.send(embed=embed)
