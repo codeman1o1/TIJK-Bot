@@ -42,6 +42,7 @@ async def warn_system(
     user: nextcord.Member,
     amount: int = 1,
     invoker_username: str = "Warn System",
+    reason: str = None
 ) -> str:
     """
     Warn users\n
@@ -50,7 +51,9 @@ async def warn_system(
     `user` (member): The user to warn
     `amount` (int): The amount of warns to give. Defaults to 1
     `invoker_username` (str): The user who warned someone
+    `reason` (str): The reason for the warn
     """
+    reason2 = " because of " + reason if reason else ""
     query = {"_id": user.id}
     if USER_DATA.count_documents(query) == 0:
         post = {"_id": user.id, "warns": amount}
@@ -69,7 +72,7 @@ async def warn_system(
     embed = nextcord.Embed(color=0x0DD91A)
     if total_warns <= 9:
         embed.add_field(
-            name=f"{user.display_name} has been warned by {invoker_username}",
+            name=f"{user.display_name} has been warned by {invoker_username}{reason2}",
             value=f"{user.display_name} has {10 - total_warns} warns left!",
             inline=False,
         )

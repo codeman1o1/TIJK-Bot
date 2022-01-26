@@ -175,7 +175,12 @@ class admin(commands.Cog, name="Admin"):
     @commands.command(name="readtherules", aliases=["rtr", "rule"])
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def read_the_rules(
-        self, ctx: Context, rule_number: int, user: nextcord.Member = None
+        self,
+        ctx: Context,
+        rule_number: int,
+        user: nextcord.Member = None,
+        *,
+        reason: str = None,
     ):
         """Tells a user to read the rules"""
         channel = nextcord.utils.get(ctx.guild.channels, name="rules")
@@ -191,7 +196,7 @@ class admin(commands.Cog, name="Admin"):
                     inline=False,
                 )
                 embed.set_footer(text="You also received 1 warn!")
-                await warn_system(ctx, user, invoker_username=ctx.author.display_name)
+                await warn_system(ctx, user, 1, ctx.author.display_name, reason)
             else:
                 embed.add_field(
                     name=f"Here is rule number {rule_number}:",
@@ -431,9 +436,11 @@ class admin(commands.Cog, name="Admin"):
         ctx: Context,
         user: nextcord.Member,
         amount: int = 1,
+        *,
+        reason: str = None,
     ):
         """Warns someone"""
-        await warn_system(ctx, user, amount, user.display_name)
+        await warn_system(ctx, user, amount, user.display_name, reason)
 
     @warn.command(name="remove")
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
