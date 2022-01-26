@@ -22,7 +22,7 @@ class event_handler(
 
     async def warn_system(
         event, user, amount: int = 1, invoker_username: str = "Warn System"
-    ):
+    ) -> str:
         query = {"_id": user.id}
         if USER_DATA.count_documents(query) == 0:
             post = {"_id": user.id, "warns": amount}
