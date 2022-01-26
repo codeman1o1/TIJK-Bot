@@ -1,7 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 from nextcord.interactions import Interaction
-from cogs.event_handler import event_handler
+from main import warn_system
 
 
 class admin_ctx(commands.Cog):
@@ -22,7 +22,7 @@ class admin_ctx(commands.Cog):
             await interaction.response.send_message(
                 f"Warned {user.display_name}", ephemeral=True
             )
-            await event_handler.warn_system(
+            await warn_system(
                 interaction, user, invoker_username=interaction.user.display_name
             )
         else:

@@ -10,7 +10,7 @@ from views.button_roles import RoleView
 from views.verify import VerifyView
 import json
 
-from cogs.event_handler import event_handler
+from main import warn_system
 
 from main import BOT_DATA, USER_DATA
 
@@ -191,9 +191,7 @@ class admin(commands.Cog, name="Admin"):
                     inline=False,
                 )
                 embed.set_footer(text="You also received 1 warn!")
-                await event_handler.warn_system(
-                    ctx, user, invoker_username=ctx.author.display_name
-                )
+                await warn_system(ctx, user, invoker_username=ctx.author.display_name)
             else:
                 embed.add_field(
                     name=f"Here is rule number {rule_number}:",
@@ -435,7 +433,7 @@ class admin(commands.Cog, name="Admin"):
         amount: int = 1,
     ):
         """Warns someone"""
-        await event_handler.warn_system(ctx, user, amount, user.display_name)
+        await warn_system(ctx, user, amount, user.display_name)
 
     @warn.command(name="remove")
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")

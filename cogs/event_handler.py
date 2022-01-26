@@ -19,65 +19,6 @@ class event_handler(commands.Cog, name="Event Handler"):
         self.bot = bot
         self.bot.add_view(ping_buttons())
 
-    async def warn_system(
-        event,
-        user: nextcord.Member,
-        amount: int = 1,
-        invoker_username: str = "Warn System",
-    ) -> str:
-        """
-        Warn users\n
-        Allowed arguments:
-        `event`: The event
-        `user` (member): The user to warn
-        `amount` (int): The amount of warns to give. Defaults to 1
-        `invoker_username` (str): The user who warned someone
-        """
-        query = {"_id": user.id}
-        if USER_DATA.count_documents(query) == 0:
-            post = {"_id": user.id, "warns": amount}
-            USER_DATA.insert_one(post)
-            total_warns = amount
-        else:
-            user2 = USER_DATA.find(query)
-            warns = 0
-            try:
-                for result in user2:
-                    warns = result["warns"]
-            except KeyError:
-                pass
-            total_warns = warns + amount
-            USER_DATA.update_one({"_id": user.id}, {"$set": {"warns": total_warns}})
-        embed = nextcord.Embed(color=0x0DD91A)
-        if total_warns <= 9:
-            embed.add_field(
-                name=f"{user.display_name} has been warned by {invoker_username}",
-                value=f"{user.display_name} has {10 - total_warns} warns left!",
-                inline=False,
-            )
-            await event.channel.send(embed=embed)
-        if total_warns >= 10:
-            USER_DATA.update_one({"_id": user.id}, {"$set": {"warns": 0}})
-            embed.add_field(
-                name=f"{user.display_name} exceeded the warn limit!",
-                value="He shall be punished with a 10 minute mute!",
-                inline=False,
-            )
-
-            await event.channel.send(embed=embed)
-            await user.edit(
-                timeout=nextcord.utils.utcnow() + datetime.timedelta(seconds=1200)
-            )
-            logs_channel = nextcord.utils.get(user.guild.channels, name="logs")
-            embed = nextcord.Embed(color=0x0DD91A)
-            embed.add_field(
-                name="User muted!",
-                value=f"{user.display_name} was muted for 10 minutes by Warn System",
-                inline=False,
-            )
-
-            await logs_channel.send(embed=embed)
-
     @commands.Cog.listener()
     async def on_message(self, message: nextcord.Message):
         """Processes messages"""
