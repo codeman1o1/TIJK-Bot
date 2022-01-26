@@ -12,17 +12,15 @@ import math
 from main import HYPIXEL_API_KEY
 
 
-class api(commands.Cog, name="API", description="A seperate cog for the API command"):
+class api(commands.Cog, name="API"):
+    """A seperate cog for the API command"""
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.group(
-        name="api",
-        description="Uses API's to get information",
-        brief="Uses API's to get information",
-        invoke_without_command=True,
-    )
+    @commands.group(name="api", invoke_without_command=True)
     async def api(self, ctx: Context):
+        """Uses API's to get information"""
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="Help with the .api command",
@@ -32,12 +30,9 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
 
         await ctx.send(embed=embed)
 
-    @api.command(
-        name="animal",
-        description="Uses an animal API to get information",
-        brief="Uses an animal API to get information",
-    )
+    @api.command(name="animal")
     async def animal_api(self, ctx: Context, *, animal: str):
+        """Uses an animal API to get information"""
         animals = ("dog", "cat", "panda", "red_panda", "bird", "fox", "koala")
         animal = animal.replace(" ", "_")
         if animal.lower() in animals:
@@ -55,13 +50,9 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
 
             await ctx.send(embed=embed)
 
-    @api.command(
-        name="minecraft",
-        description="Uses a Minecraft API to get information",
-        brief="Uses an Minecraft API to get information",
-        aliases=["mc"],
-    )
+    @api.command(name="minecraft", aliases=["mc"])
     async def mc_api(self, ctx: Context, *, username: str):
+        """Uses a Minecraft API to get information"""
         embed = nextcord.Embed(color=0x0DD91A)
         try:
             async with aiohttp.ClientSession() as session:
@@ -91,12 +82,9 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
             )
         await ctx.send(embed=embed)
 
-    @api.command(
-        name="joke",
-        description="Uses a joke API to get information",
-        brief="Uses an joke API to get information",
-    )
+    @api.command(name="joke")
     async def joke_api(self, ctx: Context):
+        """Uses a joke API to get information"""
         async with aiohttp.ClientSession() as session:
             request = await session.get("https://some-random-api.ml/joke")
             info = await request.json()
@@ -104,12 +92,9 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
         embed.add_field(name="Here is a joke!", value=info["joke"], inline=False)
         await ctx.send(embed=embed)
 
-    @api.command(
-        name="meme",
-        description="Uses an meme API to get information",
-        brief="Uses an meme API to get information",
-    )
+    @api.command(name="meme")
     async def meme_api(self, ctx: Context):
+        """Uses a meme API to get information"""
         async with aiohttp.ClientSession() as session:
             request = await session.get("https://some-random-api.ml/meme")
             info = await request.json()
@@ -117,13 +102,9 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
         embed.set_image(url=info["image"])
         await ctx.send(embed=embed)
 
-    @api.command(
-        name="pokedex",
-        description="Uses a Pokémon API to get information",
-        brief="Uses a Pokémon API to get information",
-        aliases=["pd", "pokemon", "pm"],
-    )
+    @api.command(name="pokedex", aliases=["pd", "pokemon", "pm"])
     async def pokedex_api(self, ctx: Context, *, name: str):
+        """Uses a Pokémon API to get information"""
         embed = nextcord.Embed(color=0x0DD91A)
         try:
             async with aiohttp.ClientSession() as session:
@@ -208,13 +189,9 @@ class api(commands.Cog, name="API", description="A seperate cog for the API comm
             )
         await ctx.send(embed=embed)
 
-    @api.command(
-        name="hypixel",
-        description="Gets information from the official Hypixel API",
-        brief="Get information from the official Hypixel API",
-        aliases=["hp"],
-    )
+    @api.command(name="hypixel", aliases=["hp"])
     async def hypixel(self, ctx: Context, username: str):
+        """Gets information from the official Hypixel API"""
         uuid = MojangAPI.get_uuid(username)
         data = requests.get(
             f"https://api.hypixel.net/player?key={HYPIXEL_API_KEY}&uuid={uuid}"

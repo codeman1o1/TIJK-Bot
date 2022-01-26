@@ -19,25 +19,18 @@ prefixes = open(os.path.join(root, "bot_prefixes.json"))
 prefixes = tuple(json.load(prefixes)["prefixes"])
 
 
-class admin(
-    commands.Cog,
-    name="Admin",
-    description="Commands that only admins or owners can use",
-):
+class admin(commands.Cog, name="Admin"):
+    """Commands that only admins or owners can use"""
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.bot.add_view(RoleView())
         self.bot.add_view(VerifyView())
 
-    @commands.group(
-        name="buttonroles",
-        description="Sends a message with buttons where people can get roles",
-        brief="Sends a message with buttons where people can get roles",
-        invoke_without_command=True,
-        aliases=["br"],
-    )
+    @commands.group(name="buttonroles", invoke_without_command=True, aliases=["br"])
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def buttonroles(self, ctx: Context):
+        """Sends a message with buttons where people can get roles"""
         roles = BOT_DATA.find()[0]["roles"]
         if len(roles) == 0:
             embed = nextcord.Embed(
@@ -54,13 +47,10 @@ class admin(
 
             await ctx.send(embed=embed, view=RoleView())
 
-    @buttonroles.command(
-        name="list",
-        description="Lists all button roles",
-        brief="Lists all button roles",
-    )
+    @buttonroles.command(name="list")
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def list_buttonroles(self, ctx: Context):
+        """Lists all button roles"""
         embed = nextcord.Embed(color=0x0DD91A)
         roles = BOT_DATA.find()[0]["roles"]
         roles2 = ""
@@ -72,11 +62,10 @@ class admin(
 
         await ctx.send(embed=embed)
 
-    @buttonroles.command(
-        name="add", description="Adds a button role", brief="Adds a button role"
-    )
+    @buttonroles.command(name="add")
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def add_buttonroles(self, ctx: Context, role: nextcord.Role):
+        """Adds a button role"""
         role = role.name
         roles = BOT_DATA.find()[0]["roles"]
         if role not in roles:
@@ -96,13 +85,10 @@ class admin(
             )
         await ctx.send(embed=embed)
 
-    @buttonroles.command(
-        name="remove",
-        description="Removes a button role",
-        brief="Removes a button role",
-    )
+    @buttonroles.command(name="remove")
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def remove_buttonroles(self, ctx: Context, role: nextcord.Role):
+        """Removes a button role"""
         role = role.name
         roles = BOT_DATA.find()[0]["roles"]
         if role in roles:
@@ -122,14 +108,10 @@ class admin(
             )
         await ctx.send(embed=embed)
 
-    @commands.command(
-        name="shutdown",
-        description="Shuts down TIJK Bot",
-        brief="Shuts down TIJK Bot",
-        aliases=["stop"],
-    )
+    @commands.command(name="shutdown", aliases=["stop"])
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def shutdown(self, ctx: Context):
+        """Shuts down TIJK Bot"""
         logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
@@ -153,12 +135,9 @@ class admin(
         )
         await self.bot.close()
 
-    @commands.command(
-        name="ping",
-        description="Get the latency of TIJK Bot",
-        brief="Get the latency of TIJK Bot",
-    )
+    @commands.command(name="ping")
     async def ping(self, ctx: Context, decimals: int = 1):
+        """Get the latency of TIJK Bot"""
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="Pong!",
@@ -172,6 +151,7 @@ class admin(
     @commands.bot_has_permissions(manage_roles=True)
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def verify(self, ctx: Context, user: nextcord.Member):
+        """Manually verify someone"""
         member_role = nextcord.utils.get(ctx.guild.roles, name="Member")
         if member_role not in user.roles:
             await user.add_roles(member_role)
@@ -187,20 +167,17 @@ class admin(
     @verify.command(name="send")
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def send_verify(self, ctx: Context):
+        """Sends the verify message"""
         await ctx.channel.purge(limit=1)
         embed = nextcord.Embed(color=0x0DD91A, title="Click the button below to verify")
         await ctx.send(embed=embed, view=VerifyView())
 
-    @commands.command(
-        name="readtherules",
-        description="Tells a user to read the rules",
-        brief="Tells a user to read the rules",
-        aliases=["rtr", "rule"],
-    )
+    @commands.command(name="readtherules", aliases=["rtr", "rule"])
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def read_the_rules(
         self, ctx: Context, rule_number: int, user: nextcord.Member = None
     ):
+        """Tells a user to read the rules"""
         channel = nextcord.utils.get(ctx.guild.channels, name="rules")
         messages = await channel.history(limit=50).flatten()
         messages.reverse()
@@ -230,12 +207,7 @@ class admin(
             )
             await ctx.send(embed=embed)
 
-    @commands.command(
-        name="mute",
-        description="Mute a user",
-        brief="Mutes a user",
-        aliases=["timeout", "to"],
-    )
+    @commands.command(name="mute", aliases=["timeout", "to"])
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     @commands.bot_has_permissions(moderate_members=True)
     async def mute(
@@ -246,6 +218,7 @@ class admin(
         *,
         reason=None,
     ):
+        """Mutes a user"""
         reason2 = " because of " + reason if reason else ""
         time = humanfriendly.parse_timespan(time)
         await user.edit(
@@ -259,14 +232,11 @@ class admin(
         )
         await ctx.send(embed=embed)
 
-    @commands.command(
-        name="unmute",
-        description="Unmutes a user",
-        brief="Unmutes a user",
-    )
+    @commands.command(name="unmute")
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     @commands.bot_has_permissions(moderate_members=True)
     async def unmute(self, ctx: Context, user: nextcord.Member, *, reason=None):
+        """Unmutes a user"""
         reason2 = " because of " + reason if reason else ""
         await user.edit(timeout=None)
         embed = nextcord.Embed(color=0x0DD91A)
@@ -278,14 +248,11 @@ class admin(
 
         await ctx.send(embed=embed)
 
-    @commands.command(
-        name="nick",
-        description="Gives a user a nickname",
-        brief="Gives a user a nickname",
-    )
+    @commands.command(name="nick")
     @commands.bot_has_permissions(manage_nicknames=True)
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def nick(self, ctx: Context, user: nextcord.Member, *, name: str):
+        """Gives a user a nickname"""
         original_name = user.display_name
         await user.edit(nick=name)
         embed = nextcord.Embed(color=0x0DD91A)
@@ -297,17 +264,13 @@ class admin(
 
         await ctx.send(embed=embed)
 
-    @commands.command(
-        name="assignrole",
-        description="Gives a user a role",
-        brief="Gives a user a role",
-        aliases=["ar"],
-    )
+    @commands.command(name="assignrole", aliases=["ar"])
     @commands.bot_has_permissions(manage_roles=True)
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def assignrole(
         self, ctx: Context, role: nextcord.Role, user: nextcord.Member = None
     ):
+        """Gives a user a role"""
         if user is None:
             user = ctx.author
         if role not in user.roles:
@@ -333,17 +296,13 @@ class admin(
 
             await ctx.send(embed=embed)
 
-    @commands.command(
-        name="removerole",
-        description="Removes a role from a user",
-        brief="Removes a role from a user",
-        aliases=["rr"],
-    )
+    @commands.command(name="removerole", aliases=["rr"])
     @commands.bot_has_permissions(manage_roles=True)
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def removerole(
         self, ctx: Context, role: nextcord.Role, user: nextcord.Member = None
     ):
+        """Removes a role from a user"""
         if user is None:
             user = ctx.author
         if role in user.roles:
@@ -369,12 +328,11 @@ class admin(
 
             await ctx.send(embed=embed)
 
-    @commands.command(
-        name="clear", description="Clears the chat", brief="Clears the chat"
-    )
+    @commands.command(name="clear")
     @commands.bot_has_permissions(manage_messages=True)
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def clear(self, ctx: Context, amount: int):
+        """Clears the chat"""
         async with ctx.typing():
             deleted_messages = await ctx.channel.purge(limit=amount)
             embed = nextcord.Embed(color=0x0DD91A)
@@ -385,14 +343,11 @@ class admin(
             )
         await ctx.send(embed=embed, delete_after=5)
 
-    @commands.command(
-        name="clean",
-        description="Cleans the chat from bot messages",
-        brief="Cleans the chat from bot messages",
-    )
+    @commands.command(name="clean")
     @commands.bot_has_permissions(manage_messages=True)
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def clean(self, ctx: Context, multiplier: int = 1):
+        """Clears the chat from bot messages"""
         async with ctx.typing():
 
             def check(message: nextcord.Message):
@@ -411,14 +366,11 @@ class admin(
             )
         await ctx.send(embed=embed, delete_after=5)
 
-    @commands.command(
-        name="kick",
-        description="Kicks a user from the server",
-        brief="Kicks a user from the server",
-    )
+    @commands.command(name="kick")
     @commands.bot_has_permissions(kick_members=True)
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def kick(self, ctx: Context, user: nextcord.Member, *, reason=None):
+        """Kicks a user from the server"""
         reason2 = " because of " + reason if reason else ""
         logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
         await user.kick(reason=reason)
@@ -431,14 +383,11 @@ class admin(
         await ctx.send(embed=embed)
         await logs_channel.send(embed=embed)
 
-    @commands.command(
-        name="ban",
-        description="Bans a user from the server",
-        brief="Bans a user from the server",
-    )
+    @commands.command(name="ban")
     @commands.bot_has_permissions(ban_members=True)
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def ban(self, ctx: Context, user: nextcord.Member, *, reason=None):
+        """Bans a user from the server"""
         reason2 = " because of " + reason if reason else ""
         logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
         await user.ban(reason=reason)
@@ -451,14 +400,11 @@ class admin(
         await ctx.send(embed=embed)
         await logs_channel.send(embed=embed)
 
-    @commands.command(
-        name="unban",
-        description="Unbans a user from the server",
-        brief="Unbans a user from the server",
-    )
+    @commands.command(name="unban")
     @commands.bot_has_permissions(ban_members=True)
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def unban(self, ctx: Context, user: str, *, reason=None):
+        """Unbans a user from the server"""
         reason2 = " because of " + reason if reason else ""
         user = await commands.converter.UserConverter().convert(ctx, user)
         embed = nextcord.Embed(color=0x0DD91A)
@@ -480,12 +426,7 @@ class admin(
             )
         await ctx.send(embed=embed)
 
-    @commands.group(
-        name="warn",
-        description="Warn someone",
-        brief="Warn someone",
-        invoke_without_command=True,
-    )
+    @commands.group(name="warn", invoke_without_command=True)
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def warn(
         self,
@@ -493,13 +434,10 @@ class admin(
         user: nextcord.Member,
         amount: int = 1,
     ):
+        """Warns someone"""
         await event_handler.warn_system(ctx, user, amount, user.display_name)
 
-    @warn.command(
-        name="remove",
-        description="Removes a warn from someone",
-        brief="Removes a warn from someone",
-    )
+    @warn.command(name="remove")
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def remove_warn(
         self,
@@ -509,6 +447,7 @@ class admin(
         *,
         reason=None,
     ):
+        """Removes a warn from someone"""
         reason2 = "because of " + reason if reason else ""
         query = {"_id": user.id}
         if USER_DATA.count_documents(query) == 0:
@@ -535,13 +474,10 @@ class admin(
         )
         await ctx.send(embed=embed)
 
-    @warn.command(
-        name="list",
-        description="Lists the warn points of everyone that received at least 1",
-        brief="Lists the warn points of everyone that received at least 1",
-    )
+    @warn.command(name="list")
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def list_warn(self, ctx: Context):
+        """Lists the warn points of everyone that received at least 1"""
         embed = nextcord.Embed(color=0x0DD91A)
         for k in USER_DATA.find():
             try:
@@ -559,10 +495,9 @@ class admin(
             embed = nextcord.Embed(color=0x0DD91A, title="Nobody has warns!")
         await ctx.send(embed=embed)
 
-    @warn.command(
-        name="get", description="Gets your warn points", brief="Gets your warn points"
-    )
+    @warn.command(name="get")
     async def get_warn(self, ctx: Context):
+        """Sends your warn points"""
         for k in USER_DATA.find({"_id": ctx.author.id}):
             try:
                 warns = k["warns"]
@@ -577,14 +512,10 @@ class admin(
                 )
         await ctx.send(embed=embed)
 
-    @commands.command(
-        name="role-info",
-        description="Shows information about a role",
-        brief="Shows information about a role",
-        aliases=["ri"],
-    )
+    @commands.command(name="role-info", aliases=["ri"])
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def role_info(self, ctx: Context, role: nextcord.Role):
+        """Show information about a role"""
         embed = nextcord.Embed(
             color=0x0DD91A, title=f"Here is information about the {role.name} role"
         )
@@ -600,14 +531,10 @@ class admin(
         )
         await ctx.send(embed=embed)
 
-    @commands.command(
-        name="server-info",
-        description="Shows information about a server",
-        brief="Shows information about a server",
-        aliases=["si"],
-    )
+    @commands.command(name="server-info", aliases=["si"])
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def server_info(self, ctx: Context, id: int = None):
+        """Show information about a server"""
         if id is None:
             id = ctx.guild.id
         guild = self.bot.get_guild(id)
@@ -644,14 +571,10 @@ class admin(
             embed = nextcord.Embed(color=0xFFC800, title="I can not access that guild!")
         await ctx.send(embed=embed)
 
-    @commands.command(
-        name="user-info",
-        description="Shows information about a user",
-        brief="Shows information about a user",
-        aliases=["ui"],
-    )
+    @commands.command(name="user-info", aliases=["ui"])
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def user_info(self, ctx: Context, user: nextcord.Member = None):
+        """Show information about a user"""
         if user is None:
             user = ctx.author
         if type(user) == int:
@@ -670,16 +593,12 @@ class admin(
             embed = nextcord.Embed(color=0xFFC800, title="I can not acces that user!")
         await ctx.send(embed=embed)
 
-    @commands.command(
-        name="slowmode",
-        description="Enables slowmode for a channel",
-        brief="Enables slowmode for a channel",
-        aliases=["slow", "sm"],
-    )
+    @commands.command(name="slowmode", aliases=["slow", "sm"])
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def slowmode(
         self, ctx: Context, time: str, channel: nextcord.TextChannel = None
     ):
+        """Enables slowmode for a channel"""
         if channel is None:
             channel = ctx.channel
         else:

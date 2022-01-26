@@ -12,11 +12,9 @@ from nextcord.ext.commands import Context
 from main import BOT_DATA, USER_DATA
 
 
-class event_handler(
-    commands.Cog,
-    name="Event Handler",
-    description="A seperate cog for handling events",
-):
+class event_handler(commands.Cog, name="Event Handler"):
+    """A seperate cog for handling events"""
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.bot.add_view(ping_buttons())
@@ -82,6 +80,7 @@ class event_handler(
 
     @commands.Cog.listener()
     async def on_message(self, message: nextcord.Message):
+        """Processes messages"""
         user = message.author
 
         if not user.bot:
@@ -144,6 +143,7 @@ class event_handler(
 
     @commands.Cog.listener()
     async def on_member_join(self, member: nextcord.Member):
+        """Called when a member joins the server"""
         try:
             user = self.bot.get_user(member.id)
             embed = nextcord.Embed(
@@ -162,6 +162,7 @@ class event_handler(
 
     @commands.Cog.listener()
     async def on_member_update(self, before, after):
+        """Called when a member updates"""
         tijk_bot_developer_role = nextcord.utils.get(
             after.guild.roles, name="TIJK-Bot developer"
         )
@@ -212,6 +213,7 @@ class event_handler(
 
     @commands.Cog.listener()
     async def on_member_remove(self, member: nextcord.Member):
+        """Called when a member has been removed from the server"""
         try:
             user = self.bot.get_user(member.id)
             embed = nextcord.Embed(
@@ -227,6 +229,7 @@ class event_handler(
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: Context, error: commands.CommandError):
+        """Called when a command error occurs"""
         error2 = error
         if isinstance(error, commands.CommandNotFound):
             message = ctx.message.content[1:]

@@ -5,20 +5,15 @@ import os
 from PIL import Image
 
 
-class convert(
-    commands.Cog, name="Convert", description="A seperate cog for the convert command"
-):
+class convert(commands.Cog, name="Convert"):
+    """A seperate cog for the convert command"""
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.group(
-        name="convert",
-        description="Convert things",
-        brief="Convert things",
-        invoke_without_command=True,
-        aliases=["cv"],
-    )
+    @commands.group(name="convert", invoke_without_command=True, aliases=["cv"])
     async def convert(self, ctx: Context):
+        """Convert things"""
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="Help with the convert command",
@@ -27,13 +22,9 @@ class convert(
         )
         await ctx.send(embed=embed)
 
-    @convert.command(
-        name="jpg",
-        description="Convert PNG files to JPG images",
-        brief="Convert PNG files to JPG images",
-        aliases=["jpeg"],
-    )
+    @convert.command(name="jpg", aliases=["jpeg"])
     async def jpg(self, ctx: Context):
+        """Convert PNG files to JPG images"""
         if ctx.message.attachments:
             for file in ctx.message.attachments:
                 if file.filename.endswith(".png"):
@@ -59,12 +50,9 @@ class convert(
             )
             await ctx.send(embed=embed)
 
-    @convert.command(
-        name="png",
-        description="Convert JPG/JPEG files to PNG images",
-        brief="Convert JPG/JPEG files to PNG images",
-    )
+    @convert.command(name="png")
     async def png(self, ctx: Context):
+        """Convert JPG/JPEG images to PNG images"""
         if ctx.message.attachments:
             for file in ctx.message.attachments:
                 if file.filename.endswith((".jpg", ".jpeg")):

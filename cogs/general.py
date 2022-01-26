@@ -13,21 +13,15 @@ from mojang import MojangAPI
 from main import USER_DATA, HYPIXEL_API_KEY
 
 
-class general(
-    commands.Cog,
-    name="General",
-    description="Commands that everyone can use",
-):
+class general(commands.Cog, name="General"):
+    """Commands that everyone can use"""
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(
-        name="github",
-        description="Sends a link to the official TIJK Bot GitHub page",
-        brief="Sends a link to the official TIJK Bot GitHub page",
-        aliases=["git", "source"],
-    )
+    @commands.command(name="github", aliases=["git", "source"])
     async def github(self, ctx: Context):
+        """Sends a link to the official TIJK Bot GitHub page"""
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="View the official TIJK Bot code now!",
@@ -37,14 +31,9 @@ class general(
 
         await ctx.send(embed=embed, view=github_button())
 
-    @commands.group(
-        name="hypixelparty",
-        description="Chooses randomly a player that can own the party",
-        brief="Chooses randomly a player that can own the party",
-        invoke_without_command=True,
-        aliases=["hpp"],
-    )
+    @commands.group(name="hypixelparty", invoke_without_command=True, aliases=["hpp"])
     async def hypixelparty(self, ctx: Context):
+        """Chooses a random player that can own the party"""
         await ctx.channel.purge(limit=1)
         hypixel_ping = nextcord.utils.get(ctx.guild.roles, name="Hypixel Ping")
         available = [
@@ -90,12 +79,9 @@ class general(
         await ctx.send(embed=embed, delete_after=300)
         available.clear()
 
-    @hypixelparty.command(
-        name="link",
-        description="Link your Minecraft account",
-        brief="Link your Minecraft account",
-    )
+    @hypixelparty.command(name="link")
     async def link_hypixelparty(self, ctx: Context, username: str):
+        """Link your Minecraft account"""
         if username.lower() == "remove":
             query = {"_id": ctx.author.id}
             if USER_DATA.count_documents(query) == 0:
@@ -172,14 +158,10 @@ class general(
                 )
         await ctx.send(embed=embed)
 
-    @commands.group(
-        name="admin",
-        description="Contact an admin",
-        brief="Contact an admin",
-        invoke_without_command=True,
-    )
+    @commands.group(name="admin", invoke_without_command=True)
     @commands.cooldown(1, 120, commands.BucketType.user)
     async def admin(self, ctx: Context, admin: nextcord.Member, *, message: str):
+        """Contact an admin"""
         owner_role = nextcord.utils.get(ctx.guild.roles, name="Owner")
         admin_role = nextcord.utils.get(ctx.guild.roles, name="Admin")
         admin_roles = (owner_role, admin_role)
@@ -211,13 +193,10 @@ class general(
 
         await ctx.send(embed=embed)
 
-    @admin.command(
-        name="urgent",
-        description="Makes the .admin command urgent",
-        brief="Makes the .admin command urgent",
-    )
+    @admin.command(name="urgent")
     @commands.cooldown(1, 300, commands.BucketType.user)
     async def urgent_admin(self, ctx: Context, admin: nextcord.Member, *, message: str):
+        """Makes the .admin command urgent"""
         owner_role = nextcord.utils.get(ctx.guild.roles, name="Owner")
         admin_role = nextcord.utils.get(ctx.guild.roles, name="Admin")
         admin_roles = (owner_role, admin_role)
@@ -249,14 +228,9 @@ class general(
 
         await ctx.send(embed=embed)
 
-    @commands.group(
-        name="birthday",
-        description="Sends birthday dates",
-        brief="Sends birthday dates",
-        invoke_without_command=True,
-        aliases=["bday"],
-    )
+    @commands.group(name="birthday", invoke_without_command=True, aliases=["bday"])
     async def birthday(self, ctx: Context):
+        """Sends birthday dates"""
         birthdays = []
         embed = nextcord.Embed(color=0x0DD91A)
         today = datetime.date.today()
@@ -296,10 +270,9 @@ class general(
             embed = nextcord.Embed(color=0x0DD91A, title="No-one has a birthday set!")
         await ctx.send(embed=embed)
 
-    @birthday.command(
-        name="set", description="Sets your birthday", brief="Sets your birthday"
-    )
+    @birthday.command(name="set")
     async def set_birthday(self, ctx: Context, date=None):
+        """Sets your birthday"""
         if not date:
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
@@ -332,12 +305,9 @@ class general(
             )
         await ctx.send(embed=embed)
 
-    @birthday.command(
-        name="remove",
-        description="Removes your birthday",
-        brief="Removes your birthday",
-    )
+    @birthday.command(name="remove")
     async def remove_birthday(self, ctx: Context):
+        """Removes your birthday"""
         USER_DATA.update_one({"_id": ctx.author.id}, {"$unset": {"birthday": ""}})
         embed = nextcord.Embed(color=0x0DD91A, title="Your birthday has been removed!")
         await ctx.send(embed=embed)

@@ -12,19 +12,16 @@ from nextcord.ext.commands import Context
 from main import BOT_DATA
 
 
-class developer(
-    commands.Cog,
-    name="Developer",
-    description="Commands only the owner of TIJK Bot can use",
-):
+class developer(commands.Cog, name="Developer"):
+    """Commands only the owner of TIJK Bot can use"""
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(
-        name="restart", description="Restarts TIJK Bot", brief="Restarts TIJK Bot"
-    )
+    @commands.command(name="restart")
     @commands.is_owner()
     async def restart(self, ctx: Context):
+        """Restarts TIJK Bot"""
         logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
@@ -44,13 +41,10 @@ class developer(
         os.system(command)
         os.execv(sys.executable, ["python"] + sys.argv)
 
-    @commands.command(
-        name="status",
-        description="Sets the status of TIJK Bot",
-        brief="Sets the status of TIJK Bot",
-    )
+    @commands.command(name="status")
     @commands.is_owner()
     async def status(self, ctx: Context, type: str, *, text: str = "the TIJK Server"):
+        """Sets the status of TIJK Bot"""
         if type == "watching":
             await self.bot.change_presence(
                 activity=nextcord.Activity(
@@ -117,15 +111,11 @@ class developer(
 
         await ctx.send(embed=embed)
 
-    @commands.command(
-        name="tijkbotdeveloper",
-        description="Gives the TIJK-Bot developer role to the owner of TIJK Bot if it was somehow removed",
-        brief="Gives the TIJK-Bot developer role to the owner of TIJK Bot if it was somehow removed",
-        aliases=["tbdv"],
-    )
+    @commands.command(name="tijkbotdeveloper", aliases=["tbdv"])
     @commands.bot_has_permissions(manage_roles=True)
     @commands.is_owner()
     async def tijkbotdeveloper(self, ctx: Context):
+        """Gives the TIJK-Bot developer role to the owner of TIJK Bot"""
         tijk_bot_developer_role = nextcord.utils.get(
             ctx.guild.roles, name="TIJK-Bot developer"
         )
@@ -143,27 +133,19 @@ class developer(
             )
         await ctx.send(embed=embed)
 
-    @commands.group(
-        name="pingpoll",
-        description="Modify the roles used in Ping Poll",
-        brief="Modify the roles used in Ping Poll",
-        invoke_without_command=True,
-        aliases=["pp"],
-    )
+    @commands.group(name="pingpoll", invoke_without_command=True, aliases=["pp"])
     @commands.is_owner()
     async def pingpoll(self, ctx: Context):
+        """Modify the roles used in Ping Poll"""
         embed = nextcord.Embed(
             color=0xFFC800, title="Please select an argument from `.help pingpoll`"
         )
         await ctx.send(embed=embed)
 
-    @pingpoll.command(
-        name="add",
-        description="Add roles used in Ping Poll",
-        brief="Add roles used in Ping Poll",
-    )
+    @pingpoll.command(name="add")
     @commands.is_owner()
     async def add_pingpoll(self, ctx: Context, role: nextcord.Role):
+        """Add roles used in Ping Poll"""
         pingpolls = list(BOT_DATA.find()[0]["pingpolls"])
         if role.name not in pingpolls:
             pingpolls.append(role.name)
@@ -181,13 +163,10 @@ class developer(
             )
         await ctx.send(embed=embed)
 
-    @pingpoll.command(
-        name="remove",
-        description="Remove roles used in Ping Poll",
-        brief="Remove roles used in Ping Poll",
-    )
+    @pingpoll.command(name="remove")
     @commands.is_owner()
     async def remove_pingpoll(self, ctx: Context, role: nextcord.Role):
+        """Remove roles used in Ping Poll"""
         pingpolls = list(BOT_DATA.find()[0]["pingpolls"])
         if role.name in pingpolls:
             pingpolls.remove(role.name)
@@ -205,12 +184,9 @@ class developer(
             )
         await ctx.send(embed=embed)
 
-    @pingpoll.command(
-        name="list",
-        description="List the roles used in Ping Poll",
-        brief="List the roles used in Ping Poll",
-    )
+    @pingpoll.command(name="list")
     async def list_pingpoll(self, ctx: Context):
+        """List the roles used in Ping Poll"""
         pingpolls = list(BOT_DATA.find()[0]["pingpolls"])
         if not pingpolls:
             embed = nextcord.Embed(color=0x0DD91A, title="There are no PingPolls!")
@@ -226,12 +202,9 @@ class developer(
             )
         await ctx.send(embed=embed)
 
-    @commands.command(
-        name="stats",
-        description="Shows the stats of TIJK Bot",
-        brief="Shows the stats of TIJK Bot",
-    )
+    @commands.command(name="stats")
     async def stats(self, ctx: Context):
+        """Show the statistics of TIJK Bot"""
         embed = nextcord.Embed(
             color=0x0DD91A, title="Here are some stats for TIJK Bot!"
         )

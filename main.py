@@ -39,6 +39,7 @@ bot = commands.Bot(
 
 @bot.event
 async def on_ready():
+    """Runs when the bot is online"""
     bl.info(f"Logged in as {bot.user.name}#{bot.user.discriminator}", __file__)
     cogs = os.listdir("cogs")
     for cog in cogs:
@@ -67,6 +68,7 @@ async def on_ready():
 
 @tasks.loop(hours=1)
 async def remove_invalid_users():
+    """Removes invalid users from the database"""
     for k in USER_DATA.find():
         if not bot.get_user(k["_id"]):
             USER_DATA.delete_one({"_id": k["_id"]})
@@ -74,6 +76,7 @@ async def remove_invalid_users():
 
 @tasks.loop(seconds=10)
 async def birthday_checker():
+    """Sends a message when it is someone's birthday"""
     if time.strftime("%H") != "12":
         return
 
@@ -106,21 +109,22 @@ async def birthday_checker():
 
 @bot.event
 async def on_message(message):
+    """Processes messages"""
     if "Event Handler" not in bot.cogs:
         await bot.process_commands(message)
 
 
 @bot.event
 async def on_command_error(ctx: Context, error: commands.CommandError):
+    """Processes command errors"""
     if "Event Handler" not in bot.cogs:
         bl.error(error, __file__)
 
 
-@bot.command(
-    name="load_cog", description="Loads a cog", brief="Loads a cog", aliases=["lc"]
-)
+@bot.command(name="load_cog", aliases=["lc"])
 @commands.is_owner()
 async def load_cog(ctx: Context, cog: str = None):
+    """Loads a cog"""
     try:
         if cog is None:
             cogs = os.listdir("cogs")
@@ -176,13 +180,9 @@ async def load_cog(ctx: Context, cog: str = None):
     await ctx.send(embed=embed)
 
 
-@bot.command(
-    name="reloadcog",
-    description="Reloads a cog",
-    brief="Reloads a cog",
-    aliases=["rlc", "rc"],
-)
+@bot.command(name="reloadcog", aliases=["rlc", "rc"])
 async def reload_cog(ctx: Context, cog: str = None):
+    """Reloads a cog"""
     try:
         cogs = os.listdir("cogs")
         cogs.remove("__pycache__")
@@ -235,14 +235,10 @@ async def reload_cog(ctx: Context, cog: str = None):
     await ctx.send(embed=embed)
 
 
-@bot.command(
-    name="unload_cog",
-    description="Unloads a cog",
-    brief="Unloads a cog",
-    aliases=["ulc", "uc"],
-)
+@bot.command(name="unload_cog", aliases=["ulc", "uc"])
 @commands.is_owner()
 async def unload_cog(ctx: Context, cog: str = None):
+    """Unloads a cog"""
     try:
         cogs = os.listdir("cogs")
         cogs.remove("__pycache__")
@@ -292,14 +288,10 @@ async def unload_cog(ctx: Context, cog: str = None):
     await ctx.send(embed=embed)
 
 
-@bot.command(
-    name="enable_command",
-    description="Enables a command",
-    brief="Enables a command",
-    aliases=["ec"],
-)
+@bot.command(name="enable_command", aliases=["ec"])
 @commands.is_owner()
 async def enable_command(ctx: Context, *, command: str):
+    """Enables a command"""
     command_name = command
     command = bot.get_command(command)
     if command is None:
@@ -321,14 +313,10 @@ async def enable_command(ctx: Context, *, command: str):
     await ctx.send(embed=embed)
 
 
-@bot.command(
-    name="disable_command",
-    description="Disables a command",
-    brief="Disables a command",
-    aliases=["dc"],
-)
+@bot.command(name="disable_command", aliases=["dc"])
 @commands.is_owner()
 async def disable_command(ctx: Context, *, command: str):
+    """Disables a command"""
     command_name = command
     command = bot.get_command(command)
     load_cog_command = bot.get_command("load_cog")

@@ -17,21 +17,15 @@ eight_ball_responses = open(os.path.join(root, "8ball_responses.json"))
 eight_ball_responses = tuple(json.load(eight_ball_responses)["responses"])
 
 
-class fun(
-    commands.Cog,
-    name="Fun",
-    description="Fun commands that everyone can use",
-):
+class fun(commands.Cog, name="Fun"):
+    """Fun commands that everyone can use"""
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(
-        name="headsortails",
-        description="Flips a coin",
-        brief="Flips a coin",
-        aliases=["hot", "fac"],
-    )
+    @commands.command(name="headsortails", aliases=["hot", "fac"])
     async def headsortails(self, ctx: Context):
+        """Flips a coin"""
         hot = random.randint(0, 1)
         if hot == 0:
             hot = "heads"
@@ -40,13 +34,9 @@ class fun(
         embed = nextcord.Embed(color=0x0DD91A, title=f"It is {hot}!")
         await ctx.send(embed=embed)
 
-    @commands.command(
-        name="rockpaperscissors",
-        description="Play Rock Paper Scissors",
-        brief="Play Rock Paper Scissors",
-        aliases=["rps"],
-    )
+    @commands.command(name="rockpaperscissors", aliases=["rps"])
     async def rockpaperscissors(self, ctx: Context, choice: str):
+        """Play Rock Paper Scissors"""
         embed = nextcord.Embed(color=0x0DD91A)
         choice = choice.lower()
         if choice == "scissor":
@@ -95,12 +85,9 @@ class fun(
 
         await ctx.send(embed=embed)
 
-    @commands.command(
-        name="hack",
-        description="Hack someone (totally real)",
-        brief="Hack someone (totally real)",
-    )
+    @commands.command(name="hack")
     async def hack(self, ctx: Context, user: str):
+        """Hack someone (totally real)"""
         msg = await ctx.send(f"`Hacking {user}`")
         delay = round(random.uniform(2, 5), 2)
         await asyncio.sleep(delay)
@@ -138,13 +125,9 @@ class fun(
         await asyncio.sleep(delay)
         await msg.edit(content=f"`{user} has been totally legitimately hacked.`")
 
-    @commands.command(
-        name="messages",
-        description="Shows the amount of messages everyone has sent!",
-        brief="Shows the amount of messages everyone set",
-        aliases=["msg"],
-    )
+    @commands.command(name="messages", aliases=["msg"])
     async def messages(self, ctx: Context):
+        """Shows the amount of messages everyone has sent"""
         embed = nextcord.Embed(color=0x0DD91A)
         for k in USER_DATA.find().sort("messages", pymongo.DESCENDING):
             try:
@@ -165,6 +148,7 @@ class fun(
 
     @commands.command(name="8ball")
     async def eight_ball(self, ctx: Context, question: str):
+        """Ask 8ball a question"""
         random_int = random.randint(0, len(eight_ball_responses) - 1)
         embed = nextcord.Embed(color=0x0DD91A, title=eight_ball_responses[random_int])
         await ctx.send(embed=embed)
