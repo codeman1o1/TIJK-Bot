@@ -226,9 +226,14 @@ class event_handler(
             sorted_keys.reverse()
             sorted_cmds = {w: cmds[w] for w in sorted_keys}
             best_cmd = list(sorted_cmds.keys())[0]
+            best_cmd_2 = ""
+            best_cmd_full = self.bot.get_command(best_cmd)
+            if best_cmd != best_cmd_full.name and best_cmd_full is not None:
+                best_cmd_2 = f" ({best_cmd_full})"
             best_cmd_perc = list(sorted_cmds.values())[0]
             error2 = (
-                str(error) + f"\nDid you mean `.{best_cmd}`? ({best_cmd_perc}% match)"
+                str(error)
+                + f"\nDid you mean `.{best_cmd}{best_cmd_2}`? ({best_cmd_perc}% match)"
             )
         embed = nextcord.Embed(color=0xFF0000)
         embed.add_field(name="An error occured!", value=error2, inline=True)
