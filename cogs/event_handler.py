@@ -173,7 +173,7 @@ class event_handler(commands.Cog, name="Event Handler"):
         """Called when a command error occurs"""
         error2 = error
         if isinstance(error, commands.CommandNotFound):
-            message = ctx.message.content[1:]
+            message = ctx.message.content[1:].split(" ")[0]
             cmds = {
                 k: round(SequenceMatcher(None, k, message).ratio() * 100, 1)
                 for k in self.bot.all_commands.keys()
