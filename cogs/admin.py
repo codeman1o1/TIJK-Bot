@@ -231,10 +231,10 @@ class admin(
             await ctx.send(embed=embed)
 
     @commands.command(
-        name="timeout",
+        name="mute",
         description="Mute a user",
         brief="Mutes a user",
-        aliases=["to"],
+        aliases=["timeout", "to"],
     )
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     @commands.bot_has_permissions(moderate_members=True)
