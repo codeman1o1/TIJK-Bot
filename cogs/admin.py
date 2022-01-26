@@ -244,8 +244,9 @@ class admin(
         user: nextcord.Member,
         time: str,
         *,
-        reason="No reason provided",
+        reason=None,
     ):
+        reason2 = " because of " + reason if reason else ""
         time = humanfriendly.parse_timespan(time)
         await user.edit(
             timeout=nextcord.utils.utcnow() + datetime.timedelta(seconds=time)
@@ -253,10 +254,9 @@ class admin(
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="User muted!",
-            value=f"{user.display_name} was muted by {ctx.author.name}#{ctx.author.discriminator} because of {reason}",
+            value=f"{user.display_name} was muted for {humanfriendly.format_timespan(time)} by {ctx.author.name}#{ctx.author.discriminator}{reason2}",
             inline=False,
         )
-
         await ctx.send(embed=embed)
 
     @commands.command(
@@ -266,14 +266,13 @@ class admin(
     )
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     @commands.bot_has_permissions(moderate_members=True)
-    async def unmute(
-        self, ctx: Context, user: nextcord.Member, *, reason="No reason provided"
-    ):
+    async def unmute(self, ctx: Context, user: nextcord.Member, *, reason=None):
+        reason2 = " because of " + reason if reason else ""
         await user.edit(timeout=None)
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="User unmuted!",
-            value=f"{user.display_name} was unmuted by {ctx.author.name}#{ctx.author.discriminator} because of {reason}",
+            value=f"{user.display_name} was unmuted by {ctx.author.name}#{ctx.author.discriminator}{reason2}",
             inline=False,
         )
 
@@ -419,18 +418,16 @@ class admin(
     )
     @commands.bot_has_permissions(kick_members=True)
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
-    async def kick(
-        self, ctx: Context, user: nextcord.Member, *, reason="No reason provided"
-    ):
+    async def kick(self, ctx: Context, user: nextcord.Member, *, reason=None):
+        reason2 = " because of " + reason if reason else ""
         logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
         await user.kick(reason=reason)
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="User kicked!",
-            value=f"{user.display_name} has been kicked by {ctx.author.name}#{ctx.author.discriminator} with the reason {reason}",
+            value=f"{user.display_name} has been kicked by {ctx.author.name}#{ctx.author.discriminator}{reason2}",
             inline=False,
         )
-
         await ctx.send(embed=embed)
         await logs_channel.send(embed=embed)
 
@@ -441,18 +438,16 @@ class admin(
     )
     @commands.bot_has_permissions(ban_members=True)
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
-    async def ban(
-        self, ctx: Context, user: nextcord.Member, *, reason="No reason provided"
-    ):
+    async def ban(self, ctx: Context, user: nextcord.Member, *, reason=None):
+        reason2 = " because of " + reason if reason else ""
         logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
         await user.ban(reason=reason)
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="User banned!",
-            value=f"{user.name}#{user.discriminator} has been banned by {ctx.author.name}#{ctx.author.discriminator} with the reason {reason}\nUse `.unban {user.name}#{user.discriminator}` to unban {user.display_name}",
+            value=f"{user.name}#{user.discriminator} has been banned by {ctx.author.name}#{ctx.author.discriminator}{reason2}\nUse `.unban {user.name}#{user.discriminator}` to unban {user.display_name}",
             inline=False,
         )
-
         await ctx.send(embed=embed)
         await logs_channel.send(embed=embed)
 
@@ -463,7 +458,8 @@ class admin(
     )
     @commands.bot_has_permissions(ban_members=True)
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
-    async def unban(self, ctx: Context, user: str, *, reason="No reason provided"):
+    async def unban(self, ctx: Context, user: str, *, reason=None):
+        reason2 = " because of " + reason if reason else ""
         user = await commands.converter.UserConverter().convert(ctx, user)
         embed = nextcord.Embed(color=0x0DD91A)
         bans = tuple(ban_entry.user for ban_entry in await ctx.guild.bans())
@@ -472,10 +468,9 @@ class admin(
             await ctx.guild.unban(user, reason=reason)
             embed.add_field(
                 name="User unbanned!",
-                value=f"{user.name}#{user.discriminator} has been unbanned by {ctx.author.name}#{ctx.author.discriminator} with the reason {reason}",
+                value=f"{user.name}#{user.discriminator} has been unbanned by {ctx.author.name}#{ctx.author.discriminator}{reason2}",
                 inline=False,
             )
-
             await logs_channel.send(embed=embed)
         else:
             embed.add_field(
@@ -483,7 +478,6 @@ class admin(
                 value=f"{user.display_name} is not banned!",
                 inline=False,
             )
-
         await ctx.send(embed=embed)
 
     @commands.group(
@@ -513,8 +507,9 @@ class admin(
         user: nextcord.Member,
         amount: int = 1,
         *,
-        reason="No reason provided",
+        reason=None,
     ):
+        reason2 = "because of " + reason if reason else ""
         query = {"_id": user.id}
         if USER_DATA.count_documents(query) == 0:
             post = {"_id": user.id, "warns": 0}
@@ -534,7 +529,7 @@ class admin(
             USER_DATA.update_one({"_id": user.id}, {"$set": {"warns": warns}})
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
-            name=f"{user.display_name} now has {amount} warn(s) less because {reason}!",
+            name=f"{user.display_name} now has {amount} warn(s) less {reason2}!",
             value=f"{user.display_name} now has a total of {warns} warn(s)!",
             inline=False,
         )
