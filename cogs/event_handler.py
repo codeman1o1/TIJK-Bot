@@ -21,13 +21,16 @@ class event_handler(
         self.bot.add_view(ping_buttons())
 
     async def warn_system(
-        event, user, amount: int = 1, invoker_username: str = "Warn System"
+        event,
+        user: nextcord.Member,
+        amount: int = 1,
+        invoker_username: str = "Warn System",
     ) -> str:
         """
         Warn users\n
         Allowed arguments:
         `event`: The event
-        `user`: The user to warn
+        `user` (member): The user to warn
         `amount` (int): The amount of warns to give. Defaults to 1
         `invoker_username` (str): The user who warned someone
         """
