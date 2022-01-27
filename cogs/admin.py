@@ -196,6 +196,7 @@ class admin(commands.Cog, name="Admin"):
                     inline=False,
                 )
                 embed.set_footer(text="You also received 1 warn!")
+                await ctx.send(embed=embed)
                 await warn_system(ctx, user, 1, ctx.author.display_name, reason)
             else:
                 embed.add_field(
@@ -203,7 +204,7 @@ class admin(commands.Cog, name="Admin"):
                     value=messages[rule_number - 1].content,
                     inline=False,
                 )
-            await ctx.send(embed=embed)
+                await ctx.send(embed=embed)
         except IndexError:
             embed = nextcord.Embed(
                 color=0xFF0000, title=f"{rule_number} is not a valid rule number!"
