@@ -208,11 +208,14 @@ class developer(commands.Cog, name="Developer"):
         embed = nextcord.Embed(
             color=0x0DD91A, title="Here are some stats for TIJK Bot!"
         )
-
+        embed.add_field(
+            name="Nextcord version:",
+            value=nextcord.__version__,
+            inline=False,
+        )
         embed.add_field(
             name="Total commands:", value=f"{len(self.bot.commands)}", inline=False
         )
-
         uptime2 = time.strftime("%H:%M:%S", time.gmtime(uptime.uptime()))
         embed.add_field(name="Uptime:", value=f"{uptime2}", inline=False)
         guilds = "".join(
