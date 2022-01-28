@@ -4,6 +4,8 @@ from nextcord import Interaction
 from nextcord.application_command import SlashOption
 import os, sys
 
+from main import logger
+
 
 class developer_slash(
     commands.Cog,
@@ -98,7 +100,6 @@ class developer_slash(
     )
     async def restart(self, interaction: nextcord.Interaction):
         if await self.bot.is_owner(interaction.user):
-            logs_channel = nextcord.utils.get(interaction.guild.channels, name="logs")
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name="TIJK Bot is restarting...",
@@ -106,7 +107,10 @@ class developer_slash(
                 inline=False,
             )
             await interaction.response.send_message(embed=embed)
-            await logs_channel.send(embed=embed)
+            await logger(
+                interaction,
+                f"TIJK Bot was restarted by {interaction.user.display_name}",
+            )
             await self.bot.change_presence(
                 activity=nextcord.Activity(
                     type=nextcord.ActivityType.playing, name="Restarting..."

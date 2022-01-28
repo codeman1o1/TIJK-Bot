@@ -9,6 +9,7 @@ from nextcord.ext import commands
 from views.pings import ping_buttons
 from nextcord.ext.commands import Context
 
+from main import logger
 from main import BOT_DATA, USER_DATA
 
 
@@ -65,6 +66,10 @@ class event_handler(commands.Cog, name="Event Handler"):
                         inline=True,
                     )
                     await message.channel.send(embed=embed)
+                    await logger(
+                        await self.bot.get_context(message),
+                        f"{user.display_name} has been muted for 10 minutes for spam",
+                    )
 
             if not message.content.startswith(".."):
                 await self.bot.process_commands(message)

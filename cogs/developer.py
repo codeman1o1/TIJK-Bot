@@ -9,6 +9,7 @@ import uptime
 from nextcord.ext import commands
 from nextcord.ext.commands import Context
 
+from main import logger
 from main import BOT_DATA
 
 
@@ -22,16 +23,14 @@ class developer(commands.Cog, name="Developer"):
     @commands.is_owner()
     async def restart(self, ctx: Context):
         """Restarts TIJK Bot"""
-        logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="TIJK Bot is restarting...",
             value=f"TIJK Bot was restarted by {ctx.author.display_name}",
             inline=False,
         )
-
         await ctx.send(embed=embed)
-        await logs_channel.send(embed=embed)
+        await logger(ctx, f"TIJK Bot was restarted by {ctx.author.display_name}")
         await self.bot.change_presence(
             activity=nextcord.Activity(
                 type=nextcord.ActivityType.playing, name="Restarting..."

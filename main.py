@@ -42,7 +42,7 @@ async def warn_system(
     user: nextcord.Member,
     amount: int = 1,
     invoker_username: str = "Warn System",
-    reason: str = None
+    reason: str = None,
 ) -> str:
     """
     Warn users\n
@@ -89,15 +89,17 @@ async def warn_system(
         await user.edit(
             timeout=nextcord.utils.utcnow() + datetime.timedelta(seconds=1200)
         )
-        logs_channel = nextcord.utils.get(user.guild.channels, name="logs")
-        embed = nextcord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name="User muted!",
-            value=f"{user.display_name} was muted for 10 minutes by Warn System",
-            inline=False,
+        await logger(
+            ctx, f"{user.display_name} was muted for 10 minutes by Warn System"
         )
 
-        await logs_channel.send(embed=embed)
+
+async def logger(ctx: Context, message: str):
+    """Log a message in the #logs channel"""
+    logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
+    embed = nextcord.Embed(color=0x0DD91A, title=message)
+    embed.set_footer(text=f'Used from the "{ctx.message.channel.name}" channel')
+    await logs_channel.send(embed=embed)
 
 
 @bot.event

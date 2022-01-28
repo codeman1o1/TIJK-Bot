@@ -10,7 +10,7 @@ from views.button_roles import RoleView
 from views.verify import VerifyView
 import json
 
-from main import warn_system
+from main import warn_system, logger
 
 from main import BOT_DATA, USER_DATA
 
@@ -79,6 +79,7 @@ class admin(commands.Cog, name="Admin"):
                 color=0x0DD91A,
                 title=f'The "{role}" role has been added!\nMake sure to use `.buttonroles` again!',
             )
+            await logger(ctx, f'The "{role}" role has been added to buttonroles')
         else:
             embed = nextcord.Embed(
                 color=0x0DD91A, title=f'The "{role}" role is already listed!'
@@ -102,6 +103,7 @@ class admin(commands.Cog, name="Admin"):
                 color=0x0DD91A,
                 title=f'The "{role}" role has been removed!\nMake sure to use `.buttonroles` again!',
             )
+            await logger(ctx, f'The "{role}" role has been removed from buttonroles')
         else:
             embed = nextcord.Embed(
                 color=0x0DD91A, title=f'The "{role}" role is not listed!'
@@ -112,7 +114,6 @@ class admin(commands.Cog, name="Admin"):
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def shutdown(self, ctx: Context):
         """Shuts down TIJK Bot"""
-        logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="TIJK Bot was shut down",
@@ -121,7 +122,10 @@ class admin(commands.Cog, name="Admin"):
         )
 
         await ctx.send(embed=embed)
-        await logs_channel.send(embed=embed)
+        await logger(
+            ctx,
+            f"TIJK Bot was shut down by {ctx.author.name}#{ctx.author.discriminator}",
+        )
         info = await self.bot.application_info()
         owner = info.owner
         dm = await owner.create_dm()
@@ -158,6 +162,7 @@ class admin(commands.Cog, name="Admin"):
             embed = nextcord.Embed(
                 color=0x0DD91A, title=f"Verified {user.display_name}!"
             )
+            await logger(ctx, f"{user.display_name} was verified")
         else:
             embed = nextcord.Embed(
                 color=0xFFC800, title=f"{user.display_name} is already verified!"
@@ -235,6 +240,10 @@ class admin(commands.Cog, name="Admin"):
             inline=False,
         )
         await ctx.send(embed=embed)
+        await logger(
+            ctx,
+            f"{user.display_name} was muted for {humanfriendly.format_timespan(time)} by {ctx.author.name}#{ctx.author.discriminator}{reason2}",
+        )
 
     @commands.command(name="unmute")
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
@@ -249,8 +258,11 @@ class admin(commands.Cog, name="Admin"):
             value=f"{user.display_name} was unmuted by {ctx.author.name}#{ctx.author.discriminator}{reason2}",
             inline=False,
         )
-
         await ctx.send(embed=embed)
+        await logger(
+            ctx,
+            f"{user.display_name} was unmuted by {ctx.author.name}#{ctx.author.discriminator}{reason2}",
+        )
 
     @commands.command(name="nick")
     @commands.bot_has_permissions(manage_nicknames=True)
@@ -265,8 +277,8 @@ class admin(commands.Cog, name="Admin"):
             value=f"{original_name}'s nickname has been changed to {name}",
             inline=False,
         )
-
         await ctx.send(embed=embed)
+        await logger(ctx, f"{original_name}'s nickname has been changed to {name}")
 
     @commands.command(name="assignrole", aliases=["ar"])
     @commands.bot_has_permissions(manage_roles=True)
@@ -278,7 +290,6 @@ class admin(commands.Cog, name="Admin"):
         if user is None:
             user = ctx.author
         if role not in user.roles:
-            logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
             await user.add_roles(role)
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
@@ -286,9 +297,11 @@ class admin(commands.Cog, name="Admin"):
                 value=f'Role "{role}" has been assigned to {user.display_name} by {ctx.author.name}#{ctx.author.discriminator}',
                 inline=False,
             )
-
             await ctx.send(embed=embed)
-            await logs_channel.send(embed=embed)
+            await logger(
+                ctx,
+                f'Role "{role}" has been assigned to {user.display_name} by {ctx.author.name}#{ctx.author.discriminator}',
+            )
 
         else:
             embed = nextcord.Embed(color=0x0DD91A)
@@ -310,7 +323,6 @@ class admin(commands.Cog, name="Admin"):
         if user is None:
             user = ctx.author
         if role in user.roles:
-            logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
             await user.remove_roles(role)
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
@@ -318,9 +330,11 @@ class admin(commands.Cog, name="Admin"):
                 value=f'Role "{role}" has been removed from {user.display_name} by {ctx.author.name}#{ctx.author.discriminator}',
                 inline=False,
             )
-
             await ctx.send(embed=embed)
-            await logs_channel.send(embed=embed)
+            await logger(
+                ctx,
+                f'Role "{role}" has been removed from {user.display_name} by {ctx.author.name}#{ctx.author.discriminator}',
+            )
 
         else:
             embed = nextcord.Embed(color=0x0DD91A)
@@ -346,6 +360,10 @@ class admin(commands.Cog, name="Admin"):
                 inline=False,
             )
         await ctx.send(embed=embed, delete_after=5)
+        await logger(
+            ctx,
+            f"{len(deleted_messages)} messages have been cleared from {ctx.message.channel.name}",
+        )
 
     @commands.command(name="clean")
     @commands.bot_has_permissions(manage_messages=True)
@@ -369,6 +387,10 @@ class admin(commands.Cog, name="Admin"):
                 inline=False,
             )
         await ctx.send(embed=embed, delete_after=5)
+        await logger(
+            ctx,
+            f"{len(deleted_messages)} messages have been cleaned from {ctx.message.channel.name}",
+        )
 
     @commands.command(name="kick")
     @commands.bot_has_permissions(kick_members=True)
@@ -376,7 +398,6 @@ class admin(commands.Cog, name="Admin"):
     async def kick(self, ctx: Context, user: nextcord.Member, *, reason=None):
         """Kicks a user from the server"""
         reason2 = " because of " + reason if reason else ""
-        logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
         await user.kick(reason=reason)
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
@@ -385,7 +406,10 @@ class admin(commands.Cog, name="Admin"):
             inline=False,
         )
         await ctx.send(embed=embed)
-        await logs_channel.send(embed=embed)
+        await logger(
+            ctx,
+            f"{user.display_name} has been kick by {ctx.author.name}#{ctx.author.discriminator}{reason2}",
+        )
 
     @commands.command(name="ban")
     @commands.bot_has_permissions(ban_members=True)
@@ -393,7 +417,6 @@ class admin(commands.Cog, name="Admin"):
     async def ban(self, ctx: Context, user: nextcord.Member, *, reason=None):
         """Bans a user from the server"""
         reason2 = " because of " + reason if reason else ""
-        logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
         await user.ban(reason=reason)
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
@@ -402,7 +425,10 @@ class admin(commands.Cog, name="Admin"):
             inline=False,
         )
         await ctx.send(embed=embed)
-        await logs_channel.send(embed=embed)
+        await logger(
+            ctx,
+            f"{user.name}#{user.discriminator} has been banned by {ctx.author.name}#{ctx.author.discriminator}{reason2}",
+        )
 
     @commands.command(name="unban")
     @commands.bot_has_permissions(ban_members=True)
@@ -414,14 +440,16 @@ class admin(commands.Cog, name="Admin"):
         embed = nextcord.Embed(color=0x0DD91A)
         bans = tuple(ban_entry.user for ban_entry in await ctx.guild.bans())
         if user in bans:
-            logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
             await ctx.guild.unban(user, reason=reason)
             embed.add_field(
                 name="User unbanned!",
                 value=f"{user.name}#{user.discriminator} has been unbanned by {ctx.author.name}#{ctx.author.discriminator}{reason2}",
                 inline=False,
             )
-            await logs_channel.send(embed=embed)
+            await logger(
+                ctx,
+                f"{user.name}#{user.discriminator} has been unbanned by {ctx.author.name}#{ctx.author.discriminator}{reason2}",
+            )
         else:
             embed.add_field(
                 name="Unbanning failed!",
@@ -442,6 +470,10 @@ class admin(commands.Cog, name="Admin"):
     ):
         """Warns someone"""
         await warn_system(ctx, user, amount, user.display_name, reason)
+        await logger(
+            ctx,
+            f"{user.display_name} has been warned {amount}x by {ctx.author.name}#{ctx.author.discriminator}{reason}",
+        )
 
     @warn.command(name="remove")
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
@@ -479,6 +511,9 @@ class admin(commands.Cog, name="Admin"):
             inline=False,
         )
         await ctx.send(embed=embed)
+        await logger(
+            ctx, f"{amount} warn(s) have been removed from {user.display_name}"
+        )
 
     @warn.command(name="list")
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
@@ -607,19 +642,22 @@ class admin(commands.Cog, name="Admin"):
         """Enables slowmode for a channel"""
         if channel is None:
             channel = ctx.channel
+        time_seconds = int(humanfriendly.parse_timespan(time))
+        time = humanfriendly.format_timespan(time_seconds)
+        if time_seconds <= 21600:
+            await channel.edit(slowmode_delay=time_seconds)
+            embed = nextcord.Embed(
+                color=0x0DD91A,
+                title=f"Set the slowmode for the {channel.name} channel to {time}",
+            )
+            await logger(
+                ctx,
+                f"The slowmode for the {channel.name} channel has been set to {time}",
+            )
         else:
-            time_seconds = int(humanfriendly.parse_timespan(time))
-            time = humanfriendly.format_timespan(time_seconds)
-            if time_seconds <= 21600:
-                await channel.edit(slowmode_delay=time_seconds)
-                embed = nextcord.Embed(
-                    color=0x0DD91A,
-                    title=f"Set the slowmode for the {channel.name} channel to {time}",
-                )
-            else:
-                embed = nextcord.Embed(
-                    color=0xFFC800, title="The limit for slowmode is 6 hours"
-                )
+            embed = nextcord.Embed(
+                color=0xFFC800, title="The limit for slowmode is 6 hours"
+            )
         await ctx.send(embed=embed)
 
 
