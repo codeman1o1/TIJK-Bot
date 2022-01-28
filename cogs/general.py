@@ -10,6 +10,7 @@ from views.github import github_button
 import requests
 from mojang import MojangAPI
 
+from main import full_name
 from main import USER_DATA, HYPIXEL_API_KEY
 
 
@@ -37,7 +38,7 @@ class general(commands.Cog, name="General"):
         await ctx.channel.purge(limit=1)
         hypixel_ping = nextcord.utils.get(ctx.guild.roles, name="Hypixel Ping")
         available = [
-            user.name + "#" + user.discriminator
+            await full_name(user)
             for user in ctx.guild.members
             if not user.bot
             if user.status != nextcord.Status.offline
@@ -115,7 +116,7 @@ class general(commands.Cog, name="General"):
                     if "DISCORD" in data["player"]["socialMedia"]["links"].keys():
                         if (
                             data["player"]["socialMedia"]["links"]["DISCORD"]
-                            == f"{ctx.author.name}#{ctx.author.discriminator}"
+                            == f"{await full_name(ctx.author)}"
                         ):
                             query = {"_id": ctx.author.id}
                             if USER_DATA.count_documents(query) == 0:

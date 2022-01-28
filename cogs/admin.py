@@ -10,7 +10,7 @@ from views.button_roles import RoleView
 from views.verify import VerifyView
 import json
 
-from main import warn_system, logger
+from main import warn_system, logger, full_name
 
 from main import BOT_DATA, USER_DATA
 
@@ -117,26 +117,20 @@ class admin(commands.Cog, name="Admin"):
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="TIJK Bot was shut down",
-            value=f"TIJK Bot was shut down by {ctx.author.name}#{ctx.author.discriminator}",
+            value=f"TIJK Bot was shut down by {await full_name(ctx.author)}",
             inline=False,
         )
 
         await ctx.send(embed=embed)
         await logger(
             ctx,
-            f"TIJK Bot was shut down by {ctx.author.name}#{ctx.author.discriminator}",
+            f"TIJK Bot was shut down by {await full_name(ctx.author)}",
         )
         info = await self.bot.application_info()
         owner = info.owner
         dm = await owner.create_dm()
         await dm.send(embed=embed)
-        bl.info(
-            "TIJK Bot was shut down by "
-            + ctx.author.name
-            + "#"
-            + ctx.author.discriminator,
-            __file__,
-        )
+        bl.info(f"TIJK Bot was shut down by {await full_name(ctx.author)}", __file__)
         await self.bot.close()
 
     @commands.command(name="ping")
@@ -236,13 +230,13 @@ class admin(commands.Cog, name="Admin"):
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="User muted!",
-            value=f"{user.display_name} was muted for {humanfriendly.format_timespan(time)} by {ctx.author.name}#{ctx.author.discriminator}{reason2}",
+            value=f"{user.display_name} was muted for {humanfriendly.format_timespan(time)} by {await full_name(ctx.author)}{reason2}",
             inline=False,
         )
         await ctx.send(embed=embed)
         await logger(
             ctx,
-            f"{user.display_name} was muted for {humanfriendly.format_timespan(time)} by {ctx.author.name}#{ctx.author.discriminator}{reason2}",
+            f"{user.display_name} was muted for {humanfriendly.format_timespan(time)} by {await full_name(ctx.author)}{reason2}",
         )
 
     @commands.command(name="unmute")
@@ -255,13 +249,13 @@ class admin(commands.Cog, name="Admin"):
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="User unmuted!",
-            value=f"{user.display_name} was unmuted by {ctx.author.name}#{ctx.author.discriminator}{reason2}",
+            value=f"{user.display_name} was unmuted by {await full_name(ctx.author)}{reason2}",
             inline=False,
         )
         await ctx.send(embed=embed)
         await logger(
             ctx,
-            f"{user.display_name} was unmuted by {ctx.author.name}#{ctx.author.discriminator}{reason2}",
+            f"{user.display_name} was unmuted by {await full_name(ctx.author)}{reason2}",
         )
 
     @commands.command(name="nick")
@@ -294,13 +288,13 @@ class admin(commands.Cog, name="Admin"):
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name="Role assigned!",
-                value=f'Role "{role}" has been assigned to {user.display_name} by {ctx.author.name}#{ctx.author.discriminator}',
+                value=f'Role "{role}" has been assigned to {user.display_name} by {await full_name(ctx.author)}',
                 inline=False,
             )
             await ctx.send(embed=embed)
             await logger(
                 ctx,
-                f'Role "{role}" has been assigned to {user.display_name} by {ctx.author.name}#{ctx.author.discriminator}',
+                f'Role "{role}" has been assigned to {user.display_name} by {await full_name(ctx.author)}',
             )
 
         else:
@@ -327,13 +321,13 @@ class admin(commands.Cog, name="Admin"):
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name="Role removed!",
-                value=f'Role "{role}" has been removed from {user.display_name} by {ctx.author.name}#{ctx.author.discriminator}',
+                value=f'Role "{role}" has been removed from {user.display_name} by {await full_name(ctx.author)}',
                 inline=False,
             )
             await ctx.send(embed=embed)
             await logger(
                 ctx,
-                f'Role "{role}" has been removed from {user.display_name} by {ctx.author.name}#{ctx.author.discriminator}',
+                f'Role "{role}" has been removed from {user.display_name} by {await full_name(ctx.author)}',
             )
 
         else:
@@ -402,13 +396,13 @@ class admin(commands.Cog, name="Admin"):
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="User kicked!",
-            value=f"{user.display_name} has been kicked by {ctx.author.name}#{ctx.author.discriminator}{reason2}",
+            value=f"{user.display_name} has been kicked by {await full_name(ctx.author)}{reason2}",
             inline=False,
         )
         await ctx.send(embed=embed)
         await logger(
             ctx,
-            f"{user.display_name} has been kick by {ctx.author.name}#{ctx.author.discriminator}{reason2}",
+            f"{user.display_name} has been kick by {await full_name(ctx.author)}{reason2}",
         )
 
     @commands.command(name="ban")
@@ -421,13 +415,13 @@ class admin(commands.Cog, name="Admin"):
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="User banned!",
-            value=f"{user.name}#{user.discriminator} has been banned by {ctx.author.name}#{ctx.author.discriminator}{reason2}\nUse `.unban {user.name}#{user.discriminator}` to unban {user.display_name}",
+            value=f"{await full_name(user)} has been banned by {await full_name(ctx.author)}{reason2}\nUse `.unban {await full_name(user)}` to unban {user.display_name}",
             inline=False,
         )
         await ctx.send(embed=embed)
         await logger(
             ctx,
-            f"{user.name}#{user.discriminator} has been banned by {ctx.author.name}#{ctx.author.discriminator}{reason2}",
+            f"{await full_name(user)} has been banned by {await full_name(ctx.author)}{reason2}",
         )
 
     @commands.command(name="unban")
@@ -443,12 +437,12 @@ class admin(commands.Cog, name="Admin"):
             await ctx.guild.unban(user, reason=reason)
             embed.add_field(
                 name="User unbanned!",
-                value=f"{user.name}#{user.discriminator} has been unbanned by {ctx.author.name}#{ctx.author.discriminator}{reason2}",
+                value=f"{await full_name(user)} has been unbanned by {await full_name(ctx.author)}{reason2}",
                 inline=False,
             )
             await logger(
                 ctx,
-                f"{user.name}#{user.discriminator} has been unbanned by {ctx.author.name}#{ctx.author.discriminator}{reason2}",
+                f"{await full_name(user)} has been unbanned by {await full_name(ctx.author)}{reason2}",
             )
         else:
             embed.add_field(
@@ -472,7 +466,7 @@ class admin(commands.Cog, name="Admin"):
         await warn_system(ctx, user, amount, user.display_name, reason)
         await logger(
             ctx,
-            f"{user.display_name} has been warned {amount}x by {ctx.author.name}#{ctx.author.discriminator}{reason}",
+            f"{user.display_name} has been warned {amount}x by {await full_name(ctx.author)}{reason}",
         )
 
     @warn.command(name="remove")
@@ -627,7 +621,7 @@ class admin(commands.Cog, name="Admin"):
             if user.avatar:
                 embed.set_thumbnail(url=user.avatar)
             embed.add_field(
-                name="Name", value=user.name + "#" + user.discriminator, inline=True
+                name="Name", value=await full_name(user), inline=True
             )
             embed.add_field(name="In mutual guilds", value=len(user.mutual_guilds))
         else:

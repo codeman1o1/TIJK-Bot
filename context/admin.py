@@ -1,7 +1,8 @@
 import nextcord
 from nextcord.ext import commands
 from nextcord.interactions import Interaction
-from main import warn_system
+
+from main import warn_system, full_name
 
 
 class admin_ctx(commands.Cog):
@@ -45,9 +46,7 @@ class admin_ctx(commands.Cog):
                 )
                 if user.avatar:
                     embed.set_thumbnail(url=user.avatar)
-                embed.add_field(
-                    name="Name", value=user.name + "#" + user.discriminator, inline=True
-                )
+                embed.add_field(name="Name", value=await full_name(user), inline=True)
                 embed.add_field(name="In mutual guilds", value=len(user.mutual_guilds))
             else:
                 embed = nextcord.Embed(
