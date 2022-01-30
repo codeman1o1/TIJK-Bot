@@ -463,7 +463,7 @@ class admin(commands.Cog, name="Admin"):
         reason: str = None,
     ):
         """Warns someone"""
-        await warn_system(ctx, user, amount, user.display_name, reason)
+        await warn_system(ctx, user, amount, ctx.author.display_name, reason)
         await logger(
             ctx,
             f"{user.display_name} has been warned {amount}x by {await full_name(ctx.author)}{reason}",
