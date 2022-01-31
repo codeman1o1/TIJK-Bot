@@ -91,11 +91,16 @@ class event_handler(commands.Cog, name="Event Handler"):
     async def on_member_join(self, member: nextcord.Member):
         """Called when a member joins the server"""
         try:
-            user = self.bot.get_user(member.id)
-            embed = nextcord.Embed(
-                color=0x0DD91A,
-                title=f"Hey {member.display_name} :wave:\nWelcome to {member.guild.name}!\nWe hope you enjoy your stay!",
-            )
+            if member.bot:
+                embed = nextcord.Embed(
+                    color=0x0DD91A,
+                    title=f"Hey {member.display_name} :wave:\nWe hope you add great functionality to {member.guild.name}!"
+                )
+            else:
+                embed = nextcord.Embed(
+                    color=0x0DD91A,
+                    title=f"Hey {member.display_name} :wave:\nWelcome to {member.guild.name}!\nWe hope you enjoy your stay!",
+                )
             if member.guild.system_channel:
                 await member.guild.system_channel.send(embed=embed)
             dm = await user.create_dm()
