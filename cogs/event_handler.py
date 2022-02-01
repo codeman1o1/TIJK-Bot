@@ -94,7 +94,7 @@ class event_handler(commands.Cog, name="Event Handler"):
             if member.bot:
                 embed = nextcord.Embed(
                     color=0x0DD91A,
-                    title=f"Hey {member.display_name} :wave:\nWe hope you add great functionality to {member.guild.name}!"
+                    title=f"Hey {member.display_name} :wave:\nWe hope you add great functionality to {member.guild.name}!",
                 )
             else:
                 embed = nextcord.Embed(
@@ -103,7 +103,7 @@ class event_handler(commands.Cog, name="Event Handler"):
                 )
             if member.guild.system_channel:
                 await member.guild.system_channel.send(embed=embed)
-            dm = await user.create_dm()
+            dm = await member.create_dm()
             await dm.send(embed=embed)
         except nextcord.errors.HTTPException:
             pass
