@@ -180,7 +180,6 @@ class event_handler(commands.Cog, name="Event Handler"):
     @commands.Cog.listener()
     async def on_command_error(self, ctx: Context, error: commands.CommandError):
         """Called when a command error occurs"""
-        error2 = error
         if isinstance(error, commands.CommandNotFound):
             message = ctx.message.content[1:].split(" ")[0]
             cmds = {
@@ -196,12 +195,12 @@ class event_handler(commands.Cog, name="Event Handler"):
             if best_cmd != best_cmd_full.name and best_cmd_full is not None:
                 best_cmd_2 = f" ({best_cmd_full})"
             best_cmd_perc = list(sorted_cmds.values())[0]
-            error2 = (
+            error = (
                 str(error)
                 + f"\nDid you mean `.{best_cmd}{best_cmd_2}`? ({best_cmd_perc}% match)"
             )
         embed = nextcord.Embed(color=0xFF0000)
-        embed.add_field(name="An error occured!", value=error2, inline=True)
+        embed.add_field(name="An error occured!", value=error, inline=True)
         await ctx.send(embed=embed)
         bl.error(error, __file__)
 
