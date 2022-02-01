@@ -1,3 +1,4 @@
+import datetime
 import json
 import os
 import sys
@@ -10,7 +11,7 @@ from nextcord.ext import commands
 from nextcord.ext.commands import Context
 
 from main import logger
-from main import BOT_DATA
+from main import BOT_DATA, START_TIME
 
 
 class developer(commands.Cog, name="Developer"):
@@ -215,8 +216,11 @@ class developer(commands.Cog, name="Developer"):
         embed.add_field(
             name="Total commands:", value=f"{len(self.bot.commands)}", inline=False
         )
-        uptime2 = time.strftime("%H:%M:%S", time.gmtime(uptime.uptime()))
-        embed.add_field(name="Uptime:", value=f"{uptime2}", inline=False)
+        embed.add_field(
+            name="Uptime:",
+            value=str(datetime.timedelta(seconds=int(round(time.time() - START_TIME)))),
+            inline=False,
+        )
         guilds = "".join(
             f"{self.bot.guilds.index(k)+1}. {k.name} (**{k.id}**)\n"
             for k in self.bot.guilds

@@ -36,6 +36,7 @@ bot = commands.Bot(
     ),
 )
 
+START_TIME = time.time()
 
 async def warn_system(
     event,
