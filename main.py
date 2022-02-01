@@ -22,6 +22,8 @@ CLUSTER = MongoClient(os.environ["MongoURL"])
 DATA = CLUSTER["Data"]
 BOT_DATA = DATA["BotData"]
 USER_DATA = DATA["UserData"]
+START_TIME = time.time()
+
 
 client = nextcord.Client()
 bot = commands.Bot(
@@ -36,7 +38,6 @@ bot = commands.Bot(
     ),
 )
 
-START_TIME = time.time()
 
 async def warn_system(
     event,
