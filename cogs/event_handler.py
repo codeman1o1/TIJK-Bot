@@ -26,8 +26,7 @@ class event_handler(commands.Cog, name="Event Handler"):
         user = message.author
 
         if not user.bot:
-            pings = list(BOT_DATA.find()[0]["pingpolls"])
-            if pings:
+            if pings := list(BOT_DATA.find()[0]["pingpolls"]):
                 for k in pings:
                     role = nextcord.utils.get(user.guild.roles, name=k)
                     if role and message.content == f"<@&{role.id}>":
