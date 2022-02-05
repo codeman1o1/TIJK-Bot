@@ -104,14 +104,10 @@ async def logger(ctx: Context, message: str):
     await logs_channel.send(embed=embed)
 
 
-async def full_name(user: nextcord.Member) -> str:
-    return user.name + "#" + user.discriminator
-
-
 @bot.event
 async def on_ready():
     """Runs when the bot is online"""
-    bl.info(f"Logged in as {await full_name(bot.user)}", __file__)
+    bl.info(f"Logged in as {bot.user}", __file__)
     cogs = os.listdir("cogs")
     for cog in cogs:
         if cog.endswith(".py"):
