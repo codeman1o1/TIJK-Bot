@@ -125,7 +125,7 @@ async def on_ready():
             type=nextcord.ActivityType.watching, name="over the TIJK Server"
         )
     )
-    remove_invalid_users.start()
+    # remove_invalid_users.start()
     birthday_checker.start()
     while True:
         await asyncio.sleep(10)
@@ -133,12 +133,12 @@ async def on_ready():
             file.truncate(0)
 
 
-@tasks.loop(hours=1)
-async def remove_invalid_users():
-    """Removes invalid users from the database"""
-    for k in USER_DATA.find():
-        if not bot.get_user(k["_id"]):
-            USER_DATA.delete_one({"_id": k["_id"]})
+# @tasks.loop(hours=1)
+# async def remove_invalid_users():
+#     """Removes invalid users from the database"""
+#     for k in USER_DATA.find():
+#         if not bot.get_user(k["_id"]):
+#             USER_DATA.delete_one({"_id": k["_id"]})
 
 
 @tasks.loop(seconds=10)
