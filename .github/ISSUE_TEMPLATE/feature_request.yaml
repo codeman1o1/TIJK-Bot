@@ -1,0 +1,23 @@
+name: Feature request
+description: Suggest an idea for TIJK Bot
+title: '[SUGGESTION] name-here'
+labels:
+  - suggestion
+body:
+  - type: textarea
+    id: describe
+    attributes:
+      label: Describe your fix/feature
+      description: A clear and concise description of what the problem is
+    validations:
+      required: true
+  - type: textarea
+    id: related-to-problem
+    attributes:
+      label: Is your feature request related to a problem?
+      description: If so, please describe the problem
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add any other context or screenshots about the feature request here
