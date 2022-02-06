@@ -1,12 +1,10 @@
 import datetime
-import json
 import os
 import sys
 import time
 
 import nextcord
 import psutil
-import uptime
 from nextcord.ext import commands
 from nextcord.ext.commands import Context
 

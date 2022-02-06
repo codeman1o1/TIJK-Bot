@@ -1,5 +1,3 @@
-import os
-
 import aiohttp
 import nextcord
 import requests

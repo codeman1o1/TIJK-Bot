@@ -1,11 +1,9 @@
 import datetime
-import os
 import random
 
 import nextcord
 from nextcord.ext import commands
 from nextcord.ext.commands import Context
-from pymongo import MongoClient
 from views.github import github_button
 import requests
 from mojang import MojangAPI

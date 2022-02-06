@@ -1,6 +1,4 @@
 import datetime
-import json
-import os
 from difflib import SequenceMatcher
 
 import basic_logger as bl
