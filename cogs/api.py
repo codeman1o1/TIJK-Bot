@@ -142,15 +142,14 @@ class api(commands.Cog, name="API"):
             total = stats["total"]
             family = info["family"]
             evolutionStage = family["evolutionStage"]
-            evolutionLine = family["evolutionLine"]
-            if not evolutionLine:
-                familyText = f"This Pokémon has no evolution line"
-            else:
+            if evolutionLine := family["evolutionLine"]:
                 evolutionLine2 = ""
                 for k in evolutionLine:
                     evolutionLine2 = evolutionLine2 + k + " -> "
                 evolutionLine2 = evolutionLine2[:-4]
                 familyText = f"Evolution Stage: {evolutionStage}\nEvolution Line: {evolutionLine2}"
+            else:
+                familyText = f"This Pokémon has no evolution line"
             # Possible options: "normal" or "animated"
             embed.set_thumbnail(url=sprites["normal"])
             embed.add_field(name="Name", value=info["name"].capitalize(), inline=True)

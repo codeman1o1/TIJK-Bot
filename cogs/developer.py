@@ -187,10 +187,7 @@ class developer(commands.Cog, name="Developer"):
     @pingpoll.command(name="list")
     async def list_pingpoll(self, ctx: Context):
         """List the roles used in Ping Poll"""
-        pingpolls = list(BOT_DATA.find()[0]["pingpolls"])
-        if not pingpolls:
-            embed = nextcord.Embed(color=0x0DD91A, title="There are no PingPolls!")
-        else:
+        if pingpolls := list(BOT_DATA.find()[0]["pingpolls"]):
             pingpolls2 = ""
             for k in pingpolls:
                 pingpolls2 = pingpolls2 + "\n> " + k
@@ -200,6 +197,8 @@ class developer(commands.Cog, name="Developer"):
                 value=pingpolls2,
                 inline=False,
             )
+        else:
+            embed = nextcord.Embed(color=0x0DD91A, title="There are no PingPolls!")
         await ctx.send(embed=embed)
 
     @commands.command(name="stats")
