@@ -67,7 +67,7 @@ class event_handler(commands.Cog, name="Event Handler"):
                     await message.channel.send(embed=embed)
                     await logger(
                         await self.bot.get_context(message),
-                        f"{user.display_name} has been muted for 10 minutes for spam",
+                        f"{user} has been muted for 10 minutes for spam",
                     )
 
             if not message.content.startswith(".."):

@@ -74,15 +74,15 @@ async def warn_system(
     embed = nextcord.Embed(color=0x0DD91A)
     if total_warns <= 9:
         embed.add_field(
-            name=f"{user.display_name} has been warned by {invoker_username}{reason2}",
-            value=f"{user.display_name} has {10 - total_warns} warns left!",
+            name=f"{user} has been warned by {invoker_username}{reason2}",
+            value=f"{user} has {10 - total_warns} warns left!",
             inline=False,
         )
         await event.channel.send(embed=embed)
     if total_warns >= 10:
         USER_DATA.update_one({"_id": user.id}, {"$set": {"warns": 0}})
         embed.add_field(
-            name=f"{user.display_name} exceeded the warn limit!",
+            name=f"{user} exceeded the warn limit!",
             value="He shall be punished with a 10 minute mute!",
             inline=False,
         )
@@ -92,7 +92,7 @@ async def warn_system(
             timeout=nextcord.utils.utcnow() + datetime.timedelta(seconds=1200)
         )
         await logger(
-            ctx, f"{user.display_name} was muted for 10 minutes by Warn System"
+            ctx, f"{user} was muted for 10 minutes by Warn System"
         )
 
 

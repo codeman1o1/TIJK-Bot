@@ -103,13 +103,13 @@ class developer_slash(
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name="TIJK Bot is restarting...",
-                value=f"TIJK Bot was restarted by {interaction.user.display_name}",
+                value=f"TIJK Bot was restarted by {interaction.user}",
                 inline=False,
             )
             await interaction.response.send_message(embed=embed)
             await logger(
                 interaction,
-                f"TIJK Bot was restarted by {interaction.user.display_name}",
+                f"TIJK Bot was restarted by {interaction.user}",
             )
             await self.bot.change_presence(
                 activity=nextcord.Activity(

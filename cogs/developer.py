@@ -27,11 +27,11 @@ class developer(commands.Cog, name="Developer"):
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="TIJK Bot is restarting...",
-            value=f"TIJK Bot was restarted by {ctx.author.display_name}",
+            value=f"TIJK Bot was restarted by {ctx.author}",
             inline=False,
         )
         await ctx.send(embed=embed)
-        await logger(ctx, f"TIJK Bot was restarted by {ctx.author.display_name}")
+        await logger(ctx, f"TIJK Bot was restarted by {ctx.author}")
         await self.bot.change_presence(
             activity=nextcord.Activity(
                 type=nextcord.ActivityType.playing, name="Restarting..."

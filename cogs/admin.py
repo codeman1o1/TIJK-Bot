@@ -153,14 +153,10 @@ class admin(commands.Cog, name="Admin"):
         member_role = nextcord.utils.get(ctx.guild.roles, name="Member")
         if member_role not in user.roles:
             await user.add_roles(member_role)
-            embed = nextcord.Embed(
-                color=0x0DD91A, title=f"Verified {user.display_name}!"
-            )
-            await logger(ctx, f"{user.display_name} was verified")
+            embed = nextcord.Embed(color=0x0DD91A, title=f"Verified {user}!")
+            await logger(ctx, f"{user} was verified")
         else:
-            embed = nextcord.Embed(
-                color=0xFFC800, title=f"{user.display_name} is already verified!"
-            )
+            embed = nextcord.Embed(color=0xFFC800, title=f"{user} is already verified!")
         await ctx.send(embed=embed)
 
     @verify.command(name="send")
@@ -190,13 +186,13 @@ class admin(commands.Cog, name="Admin"):
             embed = nextcord.Embed(color=0x0DD91A)
             if user:
                 embed.add_field(
-                    name=f"Hey {user.display_name}, please read rule number {rule_number}!",
+                    name=f"Hey {user}, please read rule number {rule_number}!",
                     value=messages[rule_number - 1].content,
                     inline=False,
                 )
                 embed.set_footer(text="You also received 1 warn!")
                 await ctx.send(embed=embed)
-                await warn_system(ctx, user, 1, ctx.author.display_name, reason)
+                await warn_system(ctx, user, 1, ctx.author, reason)
             else:
                 embed.add_field(
                     name=f"Here is rule number {rule_number}:",
@@ -230,13 +226,13 @@ class admin(commands.Cog, name="Admin"):
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="User muted!",
-            value=f"{user.display_name} was muted for {humanfriendly.format_timespan(time)} by {ctx.author}{reason2}",
+            value=f"{user} was muted for {humanfriendly.format_timespan(time)} by {ctx.author}{reason2}",
             inline=False,
         )
         await ctx.send(embed=embed)
         await logger(
             ctx,
-            f"{user.display_name} was muted for {humanfriendly.format_timespan(time)} by {ctx.author}{reason2}",
+            f"{user} was muted for {humanfriendly.format_timespan(time)} by {ctx.author}{reason2}",
         )
 
     @commands.command(name="unmute")
@@ -249,13 +245,13 @@ class admin(commands.Cog, name="Admin"):
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="User unmuted!",
-            value=f"{user.display_name} was unmuted by {ctx.author}{reason2}",
+            value=f"{user} was unmuted by {ctx.author}{reason2}",
             inline=False,
         )
         await ctx.send(embed=embed)
         await logger(
             ctx,
-            f"{user.display_name} was unmuted by {ctx.author}{reason2}",
+            f"{user} was unmuted by {ctx.author}{reason2}",
         )
 
     @commands.command(name="nick")
@@ -263,7 +259,7 @@ class admin(commands.Cog, name="Admin"):
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def nick(self, ctx: Context, user: nextcord.Member, *, name: str):
         """Gives a user a nickname"""
-        original_name = user.display_name
+        original_name = user
         await user.edit(nick=name)
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
@@ -288,20 +284,20 @@ class admin(commands.Cog, name="Admin"):
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name="Role assigned!",
-                value=f'Role "{role}" has been assigned to {user.display_name} by {ctx.author}',
+                value=f'Role "{role}" has been assigned to {user} by {ctx.author}',
                 inline=False,
             )
             await ctx.send(embed=embed)
             await logger(
                 ctx,
-                f'Role "{role}" has been assigned to {user.display_name} by {ctx.author}',
+                f'Role "{role}" has been assigned to {user} by {ctx.author}',
             )
 
         else:
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name="Could not assign that role!",
-                value=f'{user.display_name} already has the "{role}" role',
+                value=f'{user} already has the "{role}" role',
                 inline=False,
             )
 
@@ -321,20 +317,20 @@ class admin(commands.Cog, name="Admin"):
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name="Role removed!",
-                value=f'Role "{role}" has been removed from {user.display_name} by {ctx.author}',
+                value=f'Role "{role}" has been removed from {user} by {ctx.author}',
                 inline=False,
             )
             await ctx.send(embed=embed)
             await logger(
                 ctx,
-                f'Role "{role}" has been removed from {user.display_name} by {ctx.author}',
+                f'Role "{role}" has been removed from {user} by {ctx.author}',
             )
 
         else:
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name="Could not remove that role!",
-                value=f'{user.display_name} does not have the "{role}" role',
+                value=f'{user} does not have the "{role}" role',
                 inline=False,
             )
 
@@ -396,13 +392,13 @@ class admin(commands.Cog, name="Admin"):
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="User kicked!",
-            value=f"{user.display_name} has been kicked by {ctx.author}{reason2}",
+            value=f"{user} has been kicked by {ctx.author}{reason2}",
             inline=False,
         )
         await ctx.send(embed=embed)
         await logger(
             ctx,
-            f"{user.display_name} has been kick by {ctx.author}{reason2}",
+            f"{user} has been kick by {ctx.author}{reason2}",
         )
 
     @commands.command(name="ban")
@@ -415,7 +411,7 @@ class admin(commands.Cog, name="Admin"):
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="User banned!",
-            value=f"{user} has been banned by {ctx.author}{reason2}\nUse `.unban {user}` to unban {user.display_name}",
+            value=f"{user} has been banned by {ctx.author}{reason2}\nUse `.unban {user}` to unban {user}",
             inline=False,
         )
         await ctx.send(embed=embed)
@@ -447,7 +443,7 @@ class admin(commands.Cog, name="Admin"):
         else:
             embed.add_field(
                 name="Unbanning failed!",
-                value=f"{user.display_name} is not banned!",
+                value=f"{user} is not banned!",
                 inline=False,
             )
         await ctx.send(embed=embed)
@@ -463,10 +459,10 @@ class admin(commands.Cog, name="Admin"):
         reason: str = None,
     ):
         """Warns someone"""
-        await warn_system(ctx, user, amount, ctx.author.display_name, reason)
+        await warn_system(ctx, user, amount, ctx.author, reason)
         await logger(
             ctx,
-            f"{user.display_name} has been warned {amount}x by {ctx.author} {reason}",
+            f"{user} has been warned {amount}x by {ctx.author} {reason}",
         )
 
     @warn.command(name="remove")
@@ -500,14 +496,12 @@ class admin(commands.Cog, name="Admin"):
             USER_DATA.update_one({"_id": user.id}, {"$set": {"warns": warns}})
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
-            name=f"{user.display_name} now has {amount} warn(s) less {reason2}!",
-            value=f"{user.display_name} now has a total of {warns} warn(s)!",
+            name=f"{user} now has {amount} warn(s) less {reason2}!",
+            value=f"{user} now has a total of {warns} warn(s)!",
             inline=False,
         )
         await ctx.send(embed=embed)
-        await logger(
-            ctx, f"{amount} warn(s) have been removed from {user.display_name}"
-        )
+        await logger(ctx, f"{amount} warn(s) have been removed from {user}")
 
     @warn.command(name="list")
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
@@ -538,12 +532,12 @@ class admin(commands.Cog, name="Admin"):
                 warns = k["warns"]
                 embed = nextcord.Embed(
                     color=0x0DD91A,
-                    title=f"You ({ctx.author.display_name}) have {warns} warn(s)!",
+                    title=f"You ({ctx.author}) have {warns} warn(s)!",
                 )
             except KeyError:
                 embed = nextcord.Embed(
                     color=0x0DD91A,
-                    title=f"You ({ctx.author.display_name}) have 0 warns!",
+                    title=f"You ({ctx.author}) have 0 warns!",
                 )
         await ctx.send(embed=embed)
 
@@ -582,14 +576,12 @@ class admin(commands.Cog, name="Admin"):
                 embed.set_thumbnail(url=guild.icon)
             embed.add_field(name="Server name", value=guild.name, inline=True)
             embed.add_field(name="Server ID", value=guild.id, inline=True)
-            if guild.owner.name == guild.owner.display_name:
-                embed.add_field(
-                    name="Owner", value=guild.owner.display_name, inline=True
-                )
+            if guild.owner.name == guild.owner:
+                embed.add_field(name="Owner", value=guild.owner, inline=True)
             else:
                 embed.add_field(
                     name="Owner",
-                    value=f"{guild.owner.display_name} ({guild.owner.name})",
+                    value=f"{guild.owner} ({guild.owner.name})",
                 )
             embed.add_field(name="Total members", value=len(guild.members), inline=True)
             embed.add_field(name="Total humans", value=len(guild.humans), inline=True)

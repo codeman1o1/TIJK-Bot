@@ -20,10 +20,8 @@ class admin_ctx(commands.Cog):
         )
         admin_roles = (owner_role, admin_role, tijk_bot_developer_role)
         if any(role in interaction.user.roles for role in admin_roles):
-            await interaction.response.send_message(
-                f"Warned {user.display_name}", ephemeral=True
-            )
-            await warn_system(interaction, user, 1, interaction.user.display_name)
+            await interaction.response.send_message(f"Warned {user}", ephemeral=True)
+            await warn_system(interaction, user, 1, interaction.user)
         else:
             await interaction.response.send_message(
                 "You do not have permission to perform this task", ephemeral=True
