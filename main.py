@@ -139,20 +139,20 @@ async def birthday_checker():
     birthdays = []
     today = datetime.date.today()
     year = today.year
-    for k in USER_DATA.find():
+    for user in USER_DATA.find():
         try:
-            if k["birthday"]:
-                birthday2 = k["birthday"].split("-")
+            if user["birthday"]:
+                birthday2 = user["birthday"].split("-")
                 date = datetime.date(year, int(birthday2[1]), int(birthday2[0]))
                 if today == date:
-                    birthdays.append(k["_id"])
+                    birthdays.append(user["_id"])
         except KeyError:
             pass
-    for member in birthdays:
-        member = bot.get_user(member)
+    for user in birthdays:
+        user = bot.get_user(user)
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
-            name=f"Happy birthday {member.name} :tada:",
+            name=f"Happy birthday {user.name} :tada:",
             value="We hope you will have a great day!",
             inline=False,
         )
@@ -189,8 +189,8 @@ async def load_cog(ctx: Context, cog: str = None):
             except ValueError:
                 pass
             cogs2 = "> all"
-            for k in cogs:
-                cogs2 = cogs2 + "\n> " + k.strip(".py")
+            for cog in cogs:
+                cogs2 = cogs2 + "\n> " + cog.strip(".py")
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name="The available cogs are:",
@@ -243,8 +243,8 @@ async def reload_cog(ctx: Context, cog: str = None):
         cogs = os.listdir("cogs")
         cogs.remove("__pycache__")
         cogs2 = "> all"
-        for k in cogs:
-            cogs2 = cogs2 + "\n> " + k.strip(".py")
+        for cog in cogs:
+            cogs2 = cogs2 + "\n> " + cog.strip(".py")
         if cog is None:
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
@@ -299,8 +299,8 @@ async def unload_cog(ctx: Context, cog: str = None):
         cogs = os.listdir("cogs")
         cogs.remove("__pycache__")
         cogs2 = "> all"
-        for k in cogs:
-            cogs2 = cogs2 + "\n> " + k.strip(".py")
+        for cog in cogs:
+            cogs2 = cogs2 + "\n> " + cog.strip(".py")
         if cog is None:
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(

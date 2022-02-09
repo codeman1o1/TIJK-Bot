@@ -513,10 +513,10 @@ class admin(commands.Cog, name="Admin"):
     async def list_warn(self, ctx: Context):
         """Lists the warn points of everyone that received at least 1"""
         embed = nextcord.Embed(color=0x0DD91A)
-        for k in USER_DATA.find():
+        for user in USER_DATA.find():
             try:
-                user = self.bot.get_user(int(k["_id"]))
-                warns = k["warns"]
+                user = self.bot.get_user(int(user["_id"]))
+                warns = user["warns"]
                 if warns != 0:
                     embed.add_field(
                         name=f"{user} has",
@@ -532,9 +532,9 @@ class admin(commands.Cog, name="Admin"):
     @warn.command(name="get")
     async def get_warn(self, ctx: Context):
         """Sends your warn points"""
-        for k in USER_DATA.find({"_id": ctx.author.id}):
+        for user in USER_DATA.find({"_id": ctx.author.id}):
             try:
-                warns = k["warns"]
+                warns = user["warns"]
                 embed = nextcord.Embed(
                     color=0x0DD91A,
                     title=f"You ({ctx.author}) have {warns} warn(s)!",

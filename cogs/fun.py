@@ -129,10 +129,10 @@ class fun(commands.Cog, name="Fun"):
     async def messages(self, ctx: Context):
         """Shows the amount of messages everyone has sent"""
         embed = nextcord.Embed(color=0x0DD91A)
-        for k in USER_DATA.find().sort("messages", pymongo.DESCENDING):
+        for user in USER_DATA.find().sort("messages", pymongo.DESCENDING):
             try:
-                user = self.bot.get_user(int(k["_id"]))
-                message = k["messages"]
+                user = self.bot.get_user(int(user["_id"]))
+                message = user["messages"]
                 embed.add_field(
                     name=f"{user} has sent",
                     value=f"{message} messages",

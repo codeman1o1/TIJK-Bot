@@ -59,13 +59,13 @@ class api(commands.Cog, name="API"):
                 )
                 info = await request.json()
             name_history2 = ""
-            for k in info["name_history"]:
+            for item in info["name_history"]:
                 name_history2 = (
                     name_history2
                     + "\nName: "
-                    + k["name"]
+                    + item["name"]
                     + "\nChanged at: "
-                    + k["changedToAt"]
+                    + item["changedToAt"]
                     + "\n"
                 )
             embed.add_field(name="Username", value=info["username"], inline=False)
@@ -111,23 +111,23 @@ class api(commands.Cog, name="API"):
                 )
                 info = await request.json()
             type = ""
-            for k in info["type"]:
-                type = type + k + ", "
+            for data in info["type"]:
+                type = type + data + ", "
             type = type[:-2]
             species = ""
-            for k in info["species"]:
-                species = species + k + " "
+            for data in info["species"]:
+                species = species + data + " "
             abilities = ""
-            for k in info["abilities"]:
-                abilities = abilities + k + ", "
+            for data in info["abilities"]:
+                abilities = abilities + data + ", "
             abilities = abilities[:-2]
             gender = ""
-            for k in info["gender"]:
-                gender = gender + k + ", "
+            for data in info["gender"]:
+                gender = gender + data + ", "
             gender = gender[:-2]
             egg_groups = ""
-            for k in info["egg_groups"]:
-                egg_groups = egg_groups + k + ", "
+            for data in info["egg_groups"]:
+                egg_groups = egg_groups + data + ", "
             egg_groups = egg_groups[:-2]
             sprites = info["sprites"]
             stats = info["stats"]
@@ -142,8 +142,8 @@ class api(commands.Cog, name="API"):
             evolutionStage = family["evolutionStage"]
             if evolutionLine := family["evolutionLine"]:
                 evolutionLine2 = ""
-                for k in evolutionLine:
-                    evolutionLine2 = evolutionLine2 + k + " -> "
+                for data in evolutionLine:
+                    evolutionLine2 = evolutionLine2 + data + " -> "
                 evolutionLine2 = evolutionLine2[:-4]
                 familyText = f"Evolution Stage: {evolutionStage}\nEvolution Line: {evolutionLine2}"
             else:

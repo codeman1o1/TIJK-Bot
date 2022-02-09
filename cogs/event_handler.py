@@ -25,8 +25,8 @@ class event_handler(commands.Cog, name="Event Handler"):
 
         if user is not None and not user.bot and not message.flags.is_crossposted:
             if pings := list(BOT_DATA.find()[0]["pingpolls"]):
-                for k in pings:
-                    role = nextcord.utils.get(user.guild.roles, name=k)
+                for ping in pings:
+                    role = nextcord.utils.get(user.guild.roles, name=ping)
                     if role and message.content == f"<@&{role.id}>":
                         embed = nextcord.Embed(
                             color=0x0DD91A,
@@ -179,8 +179,8 @@ class event_handler(commands.Cog, name="Event Handler"):
         if isinstance(error, commands.CommandNotFound):
             message = ctx.message.content[1:].split(" ")[0]
             cmds = {
-                k: round(SequenceMatcher(None, k, message).ratio() * 100, 1)
-                for k in self.bot.all_commands.keys()
+                command: round(SequenceMatcher(None, command, message).ratio() * 100, 1)
+                for command in self.bot.all_commands.keys()
             }
             sorted_keys = list(sorted(cmds, key=cmds.get))
             sorted_keys.reverse()

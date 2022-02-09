@@ -187,8 +187,8 @@ class developer(commands.Cog, name="Developer"):
         """List the roles used in Ping Poll"""
         if pingpolls := list(BOT_DATA.find()[0]["pingpolls"]):
             pingpolls2 = ""
-            for k in pingpolls:
-                pingpolls2 = pingpolls2 + "\n> " + k
+            for pingpoll in pingpolls:
+                pingpolls2 = pingpolls2 + "\n> " + pingpoll
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name="The current PingPolls are",
@@ -219,8 +219,8 @@ class developer(commands.Cog, name="Developer"):
             inline=False,
         )
         guilds = "".join(
-            f"{self.bot.guilds.index(k)+1}. {k.name} (**{k.id}**)\n"
-            for k in self.bot.guilds
+            f"{self.bot.guilds.index(guild)+1}. {guild.name} (**{guild.id}**)\n"
+            for guild in self.bot.guilds
         )
         embed.add_field(name="Guilds:", value=guilds, inline=False)
         embed.add_field(name="Users:", value=f"{len(self.bot.users)}", inline=False)

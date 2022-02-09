@@ -42,13 +42,13 @@ class general(commands.Cog, name="General"):
             if hypixel_ping in user.roles
         ]
         if available:
-            for k in available:
-                user = await commands.converter.UserConverter().convert(ctx, k)
+            for user in available:
+                user = await commands.converter.UserConverter().convert(ctx, user)
                 query = {"_id": user.id}
                 if USER_DATA.count_documents(query) != 0:
-                    for k in USER_DATA.find(query):
-                        if "minecraft_account" in k:
-                            username = k["minecraft_account"]
+                    for user in USER_DATA.find(query):
+                        if "minecraft_account" in user:
+                            username = user["minecraft_account"]
                             uuid = MojangAPI.get_uuid(username)
                             data = requests.get(
                                 f"https://api.hypixel.net/player?key={HYPIXEL_API_KEY}&uuid={uuid}"
@@ -60,7 +60,7 @@ class general(commands.Cog, name="General"):
                         else:
                             available.remove(str(user))
                 else:
-                    available.remove(k)
+                    available.remove(user)
         if available:
             embed = nextcord.Embed(color=0x0DD91A)
             randomInt = random.randint(0, len(available) - 1)
@@ -88,9 +88,9 @@ class general(commands.Cog, name="General"):
                     title="You don't have your Minecraft account linked!",
                 )
             else:
-                for k in USER_DATA.find(query):
-                    if k["minecraft_account"]:
-                        account = k["minecraft_account"]
+                for user in USER_DATA.find(query):
+                    if user["minecraft_account"]:
+                        account = user["minecraft_account"]
                         USER_DATA.update_one(
                             {"_id": ctx.author.id},
                             {"$unset": {"minecraft_account": account}},
@@ -233,10 +233,10 @@ class general(commands.Cog, name="General"):
         embed = nextcord.Embed(color=0x0DD91A)
         today = datetime.date.today()
         year = today.year
-        for k in USER_DATA.find():
+        for user in USER_DATA.find():
             try:
-                user = self.bot.get_user(int(k["_id"]))
-                birthday = k["birthday"]
+                user = self.bot.get_user(int(user["_id"]))
+                birthday = user["birthday"]
                 birthday2 = birthday.split("-")
                 date = datetime.date(year, int(birthday2[1]), int(birthday2[0]))
                 diff = date - today
@@ -254,11 +254,11 @@ class general(commands.Cog, name="General"):
             except KeyError:
                 pass
         birthdays = sorted(birthdays, key=lambda i: i["daysLeft"])
-        for k in birthdays:
-            userName = k["userName"]
-            birthday = k["birthday"]
-            year = k["year"]
-            daysLeft = k["daysLeft"]
+        for user in birthdays:
+            userName = user["userName"]
+            birthday = user["birthday"]
+            year = user["year"]
+            daysLeft = user["daysLeft"]
             embed.add_field(
                 name=f"{userName}'s birthay is on",
                 value=f"{birthday}-{year} ({daysLeft} days left)",
