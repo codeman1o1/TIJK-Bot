@@ -55,7 +55,7 @@ async def warn_system(
     `invoker_username` (str): The user who warned someone
     `reason` (str): The reason for the warn
     """
-    reason2 = " because of " + reason if reason else ""
+    reason2 = f' because of {reason}' if reason else ""
     query = {"_id": user.id}
     if USER_DATA.count_documents(query) == 0:
         post = {"_id": user.id, "warns": amount}
