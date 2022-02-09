@@ -23,53 +23,56 @@ class event_handler(commands.Cog, name="Event Handler"):
         """Processes messages"""
         user = message.author
 
-        if user is not None and not user.bot and not message.flags.is_crossposted:
-            if pings := list(BOT_DATA.find()[0]["pingpolls"]):
-                for ping in pings:
-                    role = nextcord.utils.get(user.guild.roles, name=ping)
-                    if role and message.content == f"<@&{role.id}>":
-                        embed = nextcord.Embed(
-                            color=0x0DD91A,
-                            title=f"{user.display_name} has {role.name}ed",
+        if user is not None and not message.flags.is_crossposted:
+            if not user.bot:
+                if pings := list(BOT_DATA.find()[0]["pingpolls"]):
+                    for ping in pings:
+                        role = nextcord.utils.get(user.guild.roles, name=ping)
+                        if role and message.content == f"<@&{role.id}>":
+                            embed = nextcord.Embed(
+                                color=0x0DD91A,
+                                title=f"{user.display_name} has {role.name}ed",
+                            )
+                            embed.add_field(name="Accepted", value="None")
+                            embed.add_field(name="In a moment", value="None")
+                            embed.add_field(name="Denied", value="None")
+                            await message.channel.send(
+                                embed=embed,
+                                delete_after=900,
+                                view=ping_buttons(),
+                            )
+
+                owner_role = nextcord.utils.get(user.guild.roles, name="Owner")
+                admin_role = nextcord.utils.get(user.guild.roles, name="Admin")
+                tijk_bot_developer_role = nextcord.utils.get(
+                    user.guild.roles, name="TIJK-Bot developer"
+                )
+                anti_mute = (owner_role, admin_role, tijk_bot_developer_role)
+                if all(role not in user.roles for role in anti_mute):
+                    with open("spam_detect.txt", "r+") as file:
+                        file.writelines(f"{user.id}\n")
+                        counter = sum(
+                            lines.strip("\n") == str(user.id) for lines in file
                         )
-                        embed.add_field(name="Accepted", value="None")
-                        embed.add_field(name="In a moment", value="None")
-                        embed.add_field(name="Denied", value="None")
-                        await message.channel.send(
-                            embed=embed,
-                            delete_after=900,
-                            view=ping_buttons(),
+                    if counter > 3:
+                        await user.edit(
+                            timeout=nextcord.utils.utcnow()
+                            + datetime.timedelta(seconds=600)
+                        )
+                        embed = nextcord.Embed(color=0x0DD91A)
+                        embed.add_field(
+                            name=f"You ({user.display_name}) have been muted",
+                            value="You have been muted for 10 minutes.\nIf you think this was a mistake, please contact an owner or admin",
+                            inline=True,
+                        )
+                        await message.channel.send(embed=embed)
+                        await logger(
+                            await self.bot.get_context(message),
+                            f"{user} has been muted for 10 minutes for spam",
                         )
 
-            owner_role = nextcord.utils.get(user.guild.roles, name="Owner")
-            admin_role = nextcord.utils.get(user.guild.roles, name="Admin")
-            tijk_bot_developer_role = nextcord.utils.get(
-                user.guild.roles, name="TIJK-Bot developer"
-            )
-            anti_mute = (owner_role, admin_role, tijk_bot_developer_role)
-            if all(role not in user.roles for role in anti_mute):
-                with open("spam_detect.txt", "r+") as file:
-                    file.writelines(f"{user.id}\n")
-                    counter = sum(lines.strip("\n") == str(user.id) for lines in file)
-                if counter > 3:
-                    await user.edit(
-                        timeout=nextcord.utils.utcnow()
-                        + datetime.timedelta(seconds=600)
-                    )
-                    embed = nextcord.Embed(color=0x0DD91A)
-                    embed.add_field(
-                        name=f"You ({user.display_name}) have been muted",
-                        value="You have been muted for 10 minutes.\nIf you think this was a mistake, please contact an owner or admin",
-                        inline=True,
-                    )
-                    await message.channel.send(embed=embed)
-                    await logger(
-                        await self.bot.get_context(message),
-                        f"{user} has been muted for 10 minutes for spam",
-                    )
-
-            if not message.content.startswith(".."):
-                await self.bot.process_commands(message)
+                if not message.content.startswith(".."):
+                    await self.bot.process_commands(message)
 
             query = {"_id": user.id}
             if USER_DATA.count_documents(query) == 0:
