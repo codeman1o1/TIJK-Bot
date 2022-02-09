@@ -9,7 +9,7 @@ from nextcord.ext import commands
 from nextcord.ext.commands import Context
 
 from main import logger
-from main import BOT_DATA, START_TIME
+from main import BOT_DATA, USER_DATA, START_TIME
 
 
 class developer(commands.Cog, name="Developer"):
@@ -245,6 +245,23 @@ class developer(commands.Cog, name="Developer"):
         )
 
         await msg.edit(embed=embed)
+
+    @commands.command(name="puu")
+    @commands.is_owner()
+    async def purge_unknown_users(self, ctx: Context):
+        """Removes invalid users from the database"""
+        users_removed = 0
+        for user in USER_DATA.find():
+            if not self.bot.get_user(user["_id"]):
+                USER_DATA.delete_one({"_id": user["_id"]})
+                users_removed += 1
+        if users_removed > 0:
+            embed = nextcord.Embed(
+                color=0x0DD91A, title=f"Removed {users_removed} user(s)!"
+            )
+        else:
+            embed = nextcord.Embed(color=0xFFC800, title="No users were removed!")
+        await ctx.send(embed=embed)
 
 
 def setup(bot: commands.Bot):
