@@ -91,9 +91,7 @@ async def warn_system(
         await user.edit(
             timeout=nextcord.utils.utcnow() + datetime.timedelta(seconds=1200)
         )
-        await logger(
-            ctx, f"{user} was muted for 10 minutes by Warn System"
-        )
+        await logger(ctx, f"{user} was muted for 10 minutes by Warn System")
 
 
 async def logger(ctx: Context, message: str):
@@ -125,20 +123,11 @@ async def on_ready():
             type=nextcord.ActivityType.watching, name="over the TIJK Server"
         )
     )
-    # remove_invalid_users.start()
     birthday_checker.start()
     while True:
         await asyncio.sleep(10)
         with open("spam_detect.txt", "r+") as file:
             file.truncate(0)
-
-
-# @tasks.loop(hours=1)
-# async def remove_invalid_users():
-#     """Removes invalid users from the database"""
-#     for k in USER_DATA.find():
-#         if not bot.get_user(k["_id"]):
-#             USER_DATA.delete_one({"_id": k["_id"]})
 
 
 @tasks.loop(seconds=10)
