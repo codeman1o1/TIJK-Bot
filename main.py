@@ -45,7 +45,7 @@ async def warn_system(
     amount: int = 1,
     invoker_username: str = "Warn System",
     reason: str = None,
-) -> str:
+):
     """
     Warn users\n
     Allowed arguments:
