@@ -23,7 +23,7 @@ class event_handler(commands.Cog, name="Event Handler"):
         """Processes messages"""
         user = message.author
 
-        if not user.bot and not message.flags.crossposted:
+        if user is not None and not user.bot and not message.flags.is_crossposted:
             if pings := list(BOT_DATA.find()[0]["pingpolls"]):
                 for k in pings:
                     role = nextcord.utils.get(user.guild.roles, name=k)
@@ -71,7 +71,6 @@ class event_handler(commands.Cog, name="Event Handler"):
             if not message.content.startswith(".."):
                 await self.bot.process_commands(message)
 
-        if user is not None and not message.flags.crossposted:
             query = {"_id": user.id}
             if USER_DATA.count_documents(query) == 0:
                 post = {"_id": user.id, "messages": 1}
