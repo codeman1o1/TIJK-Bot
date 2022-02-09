@@ -40,7 +40,7 @@ class admin(commands.Cog, name="Admin"):
 
             await ctx.send(embed=embed)
         elif len(roles) > 0:
-            await ctx.channel.purge(limit=1)
+            await ctx.message.delete()
             embed = nextcord.Embed(
                 color=0x0DD91A, title="Click a button to add/remove that role!"
             )
@@ -163,7 +163,7 @@ class admin(commands.Cog, name="Admin"):
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def send_verify(self, ctx: Context):
         """Sends the verify message"""
-        await ctx.channel.purge(limit=1)
+        await ctx.message.delete()
         embed = nextcord.Embed(color=0x0DD91A, title="Click the button below to verify")
         await ctx.send(embed=embed, view=VerifyView())
 
@@ -181,7 +181,7 @@ class admin(commands.Cog, name="Admin"):
         channel = nextcord.utils.get(ctx.guild.channels, name="rules")
         messages = await channel.history(limit=50).flatten()
         messages.reverse()
-        await ctx.channel.purge(limit=1)
+        await ctx.message.delete()
         try:
             embed = nextcord.Embed(color=0x0DD91A)
             if user:
@@ -342,6 +342,7 @@ class admin(commands.Cog, name="Admin"):
     async def clear(self, ctx: Context, amount: int):
         """Clears the chat"""
         async with ctx.typing():
+            await ctx.message.delete()
             deleted_messages = await ctx.channel.purge(limit=amount)
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
@@ -366,9 +367,9 @@ class admin(commands.Cog, name="Admin"):
                 return bool(
                     message.author.bot or message.content.lower().startswith(prefixes)
                 )
-
+            await ctx.message.delete()
             deleted_messages = await ctx.channel.purge(
-                limit=100 * multiplier, check=check
+                limit=100 , check=check
             )
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(

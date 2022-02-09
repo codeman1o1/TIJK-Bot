@@ -32,7 +32,7 @@ class general(commands.Cog, name="General"):
     @commands.group(name="hypixelparty", invoke_without_command=True, aliases=["hpp"])
     async def hypixelparty(self, ctx: Context):
         """Chooses a random player that can own the party"""
-        await ctx.channel.purge(limit=1)
+        await ctx.message.delete()
         hypixel_ping = nextcord.utils.get(ctx.guild.roles, name="Hypixel Ping")
         available = [
             user
