@@ -359,7 +359,7 @@ class admin(commands.Cog, name="Admin"):
     @commands.command(name="clean")
     @commands.bot_has_permissions(manage_messages=True)
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
-    async def clean(self, ctx: Context, multiplier: int = 1):
+    async def clean(self, ctx: Context, amount: int):
         """Clears the chat from bot messages"""
         async with ctx.typing():
 
@@ -367,10 +367,9 @@ class admin(commands.Cog, name="Admin"):
                 return bool(
                     message.author.bot or message.content.lower().startswith(prefixes)
                 )
+
             await ctx.message.delete()
-            deleted_messages = await ctx.channel.purge(
-                limit=100 , check=check
-            )
+            deleted_messages = await ctx.channel.purge(limit=amount, check=check)
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name=f"{len(deleted_messages)} messages cleaned!",
