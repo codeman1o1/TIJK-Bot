@@ -223,7 +223,7 @@ class admin(commands.Cog, name="Admin"):
         reason=None,
     ):
         """Mutes a user"""
-        reason2 = f' because of {reason}' if reason else ""
+        reason2 = f" because of {reason}" if reason else ""
         time = humanfriendly.parse_timespan(time)
         await user.edit(
             timeout=nextcord.utils.utcnow() + datetime.timedelta(seconds=time)
@@ -245,7 +245,7 @@ class admin(commands.Cog, name="Admin"):
     @commands.bot_has_permissions(moderate_members=True)
     async def unmute(self, ctx: Context, user: nextcord.Member, *, reason=None):
         """Unmutes a user"""
-        reason2 = f' because of {reason}' if reason else ""
+        reason2 = f" because of {reason}" if reason else ""
         await user.edit(timeout=None)
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
@@ -392,7 +392,7 @@ class admin(commands.Cog, name="Admin"):
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def kick(self, ctx: Context, user: nextcord.Member, *, reason=None):
         """Kicks a user from the server"""
-        reason2 = f' because of {reason}' if reason else ""
+        reason2 = f" because of {reason}" if reason else ""
         await user.kick(reason=reason)
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
@@ -411,7 +411,7 @@ class admin(commands.Cog, name="Admin"):
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def ban(self, ctx: Context, user: nextcord.Member, *, reason=None):
         """Bans a user from the server"""
-        reason2 = f' because of {reason}' if reason else ""
+        reason2 = f" because of {reason}" if reason else ""
         await user.ban(reason=reason)
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
@@ -430,7 +430,7 @@ class admin(commands.Cog, name="Admin"):
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def unban(self, ctx: Context, user: str, *, reason=None):
         """Unbans a user from the server"""
-        reason2 = f' because of {reason}' if reason else ""
+        reason2 = f" because of {reason}" if reason else ""
         user = await commands.converter.UserConverter().convert(ctx, user)
         embed = nextcord.Embed(color=0x0DD91A)
         bans = tuple(ban_entry.user for ban_entry in await ctx.guild.bans())
@@ -481,7 +481,7 @@ class admin(commands.Cog, name="Admin"):
         reason=None,
     ):
         """Removes a warn from someone"""
-        reason2 = f'because of {reason}' if reason else ""
+        reason2 = f"because of {reason}" if reason else ""
         query = {"_id": user.id}
         if USER_DATA.count_documents(query) == 0:
             post = {"_id": user.id, "warns": 0}
@@ -514,17 +514,15 @@ class admin(commands.Cog, name="Admin"):
         """Lists the warn points of everyone that received at least 1"""
         embed = nextcord.Embed(color=0x0DD91A)
         for user in USER_DATA.find():
-            try:
-                user = self.bot.get_user(int(user["_id"]))
+            if "warns" in user:
                 warns = user["warns"]
+                user = self.bot.get_user(int(user["_id"]))
                 if warns != 0:
                     embed.add_field(
                         name=f"{user} has",
                         value=f"{warns} warns",
                         inline=False,
                     )
-            except KeyError:
-                pass
         if embed.fields == 0:
             embed = nextcord.Embed(color=0x0DD91A, title="Nobody has warns!")
         await ctx.send(embed=embed)

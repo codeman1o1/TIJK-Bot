@@ -131,11 +131,11 @@ class fun(commands.Cog, name="Fun"):
         embed = nextcord.Embed(color=0x0DD91A)
         for user in USER_DATA.find().sort("messages", pymongo.DESCENDING):
             try:
+                messages = user["messages"]
                 user = self.bot.get_user(int(user["_id"]))
-                message = user["messages"]
                 embed.add_field(
                     name=f"{user} has sent",
-                    value=f"{message} messages",
+                    value=f"{messages} messages",
                     inline=False,
                 )
             except KeyError:

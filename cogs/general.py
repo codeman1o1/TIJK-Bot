@@ -235,8 +235,8 @@ class general(commands.Cog, name="General"):
         year = today.year
         for user in USER_DATA.find():
             try:
-                user = self.bot.get_user(int(user["_id"]))
                 birthday = user["birthday"]
+                user = self.bot.get_user(int(user["_id"]))
                 birthday2 = birthday.split("-")
                 date = datetime.date(year, int(birthday2[1]), int(birthday2[0]))
                 diff = date - today
