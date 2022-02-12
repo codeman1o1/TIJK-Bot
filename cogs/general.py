@@ -32,7 +32,6 @@ class general(commands.Cog, name="General"):
     @commands.group(name="hypixelparty", invoke_without_command=True, aliases=["hpp"])
     async def hypixelparty(self, ctx: Context):
         """Chooses a random player that can own the party"""
-        await ctx.message.delete()
         hypixel_ping = nextcord.utils.get(ctx.guild.roles, name="Hypixel Ping")
         available = [
             user
@@ -74,6 +73,7 @@ class general(commands.Cog, name="General"):
                 color=0x0DD91A,
                 title="Nobody meets the requirements to be the party leader!",
             )
+        await ctx.message.delete()
         await ctx.send(embed=embed, delete_after=300)
         available.clear()
 
