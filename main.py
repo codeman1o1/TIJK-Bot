@@ -237,6 +237,7 @@ async def load_cog(ctx: Context, cog: str = None):
 
 
 @bot.command(name="reloadcog", aliases=["rlc", "rc"])
+@commands.is_owner()
 async def reload_cog(ctx: Context, cog: str = None):
     """Reloads a cog"""
     try:
