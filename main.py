@@ -244,10 +244,10 @@ async def reload_cog(ctx: Context, cog: str = None):
     try:
         cogs = os.listdir("cogs")
         cogs.remove("__pycache__")
-        cogs2 = "> all"
-        for cog in cogs:
-            cogs2 = cogs2 + "\n> " + cog.strip(".py")
         if cog is None:
+            cogs2 = "> all"
+            for cog in cogs:
+                cogs2 = cogs2 + "\n> " + cog.strip(".py")
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name="The available cogs are:",
@@ -300,10 +300,10 @@ async def unload_cog(ctx: Context, cog: str = None):
     try:
         cogs = os.listdir("cogs")
         cogs.remove("__pycache__")
-        cogs2 = "> all"
-        for cog in cogs:
-            cogs2 = cogs2 + "\n> " + cog.strip(".py")
         if cog is None:
+            cogs2 = "> all"
+            for cog in cogs:
+                cogs2 = cogs2 + "\n> " + cog.strip(".py")
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name="The available cogs are:",
