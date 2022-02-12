@@ -10,13 +10,13 @@ class RoleView(nextcord.ui.View):
     def __init__(self, ctx: Context = None):
         super().__init__(timeout=None)
         if ctx:
-            for role in BOT_DATA.find_one()["roles"]:
-                if get(ctx.guild.roles, id=role):
+            for buttonrole in BOT_DATA.find_one()["buttonroles"]:
+                if get(ctx.guild.roles, id=buttonrole):
                     self.add_item(
                         AddButton(
-                            label=get(ctx.guild.roles, id=role).name,
+                            label=get(ctx.guild.roles, id=buttonrole).name,
                             style=ButtonStyle.primary,
-                            custom_id=str(role),
+                            custom_id=str(buttonrole),
                         )
                     )
 

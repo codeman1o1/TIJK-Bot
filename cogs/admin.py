@@ -29,8 +29,7 @@ class admin(commands.Cog, name="Admin"):
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def buttonroles(self, ctx: Context):
         """Sends a message with buttons where people can get roles"""
-        roles = BOT_DATA.find_one()["roles"]
-        if len(roles) == 0:
+        if len(BOT_DATA.find_one()["buttonroles"]) == 0:
             embed = nextcord.Embed(
                 color=0xFFC800,
                 title="There are no button roles!\nMake sure to add them by using `.buttonroles add <role>`",
@@ -49,24 +48,26 @@ class admin(commands.Cog, name="Admin"):
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def list_buttonroles(self, ctx: Context):
         """Lists all button roles"""
-        roles = BOT_DATA.find_one()["roles"]
-        if len(roles) != 0:
-            roles2 = ""
-            for role in roles:
-                if nextcord.utils.get(ctx.guild.roles, id=role):
-                    roles2 = (
-                        roles2
+        buttonroles = BOT_DATA.find_one()["buttonroles"]
+        if len(buttonroles) != 0:
+            buttonroles2 = ""
+            for buttonrole in buttonroles:
+                if nextcord.utils.get(ctx.guild.roles, id=buttonrole):
+                    buttonroles2 = (
+                        buttonroles2
                         + "\n> "
-                        + nextcord.utils.get(ctx.guild.roles, id=role).name
+                        + nextcord.utils.get(ctx.guild.roles, id=buttonrole).name
                     )
-            if not roles2:
+            if not buttonroles2:
                 embed = nextcord.Embed(
                     color=0xFFC800, title="There are no button roles"
                 )
             else:
                 embed = nextcord.Embed(color=0x0DD91A)
                 embed.add_field(
-                    name="The current button roles are:", value=roles2, inline=False
+                    name="The current button roles are:",
+                    value=buttonroles2,
+                    inline=False,
                 )
         else:
             embed = nextcord.Embed(color=0xFFC800, title="There are no button roles")
@@ -77,12 +78,12 @@ class admin(commands.Cog, name="Admin"):
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def add_buttonroles(self, ctx: Context, role: nextcord.Role):
         """Adds a button role"""
-        roles = BOT_DATA.find_one()["roles"]
-        if role.id not in roles:
-            roles.append(role.id)
+        buttonroles = BOT_DATA.find_one()["buttonroles"]
+        if role.id not in buttonroles:
+            buttonroles.append(role.id)
             BOT_DATA.update_one(
                 {"_id": BOT_DATA.find_one()["_id"]},
-                {"$set": {"roles": roles}},
+                {"$set": {"buttonroles": buttonroles}},
                 upsert=False,
             )
             embed = nextcord.Embed(
@@ -100,12 +101,12 @@ class admin(commands.Cog, name="Admin"):
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def remove_buttonroles(self, ctx: Context, role: nextcord.Role):
         """Removes a button role"""
-        roles = BOT_DATA.find_one()["roles"]
-        if role.id in roles:
-            roles.remove(role.id)
+        buttonroles = BOT_DATA.find_one()["buttonroles"]
+        if role.id in buttonroles:
+            buttonroles.remove(role.id)
             BOT_DATA.update_one(
                 {"_id": BOT_DATA.find_one()["_id"]},
-                {"$set": {"roles": roles}},
+                {"$set": {"buttonroles": buttonroles}},
                 upsert=False,
             )
             embed = nextcord.Embed(
