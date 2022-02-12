@@ -82,7 +82,7 @@ class admin(commands.Cog, name="Admin"):
         if role.id not in buttonroles:
             buttonroles.append(role.id)
             BOT_DATA.update_one(
-                {"_id": BOT_DATA.find_one()["_id"]},
+                {},
                 {"$set": {"buttonroles": buttonroles}},
                 upsert=False,
             )
@@ -105,7 +105,7 @@ class admin(commands.Cog, name="Admin"):
         if role.id in buttonroles:
             buttonroles.remove(role.id)
             BOT_DATA.update_one(
-                {"_id": BOT_DATA.find_one()["_id"]},
+                {},
                 {"$set": {"buttonroles": buttonroles}},
                 upsert=False,
             )
@@ -666,7 +666,7 @@ class admin(commands.Cog, name="Admin"):
         if role.id not in pingpolls:
             pingpolls.append(role.id)
             BOT_DATA.update_one(
-                {"_id": BOT_DATA.find_one()["_id"]},
+                {},
                 {"$set": {"pingpolls": pingpolls}},
                 upsert=False,
             )
@@ -687,7 +687,7 @@ class admin(commands.Cog, name="Admin"):
         if role.id in pingpolls:
             pingpolls.remove(role.id)
             BOT_DATA.update_one(
-                {"_id": BOT_DATA.find_one()["_id"]},
+                {},
                 {"$set": {"pingpolls": pingpolls}},
                 upsert=False,
             )
