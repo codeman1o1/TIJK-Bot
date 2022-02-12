@@ -130,7 +130,7 @@ class fun(commands.Cog, name="Fun"):
         """Shows the amount of messages everyone has sent"""
         embed = nextcord.Embed(color=0x0DD91A)
         for user in USER_DATA.find().sort("messages", pymongo.DESCENDING):
-            try:
+            if "messages" in user:
                 messages = user["messages"]
                 user = self.bot.get_user(int(user["_id"]))
                 embed.add_field(
@@ -138,8 +138,6 @@ class fun(commands.Cog, name="Fun"):
                     value=f"{messages} messages",
                     inline=False,
                 )
-            except KeyError:
-                pass
         if embed.fields == 0:
             embed = nextcord.Embed(
                 color=0x0DD91A, title="Nobody has sent any messages!"

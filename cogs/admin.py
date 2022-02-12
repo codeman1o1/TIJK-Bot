@@ -31,8 +31,8 @@ class admin(commands.Cog, name="Admin"):
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def buttonroles(self, ctx: Context):
         """Sends a message with buttons where people can get roles"""
-        roles = BOT_DATA.find()["roles"]
-        if roles == []:
+        roles = BOT_DATA.find_one()["roles"]
+        if len(roles) == 0:
             embed = nextcord.Embed(
                 color=0xFFC800,
                 title="There are no button roles!\nMake sure to add them by using `.buttonroles add <role>`",
@@ -51,7 +51,8 @@ class admin(commands.Cog, name="Admin"):
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def list_buttonroles(self, ctx: Context):
         """Lists all button roles"""
-        if BOT_DATA.find_one()["roles"] != []:
+        roles = BOT_DATA.find_one()["roles"]
+        if roles != []:
             roles2 = ""
             for role in roles:
                 roles2 = (
@@ -70,7 +71,8 @@ class admin(commands.Cog, name="Admin"):
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def add_buttonroles(self, ctx: Context, role: nextcord.Role):
         """Adds a button role"""
-        if role.id not in BOT_DATA.find_one()["roles"]:
+        roles = BOT_DATA.find_one()["roles"]
+        if role.id not in roles:
             roles.append(role.id)
             BOT_DATA.update_one(
                 {"_id": BOT_DATA.find_one()["_id"]},
@@ -92,7 +94,8 @@ class admin(commands.Cog, name="Admin"):
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def remove_buttonroles(self, ctx: Context, role: nextcord.Role):
         """Removes a button role"""
-        if role.id in BOT_DATA.find_one()["roles"]:
+        roles = BOT_DATA.find_one()["roles"]
+        if role.id in roles:
             roles.remove(role.id)
             BOT_DATA.update_one(
                 {"_id": BOT_DATA.find_one()["_id"]},
@@ -484,12 +487,9 @@ class admin(commands.Cog, name="Admin"):
             post = {"_id": user.id, "warns": 0}
             USER_DATA.insert_one(post)
         else:
-            user2 = USER_DATA.find(query)
-            try:
-                for result in user2:
-                    warns = result["warns"]
-            except KeyError:
-                pass
+            user2 = USER_DATA.find_one(query)
+            if "warns" in user2:
+                warns = user2["warns"]
             warns2 = warns
             warns = warns - amount
             if warns < 0:
@@ -528,13 +528,13 @@ class admin(commands.Cog, name="Admin"):
     async def get_warn(self, ctx: Context):
         """Sends your warn points"""
         for user in USER_DATA.find({"_id": ctx.author.id}):
-            try:
+            if "warns" in user:
                 warns = user["warns"]
                 embed = nextcord.Embed(
                     color=0x0DD91A,
                     title=f"You ({ctx.author}) have {warns} warn(s)!",
                 )
-            except KeyError:
+            else:
                 embed = nextcord.Embed(
                     color=0x0DD91A,
                     title=f"You ({ctx.author}) have 0 warns!",

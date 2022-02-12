@@ -164,7 +164,7 @@ class general(commands.Cog, name="General"):
         today = datetime.date.today()
         year = today.year
         for user in USER_DATA.find():
-            try:
+            if "birthday" in user:
                 birthday = user["birthday"]
                 user = self.bot.get_user(int(user["_id"]))
                 birthday2 = birthday.split("-")
@@ -181,8 +181,6 @@ class general(commands.Cog, name="General"):
                     "daysLeft": diff.days,
                 }
                 birthdays.append(birthdays_dictionary.copy())
-            except KeyError:
-                pass
         birthdays = sorted(birthdays, key=lambda i: i["daysLeft"])
         for user in birthdays:
             userName = user["userName"]

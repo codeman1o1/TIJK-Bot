@@ -55,24 +55,19 @@ async def warn_system(
     `invoker_username` (str): The user who warned someone
     `reason` (str): The reason for the warn
     """
-    reason2 = f" because of {reason}" if reason else ""
     query = {"_id": user.id}
     if USER_DATA.count_documents(query) == 0:
         post = {"_id": user.id, "warns": amount}
         USER_DATA.insert_one(post)
         total_warns = amount
     else:
-        user2 = USER_DATA.find(query)
-        warns = 0
-        try:
-            for result in user2:
-                warns = result["warns"]
-        except KeyError:
-            pass
+        user2 = USER_DATA.find_one(query)
+        warns = user2["warns"] if "warns" in user2 else 0
         total_warns = warns + amount
         USER_DATA.update_one({"_id": user.id}, {"$set": {"warns": total_warns}})
     embed = nextcord.Embed(color=0x0DD91A)
     if total_warns <= 9:
+        reason2 = f" because of {reason}" if reason else ""
         embed.add_field(
             name=f"{user} has been warned by {invoker_username}{reason2}",
             value=f"{user} has {10 - total_warns} warns left!",
@@ -141,14 +136,11 @@ async def birthday_checker():
     today = datetime.date.today()
     year = today.year
     for user in USER_DATA.find():
-        try:
-            if user["birthday"]:
-                birthday2 = user["birthday"].split("-")
-                date = datetime.date(year, int(birthday2[1]), int(birthday2[0]))
-                if today == date:
-                    birthdays.append(user["_id"])
-        except KeyError:
-            pass
+        if "birthday" in user:
+            birthday2 = user["birthday"].split("-")
+            date = datetime.date(year, int(birthday2[1]), int(birthday2[0]))
+            if today == date:
+                birthdays.append(user["_id"])
     for user in birthdays:
         user = bot.get_user(user)
         embed = nextcord.Embed(color=0x0DD91A)
@@ -185,10 +177,8 @@ async def load_cog(ctx: Context, cog: str = None):
     try:
         if cog is None:
             cogs = os.listdir("cogs")
-            try:
+            if "__pycache__" in cogs:
                 cogs.remove("__pycache__")
-            except ValueError:
-                pass
             cogs2 = "> all"
             for cog in cogs:
                 cogs2 = cogs2 + "\n> " + cog.strip(".py")
@@ -202,10 +192,8 @@ async def load_cog(ctx: Context, cog: str = None):
         elif cog.lower() == "all":
             try:
                 cogs = os.listdir("cogs")
-                try:
+                if "__pycache__" in cogs:
                     cogs.remove("__pycache__")
-                except ValueError:
-                    pass
                 for cog in cogs:
                     if cog.endswith(".py"):
                         cog2 = cog.strip(".py")
@@ -258,10 +246,8 @@ async def reload_cog(ctx: Context, cog: str = None):
         elif cog.lower() == "all":
             try:
                 cogs = os.listdir("cogs")
-                try:
+                if "__pycache__" in cogs:
                     cogs.remove("__pycache__")
-                except ValueError:
-                    pass
                 for cog in cogs:
                     if cog.endswith(".py"):
                         cog2 = cog.strip(".py")
@@ -314,10 +300,8 @@ async def unload_cog(ctx: Context, cog: str = None):
         elif cog.lower() == "all":
             try:
                 cogs = os.listdir("cogs")
-                try:
+                if "__pycache__" in cogs:
                     cogs.remove("__pycache__")
-                except ValueError:
-                    pass
                 for cog in cogs:
                     cog2 = cog.strip(".py")
                     bot.unload_extension(f"cogs.{cog2}")

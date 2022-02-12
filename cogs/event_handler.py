@@ -147,13 +147,8 @@ class event_handler(commands.Cog, name="Event Handler"):
                         post = {"_id": after.id, "warns": 1}
                         USER_DATA.insert_one(post)
                     else:
-                        user = USER_DATA.find(query)
-                        warns = 0
-                        try:
-                            for result in user:
-                                warns = result["warns"]
-                        except KeyError:
-                            pass
+                        user = USER_DATA.find_one(query)
+                        warns = user["warns"] if "warns" in user else 0
                         warns = warns + 1
                         USER_DATA.update_one(
                             {"_id": after.id}, {"$set": {"warns": warns}}

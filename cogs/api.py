@@ -71,7 +71,7 @@ class api(commands.Cog, name="API"):
             embed.add_field(name="Username", value=info["username"], inline=False)
             embed.add_field(name="UUID", value=info["uuid"], inline=False)
             embed.add_field(name="Name History", value=name_history2, inline=False)
-        except KeyError:
+        except:
             embed = nextcord.Embed(color=0xFF0000)
             embed.add_field(
                 name=f"Can't request info for {username}",
@@ -147,7 +147,7 @@ class api(commands.Cog, name="API"):
                 evolutionLine2 = evolutionLine2[:-4]
                 familyText = f"Evolution Stage: {evolutionStage}\nEvolution Line: {evolutionLine2}"
             else:
-                familyText = f"This Pokémon has no evolution line"
+                familyText = "This Pokémon has no evolution line"
             # Possible options: "normal" or "animated"
             embed.set_thumbnail(url=sprites["normal"])
             embed.add_field(name="Name", value=info["name"].capitalize(), inline=True)
@@ -177,7 +177,7 @@ class api(commands.Cog, name="API"):
             )
 
             embed.add_field(name="Generation", value=info["generation"], inline=True)
-        except KeyError:
+        except:
             embed = nextcord.Embed(color=0xFF0000)
             embed.add_field(
                 name=f"Can't request info for the Pokémon {name}",
