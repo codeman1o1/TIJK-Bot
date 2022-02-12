@@ -652,6 +652,75 @@ class admin(commands.Cog, name="Admin"):
             )
         await ctx.send(embed=embed)
 
+    @commands.group(name="pingpoll", invoke_without_command=True, aliases=["pp"])
+    @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    async def pingpoll(self, ctx: Context):
+        """Modify the roles used in Ping Poll"""
+        embed = nextcord.Embed(
+            color=0xFFC800, title="Please select an argument from `.help pingpoll`"
+        )
+        await ctx.send(embed=embed)
+
+    @pingpoll.command(name="add")
+    @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    async def add_pingpoll(self, ctx: Context, role: nextcord.Role):
+        """Add roles used in Ping Poll"""
+        pingpolls = list(BOT_DATA.find_one()["pingpolls"])
+        if role.name not in pingpolls:
+            pingpolls.append(role.name)
+            BOT_DATA.update_one(
+                {"_id": BOT_DATA.find_one()["_id"]},
+                {"$set": {"pingpolls": pingpolls}},
+                upsert=False,
+            )
+            embed = nextcord.Embed(
+                color=0x0DD91A, title=f"Role `{role.name}` added to PingPolls!"
+            )
+        else:
+            embed = nextcord.Embed(
+                color=0xFFC800, title=f"Role `{role.name}` is already in PingPolls!"
+            )
+        await ctx.send(embed=embed)
+
+    @pingpoll.command(name="remove")
+    @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    async def remove_pingpoll(self, ctx: Context, role: nextcord.Role):
+        """Remove roles used in Ping Poll"""
+        pingpolls = list(BOT_DATA.find_one()["pingpolls"])
+        if role.name in pingpolls:
+            pingpolls.remove(role.name)
+            embed = nextcord.Embed(
+                color=0x0DD91A, title=f"Role `{role.name}` is removed from PingPolls"
+            )
+            BOT_DATA.update_one(
+                {"_id": BOT_DATA.find_one()["_id"]},
+                {"$set": {"pingpolls": pingpolls}},
+                upsert=False,
+            )
+        else:
+            embed = nextcord.Embed(
+                color=0xFFC800, title=f"The `{role.name}` is not in PingPolls"
+            )
+        await ctx.send(embed=embed)
+
+    @pingpoll.command(name="list")
+    @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    async def list_pingpoll(self, ctx: Context):
+        """List the roles used in Ping Poll"""
+        if pingpolls := list(BOT_DATA.find_one()["pingpolls"]):
+            pingpolls2 = ""
+            for pingpoll in pingpolls:
+                pingpolls2 = pingpolls2 + "\n> " + pingpoll
+            embed = nextcord.Embed(color=0x0DD91A)
+            embed.add_field(
+                name="The current PingPolls are",
+                value=pingpolls2,
+                inline=False,
+            )
+        else:
+            embed = nextcord.Embed(color=0x0DD91A, title="There are no PingPolls!")
+        await ctx.send(embed=embed)
+
 
 def setup(bot: commands.Bot):
     bot.add_cog(admin(bot))
