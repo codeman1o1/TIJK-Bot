@@ -144,11 +144,11 @@ class developer(commands.Cog, name="Developer"):
     @commands.is_owner()
     async def add_pingpoll(self, ctx: Context, role: nextcord.Role):
         """Add roles used in Ping Poll"""
-        pingpolls = list(BOT_DATA.find()[0]["pingpolls"])
+        pingpolls = list(BOT_DATA.find_one()["pingpolls"])
         if role.name not in pingpolls:
             pingpolls.append(role.name)
             BOT_DATA.update_one(
-                {"_id": BOT_DATA.find()[0]["_id"]},
+                {"_id": BOT_DATA.find_one()["_id"]},
                 {"$set": {"pingpolls": pingpolls}},
                 upsert=False,
             )
@@ -165,14 +165,14 @@ class developer(commands.Cog, name="Developer"):
     @commands.is_owner()
     async def remove_pingpoll(self, ctx: Context, role: nextcord.Role):
         """Remove roles used in Ping Poll"""
-        pingpolls = list(BOT_DATA.find()[0]["pingpolls"])
+        pingpolls = list(BOT_DATA.find_one()["pingpolls"])
         if role.name in pingpolls:
             pingpolls.remove(role.name)
             embed = nextcord.Embed(
                 color=0x0DD91A, title=f"Role `{role.name}` is removed from PingPolls"
             )
             BOT_DATA.update_one(
-                {"_id": BOT_DATA.find()[0]["_id"]},
+                {"_id": BOT_DATA.find_one()["_id"]},
                 {"$set": {"pingpolls": pingpolls}},
                 upsert=False,
             )
@@ -185,7 +185,7 @@ class developer(commands.Cog, name="Developer"):
     @pingpoll.command(name="list")
     async def list_pingpoll(self, ctx: Context):
         """List the roles used in Ping Poll"""
-        if pingpolls := list(BOT_DATA.find()[0]["pingpolls"]):
+        if pingpolls := list(BOT_DATA.find_one()["pingpolls"]):
             pingpolls2 = ""
             for pingpoll in pingpolls:
                 pingpolls2 = pingpolls2 + "\n> " + pingpoll

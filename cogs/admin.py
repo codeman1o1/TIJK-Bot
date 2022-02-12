@@ -31,7 +31,7 @@ class admin(commands.Cog, name="Admin"):
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def buttonroles(self, ctx: Context):
         """Sends a message with buttons where people can get roles"""
-        roles = BOT_DATA.find()[0]["roles"]
+        roles = BOT_DATA.find()["roles"]
         if roles == []:
             embed = nextcord.Embed(
                 color=0xFFC800,
@@ -51,8 +51,7 @@ class admin(commands.Cog, name="Admin"):
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def list_buttonroles(self, ctx: Context):
         """Lists all button roles"""
-        roles = BOT_DATA.find()[0]["roles"]
-        if roles != []:
+        if BOT_DATA.find_one()["roles"] != []:
             roles2 = ""
             for role in roles:
                 roles2 = (
@@ -71,11 +70,10 @@ class admin(commands.Cog, name="Admin"):
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def add_buttonroles(self, ctx: Context, role: nextcord.Role):
         """Adds a button role"""
-        roles = BOT_DATA.find()[0]["roles"]
-        if role.id not in roles:
+        if role.id not in BOT_DATA.find_one()["roles"]:
             roles.append(role.id)
             BOT_DATA.update_one(
-                {"_id": BOT_DATA.find()[0]["_id"]},
+                {"_id": BOT_DATA.find_one()["_id"]},
                 {"$set": {"roles": roles}},
                 upsert=False,
             )
@@ -94,11 +92,10 @@ class admin(commands.Cog, name="Admin"):
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def remove_buttonroles(self, ctx: Context, role: nextcord.Role):
         """Removes a button role"""
-        roles = BOT_DATA.find()[0]["roles"]
-        if role.id in roles:
+        if role.id in BOT_DATA.find_one()["roles"]:
             roles.remove(role.id)
             BOT_DATA.update_one(
-                {"_id": BOT_DATA.find()[0]["_id"]},
+                {"_id": BOT_DATA.find_one()["_id"]},
                 {"$set": {"roles": roles}},
                 upsert=False,
             )
