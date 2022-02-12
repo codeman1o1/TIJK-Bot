@@ -78,82 +78,97 @@ class general(commands.Cog, name="General"):
         available.clear()
 
     @hypixelparty.command(name="link")
-    async def link_hypixelparty(self, ctx: Context, username: str):
+    async def link_hypixelparty(self, ctx: Context, username: str = None):
         """Link your Minecraft account"""
-        if username.lower() == "remove":
-            query = {"_id": ctx.author.id}
-            if USER_DATA.count_documents(query) == 0:
-                embed = nextcord.Embed(
-                    color=0xFFC800,
-                    title="You don't have your Minecraft account linked!",
-                )
-            else:
-                for user in USER_DATA.find(query):
-                    if user["minecraft_account"]:
-                        account = user["minecraft_account"]
-                        USER_DATA.update_one(
-                            {"_id": ctx.author.id},
-                            {"$unset": {"minecraft_account": account}},
-                        )
-                    else:
-                        embed = nextcord.Embed(
-                            color=0xFFC800,
-                            title="You don't have your Minecraft account linked!",
-                        )
-            embed = nextcord.Embed(
-                color=0x0DD91A, title="Successfully removed your Minecraft account"
-            )
-        else:
-            uuid = MojangAPI.get_uuid(username)
-            data = requests.get(
-                f"https://api.hypixel.net/player?key={HYPIXEL_API_KEY}&uuid={uuid}"
-            ).json()
-            if data["success"] == True:
-                try:
-                    if "DISCORD" in data["player"]["socialMedia"]["links"].keys():
-                        if (
-                            data["player"]["socialMedia"]["links"]["DISCORD"]
-                            == f"{ctx.author}"
-                        ):
-                            query = {"_id": ctx.author.id}
-                            if USER_DATA.count_documents(query) == 0:
-                                post = {
-                                    "_id": ctx.author.id,
-                                    "minecraft_account": username,
-                                }
-                                USER_DATA.insert_one(post)
-                            else:
-                                USER_DATA.update_one(
-                                    {"_id": ctx.author.id},
-                                    {"$set": {"minecraft_account": username}},
-                                )
-                            embed = nextcord.Embed(
-                                color=0x0DD91A,
-                                title=f"Linked your account to **{username}**",
+        if username:
+            if username.lower() == "remove":
+                query = {"_id": ctx.author.id}
+                if USER_DATA.count_documents(query) == 0:
+                    embed = nextcord.Embed(
+                        color=0xFFC800,
+                        title="You don't have your Minecraft account linked!",
+                    )
+                else:
+                    for user in USER_DATA.find(query):
+                        if user["minecraft_account"]:
+                            account = user["minecraft_account"]
+                            USER_DATA.update_one(
+                                {"_id": ctx.author.id},
+                                {"$unset": {"minecraft_account": account}},
                             )
                         else:
                             embed = nextcord.Embed(
                                 color=0xFFC800,
-                                title="The user's Discord is not linked to this account!",
+                                title="You don't have your Minecraft account linked!",
                             )
-                    else:
+                embed = nextcord.Embed(
+                    color=0x0DD91A, title="Successfully removed your Minecraft account"
+                )
+            else:
+                uuid = MojangAPI.get_uuid(username)
+                data = requests.get(
+                    f"https://api.hypixel.net/player?key={HYPIXEL_API_KEY}&uuid={uuid}"
+                ).json()
+                if data["success"] == True:
+                    try:
+                        if "DISCORD" in data["player"]["socialMedia"]["links"].keys():
+                            if (
+                                data["player"]["socialMedia"]["links"]["DISCORD"]
+                                == f"{ctx.author}"
+                            ):
+                                query = {"_id": ctx.author.id}
+                                if USER_DATA.count_documents(query) == 0:
+                                    post = {
+                                        "_id": ctx.author.id,
+                                        "minecraft_account": username,
+                                    }
+                                    USER_DATA.insert_one(post)
+                                else:
+                                    USER_DATA.update_one(
+                                        {"_id": ctx.author.id},
+                                        {"$set": {"minecraft_account": username}},
+                                    )
+                                embed = nextcord.Embed(
+                                    color=0x0DD91A,
+                                    title=f"Linked your account to **{username}**",
+                                )
+                            else:
+                                embed = nextcord.Embed(
+                                    color=0xFFC800,
+                                    title="The user's Discord is not linked to this account!",
+                                )
+                        else:
+                            embed = nextcord.Embed(
+                                color=0xFFC800,
+                                title="Make sure to link your Discord account in Hypixel by using `/discord` in-game!",
+                            )
+                    except KeyError:
                         embed = nextcord.Embed(
                             color=0xFFC800,
-                            title="Make sure to link your Discord account in Hypixel by using `/discord` in-game!",
+                            title="This account has no Social Media linked!",
                         )
-                except KeyError:
-                    embed = nextcord.Embed(
-                        color=0xFFC800,
-                        title="This account has no Social Media linked!",
+                else:
+                    cause = data["cause"]
+                    embed = nextcord.Embed(color=0xFF0000)
+                    embed.add_field(
+                        name="An error occured!",
+                        value=f"Error provided by the offical Hypixel API:\n{cause}",
+                        inline=False,
                     )
-            else:
-                cause = data["cause"]
-                embed = nextcord.Embed(color=0xFF0000)
-                embed.add_field(
-                    name="An error occured!",
-                    value=f"Error provided by the offical Hypixel API:\n{cause}",
-                    inline=False,
-                )
+
+        elif "minecraft_account" in USER_DATA.find_one({"_id": ctx.author.id}):
+            minecraft_account: str = USER_DATA.find_one({"_id": ctx.author.id})[
+                "minecraft_account"
+            ]
+            embed = nextcord.Embed(
+                color=0x0DD91A,
+                title=f"Your Discord account is linked to **{minecraft_account}**",
+            )
+        else:
+            embed = nextcord.Embed(
+                color=0xFFC800,
+                title="You don't have your Minecraft account linked!",
+            )
         await ctx.send(embed=embed)
 
     @commands.group(name="birthday", invoke_without_command=True, aliases=["bday"])
