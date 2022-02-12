@@ -656,18 +656,15 @@ class admin(commands.Cog, name="Admin"):
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def pingpoll(self, ctx: Context):
         """Modify the roles used in Ping Poll"""
-        embed = nextcord.Embed(
-            color=0xFFC800, title="Please select an argument from `.help pingpoll`"
-        )
-        await ctx.send(embed=embed)
+        await ctx.send_help("pingpoll")
 
     @pingpoll.command(name="add")
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def add_pingpoll(self, ctx: Context, role: nextcord.Role):
         """Add roles used in Ping Poll"""
         pingpolls = list(BOT_DATA.find_one()["pingpolls"])
-        if role.name not in pingpolls:
-            pingpolls.append(role.name)
+        if role.id not in pingpolls:
+            pingpolls.append(role.id)
             BOT_DATA.update_one(
                 {"_id": BOT_DATA.find_one()["_id"]},
                 {"$set": {"pingpolls": pingpolls}},
@@ -687,15 +684,15 @@ class admin(commands.Cog, name="Admin"):
     async def remove_pingpoll(self, ctx: Context, role: nextcord.Role):
         """Remove roles used in Ping Poll"""
         pingpolls = list(BOT_DATA.find_one()["pingpolls"])
-        if role.name in pingpolls:
-            pingpolls.remove(role.name)
-            embed = nextcord.Embed(
-                color=0x0DD91A, title=f"Role `{role.name}` is removed from PingPolls"
-            )
+        if role.id in pingpolls:
+            pingpolls.remove(role.id)
             BOT_DATA.update_one(
                 {"_id": BOT_DATA.find_one()["_id"]},
                 {"$set": {"pingpolls": pingpolls}},
                 upsert=False,
+            )
+            embed = nextcord.Embed(
+                color=0x0DD91A, title=f"Role `{role.name}` is removed from PingPolls"
             )
         else:
             embed = nextcord.Embed(
@@ -710,15 +707,23 @@ class admin(commands.Cog, name="Admin"):
         if pingpolls := list(BOT_DATA.find_one()["pingpolls"]):
             pingpolls2 = ""
             for pingpoll in pingpolls:
-                pingpolls2 = pingpolls2 + "\n> " + pingpoll
-            embed = nextcord.Embed(color=0x0DD91A)
-            embed.add_field(
-                name="The current PingPolls are",
-                value=pingpolls2,
-                inline=False,
-            )
+                if nextcord.utils.get(ctx.guild.roles, id=pingpoll):
+                    pingpolls2 = (
+                        pingpolls2
+                        + "\n> "
+                        + nextcord.utils.get(ctx.guild.roles, id=pingpoll).name
+                    )
+            if not pingpolls2:
+                embed = nextcord.Embed(color=0xFFC800, title="There are no PingPolls!")
+            else:
+                embed = nextcord.Embed(color=0x0DD91A)
+                embed.add_field(
+                    name="The current PingPolls are",
+                    value=pingpolls2,
+                    inline=False,
+                )
         else:
-            embed = nextcord.Embed(color=0x0DD91A, title="There are no PingPolls!")
+            embed = nextcord.Embed(color=0xFFC800, title="There are no PingPolls!")
         await ctx.send(embed=embed)
 
 

@@ -25,9 +25,10 @@ class event_handler(commands.Cog, name="Event Handler"):
 
         if user is not None and not message.flags.is_crossposted:
             if not user.bot:
-                if pings := list(BOT_DATA.find_one()["pingpolls"]):
-                    for ping in pings:
-                        role = nextcord.utils.get(user.guild.roles, name=ping)
+                if "pingpolls" in BOT_DATA.find_one():
+                    pingpolls = BOT_DATA.find_one()["pingpolls"]
+                    for pingpoll in pingpolls:
+                        role = nextcord.utils.get(user.guild.roles, id=pingpoll)
                         if role and message.content == f"<@&{role.id}>":
                             embed = nextcord.Embed(
                                 color=0x0DD91A,
