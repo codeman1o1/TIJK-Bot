@@ -94,11 +94,12 @@ async def warn_system(
         await logger(ctx, f"{user} was muted for 10 minutes by Warn System")
 
 
-async def logger(ctx: Context, message: str):
+async def logger(ctx: Context, message: str, channel: str = None):
     """Log a message in the #logs channel"""
+    channel = channel or ctx.message.channel.name
     logs_channel = nextcord.utils.get(ctx.guild.channels, name="logs")
     embed = nextcord.Embed(color=0x0DD91A, title=message)
-    embed.set_footer(text=f'Used from the "{ctx.message.channel.name}" channel')
+    embed.set_footer(text=f'Used from the "{channel}" channel')
     await logs_channel.send(embed=embed)
 
 

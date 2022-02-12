@@ -110,6 +110,7 @@ class developer_slash(
             await logger(
                 interaction,
                 f"TIJK Bot was restarted by {interaction.user}",
+                interaction.channel.name,
             )
             await self.bot.change_presence(
                 activity=nextcord.Activity(
