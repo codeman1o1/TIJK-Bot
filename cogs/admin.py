@@ -14,9 +14,7 @@ from main import warn_system, logger
 
 from main import BOT_DATA, USER_DATA
 
-root = os.path.abspath(os.getcwd())
-prefixes = open(os.path.join(root, "bot_prefixes.json"))
-prefixes = tuple(json.load(prefixes)["prefixes"])
+BOT_PREFIXES = tuple(BOT_DATA.find_one()["botprefixes"])
 
 
 class admin(commands.Cog, name="Admin"):
@@ -378,7 +376,8 @@ class admin(commands.Cog, name="Admin"):
 
             def check(message: nextcord.Message):
                 return bool(
-                    message.author.bot or message.content.lower().startswith(prefixes)
+                    message.author.bot
+                    or message.content.lower().startswith(BOT_PREFIXES)
                 )
 
             await ctx.message.delete()
