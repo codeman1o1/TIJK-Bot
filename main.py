@@ -174,54 +174,45 @@ async def on_command_error(ctx: Context, error: commands.CommandError):
 @commands.is_owner()
 async def load_cog(ctx: Context, cog: str = None):
     """Loads a cog"""
-    try:
-        if cog is None:
+    if cog is None:
+        cogs = os.listdir("cogs")
+        if "__pycache__" in cogs:
+            cogs.remove("__pycache__")
+        cogs2 = "> all"
+        for cog in cogs:
+            cogs2 = cogs2 + "\n> " + cog.strip(".py")
+        embed = nextcord.Embed(color=0x0DD91A)
+        embed.add_field(
+            name="The available cogs are:",
+            value=cogs2,
+            inline=False,
+        )
+
+    elif cog.lower() == "all":
+        try:
             cogs = os.listdir("cogs")
             if "__pycache__" in cogs:
                 cogs.remove("__pycache__")
-            cogs2 = "> all"
             for cog in cogs:
-                cogs2 = cogs2 + "\n> " + cog.strip(".py")
-            embed = nextcord.Embed(color=0x0DD91A)
-            embed.add_field(
-                name="The available cogs are:",
-                value=cogs2,
-                inline=False,
-            )
-
-        elif cog.lower() == "all":
-            try:
-                cogs = os.listdir("cogs")
-                if "__pycache__" in cogs:
-                    cogs.remove("__pycache__")
-                for cog in cogs:
-                    if cog.endswith(".py"):
-                        cog2 = cog.strip(".py")
-                        bot.load_extension(f"cogs.{cog2}")
-                embed = nextcord.Embed(
-                    color=0x0DD91A, title="All cogs have been loaded"
-                )
-                bl.debug("All cogs have been loaded", __file__)
-            except Exception as e:
-                print(e)
-                embed = nextcord.Embed(
-                    color=0xFF0000, title="Not all cogs could be loaded"
-                )
-                bl.warning("Not all cogs could be loaded", __file__)
-        else:
-            if cog.lower() == "dev":
-                cog = "developer"
-            if cog.lower() == "eh":
-                cog = "event_handler"
-            bot.load_extension(f"cogs.{cog.lower()}")
-            embed = nextcord.Embed(
-                color=0x0DD91A, title=f"Succesfully loaded {cog.lower()}.py"
-            )
-            bl.debug(f"Succesfully loaded {cog.lower()}.py", __file__)
-    except nextcord.ext.commands.errors.ExtensionNotFound:
-        embed = nextcord.Embed(color=0xFF0000, title=f'The "{cog}" cog was not found')
-    except nextcord.ext.commands.errors.NoEntryPointError:
-        embed = nextcord.Embed(color=0xFF0000, title=f"{cog} is not a valid cog")
+                if cog.endswith(".py"):
+                    cog2 = cog.strip(".py")
+                    bot.load_extension(f"cogs.{cog2}")
+            embed = nextcord.Embed(color=0x0DD91A, title="All cogs have been loaded")
+            bl.debug("All cogs have been loaded", __file__)
+        except Exception as e:
+            print(e)
+            embed = nextcord.Embed(color=0xFF0000, title="Not all cogs could be loaded")
+            bl.warning("Not all cogs could be loaded", __file__)
+    else:
+        if cog.lower() == "dev":
+            cog = "developer"
+        if cog.lower() == "eh":
+            cog = "event_handler"
+        bot.load_extension(f"cogs.{cog.lower()}")
+        embed = nextcord.Embed(
+            color=0x0DD91A, title=f"Succesfully loaded {cog.lower()}.py"
+        )
+        bl.debug(f"Succesfully loaded {cog.lower()}.py", __file__)
     await ctx.send(embed=embed)
 
 
@@ -229,53 +220,46 @@ async def load_cog(ctx: Context, cog: str = None):
 @commands.is_owner()
 async def reload_cog(ctx: Context, cog: str = None):
     """Reloads a cog"""
-    try:
-        cogs = os.listdir("cogs")
-        cogs.remove("__pycache__")
-        if cog is None:
-            cogs2 = "> all"
-            for cog in cogs:
-                cogs2 = cogs2 + "\n> " + cog.strip(".py")
-            embed = nextcord.Embed(color=0x0DD91A)
-            embed.add_field(
-                name="The available cogs are:",
-                value=cogs2,
-                inline=False,
-            )
+    cogs = os.listdir("cogs")
+    cogs.remove("__pycache__")
+    if cog is None:
+        cogs2 = "> all"
+        for cog in cogs:
+            cogs2 = cogs2 + "\n> " + cog.strip(".py")
+        embed = nextcord.Embed(color=0x0DD91A)
+        embed.add_field(
+            name="The available cogs are:",
+            value=cogs2,
+            inline=False,
+        )
 
-        elif cog.lower() == "all":
-            try:
-                cogs = os.listdir("cogs")
-                if "__pycache__" in cogs:
-                    cogs.remove("__pycache__")
-                for cog in cogs:
-                    if cog.endswith(".py"):
-                        cog2 = cog.strip(".py")
-                        bot.reload_extension(f"cogs.{cog2}")
-                embed = nextcord.Embed(
-                    color=0x0DD91A, title="All cogs have been reloaded"
-                )
-                bl.debug("All cogs have been reloaded", __file__)
-            except Exception as e:
-                print(e)
-                embed = nextcord.Embed(
-                    color=0xFF0000, title="Not all cogs could be reloaded"
-                )
-                bl.warning("Not all cogs could be reloaded", __file__)
-        else:
-            if cog.lower() == "dev":
-                cog = "developer"
-            if cog.lower() == "eh":
-                cog = "event_handler"
-            bot.reload_extension(f"cogs.{cog.lower()}")
+    elif cog.lower() == "all":
+        try:
+            cogs = os.listdir("cogs")
+            if "__pycache__" in cogs:
+                cogs.remove("__pycache__")
+            for cog in cogs:
+                if cog.endswith(".py"):
+                    cog2 = cog.strip(".py")
+                    bot.reload_extension(f"cogs.{cog2}")
+            embed = nextcord.Embed(color=0x0DD91A, title="All cogs have been reloaded")
+            bl.debug("All cogs have been reloaded", __file__)
+        except Exception as e:
+            print(e)
             embed = nextcord.Embed(
-                color=0x0DD91A, title=f"Succesfully reloaded {cog.lower()}.py"
+                color=0xFF0000, title="Not all cogs could be reloaded"
             )
-            bl.debug(f"Succesfully reloaded {cog.lower()}.py", __file__)
-    except nextcord.ext.commands.errors.ExtensionNotLoaded:
-        embed = nextcord.Embed(color=0xFF0000, title=f'The "{cog}" cog is not loaded')
-    except nextcord.ext.commands.errors.NoEntryPointError:
-        embed = nextcord.Embed(color=0xFF0000, title=f"{cog} is not a valid cog")
+            bl.warning("Not all cogs could be reloaded", __file__)
+    else:
+        if cog.lower() == "dev":
+            cog = "developer"
+        if cog.lower() == "eh":
+            cog = "event_handler"
+        bot.reload_extension(f"cogs.{cog.lower()}")
+        embed = nextcord.Embed(
+            color=0x0DD91A, title=f"Succesfully reloaded {cog.lower()}.py"
+        )
+        bl.debug(f"Succesfully reloaded {cog.lower()}.py", __file__)
     await ctx.send(embed=embed)
 
 
@@ -283,50 +267,45 @@ async def reload_cog(ctx: Context, cog: str = None):
 @commands.is_owner()
 async def unload_cog(ctx: Context, cog: str = None):
     """Unloads a cog"""
-    try:
-        cogs = os.listdir("cogs")
-        cogs.remove("__pycache__")
-        if cog is None:
-            cogs2 = "> all"
-            for cog in cogs:
-                cogs2 = cogs2 + "\n> " + cog.strip(".py")
-            embed = nextcord.Embed(color=0x0DD91A)
-            embed.add_field(
-                name="The available cogs are:",
-                value=cogs2,
-                inline=False,
-            )
+    cogs = os.listdir("cogs")
+    cogs.remove("__pycache__")
+    if cog is None:
+        cogs2 = "> all"
+        for cog in cogs:
+            cogs2 = cogs2 + "\n> " + cog.strip(".py")
+        embed = nextcord.Embed(color=0x0DD91A)
+        embed.add_field(
+            name="The available cogs are:",
+            value=cogs2,
+            inline=False,
+        )
 
-        elif cog.lower() == "all":
-            try:
-                cogs = os.listdir("cogs")
-                if "__pycache__" in cogs:
-                    cogs.remove("__pycache__")
-                for cog in cogs:
-                    cog2 = cog.strip(".py")
-                    bot.unload_extension(f"cogs.{cog2}")
-                embed = nextcord.Embed(
-                    color=0x0DD91A, title="All cogs have been unloaded"
-                )
-                bl.debug("All cogs have been unloaded", __file__)
-            except Exception as e:
-                print(e)
-                embed = nextcord.Embed(
-                    color=0xFF0000, title="Not all cogs could be unloaded"
-                )
-                bl.warning("Not all cogs could be unloaded", __file__)
-        else:
-            if cog.lower() == "dev":
-                cog = "developer"
-            if cog.lower() == "eh":
-                cog = "event_handler"
-            bot.unload_extension(f"cogs.{cog.lower()}")
+    elif cog.lower() == "all":
+        try:
+            cogs = os.listdir("cogs")
+            if "__pycache__" in cogs:
+                cogs.remove("__pycache__")
+            for cog in cogs:
+                cog2 = cog.strip(".py")
+                bot.unload_extension(f"cogs.{cog2}")
+            embed = nextcord.Embed(color=0x0DD91A, title="All cogs have been unloaded")
+            bl.debug("All cogs have been unloaded", __file__)
+        except Exception as e:
+            print(e)
             embed = nextcord.Embed(
-                color=0x0DD91A, title=f"Succesfully unloaded {cog.lower()}.py!"
+                color=0xFF0000, title="Not all cogs could be unloaded"
             )
-            bl.debug(f"Succesfully unloaded {cog.lower()}.py!", __file__)
-    except nextcord.ext.commands.errors.ExtensionNotLoaded:
-        embed = nextcord.Embed(color=0xFF0000, title=f'The "{cog}" cog is not loaded')
+            bl.warning("Not all cogs could be unloaded", __file__)
+    else:
+        if cog.lower() == "dev":
+            cog = "developer"
+        if cog.lower() == "eh":
+            cog = "event_handler"
+        bot.unload_extension(f"cogs.{cog.lower()}")
+        embed = nextcord.Embed(
+            color=0x0DD91A, title=f"Succesfully unloaded {cog.lower()}.py!"
+        )
+        bl.debug(f"Succesfully unloaded {cog.lower()}.py!", __file__)
     await ctx.send(embed=embed)
 
 
