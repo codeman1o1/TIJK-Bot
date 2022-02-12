@@ -52,16 +52,24 @@ class admin(commands.Cog, name="Admin"):
     async def list_buttonroles(self, ctx: Context):
         """Lists all button roles"""
         roles = BOT_DATA.find_one()["roles"]
-        if roles != []:
+        if len(roles) != 0:
             roles2 = ""
             for role in roles:
-                roles2 = (
-                    roles2 + "\n> " + nextcord.utils.get(ctx.guild.roles, id=role).name
+                if nextcord.utils.get(ctx.guild.roles, id=role):
+                    roles2 = (
+                        roles2
+                        + "\n> "
+                        + nextcord.utils.get(ctx.guild.roles, id=role).name
+                    )
+            if not roles2:
+                embed = nextcord.Embed(
+                    color=0xFFC800, title="There are no button roles"
                 )
-            embed = nextcord.Embed(color=0x0DD91A)
-            embed.add_field(
-                name="The current button roles are:", value=roles2, inline=False
-            )
+            else:
+                embed = nextcord.Embed(color=0x0DD91A)
+                embed.add_field(
+                    name="The current button roles are:", value=roles2, inline=False
+                )
         else:
             embed = nextcord.Embed(color=0xFFC800, title="There are no button roles")
 
