@@ -535,18 +535,18 @@ class admin(commands.Cog, name="Admin"):
     @warn.command(name="get")
     async def get_warn(self, ctx: Context):
         """Sends your warn points"""
-        for user in USER_DATA.find({"_id": ctx.author.id}):
-            if "warns" in user:
-                warns = user["warns"]
-                embed = nextcord.Embed(
-                    color=0x0DD91A,
-                    title=f"You ({ctx.author}) have {warns} warn(s)!",
-                )
-            else:
-                embed = nextcord.Embed(
-                    color=0x0DD91A,
-                    title=f"You ({ctx.author}) have 0 warns!",
-                )
+        user = USER_DATA.find_one({"_id": ctx.author.id})
+        if "warns" in user:
+            warns = user["warns"]
+            embed = nextcord.Embed(
+                color=0x0DD91A,
+                title=f"You ({ctx.author}) have {warns} warn(s)!",
+            )
+        else:
+            embed = nextcord.Embed(
+                color=0x0DD91A,
+                title=f"You ({ctx.author}) have 0 warns!",
+            )
         await ctx.send(embed=embed)
 
     @commands.command(name="role-info", aliases=["ri"])

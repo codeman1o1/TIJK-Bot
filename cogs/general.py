@@ -45,19 +45,19 @@ class general(commands.Cog, name="General"):
                 user = await commands.converter.UserConverter().convert(ctx, user)
                 query = {"_id": user.id}
                 if USER_DATA.count_documents(query) != 0:
-                    for user in USER_DATA.find(query):
-                        if "minecraft_account" in user:
-                            username = user["minecraft_account"]
-                            uuid = MojangAPI.get_uuid(username)
-                            data = requests.get(
-                                f"https://api.hypixel.net/player?key={HYPIXEL_API_KEY}&uuid={uuid}"
-                            ).json()
-                            logouttime = data["player"]["lastLogout"]
-                            logintime = data["player"]["lastLogin"]
-                            if not logouttime < logintime or data["success"] == False:
-                                available.remove(str(user))
-                        else:
+                    user2 = USER_DATA.find_one(query)
+                    if "minecraft_account" in user2:
+                        username = user["minecraft_account"]
+                        uuid = MojangAPI.get_uuid(username)
+                        data = requests.get(
+                            f"https://api.hypixel.net/player?key={HYPIXEL_API_KEY}&uuid={uuid}"
+                        ).json()
+                        logouttime = data["player"]["lastLogout"]
+                        logintime = data["player"]["lastLogin"]
+                        if not logouttime < logintime or data["success"] == False:
                             available.remove(str(user))
+                    else:
+                        available.remove(str(user))
                 else:
                     available.remove(user)
         if available:
@@ -89,18 +89,18 @@ class general(commands.Cog, name="General"):
                         title="You don't have your Minecraft account linked!",
                     )
                 else:
-                    for user in USER_DATA.find(query):
-                        if user["minecraft_account"]:
-                            account = user["minecraft_account"]
-                            USER_DATA.update_one(
-                                {"_id": ctx.author.id},
-                                {"$unset": {"minecraft_account": account}},
-                            )
-                        else:
-                            embed = nextcord.Embed(
-                                color=0xFFC800,
-                                title="You don't have your Minecraft account linked!",
-                            )
+                    user = USER_DATA.find_one(query)
+                    if "minecraft_account" in user:
+                        account = user["minecraft_account"]
+                        USER_DATA.update_one(
+                            {"_id": ctx.author.id},
+                            {"$unset": {"minecraft_account": account}},
+                        )
+                    else:
+                        embed = nextcord.Embed(
+                            color=0xFFC800,
+                            title="You don't have your Minecraft account linked!",
+                        )
                 embed = nextcord.Embed(
                     color=0x0DD91A, title="Successfully removed your Minecraft account"
                 )

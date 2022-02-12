@@ -79,12 +79,10 @@ class event_handler(commands.Cog, name="Event Handler"):
                 post = {"_id": user.id, "messages": 1}
                 USER_DATA.insert_one(post)
             else:
-                for result in USER_DATA.find(query):
-                    messages = result["messages"]
+                user2 = USER_DATA.find_one(query)
+                messages = user2["messages"]
                 messages = messages + 1
-                USER_DATA.update_one(
-                    {"_id": message.author.id}, {"$set": {"messages": messages}}
-                )
+                USER_DATA.update_one(query, {"$set": {"messages": messages}})
 
     @commands.Cog.listener()
     async def on_member_join(self, member: nextcord.Member):
