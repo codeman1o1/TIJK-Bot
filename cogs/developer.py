@@ -227,24 +227,10 @@ class developer(commands.Cog, name="Developer"):
         embed.add_field(
             name="Cogs loaded:", value=f"{len(self.bot.cogs)}", inline=False
         )
-
-        # CPU usage is index nr. 6
-        embed.add_field(
-            name="CPU usage:",
-            value="`Please wait 5 seconds for accurate usage`",
-            inline=False,
-        )
-
         embed.add_field(
             name="Latency:", value=f"{self.bot.latency} seconds", inline=False
         )
-
-        msg = await ctx.send(embed=embed)
-        embed.set_field_at(
-            6, name="CPU usage:", value=f"{psutil.cpu_percent(5)} percent"
-        )
-
-        await msg.edit(embed=embed)
+        await ctx.send(embed=embed)
 
     @commands.command(name="puu")
     @commands.is_owner()
