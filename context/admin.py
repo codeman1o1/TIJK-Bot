@@ -45,6 +45,7 @@ class admin_ctx(commands.Cog):
                 if user.avatar:
                     embed.set_thumbnail(url=user.avatar)
                 embed.add_field(name="Name", value=user, inline=True)
+                embed.add_field(name="ID", value=user.id, inline=True)
                 embed.add_field(name="In mutual guilds", value=len(user.mutual_guilds))
             else:
                 embed = nextcord.Embed(

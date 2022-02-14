@@ -621,6 +621,7 @@ class admin(commands.Cog, name="Admin"):
             if user.avatar:
                 embed.set_thumbnail(url=user.avatar)
             embed.add_field(name="Name", value=user, inline=True)
+            embed.add_field(name="ID", value=user.id, inline=True)
             embed.add_field(name="In mutual guilds", value=len(user.mutual_guilds))
         else:
             embed = nextcord.Embed(color=0xFFC800, title="I can not acces that user!")
