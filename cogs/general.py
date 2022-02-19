@@ -59,7 +59,7 @@ class general(commands.Cog, name="General"):
                     else:
                         available.remove(str(user))
                 else:
-                    available.remove(user)
+                    available.remove(str(user))
         if available:
             embed = nextcord.Embed(color=0x0DD91A)
             randomInt = random.randint(0, len(available) - 1)
