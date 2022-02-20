@@ -42,12 +42,12 @@ class general(commands.Cog, name="General"):
         ]
         if available:
             for user in available:
-                user = await commands.converter.UserConverter().convert(ctx, user)
-                query = {"_id": user.id}
+                user2 = await commands.converter.UserConverter().convert(ctx, str(user))
+                query = {"_id": user2.id}
                 if USER_DATA.count_documents(query) != 0:
-                    user2 = USER_DATA.find_one(query)
-                    if "minecraft_account" in user2:
-                        username = user["minecraft_account"]
+                    user3 = USER_DATA.find_one(query)
+                    if "minecraft_account" in user3:
+                        username = user3["minecraft_account"]
                         uuid = MojangAPI.get_uuid(username)
                         data = requests.get(
                             f"https://api.hypixel.net/player?key={HYPIXEL_API_KEY}&uuid={uuid}"
@@ -55,11 +55,11 @@ class general(commands.Cog, name="General"):
                         logouttime = data["player"]["lastLogout"]
                         logintime = data["player"]["lastLogin"]
                         if not logouttime < logintime or data["success"] == False:
-                            available.remove(str(user))
+                            available.remove(user)
                     else:
-                        available.remove(str(user))
+                        available.remove(user)
                 else:
-                    available.remove(str(user))
+                    available.remove(user)
         if available:
             embed = nextcord.Embed(color=0x0DD91A)
             randomInt = random.randint(0, len(available) - 1)
