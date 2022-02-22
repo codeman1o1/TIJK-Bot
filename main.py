@@ -166,7 +166,7 @@ async def on_message(message):
 @bot.event
 async def on_command_error(ctx: Context, error: commands.CommandError):
     """Processes command errors"""
-    if "Error Handler" not in bot.cogs:
+    if "Event Handler" not in bot.cogs:
         bl.error(error, __file__)
 
 
@@ -208,8 +208,6 @@ async def load_cog(ctx: Context, cog: str = None):
             cog = "developer"
         if cog.lower() == "eh":
             cog = "event_handler"
-        if cog.lower() == "erh":
-            cog = "error_handler"
         bot.load_extension(f"cogs.{cog.lower()}")
         embed = nextcord.Embed(
             color=0x0DD91A, title=f"Succesfully loaded {cog.lower()}.py"
@@ -257,8 +255,6 @@ async def reload_cog(ctx: Context, cog: str = None):
             cog = "developer"
         if cog.lower() == "eh":
             cog = "event_handler"
-        if cog.lower() == "erh":
-            cog = "error_handler"
         bot.reload_extension(f"cogs.{cog.lower()}")
         embed = nextcord.Embed(
             color=0x0DD91A, title=f"Succesfully reloaded {cog.lower()}.py"
@@ -305,8 +301,6 @@ async def unload_cog(ctx: Context, cog: str = None):
             cog = "developer"
         if cog.lower() == "eh":
             cog = "event_handler"
-        if cog.lower() == "erh":
-            cog = "error_handler"
         bot.unload_extension(f"cogs.{cog.lower()}")
         embed = nextcord.Embed(
             color=0x0DD91A, title=f"Succesfully unloaded {cog.lower()}.py!"
