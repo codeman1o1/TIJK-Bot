@@ -36,6 +36,11 @@ class error_handler(commands.Cog, name="Error Handler"):
             )
             embed = nextcord.Embed(color=0xFF0000)
 
+        if isinstance(error, MemberNotFound):
+            embed = nextcord.Embed(
+                color=0xFF0000, title=f'"{error.argument}" is not a valid user!'
+            )
+
         await ctx.send(embed=embed)
         bl.error(error, __file__)
 
