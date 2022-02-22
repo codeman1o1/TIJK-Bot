@@ -16,7 +16,9 @@ class error_handler(commands.Cog, name="Error Handler"):
     async def on_command_error(self, ctx: Context, error: commands.CommandError):
         """Called when a command error occurs"""
         if isinstance(error, CommandNotFound):
-            message = ctx.message.content[1:].split(" ")[0]
+            message = ctx.message.content.split(".", 1)[1]
+            while message.startswith(" "):
+                message = message.split(" ", 1)[1]
             cmds = {
                 command: round(SequenceMatcher(None, command, message).ratio() * 100, 1)
                 for command in self.bot.all_commands.keys()
@@ -30,13 +32,12 @@ class error_handler(commands.Cog, name="Error Handler"):
             if best_cmd != best_cmd_full.name and best_cmd_full is not None:
                 best_cmd_2 = f" ({best_cmd_full})"
             best_cmd_perc = list(sorted_cmds.values())[0]
-            error = (
-                str(error)
-                + f"\nDid you mean `.{best_cmd}{best_cmd_2}`? ({best_cmd_perc}% match)"
+            embed = nextcord.Embed(
+                color=0xFF0000,
+                title=f"That is not a command!\nDid you mean `.{best_cmd}{best_cmd_2}`? ({best_cmd_perc}% match)",
             )
-            embed = nextcord.Embed(color=0xFF0000)
 
-        if isinstance(error, MemberNotFound):
+        elif isinstance(error, MemberNotFound):
             embed = nextcord.Embed(
                 color=0xFF0000, title=f'"{error.argument}" is not a valid user!'
             )
