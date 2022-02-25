@@ -40,6 +40,13 @@ class error_handler(commands.Cog, name="Error Handler"):
                 title=f"That is not a command!\nDid you mean `.{best_cmd}{best_cmd_2}`? ({best_cmd_perc}% match)",
             )
 
+        elif isinstance(error, CommandOnCooldown):
+            COOLDOWN = str(round(error.retry_after, 1)).replace(".", ",")
+            embed = nextcord.Embed(
+                color=0xFF0000,
+                title=f"This command is on cooldown!\nPlease retry after {COOLDOWN} seconds",
+            )
+
         elif isinstance(error, MemberNotFound):
             embed = nextcord.Embed(
                 color=0xFF0000,
