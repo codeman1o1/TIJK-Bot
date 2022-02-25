@@ -94,10 +94,9 @@ class error_handler(commands.Cog, name="Error Handler"):
             )
 
         elif isinstance(error, BotMissingRole):
-            MISSING_ROLE = ", ".join(error.missing_role)
             embed = nextcord.Embed(
                 color=0xFF0000,
-                title=f"I am missing the following role: {MISSING_ROLE}",
+                title=f"I am missing the following role: {error.missing_role}",
             )
 
         else:
