@@ -4,6 +4,7 @@ from nextcord.ext.commands import Context
 from nextcord.ext.commands.errors import *
 from difflib import SequenceMatcher
 import basic_logger as bl
+from views.report_issue import report_issue
 
 
 class error_handler(commands.Cog, name="Error Handler"):
@@ -15,6 +16,7 @@ class error_handler(commands.Cog, name="Error Handler"):
     @commands.Cog.listener()
     async def on_command_error(self, ctx: Context, error: commands.CommandError):
         """Called when a command error occurs"""
+
         if isinstance(error, CommandNotFound):
             message = ctx.message.content.split(".", 1)[1]
             while message.startswith(" "):
@@ -36,13 +38,26 @@ class error_handler(commands.Cog, name="Error Handler"):
                 color=0xFF0000,
                 title=f"That is not a command!\nDid you mean `.{best_cmd}{best_cmd_2}`? ({best_cmd_perc}% match)",
             )
+            await ctx.send(embed=embed)
 
         elif isinstance(error, MemberNotFound):
             embed = nextcord.Embed(
                 color=0xFF0000, title=f'"{error.argument}" is not a valid user!'
             )
+            await ctx.send(embed=embed)
 
-        await ctx.send(embed=embed)
+        else:
+            embed = nextcord.Embed(color=0xFF0000, title=f"An unkown error occurred!")
+            embed.add_field(
+                name="Error:",
+                value=error,
+                inline=True,
+            )
+            embed.set_footer(text="Click the button below to report this error")
+            await ctx.send(
+                embed=embed, view=report_issue(str(error).replace(" ", "%20"))
+            )
+
         bl.error(error, __file__)
 
 
