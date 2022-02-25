@@ -42,18 +42,20 @@ class error_handler(commands.Cog, name="Error Handler"):
 
         elif isinstance(error, MemberNotFound):
             embed = nextcord.Embed(
-                color=0xFF0000, title=f'"{error.argument}" is not a user!'
+                color=0xFF0000,
+                title=f'"{error.argument}" is not a user or I can\'t access it!',
             )
 
         elif isinstance(error, RoleNotFound):
             embed = nextcord.Embed(
-                color=0xFF0000, title=f'"{error.argument}" is not a role or I can\'t acces it!'
+                color=0xFF0000,
+                title=f'"{error.argument}" is not a role or I can\'t access it!',
             )
 
         elif isinstance(error, ChannelNotFound):
             embed = nextcord.Embed(
                 color=0xFF0000,
-                title=f'"{error.argument}" is not a channel or I can\'t acces it!',
+                title=f'"{error.argument}" is not a channel or I can\'t access it!',
             )
 
         elif isinstance(error, MissingAnyRole):
