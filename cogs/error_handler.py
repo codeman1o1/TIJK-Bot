@@ -66,6 +66,13 @@ class error_handler(commands.Cog, name="Error Handler"):
                     title=f"You are missing any the following roles: {missing_roles}",
                 )
 
+        elif isinstance(error, NotOwner):
+            OWNER = self.bot.get_user(self.bot.owner_id)
+            embed = nextcord.Embed(
+                color=0xFF0000,
+                title=f"Only the owner of TIJK Bot ({OWNER}) can do this!",
+            )
+
         else:
             embed = nextcord.Embed(color=0xFF0000, title=f"An unkown error occurred!")
             embed.add_field(
