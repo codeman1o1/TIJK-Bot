@@ -38,13 +38,16 @@ class error_handler(commands.Cog, name="Error Handler"):
                 color=0xFF0000,
                 title=f"That is not a command!\nDid you mean `.{best_cmd}{best_cmd_2}`? ({best_cmd_perc}% match)",
             )
-            await ctx.send(embed=embed)
 
         elif isinstance(error, MemberNotFound):
             embed = nextcord.Embed(
-                color=0xFF0000, title=f'"{error.argument}" is not a valid user!'
+                color=0xFF0000, title=f'"{error.argument}" is not a user!'
             )
-            await ctx.send(embed=embed)
+
+        elif isinstance(error, RoleNotFound):
+            embed = nextcord.Embed(
+                color=0xFF0000, title=f'"{error.argument}" is not a role!'
+            )
 
         else:
             embed = nextcord.Embed(color=0xFF0000, title=f"An unkown error occurred!")
@@ -57,7 +60,10 @@ class error_handler(commands.Cog, name="Error Handler"):
             await ctx.send(
                 embed=embed, view=report_issue(str(error).replace(" ", "%20"))
             )
+            bl.error(error, __file__)
+            return
 
+        await ctx.send(embed=embed)
         bl.error(error, __file__)
 
 
