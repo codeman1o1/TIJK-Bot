@@ -1,5 +1,5 @@
 name: Error report
-description: Template for reporting errors
+description: Report an error
 title: '[ERROR] name-here'
 labels:
   - bug
