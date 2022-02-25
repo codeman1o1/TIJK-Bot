@@ -1,3 +1,4 @@
+from click import BadArgumentUsage
 import nextcord
 from nextcord.ext import commands
 from nextcord.ext.commands import Context
@@ -48,6 +49,22 @@ class error_handler(commands.Cog, name="Error Handler"):
             embed = nextcord.Embed(
                 color=0xFF0000, title=f'"{error.argument}" is not a role!'
             )
+
+        elif isinstance(error, MissingAnyRole):
+            if error.missing_roles == ["Owner", "Admin", "TIJK-Bot developer"]:
+                embed = nextcord.Embed(
+                    color=0xFF0000, title="You must be an admin to do this!"
+                )
+
+            else:
+                missing_roles = ""
+                for role in error.missing_roles:
+                    missing_roles = missing_roles + role + ", "
+                missing_roles = missing_roles[:-2]
+                embed = nextcord.Embed(
+                    color=0xFF0000,
+                    title=f"You are missing any the following roles: {missing_roles}",
+                )
 
         else:
             embed = nextcord.Embed(color=0xFF0000, title=f"An unkown error occurred!")
