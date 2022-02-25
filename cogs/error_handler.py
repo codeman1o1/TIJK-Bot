@@ -58,6 +58,12 @@ class error_handler(commands.Cog, name="Error Handler"):
                 title=f'"{error.argument}" is not a channel or I can\'t access it!',
             )
 
+        elif isinstance(error, ChannelNotReadable):
+            embed = nextcord.Embed(
+                color=0xFF0000,
+                title=f'I can\'t read messages in the "{error.argument}" channel',
+            )
+
         elif isinstance(error, MissingAnyRole):
             if error.missing_roles == ["Owner", "Admin", "TIJK-Bot developer"]:
                 embed = nextcord.Embed(
