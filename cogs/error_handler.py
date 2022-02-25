@@ -50,6 +50,12 @@ class error_handler(commands.Cog, name="Error Handler"):
                 color=0xFF0000, title=f'"{error.argument}" is not a role!'
             )
 
+        elif isinstance(error, ChannelNotFound):
+            embed = nextcord.Embed(
+                color=0xFF0000,
+                title=f'"{error.argument}" is not a channel or I can\'t acces it!',
+            )
+
         elif isinstance(error, MissingAnyRole):
             if error.missing_roles == ["Owner", "Admin", "TIJK-Bot developer"]:
                 embed = nextcord.Embed(
