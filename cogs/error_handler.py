@@ -87,6 +87,13 @@ class error_handler(commands.Cog, name="Error Handler"):
                 title=f"I am missing any of the following role(s): {MISSING_ROLES}",
             )
 
+        elif isinstance(error, BotMissingRole):
+            MISSING_ROLE = ", ".join(error.missing_role)
+            embed = nextcord.Embed(
+                color=0xFF0000,
+                title=f"I am missing the following role: {MISSING_ROLE}",
+            )
+
         else:
             embed = nextcord.Embed(color=0xFF0000, title=f"An unkown error occurred!")
             embed.add_field(
