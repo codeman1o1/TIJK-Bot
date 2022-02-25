@@ -53,6 +53,12 @@ class error_handler(commands.Cog, name="Error Handler"):
                 title=f'"{error.argument}" is not a guild or I can\'t access it!',
             )
 
+        elif isinstance(error, GuildStickerNotFound):
+            embed = nextcord.Embed(
+                color=0xFF0000,
+                title=f'"{error.argument}" is not a Guild Sticker or I can\'t access it!',
+            )
+
         elif isinstance(error, MemberNotFound):
             embed = nextcord.Embed(
                 color=0xFF0000,
