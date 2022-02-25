@@ -47,7 +47,7 @@ class error_handler(commands.Cog, name="Error Handler"):
 
         elif isinstance(error, RoleNotFound):
             embed = nextcord.Embed(
-                color=0xFF0000, title=f'"{error.argument}" is not a role!'
+                color=0xFF0000, title=f'"{error.argument}" is not a role or I can\'t acces it!'
             )
 
         elif isinstance(error, ChannelNotFound):
