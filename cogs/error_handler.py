@@ -47,6 +47,12 @@ class error_handler(commands.Cog, name="Error Handler"):
                 title=f"This command is on cooldown!\nPlease retry after {COOLDOWN} seconds",
             )
 
+        elif isinstance(error, GuildNotFound):
+            embed = nextcord.Embed(
+                color=0xFF0000,
+                title=f'"{error.argument}" is not a guild or I can\'t access it!',
+            )
+
         elif isinstance(error, MemberNotFound):
             embed = nextcord.Embed(
                 color=0xFF0000,
