@@ -63,7 +63,7 @@ class error_handler(commands.Cog, name="Error Handler"):
                 missing_roles = missing_roles[:-2]
                 embed = nextcord.Embed(
                     color=0xFF0000,
-                    title=f"You are missing any the following roles: {missing_roles}",
+                    title=f"You are missing any of the following roles: {missing_roles}",
                 )
 
         elif isinstance(error, NotOwner):
@@ -78,6 +78,13 @@ class error_handler(commands.Cog, name="Error Handler"):
             embed = nextcord.Embed(
                 color=0xFF0000,
                 title=f"I am missing the following permission(s): {missing_permissions}",
+            )
+
+        elif isinstance(error, BotMissingAnyRole):
+            MISSING_ROLES = ", ".join(error.missing_roles)
+            embed = nextcord.Embed(
+                color=0xFF0000,
+                title=f"I am missing any of the following role(s): {MISSING_ROLES}",
             )
 
         else:
