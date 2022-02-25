@@ -8,7 +8,7 @@ class report_issue(nextcord.ui.View):
         self.add_item(
             nextcord.ui.Button(
                 label="Report issue",
-                url=f"https://github.com/codeman1o1/TIJK-Bot/issues/new?assignees=&labels=bug&template=bug_report.yaml&title=%5BBUG%5D+{issue}",
+                url=f"https://github.com/codeman1o1/TIJK-Bot/issues/new?assignees=&labels=bug&template=error.yaml&title=%5BERROR%5D+{issue}",
                 style=ButtonStyle.url,
             )
         )
