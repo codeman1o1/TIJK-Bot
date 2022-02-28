@@ -110,25 +110,11 @@ class api(commands.Cog, name="API"):
                     f"https://some-random-api.ml/pokedex?pokemon={name}"
                 )
                 info = await request.json()
-            type = ""
-            for data in info["type"]:
-                type = type + data + ", "
-            type = type[:-2]
-            species = ""
-            for data in info["species"]:
-                species = species + data + " "
-            abilities = ""
-            for data in info["abilities"]:
-                abilities = abilities + data + ", "
-            abilities = abilities[:-2]
-            gender = ""
-            for data in info["gender"]:
-                gender = gender + data + ", "
-            gender = gender[:-2]
-            egg_groups = ""
-            for data in info["egg_groups"]:
-                egg_groups = egg_groups + data + ", "
-            egg_groups = egg_groups[:-2]
+            type = ", ".join(info["type"])
+            species = " ".join(info["species"])
+            abilities = ", ".join(info["abilities"])
+            gender = ", ".join(info["gender"])
+            egg_groups = ", ".join(info["egg_groups"])
             sprites = info["sprites"]
             stats = info["stats"]
             hp = stats["hp"]

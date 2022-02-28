@@ -66,28 +66,16 @@ class admin_ctx(commands.Cog):
                 embed.add_field(
                     name="Top role", value=user.top_role.mention, inline=True
                 )
-                roles = ""
                 rolesList: list = user.roles
                 rolesList.reverse()
-                for role in rolesList:
-                    roles = roles + role.mention + ", "
-                roles = roles[:-2]
+                roles = ", ".join(role.mention for role in rolesList)
                 embed.add_field(name="Roles", value=roles, inline=True)
-                if len(user.public_flags.all()) != 0:
-                    public_flagsList: list = user.public_flags.all()
-                    public_flags = ""
-                    for flag in public_flagsList:
-                        public_flags = public_flags + flag.name + ", "
-
-                    public_flags = public_flags[:-2]
+                public_flagsList: list = user.public_flags.all()
+                if public_flagsList:
+                    public_flags = ", ".join(flag.name for flag in public_flagsList)
                     embed.add_field(
                         name="Public flags", value=public_flags, inline=True
                     )
-                permissions = ""
-                for name, value in user.guild_permissions:
-                    if value:
-                        permissions = permissions + name + ", "
-                permissions = permissions[:-2]
                 embed.add_field(
                     name="In mutual guilds", value=len(user.mutual_guilds), inline=True
                 )
@@ -95,9 +83,13 @@ class admin_ctx(commands.Cog):
                 warns = USER_DATA.find_one({"_id": user.id})["warns"] or 0
                 embed.add_field(name="Messages sent", value=messages, inline=True)
                 embed.add_field(name="Total warns", value=warns, inline=True)
-                embed.add_field(
-                    name="Permissions in guild", value=permissions, inline=True
-                )
+                if user.guild_permissions:
+                    permissions = ", ".join(
+                        name for name, value in user.guild_permissions if value
+                    )
+                    embed.add_field(
+                        name="Permissions in guild", value=permissions, inline=True
+                    )
                 await interaction.response.send_message(
                     embed=embed,
                     view=profile_picture(user.display_avatar.url),

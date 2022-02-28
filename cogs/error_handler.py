@@ -102,10 +102,7 @@ class error_handler(commands.Cog, name="Error Handler"):
                 )
 
             else:
-                missing_roles = ""
-                for role in error.missing_roles:
-                    missing_roles = missing_roles + role + ", "
-                missing_roles = missing_roles[:-2]
+                missing_roles = ", ".join(error.missing_roles)
                 embed = nextcord.Embed(
                     color=0xFF0000,
                     title=f"You are missing any of the following roles: {missing_roles}",
