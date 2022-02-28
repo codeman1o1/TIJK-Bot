@@ -1,4 +1,3 @@
-from click import BadArgumentUsage
 import nextcord
 from nextcord.ext import commands
 from nextcord.ext.commands import Context
@@ -6,6 +5,7 @@ from nextcord.ext.commands.errors import *
 from difflib import SequenceMatcher
 import basic_logger as bl
 from views.report_issue import report_issue
+from urllib.parse import quote
 
 
 class error_handler(commands.Cog, name="Error Handler"):
@@ -149,9 +149,7 @@ class error_handler(commands.Cog, name="Error Handler"):
                 inline=True,
             )
             embed.set_footer(text="Click the button below to report this error")
-            await ctx.send(
-                embed=embed, view=report_issue(str(error).replace(" ", "%20"))
-            )
+            await ctx.send(embed=embed, view=report_issue(quote(str(error))))
             bl.error(error, __file__)
             return
 
