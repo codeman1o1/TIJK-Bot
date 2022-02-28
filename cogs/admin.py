@@ -30,20 +30,26 @@ class admin(commands.Cog, name="Admin"):
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def buttonroles(self, ctx: Context):
         """Sends a message with buttons where people can get roles"""
-        if len(BOT_DATA.find_one()["buttonroles"]) == 0:
-            embed = nextcord.Embed(
-                color=0xFFC800,
-                title="There are no button roles!\nMake sure to add them by using `.buttonroles add <role>`",
-            )
-
-            await ctx.send(embed=embed)
-        else:
+        buttonroles = BOT_DATA.find_one()["buttonroles"]
+        roles = sum(
+            1
+            for buttonrole in buttonroles
+            if nextcord.utils.get(ctx.guild.roles, id=buttonrole)
+        )
+        if roles > 0:
             await ctx.message.delete()
             embed = nextcord.Embed(
                 color=0x0DD91A, title="Click a button to add/remove that role!"
             )
 
             await ctx.send(embed=embed, view=button_roles(ctx=ctx))
+        else:
+            embed = nextcord.Embed(
+                color=0xFFC800,
+                title="There are no button roles!\nMake sure to add them by using `.buttonroles add <role>`",
+            )
+
+            await ctx.send(embed=embed)
 
     @buttonroles.command(name="list")
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
