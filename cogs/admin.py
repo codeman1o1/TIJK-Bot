@@ -272,7 +272,7 @@ class admin(commands.Cog, name="Admin"):
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def nick(self, ctx: Context, user: nextcord.Member, *, name: str):
         """Gives a user a nickname"""
-        original_name = user
+        original_name = user.display_name
         await user.edit(nick=name)
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
