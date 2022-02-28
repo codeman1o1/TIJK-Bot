@@ -6,7 +6,7 @@ import humanfriendly
 import nextcord
 from nextcord.ext import commands
 from nextcord.ext.commands import Context
-from views.button_roles import RoleView
+from views.button_roles import button_roles
 from views.profile_picture import profile_picture
 from views.verify import VerifyView
 import json
@@ -23,7 +23,7 @@ class admin(commands.Cog, name="Admin"):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.bot.add_view(RoleView())
+        self.bot.add_view(button_roles(bot=bot))
         self.bot.add_view(VerifyView())
 
     @commands.group(name="buttonroles", invoke_without_command=True, aliases=["br"])
@@ -43,7 +43,7 @@ class admin(commands.Cog, name="Admin"):
                 color=0x0DD91A, title="Click a button to add/remove that role!"
             )
 
-            await ctx.send(embed=embed, view=RoleView(ctx))
+            await ctx.send(embed=embed, view=button_roles(ctx=ctx))
 
     @buttonroles.command(name="list")
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
@@ -656,7 +656,9 @@ class admin(commands.Cog, name="Admin"):
                 permissions = ", ".join(
                     name for name, value in user.guild_permissions if value
                 )
-                embed.add_field(name="Permissions in guild", value=permissions, inline=True)
+                embed.add_field(
+                    name="Permissions in guild", value=permissions, inline=True
+                )
             await ctx.send(embed=embed, view=profile_picture(user.display_avatar.url))
         else:
             embed = nextcord.Embed(color=0xFFC800, title="I can not acces that user!")

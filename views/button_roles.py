@@ -1,13 +1,14 @@
 import nextcord
 from nextcord import ButtonStyle
+from nextcord.ext import commands
 from nextcord.ext.commands import Context
 from nextcord.utils import get
 
 from main import BOT_DATA
 
 
-class RoleView(nextcord.ui.View):
-    def __init__(self, ctx: Context = None):
+class button_roles(nextcord.ui.View):
+    def __init__(self, bot: commands.Bot = None, ctx: Context = None):
         super().__init__(timeout=None)
         if ctx:
             for buttonrole in BOT_DATA.find_one()["buttonroles"]:
@@ -19,6 +20,17 @@ class RoleView(nextcord.ui.View):
                             custom_id=str(buttonrole),
                         )
                     )
+        if bot:
+            for guild in bot.guilds:
+                for buttonrole in BOT_DATA.find_one()["buttonroles"]:
+                    if get(guild.roles, id=buttonrole):
+                        self.add_item(
+                            AddButton(
+                                label=get(guild.roles, id=buttonrole).name,
+                                style=ButtonStyle.primary,
+                                custom_id=str(buttonrole),
+                            )
+                        )
 
     async def handle_click(
         self, button: nextcord.ui.Button, interaction: nextcord.Interaction
