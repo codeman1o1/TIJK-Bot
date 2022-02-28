@@ -50,26 +50,26 @@ class admin(commands.Cog, name="Admin"):
     async def list_buttonroles(self, ctx: Context):
         """Lists all button roles"""
         buttonroles = BOT_DATA.find_one()["buttonroles"]
-        if len(buttonroles) != 0:
+        roles = sum(
+            1
+            for buttonrole in buttonroles
+            if nextcord.utils.get(ctx.guild.roles, id=buttonrole)
+        )
+        if roles > 0:
             buttonroles2 = ""
             for buttonrole in buttonroles:
-                if nextcord.utils.get(ctx.guild.roles, id=buttonrole):
-                    buttonroles2 = (
-                        buttonroles2
-                        + "\n> "
-                        + nextcord.utils.get(ctx.guild.roles, id=buttonrole).name
-                    )
-            if not buttonroles2:
-                embed = nextcord.Embed(
-                    color=0xFFC800, title="There are no button roles"
+                buttonroles2 = (
+                    buttonroles2
+                    + "\n> "
+                    + nextcord.utils.get(ctx.guild.roles, id=buttonrole).name
                 )
-            else:
-                embed = nextcord.Embed(color=0x0DD91A)
-                embed.add_field(
-                    name="The current button roles are:",
-                    value=buttonroles2,
-                    inline=False,
-                )
+            embed = nextcord.Embed(color=0x0DD91A)
+            embed.add_field(
+                name="The current button roles are:",
+                value=buttonroles2,
+                inline=False,
+            )
+            embed.set_footer(text=f"{roles}/25 buttonroles")
         else:
             embed = nextcord.Embed(color=0xFFC800, title="There are no button roles")
 
@@ -80,7 +80,17 @@ class admin(commands.Cog, name="Admin"):
     async def add_buttonroles(self, ctx: Context, role: nextcord.Role):
         """Adds a button role"""
         buttonroles = BOT_DATA.find_one()["buttonroles"]
-        if role.id not in buttonroles:
+        roles = sum(
+            1
+            for buttonrole in buttonroles
+            if nextcord.utils.get(ctx.guild.roles, id=buttonrole)
+        )
+
+        if roles >= 25:
+            embed = nextcord.Embed(
+                color=0xFFC800, title="You can only add 25 button roles!"
+            )
+        elif role.id not in buttonroles:
             buttonroles.append(role.id)
             BOT_DATA.update_one(
                 {},
