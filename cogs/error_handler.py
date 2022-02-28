@@ -35,10 +35,16 @@ class error_handler(commands.Cog, name="Error Handler"):
             if best_cmd != best_cmd_full.name and best_cmd_full is not None:
                 best_cmd_2 = f" ({best_cmd_full})"
             best_cmd_perc = list(sorted_cmds.values())[0]
-            embed = nextcord.Embed(
-                color=0xFF0000,
-                title=f"That is not a command!\nDid you mean `.{best_cmd}{best_cmd_2}`? ({best_cmd_perc}% match)",
-            )
+            if best_cmd_perc >= 60:
+                embed = nextcord.Embed(
+                    color=0xFF0000,
+                    title=f"That is not a command!\nDid you mean `.{best_cmd}{best_cmd_2}`? ({best_cmd_perc}% match)",
+                )
+            else:
+                embed = nextcord.Embed(
+                    color=0xFF0000,
+                    title="That is not a command!\nI did not find any close matching commands",
+                )
 
         elif isinstance(error, CommandOnCooldown):
             COOLDOWN = str(round(error.retry_after, 1)).replace(".", ",")
