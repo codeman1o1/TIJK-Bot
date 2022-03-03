@@ -64,11 +64,12 @@ class admin(commands.Cog, name="Admin"):
         if roles > 0:
             buttonroles2 = ""
             for buttonrole in buttonroles:
-                buttonroles2 = (
-                    buttonroles2
-                    + "\n> "
-                    + nextcord.utils.get(ctx.guild.roles, id=buttonrole).name
-                )
+                if nextcord.utils.get(ctx.guild.roles, id=buttonrole):
+                    buttonroles2 = (
+                        buttonroles2
+                        + "\n> "
+                        + nextcord.utils.get(ctx.guild.roles, id=buttonrole).name
+                    )
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name="The current button roles are:",
