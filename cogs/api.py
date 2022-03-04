@@ -1,6 +1,5 @@
 import aiohttp
 import nextcord
-import requests
 from nextcord.ext import commands
 from nextcord.ext.commands import Context
 from datetime import datetime
@@ -176,15 +175,24 @@ class api(commands.Cog, name="API"):
     async def hypixel(self, ctx: Context, username: str):
         """Gets information from the official Hypixel API"""
         uuid = MojangAPI.get_uuid(username)
-        data = requests.get(
-            f"https://api.hypixel.net/player?key={HYPIXEL_API_KEY}&uuid={uuid}"
-        ).json()
-        data_friends = requests.get(
-            f"https://api.hypixel.net/friends?key={HYPIXEL_API_KEY}&uuid={uuid}"
-        ).json()
-        data_guild = requests.get(
-            f"https://api.hypixel.net/guild?key={HYPIXEL_API_KEY}&player={uuid}"
-        ).json()
+        async with aiohttp.ClientSession() as session:
+            request = await session.get(
+                f"https://api.hypixel.net/player?key={HYPIXEL_API_KEY}&uuid={uuid}"
+            )
+            data = await request.json()
+
+        async with aiohttp.ClientSession() as session:
+            request = await session.get(
+                f"https://api.hypixel.net/friends?key={HYPIXEL_API_KEY}&uuid={uuid}"
+            )
+            data_friends = await request.json()
+
+        async with aiohttp.ClientSession() as session:
+            request = await session.get(
+                f"https://api.hypixel.net/guild?key={HYPIXEL_API_KEY}&player={uuid}"
+            )
+            data_guild = await request.json()
+
         if data["success"] == True:
             player_data = data["player"]
             if "rank" in player_data:
