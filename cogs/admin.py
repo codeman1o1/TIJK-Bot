@@ -728,6 +728,7 @@ class admin(commands.Cog, name="Admin"):
             embed = nextcord.Embed(
                 color=0x0DD91A, title=f"Role `{role.name}` added to PingPolls!"
             )
+            await logger(ctx, f"Role `{role.name}` added to PingPolls!")
         else:
             embed = nextcord.Embed(
                 color=0xFFC800, title=f"Role `{role.name}` is already in PingPolls!"
@@ -749,6 +750,7 @@ class admin(commands.Cog, name="Admin"):
             embed = nextcord.Embed(
                 color=0x0DD91A, title=f"Role `{role.name}` is removed from PingPolls"
             )
+            await logger(ctx, f"Role `{role.name}` is removed from PingPolls")
         else:
             embed = nextcord.Embed(
                 color=0xFFC800, title=f"The `{role.name}` is not in PingPolls"
