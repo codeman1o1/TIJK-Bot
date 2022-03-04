@@ -585,7 +585,9 @@ class admin(commands.Cog, name="Admin"):
             name="Users with this role", value=len(role.members), inline=True
         )
         permissions = ", ".join(name for name, value in role.permissions if value)
-        embed.add_field(name="Role permissions", value=permissions, inline=True)
+        embed.add_field(
+            name="Role permissions", value=permissions or "None", inline=True
+        )
         await ctx.send(embed=embed)
 
     @commands.command(name="server-info", aliases=["si"])
