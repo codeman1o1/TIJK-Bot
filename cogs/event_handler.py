@@ -105,6 +105,17 @@ class event_handler(commands.Cog, name="Event Handler"):
                 USER_DATA.update_one(query, {"$set": {"messages": messages}})
 
     @commands.Cog.listener()
+    async def on_message_edit(self, before: nextcord.Message, after: nextcord.Message):
+        if after.channel.name == "one-word-story":
+            await after.delete(delay=10)
+            embed = nextcord.Embed(
+                color=0xFFC800,
+                title="You can't edit messages and thus your message will be deleted after 10 seconds!",
+            )
+            embed.set_footer(text="This message will be deleted in 10 seconds")
+            await after.reply(embed=embed, delete_after=10)
+
+    @commands.Cog.listener()
     async def on_member_join(self, member: nextcord.Member):
         """Called when a member joins the server"""
         try:
