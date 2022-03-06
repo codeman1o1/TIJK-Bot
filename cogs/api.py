@@ -24,7 +24,7 @@ class api(commands.Cog, name="API"):
             value="The .api command gets information from API's.\n**I do not own any of the API's, so if there occurs an issue, I can most likely not help you with it.**\nType `.help api` for all available subcommands",
             inline=False,
         )
-
+        embed.add_field(name="Credits:", value="`.api activity`: https://www.boredapi.com\n`.api animal`: https://some-random-api.ml\n`.api hypixel`: https://api.hypixel.net\n`.api joke`: https://some-random-api.ml\n`.api meme`: https://some-random-api.ml\n`.api minecraft`: https://some-random-api.ml\n`.api pokedex`: https://some-random-api.ml", inline=True)
         await ctx.send(embed=embed)
 
     @api.command(name="animal")
