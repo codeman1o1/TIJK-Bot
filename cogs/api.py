@@ -281,6 +281,53 @@ class api(commands.Cog, name="API"):
             )
         await ctx.send(embed=embed)
 
+    @api.group(name="activity", invoke_without_command=True)
+    async def activity_api(self, ctx: Context):
+        async with aiohttp.ClientSession() as session:
+            request = await session.get("https://www.boredapi.com/api/activity")
+            data = await request.json()
+
+        embed = nextcord.Embed(color=0x0DD91A)
+        activity = data["activity"]
+        if data["link"] != "":
+            activity = activity + "\nLink: " + data["link"]
+        embed.add_field(name="Here is a random activity", value=activity, inline=True)
+        await ctx.send(embed=embed)
+
+    @activity_api.command(name="alone")
+    async def alone_activity_api(self, ctx: Context):
+        async with aiohttp.ClientSession() as session:
+            request = await session.get(
+                "https://www.boredapi.com/api/activity?participants=1"
+            )
+            data = await request.json()
+
+        embed = nextcord.Embed(color=0x0DD91A)
+        activity = data["activity"]
+        if data["link"] != "":
+            activity = activity + "\nLink: " + data["link"]
+        embed.add_field(
+            name="Here is a random activity that you can do alone",
+            value=activity,
+            inline=True,
+        )
+        await ctx.send(embed=embed)
+
+    @activity_api.command(name="free")
+    async def free_activity_api(self, ctx: Context):
+        async with aiohttp.ClientSession() as session:
+            request = await session.get("https://www.boredapi.com/api/activity?price=0")
+            data = await request.json()
+
+        embed = nextcord.Embed(color=0x0DD91A)
+        activity = data["activity"]
+        if data["link"] != "":
+            activity = activity + "\nLink: " + data["link"]
+        embed.add_field(
+            name="Here is a random activity that is free", value=activity, inline=True
+        )
+        await ctx.send(embed=embed)
+
 
 def setup(bot: commands.Bot):
     bot.add_cog(api(bot))
