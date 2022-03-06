@@ -283,6 +283,7 @@ class api(commands.Cog, name="API"):
 
     @api.group(name="activity", invoke_without_command=True)
     async def activity_api(self, ctx: Context):
+        """Sends a random activity you can do"""
         async with aiohttp.ClientSession() as session:
             request = await session.get("https://www.boredapi.com/api/activity")
             data = await request.json()
@@ -296,6 +297,7 @@ class api(commands.Cog, name="API"):
 
     @activity_api.command(name="alone")
     async def alone_activity_api(self, ctx: Context):
+        """Sends a random activity you can do alone"""
         async with aiohttp.ClientSession() as session:
             request = await session.get(
                 "https://www.boredapi.com/api/activity?participants=1"
@@ -315,6 +317,7 @@ class api(commands.Cog, name="API"):
 
     @activity_api.command(name="free")
     async def free_activity_api(self, ctx: Context):
+        """Sends a random activity you can do for free"""
         async with aiohttp.ClientSession() as session:
             request = await session.get("https://www.boredapi.com/api/activity?price=0")
             data = await request.json()
