@@ -8,7 +8,6 @@ from nextcord.ext import commands
 from nextcord.ext.commands import Context
 from views.button_roles import button_roles
 from views.profile_picture import profile_picture
-from views.verify import VerifyView
 import json
 
 from main import warn_system, logger
@@ -24,7 +23,6 @@ class admin(commands.Cog, name="Admin"):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.bot.add_view(button_roles(bot=bot))
-        self.bot.add_view(VerifyView())
 
     @commands.group(name="buttonroles", invoke_without_command=True, aliases=["br"])
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
@@ -174,28 +172,6 @@ class admin(commands.Cog, name="Admin"):
         )
 
         await ctx.send(embed=embed)
-
-    @commands.group(name="verify", invoke_without_command=True)
-    @commands.bot_has_permissions(manage_roles=True)
-    @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
-    async def verify(self, ctx: Context, user: nextcord.Member):
-        """Manually verify someone"""
-        member_role = nextcord.utils.get(ctx.guild.roles, name="Member")
-        if member_role not in user.roles:
-            await user.add_roles(member_role)
-            embed = nextcord.Embed(color=0x0DD91A, title=f"Verified {user}!")
-            await logger(ctx, f"{user} was verified")
-        else:
-            embed = nextcord.Embed(color=0xFFC800, title=f"{user} is already verified!")
-        await ctx.send(embed=embed)
-
-    @verify.command(name="send")
-    @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
-    async def send_verify(self, ctx: Context):
-        """Sends the verify message"""
-        await ctx.message.delete()
-        embed = nextcord.Embed(color=0x0DD91A, title="Click the button below to verify")
-        await ctx.send(embed=embed, view=VerifyView())
 
     @commands.command(name="readtherules", aliases=["rtr", "rule"])
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
