@@ -568,11 +568,10 @@ class admin(commands.Cog, name="Admin"):
 
     @commands.command(name="server-info", aliases=["si"])
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
-    async def server_info(self, ctx: Context, id: int = None):
+    async def server_info(self, ctx: Context, guild_id: int = None):
         """Show information about a server"""
-        if id is None:
-            id = ctx.guild.id
-        guild = self.bot.get_guild(id)
+        guild_id = guild_id or ctx.guild.id
+        guild = self.bot.get_guild(guild_id)
         if guild is not None:
             embed = nextcord.Embed(
                 color=0x0DD91A,
@@ -632,13 +631,13 @@ class admin(commands.Cog, name="Admin"):
             if user.timeout:
                 embed.add_field(name="Timeout", value=user.timeout, inline=True)
             embed.add_field(name="Top role", value=user.top_role.mention, inline=True)
-            rolesList: list = user.roles
-            rolesList.reverse()
-            roles = ", ".join(role.mention for role in rolesList)
+            roles_list: list = user.roles
+            roles_list.reverse()
+            roles = ", ".join(role.mention for role in roles_list)
             embed.add_field(name="Roles", value=roles, inline=True)
-            public_flagsList: list = user.public_flags.all()
-            if public_flagsList:
-                public_flags = ", ".join(flag.name for flag in public_flagsList)
+            public_flags_list: list = user.public_flags.all()
+            if public_flags_list:
+                public_flags = ", ".join(flag.name for flag in public_flags_list)
                 embed.add_field(name="Public flags", value=public_flags, inline=True)
             embed.add_field(
                 name="In mutual guilds", value=len(user.mutual_guilds), inline=True

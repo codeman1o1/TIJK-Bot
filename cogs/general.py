@@ -62,10 +62,10 @@ class general(commands.Cog, name="General"):
                     available.remove(user)
         if available:
             embed = nextcord.Embed(color=0x0DD91A)
-            randomInt = random.randint(0, len(available) - 1)
+            RANDOM_INT = random.randint(0, len(available) - 1)
             embed.add_field(
                 name="Party leader chosen!",
-                value=f"{available[randomInt]} will be the party leader!",
+                value=f"{available[RANDOM_INT]} will be the party leader!",
                 inline=False,
             )
         else:
@@ -198,13 +198,13 @@ class general(commands.Cog, name="General"):
                 birthdays.append(birthdays_dictionary.copy())
         birthdays = sorted(birthdays, key=lambda i: i["daysLeft"])
         for user in birthdays:
-            userName = user["userName"]
-            birthday = user["birthday"]
-            year = user["year"]
-            daysLeft = user["daysLeft"]
+            USERNAME = user["userName"]
+            BIRTHDAY = user["birthday"]
+            YEAR = user["year"]
+            DAYS_LEFT = user["daysLeft"]
             embed.add_field(
-                name=f"{userName}'s birthay is on",
-                value=f"{birthday}-{year} ({daysLeft} days left)",
+                name=f"{USERNAME}'s birthay is on",
+                value=f"{BIRTHDAY}-{YEAR} ({DAYS_LEFT} days left)",
                 inline=False,
             )
         if embed.fields == 0:
