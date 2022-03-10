@@ -10,7 +10,7 @@ from main import HYPIXEL_API_KEY
 
 
 class api(commands.Cog, name="API"):
-    """A seperate cog for the API command"""
+    """A separate cog for the API command"""
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -24,7 +24,11 @@ class api(commands.Cog, name="API"):
             value="The .api command gets information from API's.\n**I do not own any of the API's, so if there occurs an issue, I can most likely not help you with it.**\nType `.help api` for all available subcommands",
             inline=False,
         )
-        embed.add_field(name="Credits:", value="`.api activity`: https://www.boredapi.com\n`.api animal`: https://some-random-api.ml\n`.api hypixel`: https://api.hypixel.net\n`.api joke`: https://some-random-api.ml\n`.api meme`: https://some-random-api.ml\n`.api minecraft`: https://some-random-api.ml\n`.api pokedex`: https://some-random-api.ml", inline=True)
+        embed.add_field(
+            name="Credits:",
+            value="`.api activity`: https://www.boredapi.com\n`.api animal`: https://some-random-api.ml\n`.api hypixel`: https://api.hypixel.net\n`.api joke`: https://some-random-api.ml\n`.api meme`: https://some-random-api.ml\n`.api minecraft`: https://some-random-api.ml\n`.api pokedex`: https://some-random-api.ml",
+            inline=True,
+        )
         await ctx.send(embed=embed)
 
     @api.command(name="animal")
@@ -277,7 +281,7 @@ class api(commands.Cog, name="API"):
             error = data["cause"]
             embed = nextcord.Embed(color=0xFF0000)
             embed.add_field(
-                name="An error occured!", value=f"Error provided by the API:\n{error}"
+                name="An error occurred!", value=f"Error provided by the API:\n{error}"
             )
         await ctx.send(embed=embed)
 

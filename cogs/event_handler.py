@@ -11,7 +11,7 @@ from main import BOT_DATA, USER_DATA
 
 
 class event_handler(commands.Cog, name="Event Handler"):
-    """A seperate cog for handling events"""
+    """A separate cog for handling events"""
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot

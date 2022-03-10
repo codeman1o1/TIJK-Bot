@@ -151,8 +151,8 @@ class general(commands.Cog, name="General"):
                     cause = data["cause"]
                     embed = nextcord.Embed(color=0xFF0000)
                     embed.add_field(
-                        name="An error occured!",
-                        value=f"Error provided by the offical Hypixel API:\n{cause}",
+                        name="An error occurred!",
+                        value=f"Error provided by the official Hypixel API:\n{cause}",
                         inline=False,
                     )
 
@@ -203,7 +203,7 @@ class general(commands.Cog, name="General"):
             YEAR = user["year"]
             DAYS_LEFT = user["daysLeft"]
             embed.add_field(
-                name=f"{USERNAME}'s birthay is on",
+                name=f"{USERNAME}'s birthday is on",
                 value=f"{BIRTHDAY}-{YEAR} ({DAYS_LEFT} days left)",
                 inline=False,
             )

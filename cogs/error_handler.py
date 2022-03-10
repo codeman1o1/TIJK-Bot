@@ -22,23 +22,23 @@ class error_handler(commands.Cog, name="Error Handler"):
             message = ctx.message.content.split(".", 1)[1]
             while message.startswith(" "):
                 message = message.split(" ", 1)[1]
-            cmds = {
+            commands = {
                 command: round(SequenceMatcher(None, command, message).ratio() * 100, 1)
                 for command in self.bot.all_commands.keys()
             }
-            sorted_keys = list(sorted(cmds, key=cmds.get))
+            sorted_keys = list(sorted(commands, key=commands.get))
             sorted_keys.reverse()
-            sorted_cmds = {w: cmds[w] for w in sorted_keys}
-            best_cmd = list(sorted_cmds.keys())[0]
+            sorted_commands = {w: commands[w] for w in sorted_keys}
+            best_cmd = list(sorted_commands.keys())[0]
             best_cmd_2 = ""
             best_cmd_full = self.bot.get_command(best_cmd)
             if best_cmd != best_cmd_full.name and best_cmd_full is not None:
                 best_cmd_2 = f" ({best_cmd_full})"
-            best_cmd_perc = list(sorted_cmds.values())[0]
-            if best_cmd_perc >= 60:
+            best_cmd_percentage = list(sorted_commands.values())[0]
+            if best_cmd_percentage >= 60:
                 embed = nextcord.Embed(
                     color=0xFF0000,
-                    title=f"That is not a command!\nDid you mean `.{best_cmd}{best_cmd_2}`? ({best_cmd_perc}% match)",
+                    title=f"That is not a command!\nDid you mean `.{best_cmd}{best_cmd_2}`? ({best_cmd_percentage}% match)",
                 )
             else:
                 embed = nextcord.Embed(
@@ -148,7 +148,7 @@ class error_handler(commands.Cog, name="Error Handler"):
             )
 
         else:
-            embed = nextcord.Embed(color=0xFF0000, title=f"An unkown error occurred!")
+            embed = nextcord.Embed(color=0xFF0000, title=f"An unknown error occurred!")
             embed.add_field(
                 name="Error:",
                 value=error,

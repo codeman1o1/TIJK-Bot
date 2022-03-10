@@ -97,7 +97,7 @@ class admin_ctx(commands.Cog):
                 )
             else:
                 embed = nextcord.Embed(
-                    color=0xFFC800, title="I can not acces that user!"
+                    color=0xFFC800, title="I can not access that user!"
                 )
                 await interaction.response.send_message(embed=embed, ephemeral=True)
         else:

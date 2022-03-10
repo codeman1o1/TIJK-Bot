@@ -107,7 +107,7 @@ class fun(commands.Cog, name="Fun"):
         await msg.edit(content="`Getting into OS...\n50% done`")
         delay = round(random.uniform(2, 5), 2)
         await asyncio.sleep(delay)
-        await msg.edit(content="`Installing 24 virusses on PC...\n60% done`")
+        await msg.edit(content="`Installing 24 viruses on PC...\n60% done`")
         delay = round(random.uniform(2, 5), 2)
         await asyncio.sleep(delay)
         await msg.edit(content="`Slowly taking RAM...\n70% done`")

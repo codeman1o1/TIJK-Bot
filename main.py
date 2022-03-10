@@ -1,4 +1,4 @@
-# TIJK-Bot is made and maintaned by codeman1o1 (https://github.com/codeman1o1)
+# TIJK-Bot is made and maintained by codeman1o1 (https://github.com/codeman1o1)
 
 import asyncio
 import datetime
@@ -212,9 +212,9 @@ async def load_cog(ctx: Context, cog: str = None):
             cog = "error_handler"
         bot.load_extension(f"cogs.{cog.lower()}")
         embed = nextcord.Embed(
-            color=0x0DD91A, title=f"Succesfully loaded {cog.lower()}.py"
+            color=0x0DD91A, title=f"Successfully loaded {cog.lower()}.py"
         )
-        bl.debug(f"Succesfully loaded {cog.lower()}.py", __file__)
+        bl.debug(f"Successfully loaded {cog.lower()}.py", __file__)
     await ctx.send(embed=embed)
 
 
@@ -261,9 +261,9 @@ async def reload_cog(ctx: Context, cog: str = None):
             cog = "error_handler"
         bot.reload_extension(f"cogs.{cog.lower()}")
         embed = nextcord.Embed(
-            color=0x0DD91A, title=f"Succesfully reloaded {cog.lower()}.py"
+            color=0x0DD91A, title=f"Successfully reloaded {cog.lower()}.py"
         )
-        bl.debug(f"Succesfully reloaded {cog.lower()}.py", __file__)
+        bl.debug(f"Successfully reloaded {cog.lower()}.py", __file__)
     await ctx.send(embed=embed)
 
 
@@ -309,9 +309,9 @@ async def unload_cog(ctx: Context, cog: str = None):
             cog = "error_handler"
         bot.unload_extension(f"cogs.{cog.lower()}")
         embed = nextcord.Embed(
-            color=0x0DD91A, title=f"Succesfully unloaded {cog.lower()}.py!"
+            color=0x0DD91A, title=f"Successfully unloaded {cog.lower()}.py!"
         )
-        bl.debug(f"Succesfully unloaded {cog.lower()}.py!", __file__)
+        bl.debug(f"Successfully unloaded {cog.lower()}.py!", __file__)
     await ctx.send(embed=embed)
 
 

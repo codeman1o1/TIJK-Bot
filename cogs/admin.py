@@ -1,5 +1,4 @@
 import datetime
-import os
 
 import basic_logger as bl
 import humanfriendly
@@ -8,7 +7,6 @@ from nextcord.ext import commands
 from nextcord.ext.commands import Context
 from views.button_roles import button_roles
 from views.profile_picture import profile_picture
-import json
 
 from main import warn_system, logger
 
@@ -655,7 +653,7 @@ class admin(commands.Cog, name="Admin"):
                 )
             await ctx.send(embed=embed, view=profile_picture(user.display_avatar.url))
         else:
-            embed = nextcord.Embed(color=0xFFC800, title="I can not acces that user!")
+            embed = nextcord.Embed(color=0xFFC800, title="I can not access that user!")
             await ctx.send(embed=embed)
 
     @commands.command(name="slowmode", aliases=["slow", "sm"])
