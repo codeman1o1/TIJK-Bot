@@ -128,24 +128,24 @@ class event_handler(commands.Cog, name="Event Handler"):
             await after.reply(embed=embed, delete_after=10)
 
     @commands.Cog.listener()
-    async def on_raw_reaction_add(self, payLoad: nextcord.RawReactionActionEvent):
-        if payLoad.event_type != "REACTION_ADD":
+    async def on_raw_reaction_add(self, payload: nextcord.RawReactionActionEvent):
+        if payload.event_type != "REACTION_ADD":
             return
 
-        channel = await self.bot.fetch_channel(payLoad.channel_id)
-        user = await self.bot.fetch_user(payLoad.user_id)
-        message = await channel.fetch_message(payLoad.message_id)
+        channel = await self.bot.fetch_channel(payload.channel_id)
+        user = await self.bot.fetch_user(payload.user_id)
+        message = await channel.fetch_message(payload.message_id)
         if channel.name == "one-word-story":
             if (
                 message == channel.last_message
-                and str(payLoad.emoji) == "❌"
+                and str(payload.emoji) == "❌"
                 and message.author.id == user.id
             ):
-                await message.remove_reaction(payLoad.emoji, user)
+                await message.remove_reaction(payload.emoji, user)
                 embed = nextcord.Embed(color=0x0DD91A, title="Story ended!")
                 await channel.send(embed=embed)
             else:
-                await message.remove_reaction(payLoad.emoji, user)
+                await message.remove_reaction(payload.emoji, user)
 
     @commands.Cog.listener()
     async def on_member_join(self, member: nextcord.Member):

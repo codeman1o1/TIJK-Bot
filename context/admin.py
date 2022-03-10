@@ -66,13 +66,13 @@ class admin_ctx(commands.Cog):
                 embed.add_field(
                     name="Top role", value=user.top_role.mention, inline=True
                 )
-                rolesList: list = user.roles
-                rolesList.reverse()
-                roles = ", ".join(role.mention for role in rolesList)
+                roles_list: list = user.roles
+                roles_list.reverse()
+                roles = ", ".join(role.mention for role in roles_list)
                 embed.add_field(name="Roles", value=roles, inline=True)
-                public_flagsList: list = user.public_flags.all()
-                if public_flagsList:
-                    public_flags = ", ".join(flag.name for flag in public_flagsList)
+                public_flags_list: list = user.public_flags.all()
+                if public_flags_list:
+                    public_flags = ", ".join(flag.name for flag in public_flags_list)
                     embed.add_field(
                         name="Public flags", value=public_flags, inline=True
                     )
