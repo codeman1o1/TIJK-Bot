@@ -181,6 +181,26 @@ class developer(commands.Cog, name="Developer"):
             embed = nextcord.Embed(color=0xFFC800, title="No users were removed!")
         await ctx.send(embed=embed)
 
+    @commands.command(name="leave_server", aliases=["leave"])
+    @commands.is_owner()
+    async def leave_server(self, ctx: Context, server_id: int = None):
+        """Lets TIJK Bot leave a server"""
+        if server_id:
+            if GUILD := nextcord.utils.get(self.bot.guilds, id=server_id):
+                await GUILD.leave()
+                embed = nextcord.Embed(color=0x0DD91A, title=f"Left {GUILD.name}")
+            else:
+                embed = nextcord.Embed(
+                    color=0xFFC800, title="That is not a guild or I am not in it!"
+                )
+        else:
+            embed = nextcord.Embed(color=0x0DD91A)
+            servers = "\n".join(
+                f"> {GUILD.name} (**{GUILD.id}**)" for GUILD in self.bot.guilds
+            )
+            embed.add_field(name="Available servers:", value=servers)
+        await ctx.send(embed=embed)
+
 
 def setup(bot: commands.Bot):
     bot.add_cog(developer(bot))
