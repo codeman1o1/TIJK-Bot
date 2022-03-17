@@ -50,8 +50,10 @@ class event_handler(commands.Cog, name="Event Handler"):
                         if not " " in message.content:
                             for member in message.channel.members:
                                 if LAST_WORD in member.roles:
-                                    await member.remove_roles(LAST_WORD)
-                            await user.add_roles(LAST_WORD)
+                                    await member.remove_roles(
+                                        LAST_WORD, reason="One word story"
+                                    )
+                            await user.add_roles(LAST_WORD, reason="One word story")
 
                         else:
                             await message.delete()
