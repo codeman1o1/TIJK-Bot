@@ -41,7 +41,7 @@ class api(commands.Cog, name="API"):
                 request = await session.get(f"https://some-random-api.ml/img/{animal}")
                 info = await request.json()
             await ctx.send(info["link"])
-        elif animal.lower() not in animals:
+        else:
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name="Can't request image!",
@@ -262,7 +262,7 @@ class api(commands.Cog, name="API"):
                     f"{k.capitalize()}: {i}\n"
                     for k, i in player_data["socialMedia"]["links"].items()
                 )
-                if social_media == "":
+                if not social_media:
                     social_media = "This player has no Social Media linked"
                 embed.add_field(name="Social Media", value=social_media, inline=False)
             else:

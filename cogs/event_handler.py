@@ -46,30 +46,29 @@ class event_handler(commands.Cog, name="Event Handler"):
                     LAST_WORD = nextcord.utils.get(
                         message.guild.roles, name="last word"
                     )
-                    if not LAST_WORD in user.roles:
-                        if not " " in message.content:
-                            for member in message.channel.members:
-                                if LAST_WORD in member.roles:
-                                    await member.remove_roles(
-                                        LAST_WORD, reason="One word story"
-                                    )
-                            await user.add_roles(LAST_WORD, reason="One word story")
+                    if LAST_WORD in user.roles:
+                        await message.delete()
+                        embed = nextcord.Embed(
+                            color=0xFFC800, title="You can't send multiple messages!"
+                        )
+                        embed.set_footer(
+                            text="This message will delete itself after 5 seconds"
+                        )
+                        await message.channel.send(embed=embed, delete_after=5)
 
-                        else:
-                            await message.delete()
-                            embed = nextcord.Embed(
-                                color=0xFFC800,
-                                title="The message can only contain one word!",
-                            )
-                            embed.set_footer(
-                                text="This message will delete itself after 5 seconds"
-                            )
-                            await message.channel.send(embed=embed, delete_after=5)
+                    elif " " not in message.content:
+                        for member in message.channel.members:
+                            if LAST_WORD in member.roles:
+                                await member.remove_roles(
+                                    LAST_WORD, reason="One word story"
+                                )
+                        await user.add_roles(LAST_WORD, reason="One word story")
 
                     else:
                         await message.delete()
                         embed = nextcord.Embed(
-                            color=0xFFC800, title="You can't send multiple messages!"
+                            color=0xFFC800,
+                            title="The message can only contain one word!",
                         )
                         embed.set_footer(
                             text="This message will delete itself after 5 seconds"
