@@ -224,9 +224,7 @@ class admin(commands.Cog, name="Admin"):
         """Mutes a user"""
         reason2 = f" because of {reason}" if reason else ""
         time = humanfriendly.parse_timespan(time)
-        await user.edit(
-            timeout=nextcord.utils.utcnow() + datetime.timedelta(seconds=time)
-        )
+        await user.timeout(nextcord.utils.utcnow() + datetime.timedelta(seconds=time))
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="User muted!",
