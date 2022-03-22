@@ -113,7 +113,7 @@ class api(commands.Cog, name="API"):
                     f"https://some-random-api.ml/pokedex?pokemon={name}"
                 )
                 info = await request.json()
-            type = ", ".join(info["type"])
+            pokemon_type = ", ".join(info["type"])
             species = " ".join(info["species"])
             abilities = ", ".join(info["abilities"])
             gender = ", ".join(info["gender"])
@@ -141,7 +141,7 @@ class api(commands.Cog, name="API"):
             embed.set_thumbnail(url=sprites["normal"])
             embed.add_field(name="Name", value=info["name"].capitalize(), inline=True)
             embed.add_field(name="ID", value=info["id"], inline=True)
-            embed.add_field(name="Type", value=type, inline=True)
+            embed.add_field(name="Type", value=pokemon_type, inline=True)
             embed.add_field(name="Species", value=species, inline=True)
             embed.add_field(name="Abilities", value=abilities, inline=True)
             embed.add_field(name="Height", value=info["height"], inline=True)
