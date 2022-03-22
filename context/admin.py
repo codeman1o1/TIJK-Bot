@@ -1,4 +1,3 @@
-from re import I
 import nextcord
 from nextcord.ext import commands
 from nextcord.interactions import Interaction

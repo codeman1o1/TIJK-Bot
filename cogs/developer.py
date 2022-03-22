@@ -4,12 +4,11 @@ import sys
 import time
 
 import nextcord
-import psutil
 from nextcord.ext import commands
 from nextcord.ext.commands import Context
 
 from main import logger
-from main import BOT_DATA, USER_DATA, START_TIME
+from main import USER_DATA, START_TIME
 
 
 class developer(commands.Cog, name="Developer"):
