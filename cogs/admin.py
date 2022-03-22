@@ -2,6 +2,7 @@ import datetime
 
 import basic_logger as bl
 import humanfriendly
+from contextlib import suppress
 import nextcord
 from nextcord.ext import commands
 from nextcord.ext.commands import Context
@@ -588,13 +589,11 @@ class admin(commands.Cog, name="Admin"):
             embed.add_field(name="Total humans", value=len(guild.humans), inline=True)
             embed.add_field(name="Total bots", value=len(guild.bots), inline=True)
             embed.add_field(name="Total roles", value=len(guild.roles), inline=True)
-            try:
+            with suppress(nextcord.Forbidden):
                 bans = 0
                 for _ in await guild.bans():
                     bans += 1
                 embed.add_field(name="Total bans", value=bans, inline=True)
-            except nextcord.Forbidden:
-                pass
         else:
             embed = nextcord.Embed(color=0xFFC800, title="I can not access that guild!")
         await ctx.send(embed=embed)

@@ -1,6 +1,7 @@
 import datetime
 
 import basic_logger as bl
+from contextlib import suppress
 import nextcord
 from nextcord.ext import commands
 from views.pings import ping_buttons
@@ -151,7 +152,7 @@ class event_handler(commands.Cog, name="Event Handler"):
     @commands.Cog.listener()
     async def on_member_join(self, member: nextcord.Member):
         """Called when a member joins the server"""
-        try:
+        with suppress(nextcord.errors.HTTPException):
             if member.bot:
                 embed = nextcord.Embed(
                     color=0x0DD91A,
@@ -166,8 +167,6 @@ class event_handler(commands.Cog, name="Event Handler"):
                 await member.guild.system_channel.send(embed=embed)
             dm = await member.create_dm()
             await dm.send(embed=embed)
-        except nextcord.errors.HTTPException:
-            pass
         if member.bot:
             bot_role = nextcord.utils.get(member.guild.roles, name="Bot")
             await member.add_roles(bot_role)
@@ -221,7 +220,7 @@ class event_handler(commands.Cog, name="Event Handler"):
     @commands.Cog.listener()
     async def on_member_remove(self, member: nextcord.Member):
         """Called when a member has been removed from the server"""
-        try:
+        with suppress(nextcord.errors.HTTPException):
             embed = nextcord.Embed(
                 color=0x0DD91A,
                 title=f"Bye {member.display_name} :wave:\nIt was great having you!!",
@@ -230,8 +229,6 @@ class event_handler(commands.Cog, name="Event Handler"):
                 await member.guild.system_channel.send(embed=embed)
             dm = await member.create_dm()
             await dm.send(embed=embed)
-        except nextcord.errors.HTTPException:
-            pass
 
 
 def setup(bot: commands.Bot):
