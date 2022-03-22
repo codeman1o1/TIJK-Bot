@@ -148,7 +148,7 @@ class error_handler(commands.Cog, name="Error Handler"):
             )
 
         else:
-            embed = nextcord.Embed(color=0xFF0000, title=f"An unknown error occurred!")
+            embed = nextcord.Embed(color=0xFF0000, title="An unknown error occurred!")
             embed.add_field(
                 name="Error:",
                 value=error,
