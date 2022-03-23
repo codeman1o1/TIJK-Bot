@@ -1,6 +1,6 @@
 import nextcord
 from nextcord.ext import commands
-from nextcord import Interaction, slash_command
+from nextcord import Interaction, slash_command as slash
 from nextcord.application_command import SlashOption
 import nextcord.ext.application_checks as checks
 import os, sys
@@ -16,7 +16,7 @@ class developer_slash(
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @slash_command(
+    @slash(
         name="embed",
         description="Generate an embed",
         guild_ids=SLASH_GUILDS,
@@ -84,7 +84,7 @@ class developer_slash(
                 "The embed is invalid", ephemeral=True
             )
 
-    @slash_command(
+    @slash(
         name="restart",
         description="Restarts TIJK Bot",
         guild_ids=SLASH_GUILDS,
