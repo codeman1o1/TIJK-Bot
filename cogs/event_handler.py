@@ -22,8 +22,7 @@ class event_handler(commands.Cog, name="Event Handler"):
     async def on_message(self, message: nextcord.Message):
         """Processes messages"""
         user = message.author
-
-        if user is not None and not message.flags.is_crossposted:
+        if message.guild and user is not None and not message.flags.is_crossposted:
             if not user.bot:
                 if "pingpolls" in BOT_DATA.find_one():
                     pingpolls = BOT_DATA.find_one()["pingpolls"]
