@@ -5,7 +5,7 @@ from nextcord.application_command import SlashOption
 import nextcord.ext.application_checks as checks
 import os, sys
 
-from main import logger
+from main import logger, SLASH_GUILDS
 
 
 class developer_slash(
@@ -19,7 +19,7 @@ class developer_slash(
     @slash_command(
         name="embed",
         description="Generate an embed",
-        guild_ids=[870973430114181141, 865146077236822017],
+        guild_ids=SLASH_GUILDS,
     )
     @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def embed(
@@ -87,7 +87,7 @@ class developer_slash(
     @slash_command(
         name="restart",
         description="Restarts TIJK Bot",
-        guild_ids=[870973430114181141, 865146077236822017],
+        guild_ids=SLASH_GUILDS,
     )
     @checks.is_owner()
     async def restart(self, interaction: nextcord.Interaction):
