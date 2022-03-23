@@ -1,7 +1,9 @@
 import nextcord
+from nextcord import Interaction
 from nextcord.ext import commands
 from nextcord.ext.commands import Context
 from nextcord.ext.commands.errors import *
+from nextcord.ext.application_checks import *
 from difflib import SequenceMatcher
 import basic_logger as bl
 from views.report_issue import report_issue
@@ -15,7 +17,7 @@ class error_handler(commands.Cog, name="Error Handler"):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_command_error(self, ctx: Context, error: commands.CommandError):
+    async def on_command_error(self, ctx: Context, error: CommandError):
         """Called when a command error occurs"""
 
         if isinstance(error, CommandNotFound):
@@ -160,6 +162,66 @@ class error_handler(commands.Cog, name="Error Handler"):
             return
 
         await ctx.send(embed=embed)
+        bl.error(error, __file__)
+
+    @commands.Cog.listener()
+    async def on_application_command_error(
+        self, interaction: Interaction, error: CommandError
+    ):
+        """Called when a slash command error occurs"""
+        if isinstance(error, ApplicationMissingAnyRole):
+            if error.missing_roles == ["Owner", "Admin", "TIJK-Bot developer"]:
+                embed = nextcord.Embed(
+                    color=0xFF0000, title="You must be an admin to do this!"
+                )
+
+            else:
+                missing_roles = ", ".join(error.missing_roles)
+                embed = nextcord.Embed(
+                    color=0xFF0000,
+                    title=f"You are missing any of the following roles: {missing_roles}",
+                )
+
+        elif isinstance(error, ApplicationNotOwner):
+            OWNER = self.bot.get_user(self.bot.owner_id)
+            embed = nextcord.Embed(
+                color=0xFF0000,
+                title=f"Only the owner of TIJK Bot ({OWNER}) can do this!",
+            )
+
+        elif isinstance(error, ApplicationBotMissingAnyRole):
+            MISSING_ROLES = ", ".join(error.missing_roles)
+            embed = nextcord.Embed(
+                color=0xFF0000,
+                title=f"I am missing any of the following role(s): {MISSING_ROLES}",
+            )
+
+        elif isinstance(error, ApplicationBotMissingRole):
+            embed = nextcord.Embed(
+                color=0xFF0000,
+                title=f"I am missing the following role: {error.missing_role}",
+            )
+
+        elif isinstance(error, ApplicationBotMissingPermissions):
+            missing_permissions = ", ".join(error.missing_permissions)
+            embed = nextcord.Embed(
+                color=0xFF0000,
+                title=f"I am missing the following permission(s): {missing_permissions}",
+            )
+        
+        else:
+            embed = nextcord.Embed(color=0xFF0000, title="An unknown error occurred!")
+            embed.add_field(
+                name="Error:",
+                value=error,
+                inline=True,
+            )
+            embed.set_footer(text="Click the button below to report this error")
+            await interaction.response.send_message(embed=embed, view=report_issue(quote(str(error))))
+            bl.error(error, __file__)
+            return
+
+        await interaction.response.send_message(embed=embed)
         bl.error(error, __file__)
 
 
