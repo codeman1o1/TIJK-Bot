@@ -4,8 +4,9 @@ from nextcord import Interaction, slash_command as slash
 from nextcord.application_command import SlashOption
 import nextcord.ext.application_checks as checks
 import os, sys
+import datetime, time
 
-from main import logger, SLASH_GUILDS
+from main import logger, SLASH_GUILDS, START_TIME
 
 
 class developer_slash(
@@ -195,6 +196,38 @@ class developer_slash(
             inline=False,
         )
 
+        await interaction.response.send_message(embed=embed)
+
+    @slash(description="Shows the statistics of TIJK Bot", guild_ids=SLASH_GUILDS)
+    async def stats(self, interaction: Interaction):
+        embed = nextcord.Embed(
+            color=0x0DD91A, title="Here are some stats for TIJK Bot!"
+        )
+        embed.add_field(
+            name="Nextcord version:",
+            value=nextcord.__version__,
+            inline=False,
+        )
+        embed.add_field(
+            name="Total commands:", value=f"{len(self.bot.commands)}", inline=False
+        )
+        embed.add_field(
+            name="Uptime:",
+            value=str(datetime.timedelta(seconds=int(round(time.time() - START_TIME)))),
+            inline=False,
+        )
+        guilds = "".join(
+            f"{self.bot.guilds.index(guild)+1}. {guild.name} (**{guild.id}**)\n"
+            for guild in self.bot.guilds
+        )
+        embed.add_field(name="Guilds:", value=guilds, inline=False)
+        embed.add_field(name="Users:", value=f"{len(self.bot.users)}", inline=False)
+        embed.add_field(
+            name="Cogs loaded:", value=f"{len(self.bot.cogs)}", inline=False
+        )
+        embed.add_field(
+            name="Latency:", value=f"{self.bot.latency} seconds", inline=False
+        )
         await interaction.response.send_message(embed=embed)
 
 
