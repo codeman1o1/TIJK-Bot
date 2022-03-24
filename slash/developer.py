@@ -17,7 +17,6 @@ class developer_slash(
         self.bot = bot
 
     @slash(
-        name="embed",
         description="Generate an embed",
         guild_ids=SLASH_GUILDS,
     )
@@ -85,7 +84,6 @@ class developer_slash(
             )
 
     @slash(
-        name="restart",
         description="Restarts TIJK Bot",
         guild_ids=SLASH_GUILDS,
     )
@@ -111,6 +109,93 @@ class developer_slash(
         command = "cls" if os.name in ("nt", "dos") else "clear"
         os.system(command)
         os.execv(sys.executable, ["python"] + sys.argv)
+
+    @slash(guild_ids=SLASH_GUILDS)
+    @checks.is_owner()
+    async def status(
+        self,
+        interaction: Interaction,
+    ):
+        """This will never get called since it has subcommands"""
+        pass
+
+    @status.subcommand(
+        name="set", description="Sets the status of TIJK Bot", inherit_hooks=True
+    )
+    async def set_status(
+        self,
+        interaction: Interaction,
+        type: str = SlashOption(
+            description="The type of status",
+            choices=[
+                "watching",
+                "playing",
+                "streaming",
+                "listening",
+                "competing",
+            ],
+            required=True,
+        ),
+        text: str = SlashOption(
+            description="The text that will show up", required=True
+        ),
+    ):
+        if type == "watching":
+            await self.bot.change_presence(
+                activity=nextcord.Activity(
+                    type=nextcord.ActivityType.watching, name=text
+                )
+            )
+        elif type == "playing":
+            await self.bot.change_presence(
+                activity=nextcord.Activity(
+                    type=nextcord.ActivityType.playing, name=text
+                )
+            )
+        elif type == "streaming":
+            await self.bot.change_presence(
+                activity=nextcord.Activity(
+                    type=nextcord.ActivityType.streaming, name=text
+                )
+            )
+        elif type == "listening":
+            await self.bot.change_presence(
+                activity=nextcord.Activity(
+                    type=nextcord.ActivityType.listening, name=text
+                )
+            )
+        elif type == "competing":
+            await self.bot.change_presence(
+                activity=nextcord.Activity(
+                    type=nextcord.ActivityType.competing, name=text
+                )
+            )
+
+        embed = nextcord.Embed(color=0x0DD91A)
+        embed.add_field(
+            name="Status changed!",
+            value=f"Changed the status to **{type} {text}**",
+            inline=False,
+        )
+        await interaction.response.send_message(embed=embed)
+
+    @status.subcommand(
+        name="reset", description="Resets the status of TIJK Bot", inherit_hooks=True
+    )
+    async def reset_status(self, interaction: Interaction):
+        await self.bot.change_presence(
+            activity=nextcord.Activity(
+                type=nextcord.ActivityType.watching, name="over the TIJK Server"
+            )
+        )
+        embed = nextcord.Embed(color=0x0DD91A)
+        embed.add_field(
+            name="Status changed!",
+            value="Reset the status to **watching over the TIJK Server**",
+            inline=False,
+        )
+
+        await interaction.response.send_message(embed=embed)
 
 
 def setup(bot):
