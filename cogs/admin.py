@@ -39,7 +39,7 @@ class admin(commands.Cog, name="Admin"):
                 color=0x0DD91A, title="Click a button to add/remove that role!"
             )
 
-            await ctx.send(embed=embed, view=button_roles(ctx=ctx))
+            await ctx.send(embed=embed, view=button_roles(guild=ctx.guild))
         else:
             embed = nextcord.Embed(
                 color=0xFFC800,

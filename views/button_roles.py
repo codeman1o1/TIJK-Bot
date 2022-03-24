@@ -8,14 +8,14 @@ from main import BOT_DATA
 
 
 class button_roles(nextcord.ui.View):
-    def __init__(self, bot: commands.Bot = None, ctx: Context = None):
+    def __init__(self, bot: commands.Bot = None, guild: nextcord.Guild = None):
         super().__init__(timeout=None)
-        if ctx:
+        if guild:
             for buttonrole in BOT_DATA.find_one()["buttonroles"]:
-                if get(ctx.guild.roles, id=buttonrole):
+                if get(guild.roles, id=buttonrole):
                     self.add_item(
                         AddButton(
-                            label=get(ctx.guild.roles, id=buttonrole).name,
+                            label=get(guild.roles, id=buttonrole).name,
                             style=ButtonStyle.primary,
                             custom_id=str(buttonrole),
                         )
