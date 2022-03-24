@@ -234,6 +234,7 @@ class developer_slash(
         description="Gives the TIJK-Bot developer role to the owner of TIJK Bot",
         guild_ids=SLASH_GUILDS,
     )
+    @checks.is_owner()
     async def tijkbotdeveloper(self, interaction: Interaction):
         tijk_bot_developer_role = nextcord.utils.get(
             interaction.guild.roles, name="TIJK-Bot developer"
