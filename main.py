@@ -152,7 +152,8 @@ async def birthday_checker():
         )
 
         for guild in bot.guilds:
-            await guild.system_channel.send(embed=embed)
+            if user in guild.members:
+                await guild.system_channel.send(embed=embed)
     birthdays.clear()
     birthday_checker.cancel()
 
