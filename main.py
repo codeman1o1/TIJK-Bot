@@ -99,6 +99,17 @@ async def logger(ctx: Context, message: str, channel: str = None):
     await logs_channel.send(embed=embed)
 
 
+async def interaction_logger(
+    interaction: nextcord.Interaction, message: str, channel: str = None
+):
+    """Log a message in the #logs channel"""
+    channel = channel or interaction.channel
+    logs_channel = nextcord.utils.get(interaction.guild.channels, name="logs")
+    embed = nextcord.Embed(color=0x0DD91A, title=message)
+    embed.set_footer(text=f'Used from the "{channel}" channel')
+    await logs_channel.send(embed=embed)
+
+
 @bot.event
 async def on_ready():
     """Runs when the bot is online"""
