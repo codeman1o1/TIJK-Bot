@@ -5,7 +5,7 @@ from nextcord.application_command import SlashOption
 import nextcord.ext.application_checks as checks
 from views.button_roles import button_roles
 
-from main import interaction_logger as ilogger, SLASH_GUILDS, BOT_DATA
+from main import interaction_logger as ilogger, SLASH_GUILDS, BOT_DATA, bl
 
 
 class admin_slash(
@@ -165,6 +165,28 @@ class admin_slash(
             embed = nextcord.Embed(color=0xFFC800, title="There are no button roles")
 
         await interaction.response.send_message(embed=embed)
+
+    @slash(description="Shuts down TIJK Bot", guild_ids=SLASH_GUILDS)
+    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    async def shutdown(self, interaction: Interaction):
+        embed = nextcord.Embed(color=0x0DD91A)
+        embed.add_field(
+            name="TIJK Bot was shut down",
+            value=f"TIJK Bot was shut down by {interaction.user}",
+            inline=False,
+        )
+
+        await interaction.response.send_message(embed=embed)
+        await ilogger(
+            interaction,
+            f"TIJK Bot was shut down by {interaction.user}",
+        )
+        info = await self.bot.application_info()
+        owner = info.owner
+        dm = await owner.create_dm()
+        await dm.send(embed=embed)
+        bl.info(f"TIJK Bot was shut down by {interaction.user}", __file__)
+        await self.bot.close()
 
 
 def setup(bot):
