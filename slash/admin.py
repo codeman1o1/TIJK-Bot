@@ -187,6 +187,17 @@ class admin_slash(
         await dm.send(embed=embed)
         bl.info(f"TIJK Bot was shut down by {interaction.user}", __file__)
         await self.bot.close()
+    
+    @slash(description="Get the latency of TIJK Bot", guild_ids=SLASH_GUILDS)
+    async def ping(self, interaction: Interaction, decimals: int = SlashOption(description="At how may decimals the latency should round", min_value=0, max_value=17,default=1)):
+        embed = nextcord.Embed(color=0x0DD91A)
+        latency = round(self.bot.latency, decimals)
+        embed.add_field(
+            name="Pong!",
+            value=f"The latency is {latency} seconds",
+            inline=False,
+        )
+        await interaction.response.send_message(embed=embed)
 
 
 def setup(bot):
