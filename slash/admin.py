@@ -1,3 +1,5 @@
+import datetime
+import humanfriendly
 import nextcord
 from nextcord.ext import commands
 from nextcord import Interaction, slash_command as slash
@@ -7,6 +9,7 @@ from views.button_roles import button_roles
 
 from main import (
     interaction_logger as ilogger,
+    logger,
     warn_system,
     SLASH_GUILDS,
     BOT_DATA,
@@ -215,6 +218,7 @@ class admin_slash(
         await interaction.response.send_message(embed=embed)
 
     @slash(description="Tell a user to read the rules", guild_ids=SLASH_GUILDS)
+    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def readtherules(
         self,
         interaction: Interaction,
@@ -256,6 +260,42 @@ class admin_slash(
             embed = nextcord.Embed(
                 color=0xFF0000, title=f"{rule_number} is not a valid rule number!"
             )
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+
+    @slash(description="Mute a user", guild_ids=SLASH_GUILDS)
+    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    async def mute(
+        self,
+        interaction: Interaction,
+        user: nextcord.Member = SlashOption(
+            description="The user to mute", required=True
+        ),
+        time: str = SlashOption(
+            description="How long the user should be muted", required=True
+        ),
+        reason: str = SlashOption(
+            description="The reason why the user was muted", required=False
+        ),
+    ):
+        try:
+            reason2 = f" because of {reason}" if reason else ""
+            time = humanfriendly.parse_timespan(time)
+            await user.timeout(
+                nextcord.utils.utcnow() + datetime.timedelta(seconds=time)
+            )
+            embed = nextcord.Embed(color=0x0DD91A)
+            embed.add_field(
+                name="User muted!",
+                value=f"{user} was muted for {humanfriendly.format_timespan(time)} by {interaction.user}{reason2}",
+                inline=False,
+            )
+            await interaction.response.send_message(embed=embed)
+            await ilogger(
+                interaction,
+                f"{user} was muted for {humanfriendly.format_timespan(time)} by {interaction.user}{reason2}",
+            )
+        except humanfriendly.InvalidTimespan:
+            embed = nextcord.Embed(color=0xFFC800, title="Invalid time!")
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
