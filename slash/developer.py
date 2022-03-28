@@ -34,6 +34,9 @@ class developer_slash(
             choices={"green": 0x0DD91A, "orange": 0xFFC800, "red": 0xFF0000},
             required=False,
         ),
+        footer: str = SlashOption(
+            name="footer", description="The footer of the embed", required=False
+        ),
         name1: str = SlashOption(
             name="name1", description="The name of the 1st field", required=False
         ),
@@ -162,6 +165,8 @@ class developer_slash(
                     value=value10,
                     inline=False,
                 )
+            if footer:
+                embed.set_footer(text=footer)
             await interaction.response.send_message(embed=embed)
         except nextcord.errors.HTTPException:
             await interaction.response.send_message(
