@@ -5,7 +5,13 @@ from nextcord.application_command import SlashOption
 import nextcord.ext.application_checks as checks
 from views.button_roles import button_roles
 
-from main import interaction_logger as ilogger, SLASH_GUILDS, BOT_DATA, bl
+from main import (
+    interaction_logger as ilogger,
+    warn_system,
+    SLASH_GUILDS,
+    BOT_DATA,
+    bl,
+)
 
 
 class admin_slash(
@@ -187,9 +193,18 @@ class admin_slash(
         await dm.send(embed=embed)
         bl.info(f"TIJK Bot was shut down by {interaction.user}", __file__)
         await self.bot.close()
-    
+
     @slash(description="Get the latency of TIJK Bot", guild_ids=SLASH_GUILDS)
-    async def ping(self, interaction: Interaction, decimals: int = SlashOption(description="At how may decimals the latency should round", min_value=0, max_value=17,default=1)):
+    async def ping(
+        self,
+        interaction: Interaction,
+        decimals: int = SlashOption(
+            description="At how may decimals the latency should round",
+            min_value=0,
+            max_value=17,
+            default=1,
+        ),
+    ):
         embed = nextcord.Embed(color=0x0DD91A)
         latency = round(self.bot.latency, decimals)
         embed.add_field(
@@ -198,6 +213,50 @@ class admin_slash(
             inline=False,
         )
         await interaction.response.send_message(embed=embed)
+
+    @slash(description="Tell a user to read the rules", guild_ids=SLASH_GUILDS)
+    async def readtherules(
+        self,
+        interaction: Interaction,
+        rule_number: int = SlashOption(
+            description="The rule number", min_value=1, required=True
+        ),
+        user: nextcord.Member = SlashOption(
+            description="The user to tell to read the rules", required=False
+        ),
+        reason: str = SlashOption(
+            description="The reason why the user is warned", required=False
+        ),
+        warn_user: bool = SlashOption(
+            description="Wether to warn the user", required=False, default=True
+        ),
+    ):
+        channel = nextcord.utils.get(interaction.guild.channels, name="rules")
+        messages = await channel.history(limit=50).flatten()
+        messages.reverse()
+        try:
+            embed = nextcord.Embed(color=0x0DD91A)
+            if user:
+                embed.add_field(
+                    name=f"Hey {user}, please read rule number {rule_number}!",
+                    value=messages[rule_number - 1].content,
+                    inline=False,
+                )
+                if warn_user:
+                    embed.set_footer(text="You also received 1 warn!")
+                    await warn_system(interaction, user, 1, interaction.user, reason)
+            else:
+                embed.add_field(
+                    name=f"Here is rule number {rule_number}:",
+                    value=messages[rule_number - 1].content,
+                    inline=False,
+                )
+            await interaction.response.send_message(embed=embed)
+        except IndexError:
+            embed = nextcord.Embed(
+                color=0xFF0000, title=f"{rule_number} is not a valid rule number!"
+            )
+            await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
 def setup(bot):
