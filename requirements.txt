@@ -8,3 +8,5 @@ uptime==3.0.1
 psutil==5.9.0
 humanfriendly==10.0
 mojang==0.2.0
+black==21.8b0
+flake8==4.0.1
