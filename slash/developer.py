@@ -73,7 +73,7 @@ class developer_slash(
         name7: str = SlashOption(
             name="name7", description="The name of the 7th field", required=False
         ),
-        valu7: str = SlashOption(
+        value7: str = SlashOption(
             name="value7", description="The value of the 7th field", required=False
         ),
         name8: str = SlashOption(
