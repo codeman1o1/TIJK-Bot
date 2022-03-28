@@ -4,7 +4,7 @@ import random
 import nextcord
 from nextcord.ext import commands
 from nextcord.ext.commands import Context
-from views.github import github_button
+from views.buttons.github import github_button
 import requests
 from mojang import MojangAPI
 

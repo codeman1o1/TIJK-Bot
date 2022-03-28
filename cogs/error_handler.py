@@ -6,7 +6,7 @@ from nextcord.ext.commands.errors import *
 from nextcord.ext.application_checks import *
 from difflib import SequenceMatcher
 import basic_logger as bl
-from views.report_issue import report_issue
+from views.buttons.report_issue import report_issue
 from urllib.parse import quote
 
 

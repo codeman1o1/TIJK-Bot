@@ -4,7 +4,7 @@ import basic_logger as bl
 from contextlib import suppress
 import nextcord
 from nextcord.ext import commands
-from views.pings import ping_buttons
+from views.buttons.pings import ping_buttons
 from nextcord.ext.commands import Context
 
 from main import logger
