@@ -94,36 +94,6 @@ class developer_slash(
         value10: str = SlashOption(
             name="value10", description="The value of the 10th field", required=False
         ),
-        name11: str = SlashOption(
-            name="name11", description="The name of the 11th field", required=False
-        ),
-        value11: str = SlashOption(
-            name="value11", description="The value of the 11th field", required=False
-        ),
-        name12: str = SlashOption(
-            name="name12", description="The name of the 12th field", required=False
-        ),
-        value12: str = SlashOption(
-            name="value12", description="The value of the 12th field", required=False
-        ),
-        name13: str = SlashOption(
-            name="name13", description="The name of the 13th field", required=False
-        ),
-        value13: str = SlashOption(
-            name="value13", description="The value of the 13th field", required=False
-        ),
-        name14: str = SlashOption(
-            name="name14", description="The name of the 14th field", required=False
-        ),
-        value14: str = SlashOption(
-            name="value14", description="The value of the 14th field", required=False
-        ),
-        name15: str = SlashOption(
-            name="name15", description="The name of the 15th field", required=False
-        ),
-        value15: str = SlashOption(
-            name="value15", description="The value of the 15th field", required=False
-        ),
     ):
         try:
             if not color:
@@ -190,36 +160,6 @@ class developer_slash(
                 embed.add_field(
                     name=name10,
                     value=value10,
-                    inline=False,
-                )
-            if name11 and value11:
-                embed.add_field(
-                    name=name11,
-                    value=value11,
-                    inline=False,
-                )
-            if name12 and value12:
-                embed.add_field(
-                    name=name12,
-                    value=value12,
-                    inline=False,
-                )
-            if name13 and value13:
-                embed.add_field(
-                    name=name13,
-                    value=value13,
-                    inline=False,
-                )
-            if name14 and value14:
-                embed.add_field(
-                    name=name14,
-                    value=value14,
-                    inline=False,
-                )
-            if name15 and value15:
-                embed.add_field(
-                    name=name15,
-                    value=value15,
                     inline=False,
                 )
             await interaction.response.send_message(embed=embed)
