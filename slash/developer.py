@@ -25,82 +25,78 @@ class developer_slash(
     async def embed(
         self,
         interaction: Interaction,
-        title: str = SlashOption(
-            name="title", description="The title of the embed", required=False
-        ),
+        title: str = SlashOption(description="The title of the embed", required=False),
         color: int = SlashOption(
-            name="color",
             description="The color of the embed",
             choices={"green": 0x0DD91A, "orange": 0xFFC800, "red": 0xFF0000},
             required=False,
         ),
         footer: str = SlashOption(
-            name="footer", description="The footer of the embed", required=False
+            description="The footer of the embed", required=False
         ),
         name1: str = SlashOption(
-            name="name1", description="The name of the 1st field", required=False
+            description="The name of the 1st field", required=False
         ),
         value1: str = SlashOption(
-            name="value1", description="The value of the 1st field", required=False
+            description="The value of the 1st field", required=False
         ),
         name2: str = SlashOption(
-            name="name2", description="The name of the 2nd field", required=False
+            description="The name of the 2nd field", required=False
         ),
         value2: str = SlashOption(
-            name="value2", description="The value of the 2nd field", required=False
+            description="The value of the 2nd field", required=False
         ),
         name3: str = SlashOption(
-            name="name3", description="The name of the 3d field", required=False
+            description="The name of the 3d field", required=False
         ),
         value3: str = SlashOption(
-            name="value3", description="The value of the 3d field", required=False
+            description="The value of the 3d field", required=False
         ),
         name4: str = SlashOption(
-            name="name4", description="The name of the 4th field", required=False
+            description="The name of the 4th field", required=False
         ),
         value4: str = SlashOption(
-            name="value4", description="The value of the 4th field", required=False
+            description="The value of the 4th field", required=False
         ),
         name5: str = SlashOption(
-            name="name5", description="The name of the 5th field", required=False
+            description="The name of the 5th field", required=False
         ),
         value5: str = SlashOption(
-            name="value5", description="The value of the 5th field", required=False
+            description="The value of the 5th field", required=False
         ),
         name6: str = SlashOption(
-            name="name6", description="The name of the 6th field", required=False
+            description="The name of the 6th field", required=False
         ),
         value6: str = SlashOption(
-            name="value6", description="The value of the 6th field", required=False
+            description="The value of the 6th field", required=False
         ),
         name7: str = SlashOption(
-            name="name7", description="The name of the 7th field", required=False
+            description="The name of the 7th field", required=False
         ),
         value7: str = SlashOption(
-            name="value7", description="The value of the 7th field", required=False
+            description="The value of the 7th field", required=False
         ),
         name8: str = SlashOption(
-            name="name8", description="The name of the 8th field", required=False
+            description="The name of the 8th field", required=False
         ),
         value8: str = SlashOption(
-            name="value8", description="The value of the 8th field", required=False
+            description="The value of the 8th field", required=False
         ),
         name9: str = SlashOption(
-            name="name9", description="The name of the 9th field", required=False
+            description="The name of the 9th field", required=False
         ),
         value9: str = SlashOption(
-            name="value9", description="The value of the 9th field", required=False
+            description="The value of the 9th field", required=False
         ),
         name10: str = SlashOption(
-            name="name10", description="The name of the 10th field", required=False
+            description="The name of the 10th field", required=False
         ),
         value10: str = SlashOption(
-            name="value10", description="The value of the 10th field", required=False
+            description="The value of the 10th field", required=False
         ),
     ):
         try:
-            if not color:
-                color = 0x0DD91A
+            color = color or 0x0DD91A
             if title:
                 embed = nextcord.Embed(color=color, title=title)
             else:
