@@ -5,7 +5,7 @@ from nextcord.ext import commands
 from nextcord import Interaction, slash_command as slash
 from nextcord.application_command import SlashOption
 import nextcord.ext.application_checks as checks
-from views.button_roles import button_roles
+from views.buttons.button_roles import button_roles
 
 from main import (
     interaction_logger as ilogger,
