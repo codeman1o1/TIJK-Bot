@@ -53,82 +53,82 @@ class developer_slash(
             name="value3", description="The value of the 3d field", required=False
         ),
         name4: str = SlashOption(
-        name="name4", description="The name of the 4th field", required=False
+            name="name4", description="The name of the 4th field", required=False
         ),
         value4: str = SlashOption(
-        name="value4", description="The value of the 4th field", required=False
+            name="value4", description="The value of the 4th field", required=False
         ),
         name5: str = SlashOption(
-        name="name5", description="The name of the 5th field", required=False
+            name="name5", description="The name of the 5th field", required=False
         ),
         value5: str = SlashOption(
-        name="value5", description="The value of the 5th field", required=False
+            name="value5", description="The value of the 5th field", required=False
         ),
         name6: str = SlashOption(
-        name="name6", description="The name of the 6th field", required=False
+            name="name6", description="The name of the 6th field", required=False
         ),
         value6: str = SlashOption(
-        name="value6", description="The value of the 6th field", required=False
+            name="value6", description="The value of the 6th field", required=False
         ),
         name7: str = SlashOption(
-        name="name7", description="The name of the 7th field", required=False
+            name="name7", description="The name of the 7th field", required=False
         ),
         valu7: str = SlashOption(
-        name="value7", description="The value of the 7th field", required=False
+            name="value7", description="The value of the 7th field", required=False
         ),
         name8: str = SlashOption(
-        name="name8", description="The name of the 8th field", required=False
+            name="name8", description="The name of the 8th field", required=False
         ),
         value8: str = SlashOption(
-        name="value8", description="The value of the 8th field", required=False
+            name="value8", description="The value of the 8th field", required=False
         ),
         name8: str = SlashOption(
-        name="name8", description="The name of the 8th field", required=False
+            name="name8", description="The name of the 8th field", required=False
         ),
         value8: str = SlashOption(
-        name="value8", description="The value of the 8th field", required=False
+            name="value8", description="The value of the 8th field", required=False
         ),
         name9: str = SlashOption(
-        name="name9", description="The name of the 9th field", required=False
+            name="name9", description="The name of the 9th field", required=False
         ),
         value9: str = SlashOption(
-        name="value9", description="The value of the 9th field", required=False
+            name="value9", description="The value of the 9th field", required=False
         ),
         name10: str = SlashOption(
-        name="name10", description="The name of the 10th field", required=False
+            name="name10", description="The name of the 10th field", required=False
         ),
         value10: str = SlashOption(
-        name="value10", description="The value of the 10th field", required=False
+            name="value10", description="The value of the 10th field", required=False
         ),
         name11: str = SlashOption(
-        name="name11", description="The name of the 11th field", required=False
+            name="name11", description="The name of the 11th field", required=False
         ),
         value11: str = SlashOption(
-        name="value11", description="The value of the 11th field", required=False
+            name="value11", description="The value of the 11th field", required=False
         ),
         name12: str = SlashOption(
-        name="name12", description="The name of the 12th field", required=False
+            name="name12", description="The name of the 12th field", required=False
         ),
         value12: str = SlashOption(
-        name="value12", description="The value of the 12th field", required=False
+            name="value12", description="The value of the 12th field", required=False
         ),
         name13: str = SlashOption(
-        name="name13", description="The name of the 13th field", required=False
+            name="name13", description="The name of the 13th field", required=False
         ),
         value13: str = SlashOption(
-        name="value13", description="The value of the 13th field", required=False
+            name="value13", description="The value of the 13th field", required=False
         ),
         name14: str = SlashOption(
-        name="name14", description="The name of the 14th field", required=False
+            name="name14", description="The name of the 14th field", required=False
         ),
         value14: str = SlashOption(
-        name="value14", description="The value of the 14th field", required=False
+            name="value14", description="The value of the 14th field", required=False
         ),
         name15: str = SlashOption(
-        name="name15", description="The name of the 15th field", required=False
+            name="name15", description="The name of the 15th field", required=False
         ),
         value15: str = SlashOption(
-        name="value15", description="The value of the 15th field", required=False
+            name="value15", description="The value of the 15th field", required=False
         ),
     ):
     ):
