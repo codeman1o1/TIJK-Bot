@@ -34,6 +34,9 @@ class developer_slash(
         footer: str = SlashOption(
             description="The footer of the embed", required=False
         ),
+        description: str = SlashOption(
+            description="The description of the embed", required=False
+        ),
         name1: str = SlashOption(
             description="The name of the 1st field", required=False
         ),
@@ -97,8 +100,14 @@ class developer_slash(
     ):
         try:
             color = color or 0x0DD91A
-            if title:
+            if title and description:
+                embed = nextcord.Embed(
+                    color=color, title=title, description=description
+                )
+            elif title:
                 embed = nextcord.Embed(color=color, title=title)
+            elif description:
+                embed = nextcord.Embed(color=color, description=description)
             else:
                 embed = nextcord.Embed(color=color)
             if name1 and value1:
