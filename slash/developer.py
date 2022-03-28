@@ -82,12 +82,6 @@ class developer_slash(
         value8: str = SlashOption(
             name="value8", description="The value of the 8th field", required=False
         ),
-        name8: str = SlashOption(
-            name="name8", description="The name of the 8th field", required=False
-        ),
-        value8: str = SlashOption(
-            name="value8", description="The value of the 8th field", required=False
-        ),
         name9: str = SlashOption(
             name="name9", description="The name of the 9th field", required=False
         ),
@@ -131,7 +125,6 @@ class developer_slash(
             name="value15", description="The value of the 15th field", required=False
         ),
     ):
-    ):
         try:
             if not color:
                 color = 0x0DD91A
@@ -157,7 +150,6 @@ class developer_slash(
                     value=value3,
                     inline=False,
                 )
-                                )
             if name4 and value4:
                 embed.add_field(
                     name=name4,
