@@ -9,7 +9,6 @@ from views.button_roles import button_roles
 
 from main import (
     interaction_logger as ilogger,
-    logger,
     warn_system,
     SLASH_GUILDS,
     BOT_DATA,
@@ -264,6 +263,7 @@ class admin_slash(
 
     @slash(description="Mute a user", guild_ids=SLASH_GUILDS)
     @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    @checks.bot_has_permissions(moderate_members=True)
     async def mute(
         self,
         interaction: Interaction,
@@ -297,6 +297,34 @@ class admin_slash(
         except humanfriendly.InvalidTimespan:
             embed = nextcord.Embed(color=0xFFC800, title="Invalid time!")
             await interaction.response.send_message(embed=embed, ephemeral=True)
+
+    # Unmute slash command
+    @slash(description="Unmute a user", guild_ids=SLASH_GUILDS)
+    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    @checks.bot_has_permissions(moderate_members=True)
+    async def unmute(
+        self,
+        interaction: Interaction,
+        user: nextcord.Member = SlashOption(
+            description="The user to unmute", required=True
+        ),
+        reason: str = SlashOption(
+            description="The reason why the user was unmuted", required=False
+        ),
+    ):
+        reason2 = f" because of {reason}" if reason else ""
+        await user.timeout(None)
+        embed = nextcord.Embed(color=0x0DD91A)
+        embed.add_field(
+            name="User unmuted!",
+            value=f"{user} was unmuted by {interaction.user}{reason2}",
+            inline=False,
+        )
+        await interaction.response.send_message(embed=embed)
+        await ilogger(
+            interaction,
+            f"{user} was unmuted by {interaction.user}{reason2}",
+        )
 
 
 def setup(bot):
