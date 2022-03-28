@@ -3,8 +3,10 @@ from nextcord.ext import commands
 from nextcord import Interaction, slash_command as slash
 from nextcord.application_command import SlashOption
 import nextcord.ext.application_checks as checks
-import os, sys
-import datetime, time
+import os
+import sys
+import datetime
+import time
 
 from main import logger, SLASH_GUILDS, START_TIME
 

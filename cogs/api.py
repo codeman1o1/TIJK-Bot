@@ -74,7 +74,7 @@ class api(commands.Cog, name="API"):
             embed.add_field(name="Username", value=info["username"], inline=False)
             embed.add_field(name="UUID", value=info["uuid"], inline=False)
             embed.add_field(name="Name History", value=name_history2, inline=False)
-        except:
+        except:  # noqa: E722
             embed = nextcord.Embed(color=0xFF0000)
             embed.add_field(
                 name=f"Can't request info for {username}",
@@ -166,7 +166,7 @@ class api(commands.Cog, name="API"):
             )
 
             embed.add_field(name="Generation", value=info["generation"], inline=True)
-        except:
+        except:  # noqa: E722
             embed = nextcord.Embed(color=0xFF0000)
             embed.add_field(
                 name=f"Can't request info for the Pokémon {name}",
@@ -197,7 +197,7 @@ class api(commands.Cog, name="API"):
             )
             data_guild = await request.json()
 
-        if data["success"] == True:
+        if data["success"]:
             player_data = data["player"]
             if "rank" in player_data:
                 rank = player_data["rank"]
@@ -243,7 +243,7 @@ class api(commands.Cog, name="API"):
             embed.add_field(
                 name="Friends:", value=len(data_friends["records"]), inline=False
             )
-            if data_guild["success"] == True and data_guild["guild"] is not None:
+            if data_guild["success"] and data_guild["guild"] is not None:
                 name = data_guild["guild"]["name"]
                 members = str(len(data_guild["guild"]["members"]))
                 embed.add_field(

@@ -1,7 +1,6 @@
 import nextcord
 from nextcord import ButtonStyle
 from nextcord.ext import commands
-from nextcord.ext.commands import Context
 from nextcord.utils import get
 
 from main import BOT_DATA
