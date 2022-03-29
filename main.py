@@ -405,12 +405,12 @@ if __name__ == "__main__":
                 print(e)
                 bl.error(f"{file} couldn't be loaded", __file__)
 
-    context = os.listdir("context")
+    context = os.listdir("views/context_menus")
     for ctx in context:
         if ctx.endswith(".py"):
             try:
                 ctx2 = ctx.strip(".py")
-                bot.load_extension(f"context.{ctx2}")
+                bot.load_extension(f"views.context_menus.{ctx2}")
                 bl.debug(f"{ctx} loaded", __file__)
             except Exception as e:
                 print(e)

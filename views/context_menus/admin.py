@@ -4,7 +4,7 @@ from nextcord.interactions import Interaction
 
 from main import warn_system
 from main import USER_DATA
-from buttons.profile_picture import profile_picture
+from views.buttons.profile_picture import profile_picture
 
 
 class admin_ctx(commands.Cog):
