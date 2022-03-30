@@ -1,0 +1,11 @@
+{
+    "recommendations": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "esbenp.prettier-vscode",
+        "SonarSource.sonarlint-vscode",
+        "sourcery.sourcery",
+        "tabnine.tabnine-vscode",
+        "albert.tabout"
+    ]
+}
