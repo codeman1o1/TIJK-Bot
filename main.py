@@ -89,7 +89,12 @@ async def warn_system(
         await user.edit(
             timeout=nextcord.utils.utcnow() + datetime.timedelta(seconds=1200)
         )
-        await logger(ctx, f"{user} was muted for 10 minutes by Warn System")
+        if isinstance(event, Context):
+            await logger(event, f"{user} was muted for 10 minutes by Warn System")
+        elif isinstance(event, Interaction):
+            await interaction_logger(
+                event, f"{user} was muted for 10 minutes by Warn System"
+            )
 
 
 async def logger(ctx: Context, message: str, channel: str = None):
