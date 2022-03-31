@@ -4,8 +4,10 @@ import asyncio
 import datetime
 import os
 import time
+from typing import Union
 
 import nextcord
+from nextcord import Interaction
 import nextcord.ext.commands.errors
 from nextcord.ext.commands import Context
 from dotenv import load_dotenv
@@ -41,7 +43,7 @@ bot = commands.Bot(
 
 
 async def warn_system(
-    event,
+    event: Union[Context, Interaction],
     user: nextcord.Member,
     amount: int = 1,
     invoker_username: str = "Warn System",
