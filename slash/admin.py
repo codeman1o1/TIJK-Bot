@@ -6,6 +6,7 @@ from nextcord import Interaction, slash_command as slash
 from nextcord.application_command import SlashOption
 import nextcord.ext.application_checks as checks
 from views.buttons.button_roles import button_roles
+from views.modals.button_roles import ButtonRolesModal
 
 from main import (
     interaction_logger as ilogger,
@@ -25,6 +26,7 @@ class admin_slash(
     @commands.Cog.listener()
     async def on_ready(self):
         self.bot.add_view(button_roles(bot=self.bot))
+        self.bot.add_modal(ButtonRolesModal(None))
 
     @slash(guild_ids=SLASH_GUILDS)
     @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
@@ -40,33 +42,37 @@ class admin_slash(
     async def send_buttonroles(
         self,
         interaction: Interaction,
-        text: str = SlashOption(
-            description="Text that will be used with the message",
+        custom_text: bool = SlashOption(
+            description="Set to True if you want custom text",
             required=False,
-            default="Click a button to add/remove that role!",
+            default=False,
         ),
     ):
-        buttonroles = BOT_DATA.find_one()["buttonroles"]
+        buttonroles_id = BOT_DATA.find_one()["buttonroles"]
         roles = sum(
-            1
-            for buttonrole in buttonroles
-            if nextcord.utils.get(interaction.guild.roles, id=buttonrole)
+            bool(nextcord.utils.get(interaction.guild.roles, id=buttonrole))
+            for buttonrole in buttonroles_id
         )
-        if roles > 0:
-            embed = nextcord.Embed(color=0x0DD91A, title="The message has been sent!")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
-            embed = nextcord.Embed(color=0x0DD91A, title=text)
 
-            await interaction.channel.send(
-                embed=embed, view=button_roles(guild=interaction.guild)
-            )
+        if roles > 0:
+            if custom_text:
+                await interaction.response.send_modal(ButtonRolesModal(button_roles(guild=interaction.guild)))
+                return
+            else:
+                embed = nextcord.Embed(color=0x0DD91A, title="Click a button to add/remove that role!")
+                await interaction.channel.send(
+                    embed=embed, view=button_roles(guild=interaction.guild)
+                )
+                embed = nextcord.Embed(
+                    color=0x0DD91A, title="The message has been sent!"
+                )
         else:
             embed = nextcord.Embed(
                 color=0xFFC800,
                 title="There are no button roles!\nMake sure to add them by using `.buttonroles add <role>`",
             )
 
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+        await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @buttonroles.subcommand(
         name="add", description="Add a button role", inherit_hooks=True
