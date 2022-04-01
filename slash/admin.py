@@ -304,7 +304,6 @@ class admin_slash(
             embed = nextcord.Embed(color=0xFFC800, title="Invalid time!")
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    # Unmute slash command
     @slash(description="Unmute a user", guild_ids=SLASH_GUILDS)
     @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     @checks.bot_has_permissions(moderate_members=True)
