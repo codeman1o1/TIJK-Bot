@@ -383,17 +383,6 @@ async def disable_command(ctx: Context, *, command: str):
 
 
 if __name__ == "__main__":
-    slash = os.listdir("slash")
-    for file in slash:
-        if file.endswith(".py"):
-            try:
-                file2 = file.strip(".py")
-                bot.load_extension(f"slash.{file2}")
-                bl.debug(f"{file} loaded", __file__)
-            except Exception as e:
-                print(e)
-                bl.error(f"{file} couldn't be loaded", __file__)
-
     context = os.listdir("context")
     for ctx in context:
         if ctx.endswith(".py"):
