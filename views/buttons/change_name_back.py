@@ -1,6 +1,8 @@
 import nextcord
 from nextcord import ButtonStyle
 
+from main import interaction_logger as ilogger
+
 
 class ChangeNameBack(nextcord.ui.View):
     def __init__(self, user: nextcord.Member, name: str):
@@ -23,12 +25,17 @@ class ChangeNameBack(nextcord.ui.View):
         )
         roles = (owner_role, admin_role, tijk_bot_developer_role)
         if any(role in interaction.user.roles for role in roles):
+            ORIGINAL_NAME = self.user.display_name
             await self.user.edit(nick=self.name)
             embed = nextcord.Embed(
                 color=0x0DD91A,
                 title=f"Successfully changed the name back to {self.name}!",
             )
             await interaction.response.send_message(embed=embed)
+            await ilogger(
+                interaction,
+                f"{ORIGINAL_NAME}'s nickname has been changed to {self.name}",
+            )
         else:
             embed = nextcord.Embed(
                 color=0xFF0000, title="You must be an admin to do this!"
