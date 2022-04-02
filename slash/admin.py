@@ -6,6 +6,7 @@ from nextcord import Interaction, slash_command as slash
 from nextcord.application_command import SlashOption
 import nextcord.ext.application_checks as checks
 from views.buttons.button_roles import button_roles
+from views.buttons.change_name_back import ChangeNameBack
 from views.modals.button_roles import ButtonRolesModal
 
 from main import (
@@ -26,6 +27,7 @@ class admin_slash(
     @commands.Cog.listener()
     async def on_ready(self):
         self.bot.add_view(button_roles(bot=self.bot))
+        self.bot.add_view(ChangeNameBack(None, None))
         self.bot.add_modal(ButtonRolesModal(None))
 
     @slash(guild_ids=SLASH_GUILDS)
@@ -56,10 +58,14 @@ class admin_slash(
 
         if roles > 0:
             if custom_text:
-                await interaction.response.send_modal(ButtonRolesModal(button_roles(guild=interaction.guild)))
+                await interaction.response.send_modal(
+                    ButtonRolesModal(button_roles(guild=interaction.guild))
+                )
                 return
             else:
-                embed = nextcord.Embed(color=0x0DD91A, title="Click a button to add/remove that role!")
+                embed = nextcord.Embed(
+                    color=0x0DD91A, title="Click a button to add/remove that role!"
+                )
                 await interaction.channel.send(
                     embed=embed, view=button_roles(guild=interaction.guild)
                 )
@@ -329,6 +335,30 @@ class admin_slash(
         await ilogger(
             interaction,
             f"{user} was unmuted by {interaction.user}{reason2}",
+        )
+
+    @slash(description="Gives a user a nickname", guild_ids=SLASH_GUILDS)
+    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    @checks.bot_has_permissions(manage_nicknames=True)
+    async def nick(
+        self,
+        interaction: Interaction,
+        user: nextcord.Member = SlashOption(
+            description="The user that should be nicked", required=True
+        ),
+        name: str = SlashOption(description="The new nickname", required=True),
+    ):
+        ORIGINAL_NAME = user.display_name
+        await user.edit(nick=name)
+        embed = nextcord.Embed(
+            color=0x0DD91A,
+            title=f"{ORIGINAL_NAME}'s nickname has been changed to {name}\nClick the button below to change the name back",
+        )
+        await interaction.response.send_message(
+            embed=embed, view=ChangeNameBack(user, ORIGINAL_NAME)
+        )
+        await ilogger(
+            interaction, f"{ORIGINAL_NAME}'s nickname has been changed to {name}"
         )
 
 
