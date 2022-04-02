@@ -392,6 +392,6 @@ if __name__ == "__main__":
                 bl.debug(f"{ctx} loaded - context", __file__)
             except Exception as e:
                 print(e)
-                bl.error(f"{ctx} couldn't be loaded", __file__)
+                bl.error(f"{ctx}  - context couldn't be loaded", __file__)
 
     bot.run(BOT_TOKEN)
