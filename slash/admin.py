@@ -337,10 +337,15 @@ class admin_slash(
             f"{user} was unmuted by {interaction.user}{reason2}",
         )
 
-    @slash(description="Gives a user a nickname", guild_ids=SLASH_GUILDS)
+    @slash(guild_ids=SLASH_GUILDS)
     @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     @checks.bot_has_permissions(manage_nicknames=True)
-    async def nick(
+    async def nick(self, interaction: Interaction):
+        """This will never get called since it has subcommands"""
+        pass
+
+    @nick.subcommand(description="Gives a user a nickname", inherit_hooks=True)
+    async def set(
         self,
         interaction: Interaction,
         user: nextcord.Member = SlashOption(
@@ -360,6 +365,23 @@ class admin_slash(
         await ilogger(
             interaction, f"{ORIGINAL_NAME}'s nickname has been changed to {name}"
         )
+
+    @nick.subcommand(description="Resets a users nickname", inherit_hooks=True)
+    async def reset(
+        self,
+        interaction: Interaction,
+        user: nextcord.Member = SlashOption(description="The user", required=True),
+    ):
+        ORIGINAL_NAME = user.display_name
+        await user.edit(nick=None)
+        embed = nextcord.Embed(
+            color=0x0DD91A,
+            title=f"{ORIGINAL_NAME}'s nickname has been reset\nClick the button below to change the name back",
+        )
+        await interaction.response.send_message(
+            embed=embed, view=ChangeNameBack(user, ORIGINAL_NAME)
+        )
+        await ilogger(interaction, f"{ORIGINAL_NAME}'s nickname has been reset")
 
 
 def setup(bot):
