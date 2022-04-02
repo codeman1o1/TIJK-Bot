@@ -389,7 +389,7 @@ if __name__ == "__main__":
             try:
                 ctx2 = ctx.strip(".py")
                 bot.load_extension(f"context.{ctx2}")
-                bl.debug(f"{ctx} loaded", __file__)
+                bl.debug(f"{ctx} loaded - context", __file__)
             except Exception as e:
                 print(e)
                 bl.error(f"{ctx} couldn't be loaded", __file__)
