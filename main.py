@@ -291,9 +291,9 @@ async def unload_cog(ctx: Context, cog: str = None):
             cogs = os.listdir("cogs")
             if "__pycache__" in cogs:
                 cogs.remove("__pycache__")
-            for cog in cogs:
-                cog2 = cog.strip(".py")
-                bot.unload_extension(f"cogs.{cog2}")
+            for cog2 in cogs:
+                cog3 = cog2.strip(".py")
+                bot.unload_extension(f"cogs.{cog3}")
             embed = nextcord.Embed(color=0x0DD91A, title="All cogs have been unloaded")
             bl.debug("All cogs have been unloaded", __file__)
         except Exception as e:
