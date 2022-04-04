@@ -195,10 +195,10 @@ async def load_cog(ctx: Context, cog: str = None):
             cogs = os.listdir("cogs")
             if "__pycache__" in cogs:
                 cogs.remove("__pycache__")
-            for cog in cogs:
-                if cog.endswith(".py"):
-                    cog2 = cog.strip(".py")
-                    bot.load_extension(f"cogs.{cog2}")
+            for cog2 in cogs:
+                if cog2.endswith(".py"):
+                    cog3 = cog2.strip(".py")
+                    bot.load_extension(f"cogs.{cog3}")
             embed = nextcord.Embed(color=0x0DD91A, title="All cogs have been loaded")
             bl.debug("All cogs have been loaded", __file__)
         except Exception as e:
