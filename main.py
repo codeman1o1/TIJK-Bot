@@ -242,10 +242,10 @@ async def reload_cog(ctx: Context, cog: str = None):
             cogs = os.listdir("cogs")
             if "__pycache__" in cogs:
                 cogs.remove("__pycache__")
-            for cog in cogs:
-                if cog.endswith(".py"):
-                    cog2 = cog.strip(".py")
-                    bot.reload_extension(f"cogs.{cog2}")
+            for cog2 in cogs:
+                if cog2.endswith(".py"):
+                    cog3 = cog2.strip(".py")
+                    bot.reload_extension(f"cogs.{cog3}")
             embed = nextcord.Embed(color=0x0DD91A, title="All cogs have been reloaded")
             bl.debug("All cogs have been reloaded", __file__)
         except Exception as e:
