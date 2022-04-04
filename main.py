@@ -181,8 +181,8 @@ async def load_cog(ctx: Context, cog: str = None):
         if "__pycache__" in cogs:
             cogs.remove("__pycache__")
         cogs2 = "> all"
-        for cog in cogs:
-            cogs2 = cogs2 + "\n> " + cog.strip(".py")
+        for cog2 in cogs:
+            cogs2 = cogs2 + "\n> " + cog2.strip(".py")
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="The available cogs are:",
