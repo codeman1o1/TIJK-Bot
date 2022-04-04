@@ -1,5 +1,6 @@
 import datetime
 import os
+import subprocess
 import sys
 import time
 
@@ -35,7 +36,7 @@ class developer(commands.Cog, name="Developer"):
             )
         )
         command = "cls" if os.name in ("nt", "dos") else "clear"
-        os.system(command)
+        subprocess.call(command, shell=False)
         os.execv(sys.executable, ["python"] + sys.argv)
 
     @commands.command(name="status")
