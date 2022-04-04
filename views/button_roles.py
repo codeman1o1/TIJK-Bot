@@ -20,12 +20,12 @@ class button_roles(nextcord.ui.View):
                         )
                     )
         if bot:
-            for guild in bot.guilds:
+            for guild2 in bot.guilds:
                 for buttonrole in BOT_DATA.find_one()["buttonroles"]:
-                    if get(guild.roles, id=buttonrole):
+                    if get(guild2.roles, id=buttonrole):
                         self.add_item(
                             AddButton(
-                                label=get(guild.roles, id=buttonrole).name,
+                                label=get(guild2.roles, id=buttonrole).name,
                                 style=ButtonStyle.primary,
                                 custom_id=str(buttonrole),
                             )
