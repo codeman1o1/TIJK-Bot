@@ -41,7 +41,9 @@ class developer(commands.Cog, name="Developer"):
 
     @commands.command(name="status")
     @commands.is_owner()
-    async def status(self, ctx: Context, status_type: str, *, text: str = "the TIJK Server"):
+    async def status(
+        self, ctx: Context, status_type: str, *, text: str = "the TIJK Server"
+    ):
         """Sets the status of TIJK Bot"""
         if status_type == "watching":
             await self.bot.change_presence(
