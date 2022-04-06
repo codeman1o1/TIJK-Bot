@@ -430,6 +430,49 @@ class admin_slash(
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
+    @role.subcommand(
+        name="remove", description="Remove a role from a user", inherit_hooks=True
+    )
+    async def remove_role(
+        self,
+        interaction: Interaction,
+        role: nextcord.Role = SlashOption(
+            description="The role that should be remove", required=True
+        ),
+        user: nextcord.Member = SlashOption(
+            description="The user where the role should be removed. Defaults to yourself",
+            required=False,
+        ),
+        reason: str = SlashOption(
+            description="The reason why the role was removed from the user",
+            required=False,
+        ),
+    ):
+        user = user or interaction.user
+        if role in user.roles:
+            await user.remove_roles(role, reason=reason)
+            reason2 = f" because of {reason}" if reason else ""
+            embed = nextcord.Embed(color=0x0DD91A)
+            embed.add_field(
+                name="Role removed!",
+                value=f"Role {role.mention} has been removed from {user.mention} by {interaction.user.mention}{reason2}",
+                inline=False,
+            )
+            await interaction.response.send_message(embed=embed)
+            await ilogger(
+                interaction,
+                f"Role {role.mention} has been removed from {user.mention} by {interaction.user.mention}",
+            )
+
+        else:
+            embed = nextcord.Embed(color=0x0DD91A)
+            embed.add_field(
+                name="Could not remove that role!",
+                value=f"{user.mention} does not have the {role.mention} role!",
+                inline=False,
+            )
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+
 
 def setup(bot):
     bot.add_cog(admin_slash(bot))
