@@ -1,6 +1,9 @@
 name: Restart Sparked Host Server
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   update-server:
