@@ -536,6 +536,32 @@ class admin_slash(
             f"{len(deleted_messages)} messages have been cleaned from {channel.mention}",
         )
 
+    @slash(description="Kick a user from the server", guild_ids=SLASH_GUILDS)
+    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    async def kick(
+        self,
+        interaction: Interaction,
+        user: nextcord.Member = SlashOption(
+            description="The user to kick", required=True
+        ),
+        reason: str = SlashOption(
+            description="The reason why the user was kicked", required=False
+        ),
+    ):
+        reason2 = f" because of {reason}" if reason else ""
+        await user.kick(reason=reason)
+        embed = nextcord.Embed(color=0x0DD91A)
+        embed.add_field(
+            name="User kicked!",
+            value=f"{user} has been kicked by {interaction.user.mention}{reason2}",
+            inline=False,
+        )
+        await interaction.response.send_message(embed=embed)
+        await ilogger(
+            interaction,
+            f"{user} has been kicked by {interaction.user.mention}{reason2}",
+        )
+
 
 def setup(bot):
     bot.add_cog(admin_slash(bot))
