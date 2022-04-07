@@ -473,6 +473,34 @@ class admin_slash(
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
+    @slash(description="Clears the chat", guild_ids=SLASH_GUILDS)
+    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    async def clear(
+        self,
+        interaction: Interaction,
+        amount: int = SlashOption(
+            description="The amount of messages to clear", min_value=1, required=True
+        ),
+        channel: nextcord.abc.GuildChannel = SlashOption(
+            description="The channel to clear messages from. Defaults to the current channel",
+            channel_types=[nextcord.ChannelType.text],
+            required=False,
+        ),
+    ):
+        channel: nextcord.TextChannel = channel or interaction.channel
+        deleted_messages = await channel.purge(limit=amount, bulk=True)
+        embed = nextcord.Embed(color=0x0DD91A)
+        embed.add_field(
+            name=f"{len(deleted_messages)} messages cleared!",
+            value="This message wil delete itself after 10 seconds",
+            inline=False,
+        )
+        await interaction.response.send_message(embed=embed, delete_after=10)
+        await ilogger(
+            interaction,
+            f"{len(deleted_messages)} messages have been cleared from {channel.mention}",
+        )
+
 
 def setup(bot):
     bot.add_cog(admin_slash(bot))
