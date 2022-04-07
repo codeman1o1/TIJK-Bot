@@ -17,6 +17,8 @@ from main import (
     bl,
 )
 
+BOT_PREFIXES = tuple(BOT_DATA.find_one()["botprefixes"])
+
 
 class admin_slash(
     commands.Cog, name="Admin Slash Commands", description="Slash commands for admins"
@@ -499,6 +501,39 @@ class admin_slash(
         await ilogger(
             interaction,
             f"{len(deleted_messages)} messages have been cleared from {channel.mention}",
+        )
+
+    @slash(description="Clears the chat from bot messages", guild_ids=SLASH_GUILDS)
+    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    async def clean(
+        self,
+        interaction: Interaction,
+        amount: int = SlashOption(
+            description="The amount of messages to clear", min_value=1, required=True
+        ),
+        channel: nextcord.abc.GuildChannel = SlashOption(
+            description="The channel to clear messages from",
+            channel_types=[nextcord.ChannelType.text],
+            required=False,
+        ),
+    ):
+        def check(message: nextcord.Message):
+            return bool(
+                message.author.bot or message.content.lower().startswith(BOT_PREFIXES)
+            )
+
+        channel = channel or interaction.channel
+        deleted_messages = await channel.purge(limit=amount, check=check)
+        embed = nextcord.Embed(color=0x0DD91A)
+        embed.add_field(
+            name=f"{len(deleted_messages)} messages cleaned!",
+            value="This message wil delete itself after 10 seconds",
+            inline=False,
+        )
+        await interaction.response.send_message(embed=embed, delete_after=10)
+        await ilogger(
+            interaction,
+            f"{len(deleted_messages)} messages have been cleaned from {channel.mention}",
         )
 
 
