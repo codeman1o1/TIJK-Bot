@@ -562,6 +562,32 @@ class admin_slash(
             f"{user} has been kicked by {interaction.user.mention}{reason2}",
         )
 
+    @slash(description="Bans a user from the server", guild_ids=SLASH_GUILDS)
+    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    async def ban(
+        self,
+        interaction: Interaction,
+        user: nextcord.Member = SlashOption(
+            description="The user to ban", required=True
+        ),
+        reason: str = SlashOption(
+            description="The reason why the user was banned", required=False
+        ),
+    ):
+        reason2 = f" because of {reason}" if reason else ""
+        await user.ban(reason=reason)
+        embed = nextcord.Embed(color=0x0DD91A)
+        embed.add_field(
+            name="User banned!",
+            value=f"{user} has been banned by {interaction.user.mention}{reason2}\nUse `.unban {user}` to unban",
+            inline=False,
+        )
+        await interaction.response.send_message(embed=embed)
+        await ilogger(
+            interaction,
+            f"{user} has been banned by {interaction.user.mention}{reason2}",
+        )
+
 
 def setup(bot):
     bot.add_cog(admin_slash(bot))
