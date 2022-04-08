@@ -813,6 +813,49 @@ class admin_slash(
             embed=embed, view=profile_picture(user.display_avatar.url)
         )
 
+    @slash(description="Enables slowmode for a channel", guild_ids=SLASH_GUILDS)
+    async def slowmode(
+        self,
+        interaction: Interaction,
+        time: str = SlashOption(
+            description="How long the slowmode should be. Use 0 to turn off",
+            required=True,
+        ),
+        channel: nextcord.abc.GuildChannel = SlashOption(
+            description="The channel to set a slowmode for. Defaults to the current channel",
+            channel_types=[nextcord.ChannelType.text],
+            required=False,
+        ),
+    ):
+        if any(
+            time.lower() == option for option in ("reset", "off", "disable", "disabled")
+        ):
+            time = "0"
+        try:
+            time_seconds = int(humanfriendly.parse_timespan(time))
+        except humanfriendly.InvalidTimespan:
+            embed = nextcord.Embed(color=0xFFC800, title="Invalid time!")
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+            return
+        channel = channel or interaction.channel
+        time = humanfriendly.format_timespan(time_seconds)
+        if time_seconds <= 21600:
+            await channel.edit(slowmode_delay=time_seconds)
+            embed = nextcord.Embed(
+                color=0x0DD91A,
+                title=f"Set the slowmode for the {channel.name} channel to {time}",
+            )
+            await ilogger(
+                interaction,
+                f"The slowmode for the {channel.name} channel has been set to {time}",
+            )
+            await interaction.response.send_message(embed=embed)
+        else:
+            embed = nextcord.Embed(
+                color=0xFFC800, title="The limit for slowmode is 6 hours"
+            )
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+
 
 def setup(bot):
     bot.add_cog(admin_slash(bot))
