@@ -245,7 +245,7 @@ class admin(commands.Cog, name="Admin"):
     async def unmute(self, ctx: Context, user: nextcord.Member, *, reason=None):
         """Unmutes a user"""
         reason2 = f" because of {reason}" if reason else ""
-        await user.edit(timeout=None)
+        await user.mute(None)
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="User unmuted!",
@@ -465,10 +465,6 @@ class admin(commands.Cog, name="Admin"):
     ):
         """Warns someone"""
         await warn_system(ctx, user, amount, ctx.author, reason)
-        await logger(
-            ctx,
-            f"{user} has been warned {amount}x by {ctx.author} {reason}",
-        )
 
     @warn.command(name="remove")
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")
@@ -481,29 +477,7 @@ class admin(commands.Cog, name="Admin"):
         reason=None,
     ):
         """Removes a warn from someone"""
-        reason2 = f"because of {reason}" if reason else ""
-        query = {"_id": user.id}
-        if USER_DATA.count_documents(query) == 0:
-            post = {"_id": user.id, "warns": 0}
-            USER_DATA.insert_one(post)
-        else:
-            user2 = USER_DATA.find_one(query)
-            if "warns" in user2:
-                warns = user2["warns"]
-            warns2 = warns
-            warns = warns - amount
-            if warns < 0:
-                warns = 0
-                amount = 0 + warns2
-            USER_DATA.update_one({"_id": user.id}, {"$set": {"warns": warns}})
-        embed = nextcord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name=f"{user} now has {amount} warn(s) less {reason2}!",
-            value=f"{user} now has a total of {warns} warn(s)!",
-            inline=False,
-        )
-        await ctx.send(embed=embed)
-        await logger(ctx, f"{amount} warn(s) have been removed from {user}")
+        await warn_system(ctx, user, amount, ctx.author, reason, True)
 
     @warn.command(name="list")
     @commands.has_any_role("Owner", "Admin", "TIJK-Bot developer")

@@ -48,35 +48,71 @@ async def warn_system(
     amount: int = 1,
     invoker_username: str = "Warn System",
     reason: str = None,
+    remove: bool = False,
 ):
+    """Warns a user
+
+    Args:
+        event (Union[Context, Interaction]): The event where this function is called
+        user (nextcord.Member): The user who is warned
+        amount (int, optional): The amount of warns to give. Defaults to 1.
+        invoker_username (str, optional): The user who warned the user. Defaults to "Warn System".
+        reason (str, optional): The reason why the user was warned. Defaults to None.
+        remove (bool, optional): If warns should be removed instead of added. Defaults to False.
     """
-    Warn users\n
-    Allowed arguments:
-    `event`: The event
-    `user` (member): The user to warn
-    `amount` (int): The amount of warns to give. Defaults to 1
-    `invoker_username` (str): The user who warned someone
-    `reason` (str): The reason for the warn
-    """
+    reason2 = f" because of {reason}" if reason else ""
     query = {"_id": user.id}
     if USER_DATA.count_documents(query) == 0:
         post = {"_id": user.id, "warns": amount}
         USER_DATA.insert_one(post)
-        total_warns = amount
+        total_warns = 0
     else:
         user2 = USER_DATA.find_one(query)
         warns = user2["warns"] if "warns" in user2 else 0
-        total_warns = warns + amount
+        if not remove:
+            total_warns = warns + amount
+        else:
+            total_warns = warns - amount
+            if total_warns < 0:
+                warns = 0
         USER_DATA.update_one({"_id": user.id}, {"$set": {"warns": total_warns}})
+    if isinstance(event, Context):
+        if not remove:
+            await logger(
+                event,
+                f"{user} has been warned {amount}x by {event.author.mention}{reason2}",
+            )
+        else:
+            await logger(event, f"{amount} warn(s) have been removed from {user}")
+    elif isinstance(event, Interaction):
+        if not remove:
+            await interaction_logger(
+                event,
+                f"{user} has been warned {amount}x by {event.user.mention}{reason2}",
+            )
+        else:
+            await interaction_logger(
+                event, f"{amount} warn(s) have been removed from {user}"
+            )
     embed = nextcord.Embed(color=0x0DD91A)
     if total_warns <= 9:
         reason2 = f" because of {reason}" if reason else ""
-        embed.add_field(
-            name=f"{user} has been warned by {invoker_username}{reason2}",
-            value=f"{user} has {10 - total_warns} warns left!",
-            inline=False,
-        )
-        await event.channel.send(embed=embed)
+        if not remove:
+            embed.add_field(
+                name=f"{user} has been warned by {invoker_username}{reason2}",
+                value=f"{user} has {10 - total_warns} warns left!",
+                inline=False,
+            )
+        else:
+            embed.add_field(
+                name=f"{user} now has {amount} warn(s) less {reason2}!",
+                value=f"{user} now has a total of {total_warns} warn(s)!",
+                inline=False,
+            )
+        if isinstance(event, Context):
+            await event.channel.send(embed=embed)
+        elif isinstance(event, Interaction):
+            await event.response.send_message(embed=embed)
     if total_warns >= 10:
         USER_DATA.update_one({"_id": user.id}, {"$set": {"warns": 0}})
         embed.add_field(
@@ -85,10 +121,13 @@ async def warn_system(
             inline=False,
         )
 
-        await event.channel.send(embed=embed)
-        await user.edit(
-            timeout=nextcord.utils.utcnow() + datetime.timedelta(seconds=1200)
-        )
+        await user.timeout(nextcord.utils.utcnow() + datetime.timedelta(seconds=1200))
+
+        if isinstance(event, Context):
+            await event.channel.send(embed=embed)
+        elif isinstance(event, Interaction):
+            await event.response.send_message(embed=embed)
+
         if isinstance(event, Context):
             await logger(event, f"{user} was muted for 10 minutes by Warn System")
         elif isinstance(event, Interaction):
