@@ -923,6 +923,30 @@ class admin_slash(
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
+    @pingpoll.subcommand(name="list", description="List roles used in Ping Poll", inherit_hooks=True)
+    async def list_pingpoll(self, interaction: Interaction):
+        if pingpolls := list(BOT_DATA.find_one()["pingpolls"]):
+            pingpolls2 = ""
+            for pingpoll in pingpolls:
+                if nextcord.utils.get(interaction.guild.roles, id=pingpoll):
+                    pingpolls2 = (
+                        pingpolls2
+                        + "\n> "
+                        + nextcord.utils.get(interaction.guild.roles, id=pingpoll).name
+                    )
+            if not pingpolls2:
+                embed = nextcord.Embed(color=0xFFC800, title="There are no PingPolls!")
+            else:
+                embed = nextcord.Embed(color=0x0DD91A)
+                embed.add_field(
+                    name="The current PingPolls are",
+                    value=pingpolls2,
+                    inline=False,
+                )
+        else:
+            embed = nextcord.Embed(color=0xFFC800, title="There are no PingPolls!")
+        await interaction.response.send_message(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(admin_slash(bot))
