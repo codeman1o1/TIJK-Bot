@@ -655,6 +655,16 @@ class admin_slash(
             embed = nextcord.Embed(color=0x0DD91A, title="Nobody has warns!")
         await interaction.response.send_message(embed=embed)
 
+    @warn.subcommand(name="get", description="Get your warns")
+    async def get(self, interaction: Interaction):
+        user = USER_DATA.find_one({"_id": interaction.user.id})
+        warns = user["warns"] if "warns" in user else 0
+        embed = nextcord.Embed(
+            color=0x0DD91A,
+            title=f"You have {warns} warn(s)!",
+        )
+        await interaction.response.send_message(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(admin_slash(bot))
