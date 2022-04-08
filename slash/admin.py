@@ -1,3 +1,4 @@
+from contextlib import suppress
 import datetime
 import humanfriendly
 import nextcord
@@ -674,7 +675,7 @@ class admin_slash(
     @info.subcommand(
         name="role", description="Show information about a role", inherit_hooks=True
     )
-    async def info_role(
+    async def role_info(
         self,
         interaction: Interaction,
         role: nextcord.Role = SlashOption(
@@ -698,6 +699,53 @@ class admin_slash(
         embed.add_field(
             name="Role permissions", value=permissions or "None", inline=True
         )
+        await interaction.response.send_message(embed=embed)
+
+    @info.subcommand(
+        name="server", description="Show information about a server", inherit_hooks=True
+    )
+    async def server_info(
+        self,
+        interaction: Interaction,
+        server_id: str = SlashOption(
+            description="The server to show info about", required=False
+        ),
+    ):
+        try:
+            server_id = int(server_id)
+        except ValueError:
+            embed = nextcord.Embed(color=0xFFC800, title="Please put in a server ID!")
+            await interaction.response.send_message(embed=embed)
+            return
+        guild_id = server_id or interaction.guild.id
+        guild = self.bot.get_guild(guild_id)
+        if guild is not None:
+            embed = nextcord.Embed(
+                color=0x0DD91A,
+                title=f"Here is information about the {guild.name} server",
+            )
+            if guild.icon:
+                embed.set_thumbnail(url=guild.icon)
+            embed.add_field(name="Server name", value=guild.name, inline=True)
+            embed.add_field(name="Server ID", value=guild.id, inline=True)
+            if guild.owner.name == guild.owner:
+                embed.add_field(name="Owner", value=guild.owner, inline=True)
+            else:
+                embed.add_field(
+                    name="Owner",
+                    value=f"{guild.owner} ({guild.owner.name})",
+                )
+            embed.add_field(name="Total members", value=len(guild.members), inline=True)
+            embed.add_field(name="Total humans", value=len(guild.humans), inline=True)
+            embed.add_field(name="Total bots", value=len(guild.bots), inline=True)
+            embed.add_field(name="Total roles", value=len(guild.roles), inline=True)
+            with suppress(nextcord.Forbidden):
+                bans = 0
+                for _ in await guild.bans():
+                    bans += 1
+                embed.add_field(name="Total bans", value=bans, inline=True)
+        else:
+            embed = nextcord.Embed(color=0xFFC800, title="I can not access that guild!")
         await interaction.response.send_message(embed=embed)
 
 
