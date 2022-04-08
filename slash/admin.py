@@ -8,6 +8,7 @@ from nextcord.application_command import SlashOption
 import nextcord.ext.application_checks as checks
 from views.buttons.button_roles import button_roles
 from views.buttons.change_name_back import ChangeNameBack
+from views.buttons.profile_picture import profile_picture
 from views.modals.button_roles import ButtonRolesModal
 
 from main import (
@@ -702,7 +703,9 @@ class admin_slash(
         await interaction.response.send_message(embed=embed)
 
     @info.subcommand(
-        name="server", description="Show information about a server", inherit_hooks=True
+        name="server",
+        description="Show information about a server. Defaults to the current server",
+        inherit_hooks=True,
     )
     async def server_info(
         self,
@@ -747,6 +750,68 @@ class admin_slash(
         else:
             embed = nextcord.Embed(color=0xFFC800, title="I can not access that guild!")
         await interaction.response.send_message(embed=embed)
+
+    @info.subcommand(
+        name="user", description="Show information about a user", inherit_hooks=True
+    )
+    async def user_info(
+        self,
+        interaction: Interaction,
+        user: nextcord.Member = SlashOption(
+            description="The user to show information about. Defaults to yourself",
+            required=False,
+        ),
+    ):
+        user = user or interaction.user
+        embed = nextcord.Embed(
+            color=0x0DD91A, title=f"Here is information for {user.name}"
+        )
+        if user.avatar:
+            embed.set_thumbnail(url=user.display_avatar)
+        embed.add_field(name="Name", value=user, inline=True)
+        if user.nick:
+            embed.add_field(name="Nickname", value=user.nick, inline=True)
+        embed.add_field(name="ID", value=user.id, inline=True)
+        embed.add_field(
+            name="Account created at",
+            value=user.created_at.strftime("%d %b %Y"),
+            inline=True,
+        )
+        embed.add_field(
+            name=f"Joined {user.guild.name} at",
+            value=user.joined_at.strftime("%d %b %Y"),
+            inline=True,
+        )
+        if user._timeout:
+            embed.add_field(
+                name="Timed out until",
+                value=user._timeout.strftime("%H:%M:%S %d %b %Y"),
+                inline=True,
+            )
+        embed.add_field(name="Top role", value=user.top_role.mention, inline=True)
+        roles_list: list = user.roles
+        roles_list.reverse()
+        roles = ", ".join(role.mention for role in roles_list)
+        embed.add_field(name="Roles", value=roles, inline=True)
+        public_flags_list: list = user.public_flags.all()
+        if public_flags_list:
+            public_flags = ", ".join(flag.name for flag in public_flags_list)
+            embed.add_field(name="Public flags", value=public_flags, inline=True)
+        embed.add_field(
+            name="In mutual guilds", value=len(user.mutual_guilds), inline=True
+        )
+        messages = USER_DATA.find_one({"_id": user.id})["messages"] or 0
+        warns = USER_DATA.find_one({"_id": user.id})["warns"] or 0
+        embed.add_field(name="Messages sent", value=messages, inline=True)
+        embed.add_field(name="Total warns", value=warns, inline=True)
+        if user.guild_permissions:
+            permissions = ", ".join(
+                name for name, value in user.guild_permissions if value
+            )
+            embed.add_field(name="Permissions in guild", value=permissions, inline=True)
+        await interaction.response.send_message(
+            embed=embed, view=profile_picture(user.display_avatar.url)
+        )
 
 
 def setup(bot):
