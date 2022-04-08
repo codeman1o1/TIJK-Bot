@@ -10,6 +10,7 @@ from views.buttons.change_name_back import ChangeNameBack
 from views.modals.button_roles import ButtonRolesModal
 
 from main import (
+    USER_DATA,
     interaction_logger as ilogger,
     warn_system,
     SLASH_GUILDS,
@@ -633,6 +634,26 @@ class admin_slash(
         ),
     ):
         await warn_system(interaction, user, amount, interaction.user, reason, True)
+
+    @warn.subcommand(
+        name="list",
+        description="List the warn points of everyone that received at least 1",
+    )
+    async def list_warn(self, interaction: Interaction):
+        embed = nextcord.Embed(color=0x0DD91A)
+        for user in USER_DATA.find():
+            if "warns" in user:
+                warns = user["warns"]
+                user = self.bot.get_user(int(user["_id"]))
+                if warns != 0:
+                    embed.add_field(
+                        name=f"{user} has",
+                        value=f"{warns} warns",
+                        inline=False,
+                    )
+        if embed.fields == 0:
+            embed = nextcord.Embed(color=0x0DD91A, title="Nobody has warns!")
+        await interaction.response.send_message(embed=embed)
 
 
 def setup(bot):
