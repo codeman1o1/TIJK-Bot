@@ -588,6 +588,37 @@ class admin_slash(
             f"{user} has been banned by {interaction.user.mention}{reason2}",
         )
 
+    @slash(guild_ids=SLASH_GUILDS)
+    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    async def warn(self, interaction: Interaction):
+        """This will never get called since it has subcommands"""
+        pass
+
+    @warn.subcommand(name="add", description="Warns a user", inherit_hooks=True)
+    async def add_warn(
+        self,
+        interaction: Interaction,
+        user: nextcord.Member = SlashOption(
+            description="The user to warn", required=True
+        ),
+        amount: int = SlashOption(
+            description="The amount of warns to give. Defaults to 1",
+            min_value=1,
+            default=1,
+            required=False,
+        ),
+        reason: str = SlashOption(
+            description="The reason why the user was warned", required=False
+        ),
+    ):
+        await warn_system(interaction, user, amount, interaction.user, reason)
+        embed = nextcord.Embed(color=0x0DD91A, title=f"Successfully warned {user}!")
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+        await ilogger(
+            interaction,
+            f"{user.mention} has been warned {amount}x by {interaction.user.mention} {reason}",
+        )
+
 
 def setup(bot):
     bot.add_cog(admin_slash(bot))
