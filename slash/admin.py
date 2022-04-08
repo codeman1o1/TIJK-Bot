@@ -10,6 +10,7 @@ from views.buttons.change_name_back import ChangeNameBack
 from views.modals.button_roles import ButtonRolesModal
 
 from main import (
+    USER_DATA,
     interaction_logger as ilogger,
     warn_system,
     SLASH_GUILDS,
@@ -611,13 +612,57 @@ class admin_slash(
             description="The reason why the user was warned", required=False
         ),
     ):
+        reason2 = f" because of {reason}" if reason else ""
         await warn_system(interaction, user, amount, interaction.user, reason)
         embed = nextcord.Embed(color=0x0DD91A, title=f"Successfully warned {user}!")
         await interaction.response.send_message(embed=embed, ephemeral=True)
         await ilogger(
             interaction,
-            f"{user.mention} has been warned {amount}x by {interaction.user.mention} {reason}",
+            f"{user.mention} has been warned {amount}x by {interaction.user.mention}{reason2}",
         )
+
+    @warn.subcommand(
+        name="remove", description="Removes a warn from a user", inherit_hooks=True
+    )
+    async def remove_warn(
+        self,
+        interaction: Interaction,
+        user: nextcord.Member = SlashOption(
+            description="The user to remove a warn from", required=True
+        ),
+        amount: int = SlashOption(
+            description="The amount of warns to remove. Defaults to 1",
+            min_value=1,
+            default=1,
+            required=False,
+        ),
+        reason: str = SlashOption(
+            description="The reason why the user was warned", required=False
+        ),
+    ):
+        reason2 = f"because of {reason}" if reason else ""
+        query = {"_id": user.id}
+        if USER_DATA.count_documents(query) == 0:
+            post = {"_id": user.id, "warns": 0}
+            USER_DATA.insert_one(post)
+        else:
+            user2 = USER_DATA.find_one(query)
+            if "warns" in user2:
+                warns = user2["warns"]
+            warns2 = warns
+            warns = warns - amount
+            if warns < 0:
+                warns = 0
+                amount = 0 + warns2
+            USER_DATA.update_one({"_id": user.id}, {"$set": {"warns": warns}})
+        embed = nextcord.Embed(color=0x0DD91A)
+        embed.add_field(
+            name=f"{user} now has {amount} warn(s) less {reason2}!",
+            value=f"{user} now has a total of {warns} warn(s)!",
+            inline=False,
+        )
+        await interaction.response.send_message(embed=embed)
+        await ilogger(interaction, f"{amount} warn(s) have been removed from {user.mention}{reason2}")
 
 
 def setup(bot):
