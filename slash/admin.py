@@ -350,7 +350,7 @@ class admin_slash(
         pass
 
     @nick.subcommand(description="Gives a user a nickname", inherit_hooks=True)
-    async def set(
+    async def nick_set(
         self,
         interaction: Interaction,
         user: nextcord.Member = SlashOption(
@@ -372,7 +372,7 @@ class admin_slash(
         )
 
     @nick.subcommand(description="Resets a users nickname", inherit_hooks=True)
-    async def reset(
+    async def nick_reset(
         self,
         interaction: Interaction,
         user: nextcord.Member = SlashOption(description="The user", required=True),
@@ -658,7 +658,7 @@ class admin_slash(
         await interaction.response.send_message(embed=embed)
 
     @warn.subcommand(name="get", description="Get your warns")
-    async def get(self, interaction: Interaction):
+    async def get_warn(self, interaction: Interaction):
         user = USER_DATA.find_one({"_id": interaction.user.id})
         warns = user["warns"] if "warns" in user else 0
         embed = nextcord.Embed(
@@ -889,6 +889,37 @@ class admin_slash(
         else:
             embed = nextcord.Embed(
                 color=0xFFC800, title=f"Role `{role.name}` is already in PingPolls!"
+            )
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+
+    @pingpoll.subcommand(
+        name="remove",
+        description="Remove roles used from Ping Poll",
+        inherit_hooks=True,
+    )
+    async def remove_pingpoll(
+        self,
+        interaction: Interaction,
+        role: nextcord.Role = SlashOption(
+            description="The role to remove from Ping Poll", required=True
+        ),
+    ):
+        pingpolls = list(BOT_DATA.find_one()["pingpolls"])
+        if role.id in pingpolls:
+            pingpolls.remove(role.id)
+            BOT_DATA.update_one(
+                {},
+                {"$set": {"pingpolls": pingpolls}},
+                upsert=False,
+            )
+            embed = nextcord.Embed(
+                color=0x0DD91A, title=f"Role `{role.name}` removed from PingPolls!"
+            )
+            await interaction.response.send_message(embed=embed)
+            await ilogger(interaction, f"Role `{role.name}` is removed from PingPolls")
+        else:
+            embed = nextcord.Embed(
+                color=0xFFC800, title=f"Role `{role.name}` is not in PingPolls!"
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
