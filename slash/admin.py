@@ -814,6 +814,7 @@ class admin_slash(
         )
 
     @slash(description="Enables slowmode for a channel", guild_ids=SLASH_GUILDS)
+    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def slowmode(
         self,
         interaction: Interaction,
@@ -853,6 +854,41 @@ class admin_slash(
         else:
             embed = nextcord.Embed(
                 color=0xFFC800, title="The limit for slowmode is 6 hours"
+            )
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+
+    @slash(guild_ids=SLASH_GUILDS)
+    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    async def pingpoll(self, interaction: Interaction):
+        """This will never get called since it has subcommands"""
+        pass
+
+    @pingpoll.subcommand(
+        name="add", description="Add roles used in Ping Poll", inherit_hooks=True
+    )
+    async def add_pingpoll(
+        self,
+        interaction: Interaction,
+        role: nextcord.Role = SlashOption(
+            description="The role to add to Ping Poll", required=True
+        ),
+    ):
+        pingpolls = list(BOT_DATA.find_one()["pingpolls"])
+        if role.id not in pingpolls:
+            pingpolls.append(role.id)
+            BOT_DATA.update_one(
+                {},
+                {"$set": {"pingpolls": pingpolls}},
+                upsert=False,
+            )
+            embed = nextcord.Embed(
+                color=0x0DD91A, title=f"Role `{role.name}` added to PingPolls!"
+            )
+            await interaction.response.send_message(embed=embed)
+            await ilogger(interaction, f"Role `{role.name}` added to PingPolls!")
+        else:
+            embed = nextcord.Embed(
+                color=0xFFC800, title=f"Role `{role.name}` is already in PingPolls!"
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
