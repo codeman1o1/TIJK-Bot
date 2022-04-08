@@ -665,6 +665,41 @@ class admin_slash(
         )
         await interaction.response.send_message(embed=embed)
 
+    @slash(guild_ids=SLASH_GUILDS)
+    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    async def info(self, interaction: Interaction):
+        """This will never get called since it has subcommands"""
+        pass
+
+    @info.subcommand(
+        name="role", description="Show information about a role", inherit_hooks=True
+    )
+    async def info_role(
+        self,
+        interaction: Interaction,
+        role: nextcord.Role = SlashOption(
+            description="The role to show info about", required=True
+        ),
+    ):
+        embed = nextcord.Embed(
+            color=0x0DD91A, title=f"Here is information about the {role.name} role"
+        )
+        embed.add_field(name="Role name", value=role.name, inline=True)
+        embed.add_field(name="Role ID", value=role.id, inline=True)
+        embed.add_field(
+            name="Role color",
+            value="#" + hex(role._colour).replace("0x", "").upper(),
+            inline=True,
+        )
+        embed.add_field(
+            name="Users with this role", value=len(role.members), inline=True
+        )
+        permissions = ", ".join(name for name, value in role.permissions if value)
+        embed.add_field(
+            name="Role permissions", value=permissions or "None", inline=True
+        )
+        await interaction.response.send_message(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(admin_slash(bot))
