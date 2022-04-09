@@ -271,6 +271,35 @@ class developer_slash(
             embed = nextcord.Embed(color=0xFFC800, title="No users were removed!")
         await interaction.response.send_message(embed=embed)
 
+    @slash(description="Lets TIJK Bot leave a server", guild_ids=SLASH_GUILDS)
+    @checks.is_owner()
+    async def leave_server(
+        self, interaction: Interaction, server_id: str = SlashOption(required=False)
+    ):
+        if server_id:
+            try:
+                server_id = int(server_id)
+            except ValueError:
+                embed = nextcord.Embed(color=0xFFC800, title="Invalid server ID!")
+                await interaction.response.send_message(embed=embed, ephemeral=True)
+                return
+            if GUILD := nextcord.utils.get(self.bot.guilds, id=server_id):
+                await GUILD.leave()
+                embed = nextcord.Embed(color=0x0DD91A, title=f"Left {GUILD.name}")
+                await interaction.response.send_message(embed=embed)
+            else:
+                embed = nextcord.Embed(
+                    color=0xFFC800, title="That is not a guild or I am not in it!"
+                )
+                await interaction.response.send_message(embed=embed, ephemeral=True)
+        else:
+            embed = nextcord.Embed(color=0x0DD91A)
+            servers = "\n".join(
+                f"> {GUILD.name} (**{GUILD.id}**)" for GUILD in self.bot.guilds
+            )
+            embed.add_field(name="Available servers:", value=servers)
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+
 
 def setup(bot):
     bot.add_cog(developer_slash(bot))

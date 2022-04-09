@@ -718,7 +718,7 @@ class admin_slash(
             server_id = int(server_id)
         except ValueError:
             embed = nextcord.Embed(color=0xFFC800, title="Please put in a server ID!")
-            await interaction.response.send_message(embed=embed)
+            await interaction.response.send_message(embed=embed, ephemeral=True)
             return
         guild_id = server_id or interaction.guild.id
         guild = self.bot.get_guild(guild_id)
@@ -923,7 +923,9 @@ class admin_slash(
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @pingpoll.subcommand(name="list", description="List roles used in Ping Poll", inherit_hooks=True)
+    @pingpoll.subcommand(
+        name="list", description="List roles used in Ping Poll", inherit_hooks=True
+    )
     async def list_pingpoll(self, interaction: Interaction):
         if pingpolls := list(BOT_DATA.find_one()["pingpolls"]):
             pingpolls2 = ""
