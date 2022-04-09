@@ -6,7 +6,7 @@ import nextcord.ext.application_checks as checks
 import os, sys
 import datetime, time
 
-from main import logger, SLASH_GUILDS, START_TIME
+from main import USER_DATA, logger, SLASH_GUILDS, START_TIME
 
 
 class developer_slash(
@@ -251,6 +251,24 @@ class developer_slash(
             embed = nextcord.Embed(
                 color=0x0DD91A, title="You already have the `TIJK-Bot developer` role"
             )
+        await interaction.response.send_message(embed=embed)
+
+    @slash(
+        description="Removes invalid users from the database", guild_ids=SLASH_GUILDS
+    )
+    @checks.is_owner()
+    async def purge_unknown_users(self, interaction: Interaction):
+        users_removed = 0
+        for user in USER_DATA.find():
+            if not self.bot.get_user(user["_id"]):
+                USER_DATA.delete_one({"_id": user["_id"]})
+                users_removed += 1
+        if users_removed > 0:
+            embed = nextcord.Embed(
+                color=0x0DD91A, title=f"Removed {users_removed} user(s)!"
+            )
+        else:
+            embed = nextcord.Embed(color=0xFFC800, title="No users were removed!")
         await interaction.response.send_message(embed=embed)
 
 
