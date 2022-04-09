@@ -342,6 +342,41 @@ class api_slash(
             )
         await interaction.response.send_message(embed=embed)
 
+    @api.subcommand(
+        name="activity",
+        description="Sends a random activity you can do",
+        inherit_hooks=True,
+    )
+    async def activity_api(
+        self,
+        interaction: Interaction,
+        extra_option=SlashOption(
+            description="Extra configurable options",
+            choices=["alone", "free"],
+            required=False,
+        ),
+    ):
+        url = "https://www.boredapi.com/api/activity"
+        extra_text = ""
+        if extra_option == "alone":
+            url = "https://www.boredapi.com/api/activity?participants=1"
+            extra_text = " that you can do alone"
+        elif extra_option == "free":
+            url = "https://www.boredapi.com/api/activity?price=0"
+            extra_text = " that you can do for free"
+        async with aiohttp.ClientSession() as session:
+            request = await session.get(url)
+            data = await request.json()
+
+        embed = nextcord.Embed(color=0x0DD91A)
+        activity = data["activity"]
+        if data["link"] != "":
+            activity = activity + "\nLink: " + data["link"]
+        embed.add_field(
+            name=f"Here is a random activity{extra_text}", value=activity, inline=True
+        )
+        await interaction.response.send_message(embed=embed)
+
 
 def setup(bot: commands.Bot):
     bot.add_cog(api_slash(bot))
