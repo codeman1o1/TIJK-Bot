@@ -237,6 +237,19 @@ class api_slash(
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
+    @api.subcommand(
+        name="joke",
+        description="Uses a joke API to get information",
+        inherit_hooks=True,
+    )
+    async def joke_api(self, interaction: Interaction):
+        async with aiohttp.ClientSession() as session:
+            request = await session.get("https://some-random-api.ml/joke")
+            info = await request.json()
+        embed = nextcord.Embed(color=0x0DD91A)
+        embed.add_field(name="Here is a joke!", value=info["joke"], inline=False)
+        await interaction.response.send_message(embed=embed)
+
 
 def setup(bot: commands.Bot):
     bot.add_cog(api_slash(bot))
