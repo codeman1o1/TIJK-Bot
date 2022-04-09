@@ -263,6 +263,85 @@ class api_slash(
         embed.set_image(url=info["image"])
         await interaction.response.send_message(embed=embed)
 
+    @api.subcommand(
+        name="pokedex",
+        description="Uses a Pokémon API to get information",
+        inherit_hooks=True,
+    )
+    async def pokedex_api(
+        self,
+        interaction: Interaction,
+        name: str = SlashOption(description="The name of the Pokémon", required=True),
+    ):
+        embed = nextcord.Embed(color=0x0DD91A)
+        try:
+            async with aiohttp.ClientSession() as session:
+                request = await session.get(
+                    f"https://some-random-api.ml/pokedex?pokemon={name}"
+                )
+                info = await request.json()
+            pokemon_type = ", ".join(info["type"])
+            species = " ".join(info["species"])
+            abilities = ", ".join(info["abilities"])
+            gender = ", ".join(info["gender"])
+            egg_groups = ", ".join(info["egg_groups"])
+            sprites = info["sprites"]
+            stats = info["stats"]
+            hp = stats["hp"]
+            attack = stats["attack"]
+            defense = stats["defense"]
+            sp_atk = stats["sp_atk"]
+            sp_def = stats["sp_def"]
+            speed = stats["speed"]
+            total = stats["total"]
+            family = info["family"]
+            evolution_stage = family["evolutionStage"]
+            if evolution_line := family["evolutionLine"]:
+                evolution_line2 = ""
+                for data in evolution_line:
+                    evolution_line2 = evolution_line2 + data + " -> "
+                evolution_line2 = evolution_line2[:-4]
+                family_text = f"Evolution Stage: {evolution_stage}\nEvolution Line: {evolution_line2}"
+            else:
+                family_text = "This Pokémon has no evolution line"
+            # Possible options: "normal" or "animated"
+            embed.set_thumbnail(url=sprites["normal"])
+            embed.add_field(name="Name", value=info["name"].capitalize(), inline=True)
+            embed.add_field(name="ID", value=info["id"], inline=True)
+            embed.add_field(name="Type", value=pokemon_type, inline=True)
+            embed.add_field(name="Species", value=species, inline=True)
+            embed.add_field(name="Abilities", value=abilities, inline=True)
+            embed.add_field(name="Height", value=info["height"], inline=True)
+            embed.add_field(name="Weight", value=info["weight"], inline=True)
+            embed.add_field(
+                name="Base Experience", value=info["base_experience"], inline=True
+            )
+
+            embed.add_field(name="Gender", value=gender, inline=True)
+            embed.add_field(name="Egg Groups", value=egg_groups, inline=True)
+            embed.add_field(
+                name="Stats",
+                value=f"HP: {hp}\nAttack: {attack}\nDefense: {defense}\nSpecial Attack: {sp_atk}\nSpecial Defense: {sp_def}\nSpeed: {speed}\nTotal: {total}",
+                inline=True,
+            )
+
+            embed.add_field(name="Family", value=family_text, inline=True)
+            embed.add_field(
+                name="Description",
+                value=info["description"].replace(". ", ".\n"),
+                inline=True,
+            )
+
+            embed.add_field(name="Generation", value=info["generation"], inline=True)
+        except Exception:
+            embed = nextcord.Embed(color=0xFF0000)
+            embed.add_field(
+                name=f"Can't request info for the Pokémon {name}",
+                value="Error provided by the API:\n" + info["error"],
+                inline=True,
+            )
+        await interaction.response.send_message(embed=embed)
+
 
 def setup(bot: commands.Bot):
     bot.add_cog(api_slash(bot))
