@@ -180,6 +180,63 @@ class api_slash(
         await interaction.response.send_message(embed=embed, file=file)
         os.remove("head_img.png")
 
+    @api.subcommand(
+        name="minecraft",
+        description="Gets information from the Mojang API",
+        inherit_hooks=True,
+    )
+    async def minecraft_api(
+        self,
+        interaction: Interaction,
+        username: str = SlashOption(
+            description="The username of the user", required=True
+        ),
+    ):
+        uuid = MojangAPI.get_uuid(username)
+        if not uuid:
+            embed = nextcord.Embed(color=0xFFC800, title="That is not a user!")
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+            return
+        try:
+            profile = MojangAPI.get_profile(uuid)
+            skin_url = profile.skin_url
+            skin = Image.open(requests.get(skin_url, stream=True).raw)
+            head_img = skin.crop((8, 8, 16, 16))
+            head_img = head_img.resize((128, 128), Image.NEAREST)
+            head_img.save("head_img.png")
+            head_img.close()
+            file = nextcord.File("head_img.png")
+            embed = nextcord.Embed(color=0x0DD91A)
+            embed.set_thumbnail(url="attachment://head_img.png")
+            async with aiohttp.ClientSession() as session:
+                request = await session.get(
+                    f"https://some-random-api.ml/mc?username={username}"
+                )
+                info = await request.json()
+            name_history2 = ""
+            for item in info["name_history"]:
+                name_history2 = (
+                    name_history2
+                    + "\nName: "
+                    + item["name"]
+                    + "\nChanged at: "
+                    + item["changedToAt"]
+                    + "\n"
+                )
+            embed.add_field(name="Username", value=info["username"], inline=False)
+            embed.add_field(name="UUID", value=info["uuid"], inline=False)
+            embed.add_field(name="Name History", value=name_history2, inline=False)
+            await interaction.response.send_message(file=file, embed=embed)
+            os.remove("head_img.png")
+        except Exception:
+            embed = nextcord.Embed(color=0xFF0000)
+            embed.add_field(
+                name=f"Can't request info for {username}",
+                value="Error provided by the API:\n" + info["error"],
+                inline=False,
+            )
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+
 
 def setup(bot: commands.Bot):
     bot.add_cog(api_slash(bot))
