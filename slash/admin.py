@@ -591,6 +591,43 @@ class admin_slash(
             f"{user} has been banned by {interaction.user.mention}{reason2}",
         )
 
+    @slash(description="Unbans a user from the server", guild_ids=SLASH_GUILDS)
+    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    async def unban(
+        self,
+        interaction: Interaction,
+        user: str = SlashOption(
+            description="The user to unban", required=True
+        ),
+        reason: str = SlashOption(
+            description="The reason why the user was unbanned", required=False
+        ),
+    ):
+        try:
+            user = await commands.converter.UserConverter().convert(interaction, user)
+        except commands.UserNotFound:
+            embed = nextcord.Embed(color=0xFFC800, title="User not found!")
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+            return
+        embed = nextcord.Embed(color=0x0DD91A)
+        bans = tuple(ban_entry.user for ban_entry in await interaction.guild.bans())
+        if user in bans:
+            await interaction.guild.unban(user, reason=reason)
+            reason2 = f" because of {reason}" if reason else ""
+            embed.add_field(
+                name="User unbanned!",
+                value=f"{user} has been unbanned by {interaction.user.mention}{reason2}",
+                inline=False,
+            )
+            await ilogger(
+                interaction,
+                f"{user} has been unbanned by {interaction.user.mention}{reason2}",
+            )
+            await interaction.response.send_message(embed=embed)
+        else:
+            embed = nextcord.Embed(color=0xFF0000, title=f"{user} is not banned!")
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+
     @slash(guild_ids=SLASH_GUILDS)
     @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def warn(self, interaction: Interaction):
