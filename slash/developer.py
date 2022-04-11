@@ -431,6 +431,37 @@ class developer_slash(
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
+    @command.subcommand(
+        name="disable", description="Disable a command", inherit_hooks=True
+    )
+    async def disable_command(
+        self,
+        interaction: Interaction,
+        command_name: str = SlashOption(
+            name="command", description="The command to disable", required=True
+        ),
+    ):
+        command = self.bot.get_command(command_name)
+        if not command:
+            embed = nextcord.Embed(
+                color=0x0DD91A, title=f"The `{command_name}` command is not found"
+            )
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+        elif command.enabled:
+            command.enabled = False
+            embed = nextcord.Embed(
+                color=0x0DD91A,
+                title=f"The `{command.qualified_name}` command is now disabled!",
+            )
+            bl.debug(f"The {command.qualified_name} command is now disabled!", __file__)
+            await interaction.response.send_message(embed=embed)
+        else:
+            embed = nextcord.Embed(
+                color=0x0DD91A,
+                title=f"The `{command.qualified_name}` command is already disabled!",
+            )
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+
 
 def setup(bot):
     bot.add_cog(developer_slash(bot))
