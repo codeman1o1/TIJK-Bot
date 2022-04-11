@@ -4,8 +4,14 @@ from nextcord import Interaction, slash_command as slash
 from nextcord.ext import commands
 from nextcord.application_command import SlashOption
 import pymongo
+import os
+import json
 
 from main import SLASH_GUILDS, USER_DATA
+
+root = os.path.abspath(os.getcwd())
+eight_ball_responses = open(os.path.join(root, "8ball_responses.json"))
+eight_ball_responses = tuple(json.load(eight_ball_responses)["responses"])
 
 
 class fun_slash(commands.Cog, name="Fun Slash", description="Fun slash commands"):
@@ -84,6 +90,16 @@ class fun_slash(commands.Cog, name="Fun Slash", description="Fun slash commands"
             embed = nextcord.Embed(
                 color=0x0DD91A, title="Nobody has sent any messages!"
             )
+        await interaction.response.send_message(embed=embed)
+
+    @slash(description="Ask 8ball a question", guild_ids=SLASH_GUILDS)
+    async def eightball(
+        self,
+        interaction: Interaction,
+        question=SlashOption(description="Question", required=True),
+    ):
+        embed = nextcord.Embed(color=0x0DD91A, title=question)
+        embed.description = random.choice(eight_ball_responses)
         await interaction.response.send_message(embed=embed)
 
 
