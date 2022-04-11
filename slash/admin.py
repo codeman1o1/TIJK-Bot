@@ -349,7 +349,7 @@ class admin_slash(
         """This will never get called since it has subcommands"""
         pass
 
-    @nick.subcommand(description="Gives a user a nickname", inherit_hooks=True)
+    @nick.subcommand(name="set", description="Gives a user a nickname", inherit_hooks=True)
     async def nick_set(
         self,
         interaction: Interaction,
@@ -371,7 +371,9 @@ class admin_slash(
             interaction, f"{ORIGINAL_NAME}'s nickname has been changed to {name}"
         )
 
-    @nick.subcommand(description="Resets a users nickname", inherit_hooks=True)
+    @nick.subcommand(
+        name="reset", description="Resets a users nickname", inherit_hooks=True
+    )
     async def nick_reset(
         self,
         interaction: Interaction,
@@ -596,9 +598,7 @@ class admin_slash(
     async def unban(
         self,
         interaction: Interaction,
-        user: str = SlashOption(
-            description="The user to unban", required=True
-        ),
+        user: str = SlashOption(description="The user to unban", required=True),
         reason: str = SlashOption(
             description="The reason why the user was unbanned", required=False
         ),
