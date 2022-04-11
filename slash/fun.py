@@ -3,8 +3,9 @@ import nextcord
 from nextcord import Interaction, slash_command as slash
 from nextcord.ext import commands
 from nextcord.application_command import SlashOption
+import pymongo
 
-from main import SLASH_GUILDS
+from main import SLASH_GUILDS, USER_DATA
 
 
 class fun_slash(commands.Cog, name="Fun Slash", description="Fun slash commands"):
@@ -65,6 +66,24 @@ class fun_slash(commands.Cog, name="Fun Slash", description="Fun slash commands"
             value=f"That means that {win_lose_or_tie}!",
             inline=False,
         )
+        await interaction.response.send_message(embed=embed)
+
+    @slash(description="Shows the messages everone has sent", guild_ids=SLASH_GUILDS)
+    async def messages(self, interaction: Interaction):
+        embed = nextcord.Embed(color=0x0DD91A)
+        for user in USER_DATA.find().sort("messages", pymongo.DESCENDING):
+            if "messages" in user:
+                messages = user["messages"]
+                user = self.bot.get_user(int(user["_id"]))
+                embed.add_field(
+                    name=f"{user} has sent",
+                    value=f"{messages} messages",
+                    inline=False,
+                )
+        if embed.fields == 0:
+            embed = nextcord.Embed(
+                color=0x0DD91A, title="Nobody has sent any messages!"
+            )
         await interaction.response.send_message(embed=embed)
 
 
