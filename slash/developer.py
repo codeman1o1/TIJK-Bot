@@ -336,7 +336,7 @@ class developer_slash(
             )
         await interaction.response.send_message(embed=embed)
 
-    @cog.subcommand(name="reload", description="Load a cog", inherit_hooks=True)
+    @cog.subcommand(name="reload", description="Reload a cog", inherit_hooks=True)
     async def reload_cog(
         self,
         interaction: Interaction,
@@ -357,6 +357,33 @@ class developer_slash(
         try:
             self.bot.reload_extension(f"cogs.{cog}")
             embed = nextcord.Embed(color=0x0DD91A, title=f"Reloaded the `{cog}` cog")
+        except ExtensionNotLoaded:
+            embed = nextcord.Embed(
+                color=0xFFC800, title=f"The `{cog}` cog is not loaded!"
+            )
+        await interaction.response.send_message(embed=embed)
+
+    @cog.subcommand(name="unload", description="Unload a cog", inherit_hooks=True)
+    async def unload_cog(
+        self,
+        interaction: Interaction,
+        cog: str = SlashOption(
+            choices=[
+                "admin",
+                "api",
+                "developer",
+                "error_handler",
+                "event_handler",
+                "fun",
+                "general",
+            ],
+            description="The cog to unload",
+            required=True,
+        ),
+    ):
+        try:
+            self.bot.unload_extension(f"cogs.{cog}")
+            embed = nextcord.Embed(color=0x0DD91A, title=f"Unloaded the `{cog}` cog")
         except ExtensionNotLoaded:
             embed = nextcord.Embed(
                 color=0xFFC800, title=f"The `{cog}` cog is not loaded!"
