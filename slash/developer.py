@@ -3,6 +3,7 @@ from nextcord.ext import commands
 from nextcord import Interaction, slash_command as slash
 from nextcord.application_command import SlashOption
 import nextcord.ext.application_checks as checks
+from nextcord.ext.commands.errors import *  # noqa F403
 import os
 import sys
 import datetime
@@ -301,6 +302,39 @@ class developer_slash(
             )
             embed.add_field(name="Available servers:", value=servers)
             await interaction.response.send_message(embed=embed, ephemeral=True)
+
+    @slash(guild_ids=SLASH_GUILDS)
+    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    async def cog(self, interaction: Interaction):
+        """This will never get called since it has subcommand"""
+        pass
+
+    @cog.subcommand(name="load", description="Load a cog", inherit_hooks=True)
+    async def load_cog(
+        self,
+        interaction: Interaction,
+        cog: str = SlashOption(
+            choices=[
+                "admin",
+                "api",
+                "developer",
+                "error_handler",
+                "event_handler",
+                "fun",
+                "general",
+            ],
+            description="The cog to load",
+            required=True,
+        ),
+    ):
+        try:
+            self.bot.load_extension(f"cogs.{cog}")
+            embed = nextcord.Embed(color=0x0DD91A, title=f"Loaded {cog}")
+        except ExtensionAlreadyLoaded:
+            embed = nextcord.Embed(
+                color=0xFFC800, title=f"The `{cog}` cog is already loaded!"
+            )
+        await interaction.response.send_message(embed=embed)
 
 
 def setup(bot):
