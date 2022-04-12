@@ -1,3 +1,4 @@
+import subprocess
 import nextcord
 from nextcord.ext import commands
 from nextcord import Interaction, slash_command as slash
@@ -106,7 +107,7 @@ class developer_slash(commands.Cog, name="Developer Slash Commands"):
             )
         )
         command = "cls" if os.name in ("nt", "dos") else "clear"
-        os.system(command)
+        subprocess.call(command, shell=False)
         os.execv(sys.executable, ["python"] + sys.argv)
 
     @slash(guild_ids=SLASH_GUILDS)
