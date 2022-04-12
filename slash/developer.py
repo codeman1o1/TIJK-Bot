@@ -123,7 +123,7 @@ class developer_slash(commands.Cog, name="Developer Slash Commands"):
     async def set_status(
         self,
         interaction: Interaction,
-        type: str = SlashOption(
+        status_type: str = SlashOption(
             description="The type of status",
             choices=[
                 "watching",
@@ -139,31 +139,31 @@ class developer_slash(commands.Cog, name="Developer Slash Commands"):
         ),
     ):
         """Change the status of TIJK Bot"""
-        if type == "watching":
+        if status_type == "watching":
             await self.bot.change_presence(
                 activity=nextcord.Activity(
                     type=nextcord.ActivityType.watching, name=text
                 )
             )
-        elif type == "playing":
+        elif status_type == "playing":
             await self.bot.change_presence(
                 activity=nextcord.Activity(
                     type=nextcord.ActivityType.playing, name=text
                 )
             )
-        elif type == "streaming":
+        elif status_type == "streaming":
             await self.bot.change_presence(
                 activity=nextcord.Activity(
                     type=nextcord.ActivityType.streaming, name=text
                 )
             )
-        elif type == "listening":
+        elif status_type == "listening":
             await self.bot.change_presence(
                 activity=nextcord.Activity(
                     type=nextcord.ActivityType.listening, name=text
                 )
             )
-        elif type == "competing":
+        elif status_type == "competing":
             await self.bot.change_presence(
                 activity=nextcord.Activity(
                     type=nextcord.ActivityType.competing, name=text
@@ -173,7 +173,7 @@ class developer_slash(commands.Cog, name="Developer Slash Commands"):
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="Status changed!",
-            value=f"Changed the status to **{type} {text}**",
+            value=f"Changed the status to **{status_type} {text}**",
             inline=False,
         )
         await interaction.response.send_message(embed=embed)
