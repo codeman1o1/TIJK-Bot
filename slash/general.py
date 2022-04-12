@@ -198,7 +198,9 @@ class general_slash(
             date2 = date.split("-")
             datetime.date(today.year, int(date2[1]), int(date2[0]))
         except (ValueError, IndexError):
-            embed = nextcord.Embed(color=0xFFC800, title=f"**{date}** is not a valid date!")
+            embed = nextcord.Embed(
+                color=0xFFC800, title=f"**{date}** is not a valid date!"
+            )
             await interaction.response.send_message(embed=embed, ephemeral=True)
             return
         query = {"_id": interaction.user.id}
@@ -209,8 +211,28 @@ class general_slash(
             USER_DATA.update_one(
                 {"_id": interaction.user.id}, {"$set": {"birthday": date}}
             )
-        embed = nextcord.Embed(color=0x0DD91A, title=f"Your birthday is set to **{date}**!")
+        embed = nextcord.Embed(
+            color=0x0DD91A, title=f"Your birthday is set to **{date}**!"
+        )
         await interaction.response.send_message(embed=embed)
+
+    @birthday.subcommand(
+        name="remove", description="Remove your birthday", inherit_hooks=True
+    )
+    async def remove_birthday(self, interaction: Interaction):
+        if "birthday" in USER_DATA.find_one({"_id": interaction.user.id}):
+            USER_DATA.update_one(
+                {"_id": interaction.user.id}, {"$unset": {"birthday": ""}}
+            )
+            embed = nextcord.Embed(
+                color=0x0DD91A, title="Your birthday has been removed!"
+            )
+            await interaction.response.send_message(embed=embed)
+        else:
+            embed = nextcord.Embed(
+                color=0xFFC800, title="You don't have a birthday set!"
+            )
+            await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
 def setup(bot: commands.Bot):
