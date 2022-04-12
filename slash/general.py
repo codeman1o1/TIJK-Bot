@@ -12,19 +12,15 @@ from views.buttons.github import github_button
 from main import HYPIXEL_API_KEY, SLASH_GUILDS, USER_DATA
 
 
-class general_slash(
-    commands.Cog,
-    name="General Slash",
-    description="Slash commands that everyone can use",
-):
+class general_slash(commands.Cog, name="General Slash"):
+    """Slash commands that everyone can use"""
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @slash(
-        description="Sends a link to the official TIJK Bot GitHub page",
-        guild_ids=SLASH_GUILDS,
-    )
+    @slash(guild_ids=SLASH_GUILDS)
     async def github(self, interaction: Interaction):
+        """Send a link to the official TIJK Bot GitHub page"""
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="View the official TIJK Bot code now!",
@@ -33,11 +29,9 @@ class general_slash(
         )
         await interaction.response.send_message(embed=embed, view=github_button())
 
-    @slash(
-        description="Chooses a random player who can own the party",
-        guild_ids=SLASH_GUILDS,
-    )
+    @slash(guild_ids=SLASH_GUILDS)
     async def hypixelparty(self, interaction: Interaction):
+        """Choose a random player who can own the party"""
         hypixel_ping = nextcord.utils.get(interaction.guild.roles, name="Hypixel Ping")
         available = [
             user
@@ -83,12 +77,13 @@ class general_slash(
         await interaction.response.send_message(embed=embed, delete_after=300)
         del available
 
-    @slash(description="Link your Minecraft account", guild_ids=SLASH_GUILDS)
+    @slash(guild_ids=SLASH_GUILDS)
     async def link(
         self,
         interaction: Interaction,
         username: str = SlashOption(description="Your username", required=False),
     ):
+        """Link your Minecraft account"""
         if username:
             if username.lower() == "remove":
                 query = {"_id": interaction.user.id}
@@ -185,10 +180,9 @@ class general_slash(
         """This will never get called since it has subcommands"""
         pass
 
-    @birthday.subcommand(
-        name="send", description="Send all birthdays", inherit_hooks=True
-    )
+    @birthday.subcommand(name="send", inherit_hooks=True)
     async def send_birthday(self, interaction: Interaction):
+        """Send all birthdays"""
         birthdays = []
         embed = nextcord.Embed(color=0x0DD91A)
         today = datetime.date.today()
@@ -226,10 +220,9 @@ class general_slash(
             embed = nextcord.Embed(color=0x0DD91A, title="No-one has a birthday set!")
         await interaction.response.send_message(embed=embed)
 
-    @birthday.subcommand(
-        name="get", description="Get your birthday", inherit_hooks=True
-    )
+    @birthday.subcommand(name="get", inherit_hooks=True)
     async def get_birthday(self, interaction: Interaction):
+        """Get your birthday"""
         if "birthday" in USER_DATA.find_one({"_id": interaction.user.id}):
             birthday = USER_DATA.find_one({"_id": interaction.user.id})["birthday"]
             embed = nextcord.Embed(
@@ -243,9 +236,7 @@ class general_slash(
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @birthday.subcommand(
-        name="set", description="Set your birthday", inherit_hooks=True
-    )
+    @birthday.subcommand(name="set", inherit_hooks=True)
     async def set_birthday(
         self,
         interaction: Interaction,
@@ -253,6 +244,7 @@ class general_slash(
             description="Your birthday. Format: day-month", required=True
         ),
     ):
+        """Set your birthday"""
         try:
             today = datetime.date.today()
             date2 = date.split("-")
@@ -276,10 +268,9 @@ class general_slash(
         )
         await interaction.response.send_message(embed=embed)
 
-    @birthday.subcommand(
-        name="remove", description="Remove your birthday", inherit_hooks=True
-    )
+    @birthday.subcommand(name="remove", inherit_hooks=True)
     async def remove_birthday(self, interaction: Interaction):
+        """Remove your birthday"""
         if "birthday" in USER_DATA.find_one({"_id": interaction.user.id}):
             USER_DATA.update_one(
                 {"_id": interaction.user.id}, {"$unset": {"birthday": ""}}

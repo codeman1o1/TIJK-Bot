@@ -23,9 +23,9 @@ from main import (
 BOT_PREFIXES = tuple(BOT_DATA.find_one()["botprefixes"])
 
 
-class admin_slash(
-    commands.Cog, name="Admin Slash Commands", description="Slash commands for admins"
-):
+class admin_slash(commands.Cog, name="Admin Slash Commands"):
+    """Slash commands for admins"""
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
@@ -41,11 +41,7 @@ class admin_slash(
         """This will never get called since it has subcommands"""
         pass
 
-    @buttonroles.subcommand(
-        name="send",
-        description="Sends a message with buttons where people can get roles",
-        inherit_hooks=True,
-    )
+    @buttonroles.subcommand(name="send", inherit_hooks=True)
     async def send_buttonroles(
         self,
         interaction: Interaction,
@@ -55,6 +51,7 @@ class admin_slash(
             default=False,
         ),
     ):
+        """Sends a message with buttons where people can get roles"""
         buttonroles_id = BOT_DATA.find_one()["buttonroles"]
         roles = sum(
             bool(nextcord.utils.get(interaction.guild.roles, id=buttonrole))
@@ -85,14 +82,13 @@ class admin_slash(
 
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @buttonroles.subcommand(
-        name="add", description="Add a button role", inherit_hooks=True
-    )
+    @buttonroles.subcommand(name="add", inherit_hooks=True)
     async def add_buttonroles(
         self,
         interaction: Interaction,
         role: nextcord.Role = SlashOption(description="The role to add", required=True),
     ):
+        """Add a button role"""
         buttonroles = BOT_DATA.find_one()["buttonroles"]
         roles = sum(
             1
@@ -126,9 +122,7 @@ class admin_slash(
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @buttonroles.subcommand(
-        name="remove", description="Remove a button role", inherit_hooks=True
-    )
+    @buttonroles.subcommand(name="remove", inherit_hooks=True)
     async def remove_buttonroles(
         self,
         interaction: Interaction,
@@ -136,6 +130,7 @@ class admin_slash(
             description="The role to remove", required=True
         ),
     ):
+        """Remove a button role"""
         buttonroles = BOT_DATA.find_one()["buttonroles"]
         if role.id in buttonroles:
             buttonroles.remove(role.id)
@@ -158,10 +153,9 @@ class admin_slash(
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @buttonroles.subcommand(
-        name="list", description="Lists all button roles", inherit_hooks=True
-    )
+    @buttonroles.subcommand(name="list", inherit_hooks=True)
     async def list_buttonroles(self, interaction: Interaction):
+        """List all button roles"""
         buttonroles = BOT_DATA.find_one()["buttonroles"]
         roles = sum(
             1
@@ -191,9 +185,10 @@ class admin_slash(
 
         await interaction.response.send_message(embed=embed)
 
-    @slash(description="Shuts down TIJK Bot", guild_ids=SLASH_GUILDS)
+    @slash(guild_ids=SLASH_GUILDS)
     @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def shutdown(self, interaction: Interaction):
+        """Shut down TIJK Bot"""
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="TIJK Bot was shut down",
@@ -213,7 +208,7 @@ class admin_slash(
         bl.info(f"TIJK Bot was shut down by {interaction.user}", __file__)
         await self.bot.close()
 
-    @slash(description="Get the latency of TIJK Bot", guild_ids=SLASH_GUILDS)
+    @slash(guild_ids=SLASH_GUILDS)
     async def ping(
         self,
         interaction: Interaction,
@@ -224,6 +219,7 @@ class admin_slash(
             default=1,
         ),
     ):
+        """Get the latency of TIJK Bot"""
         embed = nextcord.Embed(color=0x0DD91A)
         latency = round(self.bot.latency, decimals)
         embed.add_field(
@@ -233,7 +229,7 @@ class admin_slash(
         )
         await interaction.response.send_message(embed=embed)
 
-    @slash(description="Tell a user to read the rules", guild_ids=SLASH_GUILDS)
+    @slash(guild_ids=SLASH_GUILDS)
     @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def readtherules(
         self,
@@ -251,6 +247,7 @@ class admin_slash(
             description="Wether to warn the user", required=False, default=True
         ),
     ):
+        """Tell a user to read the rules"""
         channel = nextcord.utils.get(interaction.guild.channels, name="rules")
         messages = await channel.history(limit=50).flatten()
         messages.reverse()
@@ -278,7 +275,7 @@ class admin_slash(
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @slash(description="Mute a user", guild_ids=SLASH_GUILDS)
+    @slash(guild_ids=SLASH_GUILDS)
     @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     @checks.bot_has_permissions(moderate_members=True)
     async def mute(
@@ -294,6 +291,7 @@ class admin_slash(
             description="The reason why the user was muted", required=False
         ),
     ):
+        """Mute a user"""
         try:
             reason2 = f" because of {reason}" if reason else ""
             time = humanfriendly.parse_timespan(time)
@@ -315,7 +313,7 @@ class admin_slash(
             embed = nextcord.Embed(color=0xFFC800, title="Invalid time!")
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @slash(description="Unmute a user", guild_ids=SLASH_GUILDS)
+    @slash(guild_ids=SLASH_GUILDS)
     @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     @checks.bot_has_permissions(moderate_members=True)
     async def unmute(
@@ -328,6 +326,7 @@ class admin_slash(
             description="The reason why the user was unmuted", required=False
         ),
     ):
+        """Unmute a user"""
         reason2 = f" because of {reason}" if reason else ""
         await user.timeout(None)
         embed = nextcord.Embed(color=0x0DD91A)
@@ -349,7 +348,7 @@ class admin_slash(
         """This will never get called since it has subcommands"""
         pass
 
-    @nick.subcommand(name="set", description="Gives a user a nickname", inherit_hooks=True)
+    @nick.subcommand(name="set", inherit_hooks=True)
     async def nick_set(
         self,
         interaction: Interaction,
@@ -358,6 +357,7 @@ class admin_slash(
         ),
         name: str = SlashOption(description="The new nickname", required=True),
     ):
+        """Give a user a nickname"""
         ORIGINAL_NAME = user.display_name
         await user.edit(nick=name)
         embed = nextcord.Embed(
@@ -371,14 +371,13 @@ class admin_slash(
             interaction, f"{ORIGINAL_NAME}'s nickname has been changed to {name}"
         )
 
-    @nick.subcommand(
-        name="reset", description="Resets a users nickname", inherit_hooks=True
-    )
+    @nick.subcommand(name="reset", inherit_hooks=True)
     async def nick_reset(
         self,
         interaction: Interaction,
         user: nextcord.Member = SlashOption(description="The user", required=True),
     ):
+        """Reset a user's nickname"""
         ORIGINAL_NAME = user.display_name
         await user.edit(nick=None)
         embed = nextcord.Embed(
@@ -396,9 +395,7 @@ class admin_slash(
         """This will never get called since it has subcommands"""
         pass
 
-    @role.subcommand(
-        name="assign", description="Give a user a role", inherit_hooks=True
-    )
+    @role.subcommand(name="assign", inherit_hooks=True)
     async def assign_role(
         self,
         interaction: Interaction,
@@ -413,6 +410,7 @@ class admin_slash(
             description="The reason why the user was assigned the role", required=False
         ),
     ):
+        """Give a user a role"""
         user = user or interaction.user
         if role not in user.roles:
             await user.add_roles(role, reason=reason)
@@ -437,9 +435,7 @@ class admin_slash(
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @role.subcommand(
-        name="remove", description="Remove a role from a user", inherit_hooks=True
-    )
+    @role.subcommand(name="remove", inherit_hooks=True)
     async def remove_role(
         self,
         interaction: Interaction,
@@ -455,6 +451,7 @@ class admin_slash(
             required=False,
         ),
     ):
+        """Remove a role from a user"""
         user = user or interaction.user
         if role in user.roles:
             await user.remove_roles(role, reason=reason)
@@ -480,7 +477,7 @@ class admin_slash(
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @slash(description="Clears the chat", guild_ids=SLASH_GUILDS)
+    @slash(guild_ids=SLASH_GUILDS)
     @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def clear(
         self,
@@ -494,6 +491,7 @@ class admin_slash(
             required=False,
         ),
     ):
+        """Clear the chat"""
         channel: nextcord.TextChannel = channel or interaction.channel
         deleted_messages = await channel.purge(limit=amount, bulk=True)
         embed = nextcord.Embed(color=0x0DD91A)
@@ -508,7 +506,7 @@ class admin_slash(
             f"{len(deleted_messages)} messages have been cleared from {channel.mention}",
         )
 
-    @slash(description="Clears the chat from bot messages", guild_ids=SLASH_GUILDS)
+    @slash(guild_ids=SLASH_GUILDS)
     @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def clean(
         self,
@@ -522,6 +520,8 @@ class admin_slash(
             required=False,
         ),
     ):
+        """Clear the chat from bot messages"""
+
         def check(message: nextcord.Message):
             return bool(
                 message.author.bot or message.content.lower().startswith(BOT_PREFIXES)
@@ -541,7 +541,7 @@ class admin_slash(
             f"{len(deleted_messages)} messages have been cleaned from {channel.mention}",
         )
 
-    @slash(description="Kick a user from the server", guild_ids=SLASH_GUILDS)
+    @slash(guild_ids=SLASH_GUILDS)
     @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def kick(
         self,
@@ -553,6 +553,7 @@ class admin_slash(
             description="The reason why the user was kicked", required=False
         ),
     ):
+        """Kick a user from the server"""
         reason2 = f" because of {reason}" if reason else ""
         await user.kick(reason=reason)
         embed = nextcord.Embed(color=0x0DD91A)
@@ -567,7 +568,7 @@ class admin_slash(
             f"{user} has been kicked by {interaction.user.mention}{reason2}",
         )
 
-    @slash(description="Bans a user from the server", guild_ids=SLASH_GUILDS)
+    @slash(guild_ids=SLASH_GUILDS)
     @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def ban(
         self,
@@ -579,6 +580,7 @@ class admin_slash(
             description="The reason why the user was banned", required=False
         ),
     ):
+        """Ban a user from the server"""
         reason2 = f" because of {reason}" if reason else ""
         await user.ban(reason=reason)
         embed = nextcord.Embed(color=0x0DD91A)
@@ -593,7 +595,7 @@ class admin_slash(
             f"{user} has been banned by {interaction.user.mention}{reason2}",
         )
 
-    @slash(description="Unbans a user from the server", guild_ids=SLASH_GUILDS)
+    @slash(guild_ids=SLASH_GUILDS)
     @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def unban(
         self,
@@ -603,6 +605,7 @@ class admin_slash(
             description="The reason why the user was unbanned", required=False
         ),
     ):
+        """Unban a user from the server"""
         try:
             user = await commands.converter.UserConverter().convert(interaction, user)
         except commands.UserNotFound:
@@ -634,7 +637,7 @@ class admin_slash(
         """This will never get called since it has subcommands"""
         pass
 
-    @warn.subcommand(name="add", description="Warns a user", inherit_hooks=True)
+    @warn.subcommand(name="add", inherit_hooks=True)
     async def add_warn(
         self,
         interaction: Interaction,
@@ -651,11 +654,10 @@ class admin_slash(
             description="The reason why the user was warned", required=False
         ),
     ):
+        """Warn a user"""
         await warn_system(interaction, user, amount, interaction.user, reason)
 
-    @warn.subcommand(
-        name="remove", description="Removes a warn from a user", inherit_hooks=True
-    )
+    @warn.subcommand(name="remove", inherit_hooks=True)
     async def remove_warn(
         self,
         interaction: Interaction,
@@ -672,13 +674,12 @@ class admin_slash(
             description="The reason why the user was warned", required=False
         ),
     ):
+        """Remove a warn from a user"""
         await warn_system(interaction, user, amount, interaction.user, reason, True)
 
-    @warn.subcommand(
-        name="list",
-        description="List the warn points of everyone that received at least 1",
-    )
+    @warn.subcommand(name="list", inherit_hooks=True)
     async def list_warn(self, interaction: Interaction):
+        """List the warn points of everyone that received at least 1"""
         embed = nextcord.Embed(color=0x0DD91A)
         for user in USER_DATA.find():
             if "warns" in user:
@@ -694,8 +695,9 @@ class admin_slash(
             embed = nextcord.Embed(color=0x0DD91A, title="Nobody has warns!")
         await interaction.response.send_message(embed=embed)
 
-    @warn.subcommand(name="get", description="Get your warns")
+    @warn.subcommand(name="get")
     async def get_warn(self, interaction: Interaction):
+        """Get your warns"""
         user = USER_DATA.find_one({"_id": interaction.user.id})
         warns = user["warns"] if "warns" in user else 0
         embed = nextcord.Embed(
@@ -710,9 +712,7 @@ class admin_slash(
         """This will never get called since it has subcommands"""
         pass
 
-    @info.subcommand(
-        name="role", description="Show information about a role", inherit_hooks=True
-    )
+    @info.subcommand(name="role", inherit_hooks=True)
     async def role_info(
         self,
         interaction: Interaction,
@@ -720,6 +720,7 @@ class admin_slash(
             description="The role to show info about", required=True
         ),
     ):
+        """Show information about a role"""
         embed = nextcord.Embed(
             color=0x0DD91A, title=f"Here is information about the {role.name} role"
         )
@@ -739,18 +740,16 @@ class admin_slash(
         )
         await interaction.response.send_message(embed=embed)
 
-    @info.subcommand(
-        name="server",
-        description="Show information about a server. Defaults to the current server",
-        inherit_hooks=True,
-    )
+    @info.subcommand(name="server", inherit_hooks=True)
     async def server_info(
         self,
         interaction: Interaction,
         server_id: str = SlashOption(
-            description="The server to show info about", required=False
+            description="The server to show info about. Defaults to the current server",
+            required=False,
         ),
     ):
+        """Show information about a server"""
         try:
             server_id = int(server_id)
         except ValueError:
@@ -788,9 +787,7 @@ class admin_slash(
             embed = nextcord.Embed(color=0xFFC800, title="I can not access that guild!")
         await interaction.response.send_message(embed=embed)
 
-    @info.subcommand(
-        name="user", description="Show information about a user", inherit_hooks=True
-    )
+    @info.subcommand(name="user", inherit_hooks=True)
     async def user_info(
         self,
         interaction: Interaction,
@@ -799,6 +796,7 @@ class admin_slash(
             required=False,
         ),
     ):
+        """Show information about a user"""
         user = user or interaction.user
         embed = nextcord.Embed(
             color=0x0DD91A, title=f"Here is information for {user.name}"
@@ -850,7 +848,7 @@ class admin_slash(
             embed=embed, view=profile_picture(user.display_avatar.url)
         )
 
-    @slash(description="Enables slowmode for a channel", guild_ids=SLASH_GUILDS)
+    @slash(guild_ids=SLASH_GUILDS)
     @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def slowmode(
         self,
@@ -865,6 +863,7 @@ class admin_slash(
             required=False,
         ),
     ):
+        """Enable slowmode for a channel"""
         if any(
             time.lower() == option for option in ("reset", "off", "disable", "disabled")
         ):
@@ -900,9 +899,7 @@ class admin_slash(
         """This will never get called since it has subcommands"""
         pass
 
-    @pingpoll.subcommand(
-        name="add", description="Add roles used in Ping Poll", inherit_hooks=True
-    )
+    @pingpoll.subcommand(name="add", inherit_hooks=True)
     async def add_pingpoll(
         self,
         interaction: Interaction,
@@ -910,6 +907,7 @@ class admin_slash(
             description="The role to add to Ping Poll", required=True
         ),
     ):
+        """Add roles used in Ping Poll"""
         pingpolls = list(BOT_DATA.find_one()["pingpolls"])
         if role.id not in pingpolls:
             pingpolls.append(role.id)
@@ -929,11 +927,7 @@ class admin_slash(
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @pingpoll.subcommand(
-        name="remove",
-        description="Remove roles used from Ping Poll",
-        inherit_hooks=True,
-    )
+    @pingpoll.subcommand(name="remove", inherit_hooks=True)
     async def remove_pingpoll(
         self,
         interaction: Interaction,
@@ -941,6 +935,7 @@ class admin_slash(
             description="The role to remove from Ping Poll", required=True
         ),
     ):
+        """Remove roles used from Ping Poll"""
         pingpolls = list(BOT_DATA.find_one()["pingpolls"])
         if role.id in pingpolls:
             pingpolls.remove(role.id)
@@ -960,10 +955,9 @@ class admin_slash(
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @pingpoll.subcommand(
-        name="list", description="List roles used in Ping Poll", inherit_hooks=True
-    )
+    @pingpoll.subcommand(name="list", inherit_hooks=True)
     async def list_pingpoll(self, interaction: Interaction):
+        """List roles used in Ping Poll"""
         if pingpolls := list(BOT_DATA.find_one()["pingpolls"]):
             pingpolls2 = ""
             for pingpoll in pingpolls:

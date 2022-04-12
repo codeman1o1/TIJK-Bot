@@ -14,12 +14,15 @@ eight_ball_responses = open(os.path.join(root, "8ball_responses.json"))
 eight_ball_responses = tuple(json.load(eight_ball_responses)["responses"])
 
 
-class fun_slash(commands.Cog, name="Fun Slash", description="Fun slash commands"):
+class fun_slash(commands.Cog, name="Fun Slash"):
+    """Fun slash commands"""
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @slash(description="Flips a coin", guild_ids=SLASH_GUILDS)
+    @slash(guild_ids=SLASH_GUILDS)
     async def headsortails(self, interaction: Interaction):
+        """Flip a coin"""
         hot = random.randint(0, 1)
         if hot == 0:
             hot = "heads"
@@ -28,7 +31,7 @@ class fun_slash(commands.Cog, name="Fun Slash", description="Fun slash commands"
         embed = nextcord.Embed(color=0x0DD91A, title=f"It is {hot}!")
         await interaction.response.send_message(embed=embed)
 
-    @slash(description="Play rock paper scissors", guild_ids=SLASH_GUILDS)
+    @slash(guild_ids=SLASH_GUILDS)
     async def rockpaperscissors(
         self,
         interaction: Interaction,
@@ -38,6 +41,7 @@ class fun_slash(commands.Cog, name="Fun Slash", description="Fun slash commands"
             required=True,
         ),
     ):
+        """Play rock paper scissors"""
         embed = nextcord.Embed(color=0x0DD91A)
         random_number = random.randint(0, 2)
         if random_number == 0:
@@ -74,8 +78,9 @@ class fun_slash(commands.Cog, name="Fun Slash", description="Fun slash commands"
         )
         await interaction.response.send_message(embed=embed)
 
-    @slash(description="Shows the messages everone has sent", guild_ids=SLASH_GUILDS)
+    @slash(guild_ids=SLASH_GUILDS)
     async def messages(self, interaction: Interaction):
+        """Show the amount of messages everone has sent"""
         embed = nextcord.Embed(color=0x0DD91A)
         for user in USER_DATA.find().sort("messages", pymongo.DESCENDING):
             if "messages" in user:
@@ -92,12 +97,13 @@ class fun_slash(commands.Cog, name="Fun Slash", description="Fun slash commands"
             )
         await interaction.response.send_message(embed=embed)
 
-    @slash(description="Ask 8ball a question", guild_ids=SLASH_GUILDS)
+    @slash(guild_ids=SLASH_GUILDS)
     async def eightball(
         self,
         interaction: Interaction,
         question=SlashOption(description="Question", required=True),
     ):
+        """Ask 8ball a question"""
         embed = nextcord.Embed(color=0x0DD91A, title=question)
         embed.description = random.choice(eight_ball_responses)
         await interaction.response.send_message(embed=embed)

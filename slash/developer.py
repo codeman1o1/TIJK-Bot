@@ -13,18 +13,13 @@ from main import USER_DATA, logger, SLASH_GUILDS, START_TIME
 import basic_logger as bl
 
 
-class developer_slash(
-    commands.Cog,
-    name="Developer Slash Commands",
-    description="Slash commands for developers",
-):
+class developer_slash(commands.Cog, name="Developer Slash Commands"):
+    """Slash commands for developers"""
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @slash(
-        description="Generate an embed",
-        guild_ids=SLASH_GUILDS,
-    )
+    @slash(guild_ids=SLASH_GUILDS)
     @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
     async def embed(
         self,
@@ -57,6 +52,7 @@ class developer_slash(
             name="value3", description="The value of the 3d field", required=False
         ),
     ):
+        """Generate an embed"""
         try:
             if not color:
                 color = 0x0DD91A
@@ -88,12 +84,10 @@ class developer_slash(
                 "The embed is invalid", ephemeral=True
             )
 
-    @slash(
-        description="Restarts TIJK Bot",
-        guild_ids=SLASH_GUILDS,
-    )
+    @slash(guild_ids=SLASH_GUILDS)
     @checks.is_owner()
     async def restart(self, interaction: nextcord.Interaction):
+        """Restart TIJK Bot"""
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="TIJK Bot is restarting...",
@@ -124,9 +118,7 @@ class developer_slash(
         """This will never get called since it has subcommands"""
         pass
 
-    @status.subcommand(
-        name="set", description="Sets the status of TIJK Bot", inherit_hooks=True
-    )
+    @status.subcommand(name="set", inherit_hooks=True)
     async def set_status(
         self,
         interaction: Interaction,
@@ -145,6 +137,7 @@ class developer_slash(
             description="The text that will show up", required=True
         ),
     ):
+        """Change the status of TIJK Bot"""
         if type == "watching":
             await self.bot.change_presence(
                 activity=nextcord.Activity(
@@ -184,10 +177,9 @@ class developer_slash(
         )
         await interaction.response.send_message(embed=embed)
 
-    @status.subcommand(
-        name="reset", description="Resets the status of TIJK Bot", inherit_hooks=True
-    )
+    @status.subcommand(name="reset", inherit_hooks=True)
     async def reset_status(self, interaction: Interaction):
+        """Reset the status of TIJK Bot"""
         await self.bot.change_presence(
             activity=nextcord.Activity(
                 type=nextcord.ActivityType.watching, name="over the TIJK Server"
@@ -202,8 +194,9 @@ class developer_slash(
 
         await interaction.response.send_message(embed=embed)
 
-    @slash(description="Shows the statistics of TIJK Bot", guild_ids=SLASH_GUILDS)
+    @slash(guild_ids=SLASH_GUILDS)
     async def stats(self, interaction: Interaction):
+        """Show the statistics of TIJK Bot"""
         embed = nextcord.Embed(
             color=0x0DD91A, title="Here are some stats for TIJK Bot!"
         )
@@ -234,12 +227,10 @@ class developer_slash(
         )
         await interaction.response.send_message(embed=embed)
 
-    @slash(
-        description="Gives the TIJK-Bot developer role to the owner of TIJK Bot",
-        guild_ids=SLASH_GUILDS,
-    )
+    @slash(guild_ids=SLASH_GUILDS)
     @checks.is_owner()
     async def tijkbotdeveloper(self, interaction: Interaction):
+        """Give the TIJK-Bot developer role to the owner of TIJK Bot"""
         tijk_bot_developer_role = nextcord.utils.get(
             interaction.guild.roles, name="TIJK-Bot developer"
         )
@@ -248,7 +239,7 @@ class developer_slash(
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name="Done!",
-                value="You now have the `TIJK Bot developer` role!",
+                value="You now have the `TIJK-Bot developer` role!",
                 inline=False,
             )
         else:
@@ -257,11 +248,10 @@ class developer_slash(
             )
         await interaction.response.send_message(embed=embed)
 
-    @slash(
-        description="Removes invalid users from the database", guild_ids=SLASH_GUILDS
-    )
+    @slash(guild_ids=SLASH_GUILDS)
     @checks.is_owner()
     async def purge_unknown_users(self, interaction: Interaction):
+        """Remove invalid users from the database"""
         users_removed = 0
         for user in USER_DATA.find():
             if not self.bot.get_user(user["_id"]):
@@ -275,11 +265,12 @@ class developer_slash(
             embed = nextcord.Embed(color=0xFFC800, title="No users were removed!")
         await interaction.response.send_message(embed=embed)
 
-    @slash(description="Lets TIJK Bot leave a server", guild_ids=SLASH_GUILDS)
+    @slash(guild_ids=SLASH_GUILDS)
     @checks.is_owner()
     async def leave_server(
         self, interaction: Interaction, server_id: str = SlashOption(required=False)
     ):
+        """Remove TIJK Bot from a server"""
         if server_id:
             try:
                 server_id = int(server_id)
@@ -310,7 +301,7 @@ class developer_slash(
         """This will never get called since it has subcommands"""
         pass
 
-    @cog.subcommand(name="load", description="Load a cog", inherit_hooks=True)
+    @cog.subcommand(name="load", inherit_hooks=True)
     async def load_cog(
         self,
         interaction: Interaction,
@@ -328,6 +319,7 @@ class developer_slash(
             required=True,
         ),
     ):
+        """Load a cog"""
         try:
             self.bot.load_extension(f"cogs.{cog}")
             embed = nextcord.Embed(color=0x0DD91A, title=f"Loaded the `{cog}` cog")
@@ -338,7 +330,7 @@ class developer_slash(
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @cog.subcommand(name="reload", description="Reload a cog", inherit_hooks=True)
+    @cog.subcommand(name="reload", inherit_hooks=True)
     async def reload_cog(
         self,
         interaction: Interaction,
@@ -356,6 +348,7 @@ class developer_slash(
             required=True,
         ),
     ):
+        """Reload a cog"""
         try:
             self.bot.reload_extension(f"cogs.{cog}")
             embed = nextcord.Embed(color=0x0DD91A, title=f"Reloaded the `{cog}` cog")
@@ -366,7 +359,7 @@ class developer_slash(
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @cog.subcommand(name="unload", description="Unload a cog", inherit_hooks=True)
+    @cog.subcommand(name="unload", inherit_hooks=True)
     async def unload_cog(
         self,
         interaction: Interaction,
@@ -384,6 +377,7 @@ class developer_slash(
             required=True,
         ),
     ):
+        """Unload a cog"""
         try:
             self.bot.unload_extension(f"cogs.{cog}")
             embed = nextcord.Embed(color=0x0DD91A, title=f"Unloaded the `{cog}` cog")
@@ -400,9 +394,7 @@ class developer_slash(
         """This will never get called since it has subcommands"""
         pass
 
-    @command.subcommand(
-        name="enable", description="Enable a command", inherit_hooks=True
-    )
+    @command.subcommand(name="enable", inherit_hooks=True)
     async def enable_command(
         self,
         interaction: Interaction,
@@ -410,6 +402,7 @@ class developer_slash(
             name="command", description="The command to enable", required=True
         ),
     ):
+        """Enable a command"""
         command = self.bot.get_command(command_name)
         if not command:
             embed = nextcord.Embed(
@@ -431,9 +424,7 @@ class developer_slash(
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @command.subcommand(
-        name="disable", description="Disable a command", inherit_hooks=True
-    )
+    @command.subcommand(name="disable", inherit_hooks=True)
     async def disable_command(
         self,
         interaction: Interaction,
@@ -441,6 +432,7 @@ class developer_slash(
             name="command", description="The command to disable", required=True
         ),
     ):
+        """Disable a command"""
         command = self.bot.get_command(command_name)
         if not command:
             embed = nextcord.Embed(

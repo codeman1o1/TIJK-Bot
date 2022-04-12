@@ -13,9 +13,9 @@ import os
 from main import SLASH_GUILDS, HYPIXEL_API_KEY
 
 
-class api_slash(
-    commands.Cog, name="API Slash commands", description="API slash commands"
-):
+class api_slash(commands.Cog, name="API Slash commands"):
+    """API slash commands"""
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
@@ -24,11 +24,7 @@ class api_slash(
         """This will never get called since it has slash commands"""
         pass
 
-    @api.subcommand(
-        name="animal",
-        description="Uses an animal API to get information",
-        inherit_hooks=True,
-    )
+    @api.subcommand(name="animal", inherit_hooks=True)
     async def animal_api(
         self,
         interaction: Interaction,
@@ -46,16 +42,13 @@ class api_slash(
             required=True,
         ),
     ):
+        """Uses an API to get information about an animal"""
         async with aiohttp.ClientSession() as session:
             request = await session.get(f"https://some-random-api.ml/img/{animal}")
             info = await request.json()
         await interaction.response.send_message(info["link"])
 
-    @api.subcommand(
-        name="hypixel",
-        description="Gets information from the official Hypixel API",
-        inherit_hooks=True,
-    )
+    @api.subcommand(name="hypixel", inherit_hooks=True)
     async def hypixel_api(
         self,
         interaction: Interaction,
@@ -63,6 +56,7 @@ class api_slash(
             description="The username of the user", required=True
         ),
     ):
+        """Gets information from the official Hypixel API"""
         uuid = MojangAPI.get_uuid(username)
         if not uuid:
             embed = nextcord.Embed(color=0xFFC800, title="That is not a user!")
@@ -180,11 +174,7 @@ class api_slash(
         await interaction.response.send_message(embed=embed, file=file)
         os.remove("head_img.png")
 
-    @api.subcommand(
-        name="minecraft",
-        description="Gets information from the Mojang API",
-        inherit_hooks=True,
-    )
+    @api.subcommand(name="minecraft", inherit_hooks=True)
     async def minecraft_api(
         self,
         interaction: Interaction,
@@ -192,6 +182,7 @@ class api_slash(
             description="The username of the user", required=True
         ),
     ):
+        """Gets information from the Mojang API"""
         uuid = MojangAPI.get_uuid(username)
         if not uuid:
             embed = nextcord.Embed(color=0xFFC800, title="That is not a user!")
@@ -237,12 +228,9 @@ class api_slash(
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @api.subcommand(
-        name="joke",
-        description="Uses a joke API to get information",
-        inherit_hooks=True,
-    )
+    @api.subcommand(name="joke", inherit_hooks=True)
     async def joke_api(self, interaction: Interaction):
+        """Gets a random joke from an API"""
         async with aiohttp.ClientSession() as session:
             request = await session.get("https://some-random-api.ml/joke")
             info = await request.json()
@@ -250,12 +238,9 @@ class api_slash(
         embed.add_field(name="Here is a joke!", value=info["joke"], inline=False)
         await interaction.response.send_message(embed=embed)
 
-    @api.subcommand(
-        name="meme",
-        description="Uses a meme API to get information",
-        inherit_hooks=True,
-    )
+    @api.subcommand(name="meme", inherit_hooks=True)
     async def meme_api(self, interaction: Interaction):
+        """Gets a random meme from an API"""
         async with aiohttp.ClientSession() as session:
             request = await session.get("https://some-random-api.ml/meme")
             info = await request.json()
@@ -263,16 +248,13 @@ class api_slash(
         embed.set_image(url=info["image"])
         await interaction.response.send_message(embed=embed)
 
-    @api.subcommand(
-        name="pokedex",
-        description="Uses a Pokémon API to get information",
-        inherit_hooks=True,
-    )
+    @api.subcommand(name="pokedex", inherit_hooks=True)
     async def pokedex_api(
         self,
         interaction: Interaction,
         name: str = SlashOption(description="The name of the Pokémon", required=True),
     ):
+        """Uses an API to get information about a Pokémon"""
         embed = nextcord.Embed(color=0x0DD91A)
         try:
             async with aiohttp.ClientSession() as session:
@@ -342,11 +324,7 @@ class api_slash(
             )
         await interaction.response.send_message(embed=embed)
 
-    @api.subcommand(
-        name="activity",
-        description="Sends a random activity you can do",
-        inherit_hooks=True,
-    )
+    @api.subcommand(name="activity", inherit_hooks=True)
     async def activity_api(
         self,
         interaction: Interaction,
@@ -356,6 +334,7 @@ class api_slash(
             required=False,
         ),
     ):
+        """Gets a random activity from an API"""
         url = "https://www.boredapi.com/api/activity"
         extra_text = ""
         if extra_option == "alone":
