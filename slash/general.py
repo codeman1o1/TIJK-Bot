@@ -1,48 +1,50 @@
 import datetime
 import random
-
 import nextcord
+from nextcord import Interaction, slash_command as slash
+from nextcord.application_command import SlashOption
 from nextcord.ext import commands
-from nextcord.ext.commands import Context
-from views.buttons.github import github_button
 import requests
 from mojang import MojangAPI
 
-from main import USER_DATA, HYPIXEL_API_KEY
+from views.buttons.github import github_button
+
+from main import HYPIXEL_API_KEY, SLASH_GUILDS, USER_DATA
 
 
-class general(commands.Cog, name="General"):
-    """Commands that everyone can use"""
+class general_slash(commands.Cog, name="General Slash"):
+    """Slash commands that everyone can use"""
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(name="github", aliases=["git", "source"])
-    async def github(self, ctx: Context):
-        """Sends a link to the official TIJK Bot GitHub page"""
+    @slash(guild_ids=SLASH_GUILDS)
+    async def github(self, interaction: Interaction):
+        """Send a link to the official TIJK Bot GitHub page"""
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="View the official TIJK Bot code now!",
             value="https://github.com/codeman1o1/TIJK-Bot",
             inline=False,
         )
+        await interaction.response.send_message(embed=embed, view=github_button())
 
-        await ctx.send(embed=embed, view=github_button())
-
-    @commands.group(name="hypixelparty", invoke_without_command=True, aliases=["hpp"])
-    async def hypixelparty(self, ctx: Context):
-        """Chooses a random player that can own the party"""
-        hypixel_ping = nextcord.utils.get(ctx.guild.roles, name="Hypixel Ping")
+    @slash(guild_ids=SLASH_GUILDS)
+    async def hypixelparty(self, interaction: Interaction):
+        """Choose a random player who can own the party"""
+        hypixel_ping = nextcord.utils.get(interaction.guild.roles, name="Hypixel Ping")
         available = [
             user
-            for user in ctx.guild.members
+            for user in interaction.channel.members
             if not user.bot
             if user.status != nextcord.Status.offline
             if hypixel_ping in user.roles
         ]
         if available:
             for user in available:
-                user2 = await commands.converter.UserConverter().convert(ctx, str(user))
+                user2 = await commands.converter.UserConverter().convert(
+                    interaction, str(user)
+                )
                 query = {"_id": user2.id}
                 if USER_DATA.count_documents(query) != 0:
                     user3 = USER_DATA.find_one(query)
@@ -54,7 +56,7 @@ class general(commands.Cog, name="General"):
                         ).json()
                         logouttime = data["player"]["lastLogout"]
                         logintime = data["player"]["lastLogin"]
-                        if not logouttime < logintime or not data["success"]:
+                        if logouttime >= logintime or data["success"] is False:
                             available.remove(user)
                     else:
                         available.remove(user)
@@ -62,10 +64,9 @@ class general(commands.Cog, name="General"):
                     available.remove(user)
         if available:
             embed = nextcord.Embed(color=0x0DD91A)
-            RANDOM_INT = random.randint(0, len(available) - 1)
             embed.add_field(
                 name="Party leader chosen!",
-                value=f"{available[RANDOM_INT]} will be the party leader!",
+                value=f"{random.choice(available)} will be the party leader!",
                 inline=False,
             )
         else:
@@ -73,16 +74,19 @@ class general(commands.Cog, name="General"):
                 color=0x0DD91A,
                 title="Nobody meets the requirements to be the party leader!",
             )
-        await ctx.message.delete()
-        await ctx.send(embed=embed, delete_after=300)
-        available.clear()
+        await interaction.response.send_message(embed=embed, delete_after=300)
+        del available
 
-    @hypixelparty.command(name="link")
-    async def link_hypixelparty(self, ctx: Context, username: str = None):
+    @slash(guild_ids=SLASH_GUILDS)
+    async def link(
+        self,
+        interaction: Interaction,
+        username: str = SlashOption(description="Your username", required=False),
+    ):
         """Link your Minecraft account"""
         if username:
             if username.lower() == "remove":
-                query = {"_id": ctx.author.id}
+                query = {"_id": interaction.user.id}
                 if USER_DATA.count_documents(query) == 0:
                     embed = nextcord.Embed(
                         color=0xFFC800,
@@ -93,7 +97,7 @@ class general(commands.Cog, name="General"):
                     if "minecraft_account" in user:
                         account = user["minecraft_account"]
                         USER_DATA.update_one(
-                            {"_id": ctx.author.id},
+                            {"_id": interaction.user.id},
                             {"$unset": {"minecraft_account": account}},
                         )
                     else:
@@ -109,28 +113,28 @@ class general(commands.Cog, name="General"):
                 data = requests.get(
                     f"https://api.hypixel.net/player?key={HYPIXEL_API_KEY}&uuid={uuid}"
                 ).json()
-                if data["success"]:
+                if data["success"] is True:
                     try:
                         if "DISCORD" in data["player"]["socialMedia"]["links"].keys():
                             if (
                                 data["player"]["socialMedia"]["links"]["DISCORD"]
-                                == f"{ctx.author}"
+                                == f"{interaction.user}"
                             ):
-                                query = {"_id": ctx.author.id}
+                                query = {"_id": interaction.user.id}
                                 if USER_DATA.count_documents(query) == 0:
                                     post = {
-                                        "_id": ctx.author.id,
+                                        "_id": interaction.user.id,
                                         "minecraft_account": username,
                                     }
                                     USER_DATA.insert_one(post)
                                 else:
                                     USER_DATA.update_one(
-                                        {"_id": ctx.author.id},
+                                        {"_id": interaction.user.id},
                                         {"$set": {"minecraft_account": username}},
                                     )
                                 embed = nextcord.Embed(
                                     color=0x0DD91A,
-                                    title=f"Linked your account to **{username}**",
+                                    title=f"Linked your account to **{username}**!",
                                 )
                             else:
                                 embed = nextcord.Embed(
@@ -156,8 +160,8 @@ class general(commands.Cog, name="General"):
                         inline=False,
                     )
 
-        elif "minecraft_account" in USER_DATA.find_one({"_id": ctx.author.id}):
-            minecraft_account: str = USER_DATA.find_one({"_id": ctx.author.id})[
+        elif "minecraft_account" in USER_DATA.find_one({"_id": interaction.user.id}):
+            minecraft_account: str = USER_DATA.find_one({"_id": interaction.user.id})[
                 "minecraft_account"
             ]
             embed = nextcord.Embed(
@@ -167,13 +171,18 @@ class general(commands.Cog, name="General"):
         else:
             embed = nextcord.Embed(
                 color=0xFFC800,
-                title="You don't have your Minecraft account linked!",
+                title="You don't have your Minecraft account linked!\nDo so by using `/link <your username>`",
             )
-        await ctx.send(embed=embed)
+        await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @commands.group(name="birthday", invoke_without_command=True, aliases=["bday"])
-    async def birthday(self, ctx: Context):
-        """Sends birthday dates"""
+    @slash(guild_ids=SLASH_GUILDS)
+    async def birthday(self, interaction: Interaction):
+        """This will never get called since it has subcommands"""
+        pass
+
+    @birthday.subcommand(name="send", inherit_hooks=True)
+    async def send_birthday(self, interaction: Interaction):
+        """Send all birthdays"""
         birthdays = []
         embed = nextcord.Embed(color=0x0DD91A)
         today = datetime.date.today()
@@ -209,50 +218,73 @@ class general(commands.Cog, name="General"):
             )
         if embed.fields == 0:
             embed = nextcord.Embed(color=0x0DD91A, title="No-one has a birthday set!")
-        await ctx.send(embed=embed)
+        await interaction.response.send_message(embed=embed)
 
-    @birthday.command(name="set")
-    async def set_birthday(self, ctx: Context, date=None):
-        """Sets your birthday"""
-        if not date:
-            embed = nextcord.Embed(color=0x0DD91A)
-            embed.add_field(
-                name="Type your birthday as following:",
-                value="day-month\nFor example: 22-05",
-                inline=False,
-            )
-
-        if date:
-            try:
-                today = datetime.date.today()
-                date2 = date.split("-")
-                datetime.date(today.year, int(date2[1]), int(date2[0]))
-            except (ValueError, IndexError):
-                embed = nextcord.Embed(
-                    color=0xFFC800, title=f"{date} is not a valid date!"
-                )
-                await ctx.send(embed=embed)
-                return
-            query = {"_id": ctx.author.id}
-            if USER_DATA.count_documents(query) == 0:
-                post = {"_id": ctx.author.id, "birthday": date}
-                USER_DATA.insert_one(post)
-            else:
-                USER_DATA.update_one(
-                    {"_id": ctx.author.id}, {"$set": {"birthday": date}}
-                )
+    @birthday.subcommand(name="get", inherit_hooks=True)
+    async def get_birthday(self, interaction: Interaction):
+        """Get your birthday"""
+        if "birthday" in USER_DATA.find_one({"_id": interaction.user.id}):
+            birthday = USER_DATA.find_one({"_id": interaction.user.id})["birthday"]
             embed = nextcord.Embed(
-                color=0x0DD91A, title=f"Your birthday is set to {date}!"
+                color=0x0DD91A,
+                title=f"Your birthday is set to **{birthday}**",
             )
-        await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
+        else:
+            embed = nextcord.Embed(
+                color=0xFFC800, title="You don't have a birthday set!"
+            )
+            await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @birthday.command(name="remove")
-    async def remove_birthday(self, ctx: Context):
-        """Removes your birthday"""
-        USER_DATA.update_one({"_id": ctx.author.id}, {"$unset": {"birthday": ""}})
-        embed = nextcord.Embed(color=0x0DD91A, title="Your birthday has been removed!")
-        await ctx.send(embed=embed)
+    @birthday.subcommand(name="set", inherit_hooks=True)
+    async def set_birthday(
+        self,
+        interaction: Interaction,
+        date: str = SlashOption(
+            description="Your birthday. Format: day-month", required=True
+        ),
+    ):
+        """Set your birthday"""
+        try:
+            today = datetime.date.today()
+            date2 = date.split("-")
+            datetime.date(today.year, int(date2[1]), int(date2[0]))
+        except (ValueError, IndexError):
+            embed = nextcord.Embed(
+                color=0xFFC800, title=f"**{date}** is not a valid date!"
+            )
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+            return
+        query = {"_id": interaction.user.id}
+        if USER_DATA.count_documents(query) == 0:
+            post = {"_id": interaction.user.id, "birthday": date}
+            USER_DATA.insert_one(post)
+        else:
+            USER_DATA.update_one(
+                {"_id": interaction.user.id}, {"$set": {"birthday": date}}
+            )
+        embed = nextcord.Embed(
+            color=0x0DD91A, title=f"Your birthday is set to **{date}**!"
+        )
+        await interaction.response.send_message(embed=embed)
+
+    @birthday.subcommand(name="remove", inherit_hooks=True)
+    async def remove_birthday(self, interaction: Interaction):
+        """Remove your birthday"""
+        if "birthday" in USER_DATA.find_one({"_id": interaction.user.id}):
+            USER_DATA.update_one(
+                {"_id": interaction.user.id}, {"$unset": {"birthday": ""}}
+            )
+            embed = nextcord.Embed(
+                color=0x0DD91A, title="Your birthday has been removed!"
+            )
+            await interaction.response.send_message(embed=embed)
+        else:
+            embed = nextcord.Embed(
+                color=0xFFC800, title="You don't have a birthday set!"
+            )
+            await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
 def setup(bot: commands.Bot):
-    bot.add_cog(general(bot))
+    bot.add_cog(general_slash(bot))
