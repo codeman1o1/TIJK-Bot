@@ -185,8 +185,47 @@ class general_slash(
         """This will never get called since it has subcommands"""
         pass
 
-    @birthday.subcommand(description="Set your birthday", inherit_hooks=True)
-    async def set(
+    @birthday.subcommand(name="send", inherit_hooks=True)
+    async def send_birthday(self, interaction: Interaction):
+        birthdays = []
+        embed = nextcord.Embed(color=0x0DD91A)
+        today = datetime.date.today()
+        year = today.year
+        for user in USER_DATA.find():
+            if "birthday" in user:
+                birthday = user["birthday"]
+                user = self.bot.get_user(int(user["_id"]))
+                birthday2 = birthday.split("-")
+                date = datetime.date(year, int(birthday2[1]), int(birthday2[0]))
+                diff = date - today
+                while diff.days < 0:
+                    year += 1
+                    date = datetime.date(year, int(birthday2[1]), int(birthday2[0]))
+                    diff = date - today
+                birthdays_dictionary = {
+                    "userName": user.name,
+                    "birthday": birthday,
+                    "year": year,
+                    "daysLeft": diff.days,
+                }
+                birthdays.append(birthdays_dictionary.copy())
+        birthdays = sorted(birthdays, key=lambda i: i["daysLeft"])
+        for user in birthdays:
+            USERNAME = user["userName"]
+            BIRTHDAY = user["birthday"]
+            YEAR = user["year"]
+            DAYS_LEFT = user["daysLeft"]
+            embed.add_field(
+                name=f"{USERNAME}'s birthday is on",
+                value=f"{BIRTHDAY}-{YEAR} ({DAYS_LEFT} days left)",
+                inline=False,
+            )
+        if embed.fields == 0:
+            embed = nextcord.Embed(color=0x0DD91A, title="No-one has a birthday set!")
+        await interaction.response.send_message(embed=embed)
+
+    @birthday.subcommand(name="set", description="Set your birthday", inherit_hooks=True)
+    async def set_birthday(
         self,
         interaction: Interaction,
         date: str = SlashOption(
