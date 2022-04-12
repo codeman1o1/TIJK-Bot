@@ -64,16 +64,13 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
                     ButtonRolesModal(button_roles(guild=interaction.guild))
                 )
                 return
-            else:
-                embed = nextcord.Embed(
-                    color=0x0DD91A, title="Click a button to add/remove that role!"
-                )
-                await interaction.channel.send(
-                    embed=embed, view=button_roles(guild=interaction.guild)
-                )
-                embed = nextcord.Embed(
-                    color=0x0DD91A, title="The message has been sent!"
-                )
+            embed = nextcord.Embed(
+                color=0x0DD91A, title="Click a button to add/remove that role!"
+            )
+            await interaction.channel.send(
+                embed=embed, view=button_roles(guild=interaction.guild)
+            )
+            embed = nextcord.Embed(color=0x0DD91A, title="The message has been sent!")
         else:
             embed = nextcord.Embed(
                 color=0xFFC800,
