@@ -1,3 +1,4 @@
+import datetime
 import random
 import nextcord
 from nextcord import Interaction, slash_command as slash
@@ -178,6 +179,38 @@ class general_slash(
                 title="You don't have your Minecraft account linked!\nDo so by using `/link <your username>`",
             )
         await interaction.response.send_message(embed=embed, ephemeral=True)
+
+    @slash(guild_ids=SLASH_GUILDS)
+    async def birthday(self, interaction: Interaction):
+        """This will never get called since it has subcommands"""
+        pass
+
+    @birthday.subcommand(description="Set your birthday", inherit_hooks=True)
+    async def set(
+        self,
+        interaction: Interaction,
+        date: str = SlashOption(
+            description="Your birthday. Format: day-month", required=True
+        ),
+    ):
+        try:
+            today = datetime.date.today()
+            date2 = date.split("-")
+            datetime.date(today.year, int(date2[1]), int(date2[0]))
+        except (ValueError, IndexError):
+            embed = nextcord.Embed(color=0xFFC800, title=f"**{date}** is not a valid date!")
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+            return
+        query = {"_id": interaction.user.id}
+        if USER_DATA.count_documents(query) == 0:
+            post = {"_id": interaction.user.id, "birthday": date}
+            USER_DATA.insert_one(post)
+        else:
+            USER_DATA.update_one(
+                {"_id": interaction.user.id}, {"$set": {"birthday": date}}
+            )
+        embed = nextcord.Embed(color=0x0DD91A, title=f"Your birthday is set to **{date}**!")
+        await interaction.response.send_message(embed=embed)
 
 
 def setup(bot: commands.Bot):
