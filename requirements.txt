@@ -8,4 +8,4 @@ uptime==3.0.1
 psutil==5.9.0
 humanfriendly==10.0
 mojang==0.2.0
-pillow==9.0.1
+pillow==9.1.0
