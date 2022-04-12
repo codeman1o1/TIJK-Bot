@@ -1,5 +1,6 @@
 import datetime
 import os
+import subprocess
 import sys
 import time
 
@@ -35,44 +36,46 @@ class developer(commands.Cog, name="Developer"):
             )
         )
         command = "cls" if os.name in ("nt", "dos") else "clear"
-        os.system(command)
+        subprocess.call(command, shell=False)
         os.execv(sys.executable, ["python"] + sys.argv)
 
     @commands.command(name="status")
     @commands.is_owner()
-    async def status(self, ctx: Context, type: str, *, text: str = "the TIJK Server"):
+    async def status(
+        self, ctx: Context, status_type: str, *, text: str = "the TIJK Server"
+    ):
         """Sets the status of TIJK Bot"""
-        if type == "watching":
+        if status_type == "watching":
             await self.bot.change_presence(
                 activity=nextcord.Activity(
                     type=nextcord.ActivityType.watching, name=text
                 )
             )
-        elif type == "playing":
+        elif status_type == "playing":
             await self.bot.change_presence(
                 activity=nextcord.Activity(
                     type=nextcord.ActivityType.playing, name=text
                 )
             )
-        elif type == "streaming":
+        elif status_type == "streaming":
             await self.bot.change_presence(
                 activity=nextcord.Activity(
                     type=nextcord.ActivityType.streaming, name=text
                 )
             )
-        elif type == "listening":
+        elif status_type == "listening":
             await self.bot.change_presence(
                 activity=nextcord.Activity(
                     type=nextcord.ActivityType.listening, name=text
                 )
             )
-        elif type == "competing":
+        elif status_type == "competing":
             await self.bot.change_presence(
                 activity=nextcord.Activity(
                     type=nextcord.ActivityType.competing, name=text
                 )
             )
-        elif type == "reset":
+        elif status_type == "reset":
             await self.bot.change_presence(
                 activity=nextcord.Activity(
                     type=nextcord.ActivityType.watching, name=text
@@ -92,7 +95,7 @@ class developer(commands.Cog, name="Developer"):
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name="Could not change te status!",
-                value=f"{type} is not a valid activity",
+                value=f"{status_type} is not a valid activity",
                 inline=False,
             )
 
@@ -102,7 +105,7 @@ class developer(commands.Cog, name="Developer"):
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="Status changed!",
-            value=f"Changed the status to **{type} {text}**",
+            value=f"Changed the status to **{status_type} {text}**",
             inline=False,
         )
 

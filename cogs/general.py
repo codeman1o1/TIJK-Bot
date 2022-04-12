@@ -54,7 +54,7 @@ class general(commands.Cog, name="General"):
                         ).json()
                         logouttime = data["player"]["lastLogout"]
                         logintime = data["player"]["lastLogin"]
-                        if not logouttime < logintime or data["success"] == False:
+                        if not logouttime < logintime or not data["success"]:
                             available.remove(user)
                     else:
                         available.remove(user)
@@ -109,7 +109,7 @@ class general(commands.Cog, name="General"):
                 data = requests.get(
                     f"https://api.hypixel.net/player?key={HYPIXEL_API_KEY}&uuid={uuid}"
                 ).json()
-                if data["success"] == True:
+                if data["success"]:
                     try:
                         if "DISCORD" in data["player"]["socialMedia"]["links"].keys():
                             if (

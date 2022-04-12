@@ -2,8 +2,8 @@ import nextcord
 from nextcord import Interaction
 from nextcord.ext import commands
 from nextcord.ext.commands import Context
-from nextcord.ext.commands.errors import *
-from nextcord.ext.application_checks import *
+from nextcord.ext.commands.errors import *  # noqa: F403
+from nextcord.ext.application_checks import *  # noqa: F403
 from difflib import SequenceMatcher
 import basic_logger as bl
 from views.buttons.report_issue import report_issue
@@ -208,7 +208,7 @@ class error_handler(commands.Cog, name="Error Handler"):
                 color=0xFF0000,
                 title=f"I am missing the following permission(s): {missing_permissions}",
             )
-        
+
         else:
             embed = nextcord.Embed(color=0xFF0000, title="An unknown error occurred!")
             embed.add_field(
@@ -217,7 +217,9 @@ class error_handler(commands.Cog, name="Error Handler"):
                 inline=True,
             )
             embed.set_footer(text="Click the button below to report this error")
-            await interaction.response.send_message(embed=embed, view=report_issue(quote(str(error))))
+            await interaction.response.send_message(
+                embed=embed, view=report_issue(quote(str(error)))
+            )
             bl.error(error, __file__)
             return
 
