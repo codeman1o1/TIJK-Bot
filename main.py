@@ -17,10 +17,9 @@ from pymongo import MongoClient
 
 import basic_logger as bl
 
-load_dotenv(".env")
-BOT_TOKEN = os.environ["BotToken"]
-HYPIXEL_API_KEY = os.environ["HypixelApiKey"]
-CLUSTER = MongoClient(os.environ["MongoURL"])
+load_dotenv()
+HYPIXEL_API_KEY = os.getenv("HypixelApiKey")
+CLUSTER = MongoClient(os.getenv("MongoURL"))
 DATA = CLUSTER["Data"]
 BOT_DATA = DATA["BotData"]
 USER_DATA = DATA["UserData"]
@@ -462,4 +461,4 @@ if __name__ == "__main__":
                 print(e)
                 bl.error(f"{ctx}  - context couldn't be loaded", __file__)
 
-    bot.run(BOT_TOKEN)
+    bot.run(os.getenv("BotToken"))
