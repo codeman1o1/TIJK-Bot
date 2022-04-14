@@ -217,9 +217,7 @@ class error_handler(commands.Cog, name="Error Handler"):
                 inline=True,
             )
             embed.set_footer(text="Click the button below to report this error")
-            await interaction.send(
-                embed=embed, view=report_issue(quote(str(error)))
-            )
+            await interaction.send(embed=embed, view=report_issue(quote(str(error))))
             bl.error(error, __file__)
             return
 
