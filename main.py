@@ -111,7 +111,7 @@ async def warn_system(
         if isinstance(event, Context):
             await event.channel.send(embed=embed)
         elif isinstance(event, Interaction):
-            await event.response.send_message(embed=embed)
+            await event.send(embed=embed)
     if total_warns >= 10:
         USER_DATA.update_one({"_id": user.id}, {"$set": {"warns": 0}})
         embed.add_field(
@@ -125,7 +125,7 @@ async def warn_system(
         if isinstance(event, Context):
             await event.channel.send(embed=embed)
         elif isinstance(event, Interaction):
-            await event.response.send_message(embed=embed)
+            await event.send(embed=embed)
 
         if isinstance(event, Context):
             await logger(event, f"{user} was muted for 10 minutes by Warn System")

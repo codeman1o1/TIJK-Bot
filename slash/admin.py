@@ -258,7 +258,6 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
                 )
                 if warn_user:
                     embed.set_footer(text="You also received 1 warn!")
-                    await warn_system(interaction, user, 1, interaction.user, reason)
             else:
                 embed.add_field(
                     name=f"Here is rule number {rule_number}:",
@@ -266,6 +265,8 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
                     inline=False,
                 )
             await interaction.response.send_message(embed=embed)
+            if warn_user:
+                await warn_system(interaction, user, 1, interaction.user, reason)
         except IndexError:
             embed = nextcord.Embed(
                 color=0xFF0000, title=f"{rule_number} is not a valid rule number!"
