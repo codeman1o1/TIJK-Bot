@@ -27,7 +27,9 @@ class general(commands.Cog, name="General"):
             inline=False,
         )
 
-        await ctx.send(embed=embed, view=link_button())
+        await ctx.send(
+            embed=embed, view=link_button("https://github.com/codeman1o1/TIJK-Bot")
+        )
 
     @commands.group(name="hypixelparty", invoke_without_command=True, aliases=["hpp"])
     async def hypixelparty(self, ctx: Context):
