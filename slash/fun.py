@@ -39,36 +39,30 @@ class fun_slash(commands.Cog, name="Fun Slash"):
     ):
         """Play rock paper scissors"""
         embed = nextcord.Embed(color=0x0DD91A)
-        random_number = random.randint(0, 2)
-        if random_number == 0:
-            random_number = "rock"
-        if random_number == 1:
-            random_number = "paper"
-        if random_number == 2:
-            random_number = "scissors"
+        random_choice = random.choice(("rock", "paper", "scissors"))
         if choice == "paper":
-            if random_number == "paper":
+            if random_choice == "paper":
                 win_lose_or_tie = "it is a tie"
-            elif random_number == "rock":
+            elif random_choice == "rock":
                 win_lose_or_tie = "you win"
-            elif random_number == "scissors":
+            elif random_choice == "scissors":
                 win_lose_or_tie = "I win"
         elif choice == "rock":
-            if random_number == "paper":
+            if random_choice == "paper":
                 win_lose_or_tie = "I win"
-            elif random_number == "rock":
+            elif random_choice == "rock":
                 win_lose_or_tie = "it is a tie"
-            elif random_number == "scissors":
+            elif random_choice == "scissors":
                 win_lose_or_tie = "you win"
         elif choice == "scissors":
-            if random_number == "paper":
+            if random_choice == "paper":
                 win_lose_or_tie = "you win"
-            elif random_number == "rock":
+            elif random_choice == "rock":
                 win_lose_or_tie = "I win"
-            elif random_number == "scissors":
+            elif random_choice == "scissors":
                 win_lose_or_tie = "it is a tie"
         embed.add_field(
-            name=f"You had {choice} and I had {random_number}",
+            name=f"You had {choice} and I had {random_choice}",
             value=f"That means that {win_lose_or_tie}!",
             inline=False,
         )
