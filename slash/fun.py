@@ -23,11 +23,7 @@ class fun_slash(commands.Cog, name="Fun Slash"):
     @slash(guild_ids=SLASH_GUILDS)
     async def headsortails(self, interaction: Interaction):
         """Flip a coin"""
-        hot = random.randint(0, 1)
-        if hot == 0:
-            hot = "heads"
-        if hot == 1:
-            hot = "tails"
+        hot = random.choice(("heads", "tails"))
         embed = nextcord.Embed(color=0x0DD91A, title=f"It is {hot}!")
         await interaction.response.send_message(embed=embed)
 
