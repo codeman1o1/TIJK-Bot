@@ -3,7 +3,7 @@ from nextcord.ext import commands
 from nextcord import Interaction, slash_command as slash
 from nextcord.application_command import SlashOption
 import nextcord.ext.application_checks as checks
-from nextcord.ext.commands.errors import *  # noqa F403
+from nextcord.ext.commands.errors import ExtensionAlreadyLoaded, ExtensionNotLoaded
 import os
 import sys
 import datetime
