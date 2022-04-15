@@ -170,9 +170,6 @@ class event_handler(commands.Cog, name="Event Handler"):
                 await member.guild.system_channel.send(embed=embed)
             dm = await member.create_dm()
             await dm.send(embed=embed)
-        if member.bot:
-            bot_role = nextcord.utils.get(member.guild.roles, name="Bot")
-            await member.add_roles(bot_role)
 
     @commands.Cog.listener()
     async def on_member_update(self, before: Context, after: Context):
