@@ -6,7 +6,7 @@ from nextcord.ext.commands.errors import *  # noqa: F403
 from nextcord.ext.application_checks import *  # noqa: F403
 from difflib import SequenceMatcher
 import basic_logger as bl
-from views.buttons.report_issue import report_issue
+from views.buttons.link import link_button
 from urllib.parse import quote
 
 
@@ -157,7 +157,7 @@ class error_handler(commands.Cog, name="Error Handler"):
                 inline=True,
             )
             embed.set_footer(text="Click the button below to report this error")
-            await ctx.send(embed=embed, view=report_issue(quote(str(error))))
+            await ctx.send(embed=embed, view=link_button(quote(str(error)), "Report error"))
             bl.error(error, __file__)
             return
 
@@ -217,7 +217,9 @@ class error_handler(commands.Cog, name="Error Handler"):
                 inline=True,
             )
             embed.set_footer(text="Click the button below to report this error")
-            await interaction.send(embed=embed, view=report_issue(quote(str(error))))
+            await interaction.send(
+                embed=embed, view=link_button(quote(str(error)), "Report error")
+            )
             bl.error(error, __file__)
             return
 

@@ -8,7 +8,7 @@ from nextcord.application_command import SlashOption
 import nextcord.ext.application_checks as checks
 from views.buttons.button_roles import button_roles
 from views.buttons.change_name_back import ChangeNameBack
-from views.buttons.profile_picture import profile_picture
+from views.buttons.link import link_button
 from views.modals.button_roles import ButtonRolesModal
 
 from main import (
@@ -843,7 +843,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
             )
             embed.add_field(name="Permissions in guild", value=permissions, inline=True)
         await interaction.response.send_message(
-            embed=embed, view=profile_picture(user.display_avatar.url)
+            embed=embed, view=link_button(user.display_avatar.url, "Download profile picture")
         )
 
     @slash(guild_ids=SLASH_GUILDS)

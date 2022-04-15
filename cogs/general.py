@@ -4,7 +4,7 @@ import random
 import nextcord
 from nextcord.ext import commands
 from nextcord.ext.commands import Context
-from views.buttons.github import github_button
+from views.buttons.link import link_button
 import requests
 from mojang import MojangAPI
 
@@ -27,7 +27,7 @@ class general(commands.Cog, name="General"):
             inline=False,
         )
 
-        await ctx.send(embed=embed, view=github_button())
+        await ctx.send(embed=embed, view=link_button())
 
     @commands.group(name="hypixelparty", invoke_without_command=True, aliases=["hpp"])
     async def hypixelparty(self, ctx: Context):

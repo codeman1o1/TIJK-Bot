@@ -7,7 +7,7 @@ from nextcord.ext import commands
 import requests
 from mojang import MojangAPI
 
-from views.buttons.github import github_button
+from views.buttons.link import link_button
 
 from main import HYPIXEL_API_KEY, SLASH_GUILDS, USER_DATA
 
@@ -27,7 +27,7 @@ class general_slash(commands.Cog, name="General Slash"):
             value="https://github.com/codeman1o1/TIJK-Bot",
             inline=False,
         )
-        await interaction.response.send_message(embed=embed, view=github_button())
+        await interaction.response.send_message(embed=embed, view=link_button("https://github.com/codeman1o1/TIJK-Bot"))
 
     @slash(guild_ids=SLASH_GUILDS)
     async def hypixelparty(self, interaction: Interaction):
