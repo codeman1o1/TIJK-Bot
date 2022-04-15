@@ -157,7 +157,9 @@ class error_handler(commands.Cog, name="Error Handler"):
                 inline=True,
             )
             embed.set_footer(text="Click the button below to report this error")
-            await ctx.send(embed=embed, view=link_button(quote(str(error)), "Report error"))
+            await ctx.send(
+                embed=embed, view=link_button(quote(str(error)), "Report error")
+            )
             bl.error(error, __file__)
             return
 

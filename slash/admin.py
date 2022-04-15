@@ -843,7 +843,8 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
             )
             embed.add_field(name="Permissions in guild", value=permissions, inline=True)
         await interaction.response.send_message(
-            embed=embed, view=link_button(user.display_avatar.url, "Download profile picture")
+            embed=embed,
+            view=link_button(user.display_avatar.url, "Download profile picture"),
         )
 
     @slash(guild_ids=SLASH_GUILDS)

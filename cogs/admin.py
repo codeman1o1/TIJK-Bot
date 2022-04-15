@@ -623,7 +623,10 @@ class admin(commands.Cog, name="Admin"):
                 embed.add_field(
                     name="Permissions in guild", value=permissions, inline=True
                 )
-            await ctx.send(embed=embed, view=link_button(user.display_avatar.url, "Download profile picture"))
+            await ctx.send(
+                embed=embed,
+                view=link_button(user.display_avatar.url, "Download profile picture"),
+            )
         else:
             embed = nextcord.Embed(color=0xFFC800, title="I can not access that user!")
             await ctx.send(embed=embed)

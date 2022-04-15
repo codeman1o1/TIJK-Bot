@@ -27,7 +27,9 @@ class general_slash(commands.Cog, name="General Slash"):
             value="https://github.com/codeman1o1/TIJK-Bot",
             inline=False,
         )
-        await interaction.response.send_message(embed=embed, view=link_button("https://github.com/codeman1o1/TIJK-Bot"))
+        await interaction.response.send_message(
+            embed=embed, view=link_button("https://github.com/codeman1o1/TIJK-Bot")
+        )
 
     @slash(guild_ids=SLASH_GUILDS)
     async def website(self, interaction: Interaction):
@@ -38,7 +40,9 @@ class general_slash(commands.Cog, name="General Slash"):
             value="https://codeman1o1.github.io/TIJK-Bot",
             inline=False,
         )
-        await interaction.response.send_message(embed=embed, view=link_button("https://codeman1o1.github.io/TIJK-Bot"))
+        await interaction.response.send_message(
+            embed=embed, view=link_button("https://codeman1o1.github.io/TIJK-Bot")
+        )
 
     @slash(guild_ids=SLASH_GUILDS)
     async def hypixelparty(self, interaction: Interaction):
