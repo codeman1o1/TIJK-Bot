@@ -157,11 +157,15 @@ class event_handler(commands.Cog, name="Event Handler"):
                     color=0x0DD91A,
                     title=f"Hey {member.display_name} :wave:\nWe hope you add great functionality to {member.guild.name}!",
                 )
+                BOT_ROLE = nextcord.utils.get(member.guild.roles, name="Bot")
+                await member.add_roles(BOT_ROLE, reason="Bot joined")
             else:
                 embed = nextcord.Embed(
                     color=0x0DD91A,
                     title=f"Hey {member.display_name} :wave:\nWelcome to {member.guild.name}!\nWe hope you enjoy your stay!",
                 )
+                MEMBER_ROLE = nextcord.utils.get(member.guild.roles, name="Member")
+                await member.add_roles(MEMBER_ROLE, reason="Member joined")
             if member.guild.system_channel:
                 await member.guild.system_channel.send(embed=embed)
             dm = await member.create_dm()
