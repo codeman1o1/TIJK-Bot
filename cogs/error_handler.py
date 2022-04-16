@@ -81,7 +81,7 @@ class error_handler(commands.Cog, name="Error Handler"):
             )
             embed.set_footer(text="Click the button below to report this error")
             await interaction.send(
-                embed=embed, view=link_button(quote(str(error)), "Report error")
+                embed=embed, view=link_button(f"https://github.com/codeman1o1/TIJK-Bot/issues/new?assignees=&labels=bug&template=error.yaml&title=%5BERROR%5D+{quote(str(error))}", "Report error")
             )
             logger.error(error)
             return
