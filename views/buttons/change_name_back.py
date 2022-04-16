@@ -1,7 +1,7 @@
 import nextcord
 from nextcord import ButtonStyle
 
-from main import logger
+from main import log
 
 
 class ChangeNameBack(nextcord.ui.View):
@@ -32,7 +32,7 @@ class ChangeNameBack(nextcord.ui.View):
                 title=f"Successfully changed the name back to {self.name}!",
             )
             await interaction.response.send_message(embed=embed)
-            await logger(
+            await log(
                 interaction,
                 f"{ORIGINAL_NAME}'s nickname has been changed to {self.name}",
             )

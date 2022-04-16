@@ -3,9 +3,10 @@ from nextcord import Interaction
 from nextcord.ext import commands
 from nextcord.ext.commands import CommandError, CommandNotFound, Context
 from nextcord.ext.application_checks import *  # noqa: F403
-import basic_logger as bl
 from views.buttons.link import link_button
 from urllib.parse import quote
+
+from main import logger
 
 
 class error_handler(commands.Cog, name="Error Handler"):
@@ -82,11 +83,11 @@ class error_handler(commands.Cog, name="Error Handler"):
             await interaction.send(
                 embed=embed, view=link_button(quote(str(error)), "Report error")
             )
-            bl.error(error, __file__)
+            logger.error(error)
             return
 
         await interaction.send(embed=embed)
-        bl.error(error, __file__)
+        logger.error(error)
 
 
 def setup(bot: commands.Bot):

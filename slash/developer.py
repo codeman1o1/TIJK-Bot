@@ -8,7 +8,7 @@ import sys
 import datetime
 import time
 
-from main import USER_DATA, logger, SLASH_GUILDS, START_TIME
+from main import USER_DATA, log, SLASH_GUILDS, START_TIME
 
 
 class developer_slash(commands.Cog, name="Developer Slash Commands"):
@@ -93,7 +93,7 @@ class developer_slash(commands.Cog, name="Developer Slash Commands"):
             inline=False,
         )
         await interaction.response.send_message(embed=embed)
-        await logger(
+        await log(
             interaction,
             f"TIJK Bot was restarted by {interaction.user}",
         )

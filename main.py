@@ -4,15 +4,15 @@ import asyncio
 import datetime
 import os
 import time
+import logging
+import coloredlogs
 
 import nextcord
 from nextcord import Interaction
 import nextcord.ext.commands.errors
-from dotenv import load_dotenv
 from nextcord.ext import commands, tasks
+from dotenv import load_dotenv
 from pymongo import MongoClient
-
-import basic_logger as bl
 
 load_dotenv()
 HYPIXEL_API_KEY = os.getenv("HypixelApiKey")
@@ -32,7 +32,15 @@ bot = commands.Bot(
     help_command=None,
     intents=nextcord.Intents.all(),
 )
-bot.remove_command("help")
+
+logger = logging.getLogger("nextcord")
+logger.setLevel(logging.INFO)
+handler = logging.FileHandler(filename="nextcord.log", encoding="utf-8", mode="w")
+handler.setFormatter(
+    logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s")
+)
+logger.addHandler(handler)
+coloredlogs.install(level=logging.INFO, logger=logger)
 
 
 async def warn_system(
@@ -71,12 +79,12 @@ async def warn_system(
                 warns = 0
         USER_DATA.update_one({"_id": user.id}, {"$set": {"warns": total_warns}})
     if not remove:
-        await logger(
+        await log(
             interaction,
             f"{user} has been warned {amount}x by {interaction.user.mention}{reason2}",
         )
     else:
-        await logger(interaction, f"{amount} warn(s) have been removed from {user}")
+        await log(interaction, f"{amount} warn(s) have been removed from {user}")
     embed = nextcord.Embed(color=0x0DD91A)
     if total_warns <= 9:
         reason2 = f" because of {reason}" if reason else ""
@@ -104,10 +112,10 @@ async def warn_system(
         await user.timeout(nextcord.utils.utcnow() + datetime.timedelta(seconds=1200))
 
         await interaction.send(embed=embed)
-        await logger(interaction, f"{user} was muted for 10 minutes by Warn System")
+        await log(interaction, f"{user} was muted for 10 minutes by Warn System")
 
 
-async def logger(interaction: nextcord.Interaction, message: str, channel: str = None):
+async def log(interaction: nextcord.Interaction, message: str, channel: str = None):
     """Log a message in the #logs channel"""
     logs_channel = nextcord.utils.get(interaction.guild.channels, name="logs")
     embed = nextcord.Embed(color=0x0DD91A, title=message)
@@ -120,15 +128,15 @@ async def logger(interaction: nextcord.Interaction, message: str, channel: str =
 @bot.event
 async def on_ready():
     """Runs when the bot is online"""
-    bl.info(f"Logged in as {bot.user}", __file__)
+    logger.info(f"Logged in as {bot.user}")
     for cog in os.listdir("cogs"):
         if cog.endswith(".py"):
             try:
                 bot.load_extension(f"cogs.{cog.strip('.py')}")
-                bl.debug(f"{cog} loaded", __file__)
+                logger.info(f"{cog} loaded")
             except Exception as e:
-                print(e)
-                bl.error(f"{cog} couldn't be loaded", __file__)
+                logger.error(e)
+                logger.error(f"{cog} couldn't be loaded")
     with open("spam_detect.txt", "a+") as file:
         file.truncate(0)
     await bot.change_presence(
@@ -181,10 +189,10 @@ if __name__ == "__main__":
             try:
                 file2 = file.strip(".py")
                 bot.load_extension(f"slash.{file2}")
-                bl.debug(f"{file} loaded", __file__)
+                logger.info(f"{file} loaded")
             except Exception as e:
-                print(e)
-                bl.error(f"{file} couldn't be loaded", __file__)
+                logger.error(e)
+                logger.error(f"{file} couldn't be loaded")
 
     context = os.listdir("views/context_menus")
     for ctx in context:
@@ -192,9 +200,9 @@ if __name__ == "__main__":
             try:
                 ctx2 = ctx.strip(".py")
                 bot.load_extension(f"views.context_menus.{ctx2}")
-                bl.debug(f"{ctx} loaded", __file__)
+                logger.info(f"{ctx} loaded")
             except Exception as e:
-                print(e)
-                bl.error(f"{ctx}  - context couldn't be loaded", __file__)
+                logger.error(e)
+                logger.error(f"{ctx}  - context couldn't be loaded")
 
     bot.run(os.getenv("BotToken"))

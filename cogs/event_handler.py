@@ -1,13 +1,12 @@
 import datetime
 
-import basic_logger as bl
 from contextlib import suppress
 import nextcord
 from nextcord.ext import commands
 from views.buttons.pings import ping_buttons
 from nextcord.ext.commands import Context
 
-from main import BOT_DATA, USER_DATA
+from main import BOT_DATA, USER_DATA, logger
 
 
 class event_handler(commands.Cog, name="Event Handler"):
@@ -218,7 +217,7 @@ class event_handler(commands.Cog, name="Event Handler"):
                             {"_id": after.id}, {"$set": {"warns": warns}}
                         )
                 except nextcord.Forbidden:
-                    bl.error("Couldn't change nickname", __file__)
+                    logger.error("Couldn't change nickname")
 
     @commands.Cog.listener()
     async def on_member_remove(self, member: nextcord.Member):
