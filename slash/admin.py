@@ -11,14 +11,7 @@ from views.buttons.change_name_back import ChangeNameBack
 from views.buttons.link import link_button
 from views.modals.button_roles import ButtonRolesModal
 
-from main import (
-    USER_DATA,
-    log,
-    warn_system,
-    SLASH_GUILDS,
-    BOT_DATA,
-    logger
-)
+from main import USER_DATA, log, warn_system, SLASH_GUILDS, BOT_DATA, logger
 
 BOT_PREFIXES = tuple(BOT_DATA.find_one()["botprefixes"])
 
@@ -365,9 +358,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
         await interaction.response.send_message(
             embed=embed, view=ChangeNameBack(user, ORIGINAL_NAME)
         )
-        await log(
-            interaction, f"{ORIGINAL_NAME}'s nickname has been changed to {name}"
-        )
+        await log(interaction, f"{ORIGINAL_NAME}'s nickname has been changed to {name}")
 
     @nick.subcommand(name="reset", inherit_hooks=True)
     async def nick_reset(
