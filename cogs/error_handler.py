@@ -16,7 +16,9 @@ class error_handler(commands.Cog, name="Error Handler"):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: Context, error: CommandError):
-        if isinstance(error, CommandNotFound) and not ctx.message.content.startswith(".."):
+        if isinstance(error, CommandNotFound) and not ctx.message.content.startswith(
+            ".."
+        ):
             embed = nextcord.Embed(
                 color=0xFFC800,
                 title="Text based commands are removed from TIJK Bot. Please use slash commands instead",
