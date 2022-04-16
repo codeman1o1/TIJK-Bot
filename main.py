@@ -146,7 +146,7 @@ async def on_ready():
         if cog.endswith(".py"):
             try:
                 bot.load_extension(f"cogs.{cog.strip('.py')}")
-                logger.info(f"{cog} loaded")
+                logger.debug(f"{cog} loaded")
             except Exception as e:
                 logger.error(e)
                 logger.error(f"{cog} couldn't be loaded")
@@ -202,7 +202,7 @@ if __name__ == "__main__":
             try:
                 file2 = file.strip(".py")
                 bot.load_extension(f"slash.{file2}")
-                logger.info(f"{file} loaded")
+                logger.debug(f"{file} loaded")
             except Exception as e:
                 logger.error(e)
                 logger.error(f"{file} couldn't be loaded")
@@ -213,7 +213,7 @@ if __name__ == "__main__":
             try:
                 ctx2 = ctx.strip(".py")
                 bot.load_extension(f"views.context_menus.{ctx2}")
-                logger.info(f"{ctx} loaded")
+                logger.debug(f"{ctx} loaded")
             except Exception as e:
                 logger.error(e)
                 logger.error(f"{ctx}  - context couldn't be loaded")
