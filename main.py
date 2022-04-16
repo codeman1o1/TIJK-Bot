@@ -173,6 +173,7 @@ async def birthday_checker():
     birthdays.clear()
     birthday_checker.cancel()
 
+
 if __name__ == "__main__":
     slash = os.listdir("slash")
     for file in slash:
