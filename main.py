@@ -36,11 +36,13 @@ bot = commands.Bot(
 logger = logging.getLogger("nextcord")
 logger.setLevel(logging.INFO)
 handler = logging.FileHandler(filename="nextcord.log", encoding="utf-8", mode="w")
-handler.setFormatter(
-    logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s")
-)
+handler.setFormatter(logging.Formatter("%(levelname)s:%(name)s: %(message)s"))
 logger.addHandler(handler)
-coloredlogs.install(level=logging.INFO, logger=logger)
+coloredlogs.install(
+    level=logging.INFO,
+    logger=logger,
+    fmt="%(asctime)s %(name)s[%(process)d] %(levelname)s %(message)s",
+)
 
 
 async def warn_system(
