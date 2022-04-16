@@ -119,7 +119,7 @@ class event_handler(commands.Cog, name="Event Handler"):
 
     @commands.Cog.listener()
     async def on_message_edit(self, before: nextcord.Message, after: nextcord.Message):
-        if after.channel and after.channel.name == "one-word-story":
+        if not after.channel.is_private and after.channel.name == "one-word-story":
             await after.delete(delay=10)
             embed = nextcord.Embed(
                 color=0xFFC800,
