@@ -7,7 +7,6 @@ from nextcord.ext import commands
 from views.buttons.pings import ping_buttons
 from nextcord.ext.commands import Context
 
-from main import logger
 from main import BOT_DATA, USER_DATA
 
 
@@ -99,13 +98,14 @@ class event_handler(commands.Cog, name="Event Handler"):
                             inline=True,
                         )
                         await message.channel.send(embed=embed)
-                        await logger(
-                            await self.bot.get_context(message),
-                            f"{user} has been muted for 10 minutes for spam",
+                        logs_channel = nextcord.utils.get(
+                            message.guild.channels, name="logs"
                         )
-
-                if not message.content.startswith(".."):
-                    await self.bot.process_commands(message)
+                        embed = nextcord.Embed(color=0x0DD91A, title=message)
+                        embed.set_footer(
+                            text=f'Used from the "{message.channel}" channel'
+                        )
+                        await logs_channel.send(embed=embed)
 
             query = {"_id": user.id}
             if USER_DATA.count_documents(query) == 0:

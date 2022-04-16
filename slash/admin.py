@@ -13,7 +13,7 @@ from views.modals.button_roles import ButtonRolesModal
 
 from main import (
     USER_DATA,
-    interaction_logger as ilogger,
+    logger,
     warn_system,
     SLASH_GUILDS,
     BOT_DATA,
@@ -109,7 +109,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
                 color=0x0DD91A,
                 title=f'The "{role.name}" role has been added!\nMake sure to use `.buttonroles` again!',
             )
-            await ilogger(
+            await logger(
                 interaction, f'The "{role.name}" role has been added to buttonroles'
             )
             await interaction.response.send_message(embed=embed)
@@ -140,7 +140,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
                 color=0x0DD91A,
                 title=f'The "{role.name}" role has been removed!\nMake sure to use `.buttonroles` again!',
             )
-            await ilogger(
+            await logger(
                 interaction, f'The "{role.name}" role has been removed from buttonroles'
             )
             await interaction.response.send_message(embed=embed)
@@ -194,7 +194,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
         )
 
         await interaction.response.send_message(embed=embed)
-        await ilogger(
+        await logger(
             interaction,
             f"TIJK Bot was shut down by {interaction.user}",
         )
@@ -303,7 +303,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
                 inline=False,
             )
             await interaction.response.send_message(embed=embed)
-            await ilogger(
+            await logger(
                 interaction,
                 f"{user} was muted for {humanfriendly.format_timespan(time)} by {interaction.user}{reason2}",
             )
@@ -334,7 +334,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
             inline=False,
         )
         await interaction.response.send_message(embed=embed)
-        await ilogger(
+        await logger(
             interaction,
             f"{user} was unmuted by {interaction.user}{reason2}",
         )
@@ -365,7 +365,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
         await interaction.response.send_message(
             embed=embed, view=ChangeNameBack(user, ORIGINAL_NAME)
         )
-        await ilogger(
+        await logger(
             interaction, f"{ORIGINAL_NAME}'s nickname has been changed to {name}"
         )
 
@@ -385,7 +385,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
         await interaction.response.send_message(
             embed=embed, view=ChangeNameBack(user, ORIGINAL_NAME)
         )
-        await ilogger(interaction, f"{ORIGINAL_NAME}'s nickname has been reset")
+        await logger(interaction, f"{ORIGINAL_NAME}'s nickname has been reset")
 
     @slash(guild_ids=SLASH_GUILDS)
     @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
@@ -420,7 +420,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
                 inline=False,
             )
             await interaction.response.send_message(embed=embed)
-            await ilogger(
+            await logger(
                 interaction,
                 f"Role {role.mention} has been assigned to {user.mention} by {interaction.user.mention}",
             )
@@ -461,7 +461,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
                 inline=False,
             )
             await interaction.response.send_message(embed=embed)
-            await ilogger(
+            await logger(
                 interaction,
                 f"Role {role.mention} has been removed from {user.mention} by {interaction.user.mention}",
             )
@@ -499,7 +499,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
             inline=False,
         )
         await interaction.response.send_message(embed=embed, delete_after=10)
-        await ilogger(
+        await logger(
             interaction,
             f"{len(deleted_messages)} messages have been cleared from {channel.mention}",
         )
@@ -534,7 +534,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
             inline=False,
         )
         await interaction.response.send_message(embed=embed, delete_after=10)
-        await ilogger(
+        await logger(
             interaction,
             f"{len(deleted_messages)} messages have been cleaned from {channel.mention}",
         )
@@ -561,7 +561,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
             inline=False,
         )
         await interaction.response.send_message(embed=embed)
-        await ilogger(
+        await logger(
             interaction,
             f"{user} has been kicked by {interaction.user.mention}{reason2}",
         )
@@ -588,7 +588,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
             inline=False,
         )
         await interaction.response.send_message(embed=embed)
-        await ilogger(
+        await logger(
             interaction,
             f"{user} has been banned by {interaction.user.mention}{reason2}",
         )
@@ -620,7 +620,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
                 value=f"{user} has been unbanned by {interaction.user.mention}{reason2}",
                 inline=False,
             )
-            await ilogger(
+            await logger(
                 interaction,
                 f"{user} has been unbanned by {interaction.user.mention}{reason2}",
             )
@@ -881,7 +881,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
                 color=0x0DD91A,
                 title=f"Set the slowmode for the {channel.name} channel to {time}",
             )
-            await ilogger(
+            await logger(
                 interaction,
                 f"The slowmode for the {channel.name} channel has been set to {time}",
             )
@@ -919,7 +919,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
                 color=0x0DD91A, title=f"Role `{role.name}` added to PingPolls!"
             )
             await interaction.response.send_message(embed=embed)
-            await ilogger(interaction, f"Role `{role.name}` added to PingPolls!")
+            await logger(interaction, f"Role `{role.name}` added to PingPolls!")
         else:
             embed = nextcord.Embed(
                 color=0xFFC800, title=f"Role `{role.name}` is already in PingPolls!"
@@ -947,7 +947,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
                 color=0x0DD91A, title=f"Role `{role.name}` removed from PingPolls!"
             )
             await interaction.response.send_message(embed=embed)
-            await ilogger(interaction, f"Role `{role.name}` is removed from PingPolls")
+            await logger(interaction, f"Role `{role.name}` is removed from PingPolls")
         else:
             embed = nextcord.Embed(
                 color=0xFFC800, title=f"Role `{role.name}` is not in PingPolls!"

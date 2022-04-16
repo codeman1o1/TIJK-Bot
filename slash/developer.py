@@ -3,14 +3,12 @@ from nextcord.ext import commands
 from nextcord import Interaction, slash_command as slash
 from nextcord.application_command import SlashOption
 import nextcord.ext.application_checks as checks
-from nextcord.ext.commands.errors import ExtensionAlreadyLoaded, ExtensionNotLoaded
 import os
 import sys
 import datetime
 import time
 
 from main import USER_DATA, logger, SLASH_GUILDS, START_TIME
-import basic_logger as bl
 
 
 class developer_slash(commands.Cog, name="Developer Slash Commands"):
@@ -98,7 +96,6 @@ class developer_slash(commands.Cog, name="Developer Slash Commands"):
         await logger(
             interaction,
             f"TIJK Bot was restarted by {interaction.user}",
-            interaction.channel.name,
         )
         await self.bot.change_presence(
             activity=nextcord.Activity(
@@ -293,165 +290,6 @@ class developer_slash(commands.Cog, name="Developer Slash Commands"):
                 f"> {GUILD.name} (**{GUILD.id}**)" for GUILD in self.bot.guilds
             )
             embed.add_field(name="Available servers:", value=servers)
-            await interaction.response.send_message(embed=embed, ephemeral=True)
-
-    @slash(guild_ids=SLASH_GUILDS)
-    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
-    async def cog(self, interaction: Interaction):
-        """This will never get called since it has subcommands"""
-        pass
-
-    @cog.subcommand(name="load", inherit_hooks=True)
-    async def load_cog(
-        self,
-        interaction: Interaction,
-        cog: str = SlashOption(
-            choices=[
-                "admin",
-                "api",
-                "developer",
-                "error_handler",
-                "event_handler",
-                "fun",
-                "general",
-            ],
-            description="The cog to load",
-            required=True,
-        ),
-    ):
-        """Load a cog"""
-        try:
-            self.bot.load_extension(f"cogs.{cog}")
-            embed = nextcord.Embed(color=0x0DD91A, title=f"Loaded the `{cog}` cog")
-            await interaction.response.send_message(embed=embed)
-        except ExtensionAlreadyLoaded:
-            embed = nextcord.Embed(
-                color=0xFFC800, title=f"The `{cog}` cog is already loaded!"
-            )
-            await interaction.response.send_message(embed=embed, ephemeral=True)
-
-    @cog.subcommand(name="reload", inherit_hooks=True)
-    async def reload_cog(
-        self,
-        interaction: Interaction,
-        cog: str = SlashOption(
-            choices=[
-                "admin",
-                "api",
-                "developer",
-                "error_handler",
-                "event_handler",
-                "fun",
-                "general",
-            ],
-            description="The cog to reload",
-            required=True,
-        ),
-    ):
-        """Reload a cog"""
-        try:
-            self.bot.reload_extension(f"cogs.{cog}")
-            embed = nextcord.Embed(color=0x0DD91A, title=f"Reloaded the `{cog}` cog")
-            await interaction.response.send_message(embed=embed)
-        except ExtensionNotLoaded:
-            embed = nextcord.Embed(
-                color=0xFFC800, title=f"The `{cog}` cog is not loaded!"
-            )
-            await interaction.response.send_message(embed=embed, ephemeral=True)
-
-    @cog.subcommand(name="unload", inherit_hooks=True)
-    async def unload_cog(
-        self,
-        interaction: Interaction,
-        cog: str = SlashOption(
-            choices=[
-                "admin",
-                "api",
-                "developer",
-                "error_handler",
-                "event_handler",
-                "fun",
-                "general",
-            ],
-            description="The cog to unload",
-            required=True,
-        ),
-    ):
-        """Unload a cog"""
-        try:
-            self.bot.unload_extension(f"cogs.{cog}")
-            embed = nextcord.Embed(color=0x0DD91A, title=f"Unloaded the `{cog}` cog")
-            await interaction.response.send_message(embed=embed)
-        except ExtensionNotLoaded:
-            embed = nextcord.Embed(
-                color=0xFFC800, title=f"The `{cog}` cog is not loaded!"
-            )
-            await interaction.response.send_message(embed=embed, ephemeral=True)
-
-    @slash(guild_ids=SLASH_GUILDS)
-    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
-    async def command(self, interaction: Interaction):
-        """This will never get called since it has subcommands"""
-        pass
-
-    @command.subcommand(name="enable", inherit_hooks=True)
-    async def enable_command(
-        self,
-        interaction: Interaction,
-        command_name: str = SlashOption(
-            name="command", description="The command to enable", required=True
-        ),
-    ):
-        """Enable a command"""
-        command = self.bot.get_command(command_name)
-        if not command:
-            embed = nextcord.Embed(
-                color=0x0DD91A, title=f"The `{command_name}` command is not found"
-            )
-            await interaction.response.send_message(embed=embed, ephemeral=True)
-        elif not command.enabled:
-            command.enabled = True
-            embed = nextcord.Embed(
-                color=0x0DD91A,
-                title=f"The `{command.qualified_name}` command is now enabled!",
-            )
-            bl.debug(f"The {command.qualified_name} command is now enabled!", __file__)
-            await interaction.response.send_message(embed=embed)
-        else:
-            embed = nextcord.Embed(
-                color=0x0DD91A,
-                title=f"The `{command.qualified_name}` command is already enabled!",
-            )
-            await interaction.response.send_message(embed=embed, ephemeral=True)
-
-    @command.subcommand(name="disable", inherit_hooks=True)
-    async def disable_command(
-        self,
-        interaction: Interaction,
-        command_name: str = SlashOption(
-            name="command", description="The command to disable", required=True
-        ),
-    ):
-        """Disable a command"""
-        command = self.bot.get_command(command_name)
-        if not command:
-            embed = nextcord.Embed(
-                color=0x0DD91A, title=f"The `{command_name}` command is not found"
-            )
-            await interaction.response.send_message(embed=embed, ephemeral=True)
-        elif command.enabled:
-            command.enabled = False
-            embed = nextcord.Embed(
-                color=0x0DD91A,
-                title=f"The `{command.qualified_name}` command is now disabled!",
-            )
-            bl.debug(f"The {command.qualified_name} command is now disabled!", __file__)
-            await interaction.response.send_message(embed=embed)
-        else:
-            embed = nextcord.Embed(
-                color=0x0DD91A,
-                title=f"The `{command.qualified_name}` command is already disabled!",
-            )
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
