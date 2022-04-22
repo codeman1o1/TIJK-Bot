@@ -84,12 +84,7 @@ async def warn_system(
     else:
         user2 = USER_DATA.find_one(query)
         warns = user2["warns"] if "warns" in user2 else 0
-        if not remove:
-            total_warns = warns + amount
-        else:
-            total_warns = warns - amount
-            if total_warns < 0:
-                warns = 0
+        total_warns = max(warns-amount, 0) if remove else warns + amount
         USER_DATA.update_one({"_id": user.id}, {"$set": {"warns": total_warns}})
     if not remove:
         await log(
