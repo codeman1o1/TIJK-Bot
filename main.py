@@ -2,16 +2,16 @@
 
 import asyncio
 import datetime
+import logging
 import os
 import time
-import logging
-import coloredlogs
 
+import coloredlogs
 import nextcord
-from nextcord import Interaction
 import nextcord.ext.commands.errors
-from nextcord.ext import commands, tasks
 from dotenv import load_dotenv
+from nextcord import Interaction
+from nextcord.ext import commands, tasks
 from pymongo import MongoClient
 
 load_dotenv()
@@ -84,7 +84,7 @@ async def warn_system(
     else:
         user2 = USER_DATA.find_one(query)
         warns = user2["warns"] if "warns" in user2 else 0
-        total_warns = max(warns-amount, 0) if remove else warns + amount
+        total_warns = max(warns - amount, 0) if remove else warns + amount
         USER_DATA.update_one({"_id": user.id}, {"$set": {"warns": total_warns}})
     if not remove:
         await log(
