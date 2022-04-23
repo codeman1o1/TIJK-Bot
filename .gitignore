@@ -136,5 +136,5 @@ assistant_model.h5
 spam_detect.txt
 file.txt
 head_img.png
-.vscode/settings.json
+.vscode
 .idea
