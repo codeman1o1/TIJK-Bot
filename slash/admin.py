@@ -4,16 +4,17 @@ from contextlib import suppress
 import humanfriendly
 import nextcord
 import nextcord.ext.application_checks as checks
-from nextcord import Interaction, slash_command as slash
+from main import BOT_DATA, SLASH_GUILDS, USER_DATA, log, logger, warn_system
+from nextcord import Interaction
+from nextcord import slash_command as slash
 from nextcord.application_command import SlashOption
 from nextcord.ext import commands
-
-from main import USER_DATA, log, warn_system, SLASH_GUILDS, BOT_DATA, logger
-from slash.custom_checks import is_server_owner, is_admin, is_mod
 from views.buttons.button_roles import button_roles
 from views.buttons.change_name_back import ChangeNameBack
 from views.buttons.link import link_button
 from views.modals.button_roles import ButtonRolesModal
+
+from slash.custom_checks import is_admin, is_mod, is_server_owner
 
 BOT_PREFIXES = tuple(BOT_DATA.find_one()["botprefixes"])
 
@@ -742,13 +743,13 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
         ),
     ):
         """Show information about a server"""
+        guild_id = server_id or interaction.guild.id
         try:
-            server_id = int(server_id)
+            guild_id = int(guild_id)
         except ValueError:
             embed = nextcord.Embed(color=0xFFC800, title="Please put in a server ID!")
             await interaction.response.send_message(embed=embed, ephemeral=True)
             return
-        guild_id = server_id or interaction.guild.id
         guild = self.bot.get_guild(guild_id)
         if guild is not None:
             embed = nextcord.Embed(
