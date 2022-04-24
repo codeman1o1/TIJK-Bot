@@ -1,13 +1,14 @@
-import nextcord
-from nextcord.ext import commands
-from nextcord import Interaction, slash_command as slash
-from nextcord.application_command import SlashOption
-import nextcord.ext.application_checks as checks
+import datetime
 import os
 import sys
-import datetime
 import time
 
+import nextcord
+from nextcord import Interaction, slash_command as slash
+from nextcord.application_command import SlashOption
+from nextcord.ext import commands
+
+from custom_checks import is_bot_owner, is_server_owner, is_admin
 from main import USER_DATA, log, SLASH_GUILDS, START_TIME
 
 
@@ -18,7 +19,7 @@ class developer_slash(commands.Cog, name="Developer Slash Commands"):
         self.bot = bot
 
     @slash(guild_ids=SLASH_GUILDS)
-    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    @is_admin()
     async def embed(
         self,
         interaction: Interaction,
@@ -83,7 +84,7 @@ class developer_slash(commands.Cog, name="Developer Slash Commands"):
             )
 
     @slash(guild_ids=SLASH_GUILDS)
-    @checks.is_owner()
+    @is_server_owner()
     async def restart(self, interaction: nextcord.Interaction):
         """Restart TIJK Bot"""
         embed = nextcord.Embed(color=0x0DD91A)
@@ -107,7 +108,7 @@ class developer_slash(commands.Cog, name="Developer Slash Commands"):
         os.execv(sys.executable, ["python"] + sys.argv)
 
     @slash(guild_ids=SLASH_GUILDS)
-    @checks.is_owner()
+    @is_server_owner()
     async def status(
         self,
         interaction: Interaction,
@@ -203,15 +204,12 @@ class developer_slash(commands.Cog, name="Developer Slash Commands"):
             inline=False,
         )
         embed.add_field(
-            name="Total commands:", value=f"{len(self.bot.commands)}", inline=False
-        )
-        embed.add_field(
             name="Uptime:",
             value=str(datetime.timedelta(seconds=int(round(time.time() - START_TIME)))),
             inline=False,
         )
         guilds = "".join(
-            f"{self.bot.guilds.index(guild)+1}. {guild.name} (**{guild.id}**)\n"
+            f"{self.bot.guilds.index(guild) + 1}. {guild.name} (**{guild.id}**)\n"
             for guild in self.bot.guilds
         )
         embed.add_field(name="Guilds:", value=guilds, inline=False)
@@ -225,7 +223,7 @@ class developer_slash(commands.Cog, name="Developer Slash Commands"):
         await interaction.response.send_message(embed=embed)
 
     @slash(guild_ids=SLASH_GUILDS)
-    @checks.is_owner()
+    @is_bot_owner()
     async def tijkbotdeveloper(self, interaction: Interaction):
         """Give the TIJK-Bot developer role to the owner of TIJK Bot"""
         tijk_bot_developer_role = nextcord.utils.get(
@@ -246,7 +244,7 @@ class developer_slash(commands.Cog, name="Developer Slash Commands"):
         await interaction.response.send_message(embed=embed)
 
     @slash(guild_ids=SLASH_GUILDS)
-    @checks.is_owner()
+    @is_bot_owner()
     async def purge_unknown_users(self, interaction: Interaction):
         """Remove invalid users from the database"""
         users_removed = 0
@@ -263,7 +261,7 @@ class developer_slash(commands.Cog, name="Developer Slash Commands"):
         await interaction.response.send_message(embed=embed)
 
     @slash(guild_ids=SLASH_GUILDS)
-    @checks.is_owner()
+    @is_bot_owner()
     async def leave_server(
         self, interaction: Interaction, server_id: str = SlashOption(required=False)
     ):

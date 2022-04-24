@@ -1,12 +1,14 @@
+from urllib.parse import quote
+
 import nextcord
 from nextcord import Interaction
 from nextcord.ext import commands
-from nextcord.ext.commands import CommandError, CommandNotFound, Context
 from nextcord.ext.application_checks import *  # noqa: F403
-from views.buttons.link import link_button
-from urllib.parse import quote
+from nextcord.ext.commands import CommandError, CommandNotFound, Context
 
 from main import logger
+from slash.custom_checks import CustomCheckError  # noqa: F403
+from views.buttons.link import link_button
 
 
 class error_handler(commands.Cog, name="Error Handler"):
@@ -71,6 +73,9 @@ class error_handler(commands.Cog, name="Error Handler"):
                 color=0xFF0000,
                 title=f"I am missing the following permission(s): {missing_permissions}",
             )
+
+        elif isinstance(error, CustomCheckError):
+            embed = nextcord.Embed(color=0xFF0000, title=error.message)
 
         else:
             embed = nextcord.Embed(color=0xFF0000, title="An unknown error occurred!")

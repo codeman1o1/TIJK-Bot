@@ -192,6 +192,7 @@ async def birthday_checker():
 
 if __name__ == "__main__":
     slash = os.listdir("slash")
+    slash.remove("custom_checks.py")
     for file in slash:
         if file.endswith(".py"):
             try:

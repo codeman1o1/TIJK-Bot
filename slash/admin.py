@@ -1,17 +1,19 @@
-from contextlib import suppress
 import datetime
+from contextlib import suppress
+
 import humanfriendly
 import nextcord
-from nextcord.ext import commands
+import nextcord.ext.application_checks as checks
 from nextcord import Interaction, slash_command as slash
 from nextcord.application_command import SlashOption
-import nextcord.ext.application_checks as checks
+from nextcord.ext import commands
+
+from custom_checks import is_server_owner, is_admin, is_mod
+from main import USER_DATA, log, warn_system, SLASH_GUILDS, BOT_DATA, logger
 from views.buttons.button_roles import button_roles
 from views.buttons.change_name_back import ChangeNameBack
 from views.buttons.link import link_button
 from views.modals.button_roles import ButtonRolesModal
-
-from main import USER_DATA, log, warn_system, SLASH_GUILDS, BOT_DATA, logger
 
 BOT_PREFIXES = tuple(BOT_DATA.find_one()["botprefixes"])
 
@@ -29,7 +31,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
         self.bot.add_modal(ButtonRolesModal(None))
 
     @slash(guild_ids=SLASH_GUILDS)
-    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    @is_admin()
     async def buttonroles(self, interaction: Interaction):
         """This will never get called since it has subcommands"""
         pass
@@ -176,7 +178,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
         await interaction.response.send_message(embed=embed)
 
     @slash(guild_ids=SLASH_GUILDS)
-    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    @is_server_owner()
     async def shutdown(self, interaction: Interaction):
         """Shut down TIJK Bot"""
         embed = nextcord.Embed(color=0x0DD91A)
@@ -199,6 +201,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
         await self.bot.close()
 
     @slash(guild_ids=SLASH_GUILDS)
+    @is_mod()
     async def ping(
         self,
         interaction: Interaction,
@@ -220,7 +223,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
         await interaction.response.send_message(embed=embed)
 
     @slash(guild_ids=SLASH_GUILDS)
-    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    @is_mod()
     async def readtherules(
         self,
         interaction: Interaction,
@@ -234,7 +237,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
             description="The reason why the user is warned", required=False
         ),
         warn_user: bool = SlashOption(
-            description="Wether to warn the user", required=False, default=True
+            description="Whether to warn the user", required=False, default=True
         ),
     ):
         """Tell a user to read the rules"""
@@ -267,7 +270,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @slash(guild_ids=SLASH_GUILDS)
-    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    @is_mod()
     @checks.bot_has_permissions(moderate_members=True)
     async def mute(
         self,
@@ -305,7 +308,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @slash(guild_ids=SLASH_GUILDS)
-    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    @is_mod()
     @checks.bot_has_permissions(moderate_members=True)
     async def unmute(
         self,
@@ -333,7 +336,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
         )
 
     @slash(guild_ids=SLASH_GUILDS)
-    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    @is_admin()
     @checks.bot_has_permissions(manage_nicknames=True)
     async def nick(self, interaction: Interaction):
         """This will never get called since it has subcommands"""
@@ -379,7 +382,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
         await log(interaction, f"{ORIGINAL_NAME}'s nickname has been reset")
 
     @slash(guild_ids=SLASH_GUILDS)
-    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    @is_admin()
     async def role(self, interaction: Interaction):
         """This will never get called since it has subcommands"""
         pass
@@ -467,7 +470,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @slash(guild_ids=SLASH_GUILDS)
-    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    @is_mod()
     async def clear(
         self,
         interaction: Interaction,
@@ -496,7 +499,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
         )
 
     @slash(guild_ids=SLASH_GUILDS)
-    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    @is_admin()
     async def clean(
         self,
         interaction: Interaction,
@@ -531,7 +534,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
         )
 
     @slash(guild_ids=SLASH_GUILDS)
-    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    @is_admin()
     async def kick(
         self,
         interaction: Interaction,
@@ -558,7 +561,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
         )
 
     @slash(guild_ids=SLASH_GUILDS)
-    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    @is_server_owner()
     async def ban(
         self,
         interaction: Interaction,
@@ -585,7 +588,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
         )
 
     @slash(guild_ids=SLASH_GUILDS)
-    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    @is_server_owner()
     async def unban(
         self,
         interaction: Interaction,
@@ -621,7 +624,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @slash(guild_ids=SLASH_GUILDS)
-    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    @is_mod()
     async def warn(self, interaction: Interaction):
         """This will never get called since it has subcommands"""
         pass
@@ -696,7 +699,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
         await interaction.response.send_message(embed=embed)
 
     @slash(guild_ids=SLASH_GUILDS)
-    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    @is_admin()
     async def info(self, interaction: Interaction):
         """This will never get called since it has subcommands"""
         pass
@@ -839,7 +842,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
         )
 
     @slash(guild_ids=SLASH_GUILDS)
-    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    @is_admin()
     async def slowmode(
         self,
         interaction: Interaction,
@@ -884,7 +887,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @slash(guild_ids=SLASH_GUILDS)
-    @checks.has_any_role("Owner", "Admin", "TIJK-Bot developer")
+    @is_admin()
     async def pingpoll(self, interaction: Interaction):
         """This will never get called since it has subcommands"""
         pass
