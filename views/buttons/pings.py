@@ -16,39 +16,31 @@ class ping_buttons(nextcord.ui.View):
         embed_name_2 = embed.to_dict()["fields"][2]["name"]
         embed_value_2 = embed.to_dict()["fields"][2]["value"]
         if embed_value_0 == "None":
-            if interaction.user.display_name in embed_value_1:
-                embed_value_1 = embed_value_1.strip(
-                    "\n" + interaction.user.display_name
-                )
+            if interaction.user.mention in embed_value_1:
+                embed_value_1 = embed_value_1.strip("\n" + interaction.user.mention)
                 if embed_value_1 == "":
                     embed_value_1 = "None"
                 embed.set_field_at(1, name=embed_name_1, value=embed_value_1)
-            if interaction.user.display_name in embed_value_2:
-                embed_value_2 = embed_value_2.strip(
-                    "\n" + interaction.user.display_name
-                )
+            if interaction.user.mention in embed_value_2:
+                embed_value_2 = embed_value_2.strip("\n" + interaction.user.mention)
                 if embed_value_2 == "":
                     embed_value_2 = "None"
                 embed.set_field_at(2, name=embed_name_2, value=embed_value_2)
-            embed_value_0 = interaction.user.display_name
-        elif interaction.user.display_name not in embed_value_0:
-            if interaction.user.display_name in embed_value_1:
-                embed_value_1 = embed_value_1.strip(
-                    "\n" + interaction.user.display_name
-                )
+            embed_value_0 = interaction.user.mention
+        elif interaction.user.mention not in embed_value_0:
+            if interaction.user.mention in embed_value_1:
+                embed_value_1 = embed_value_1.strip("\n" + interaction.user.mention)
                 if embed_value_1 == "":
                     embed_value_1 = "None"
                 embed.set_field_at(1, name=embed_name_1, value=embed_value_1)
-            if interaction.user.display_name in embed_value_2:
-                embed_value_2 = embed_value_2.strip(
-                    "\n" + interaction.user.display_name
-                )
+            if interaction.user.mention in embed_value_2:
+                embed_value_2 = embed_value_2.strip("\n" + interaction.user.mention)
                 if embed_value_2 == "":
                     embed_value_2 = "None"
                 embed.set_field_at(2, name=embed_name_2, value=embed_value_2)
-            embed_value_0 = embed_value_0 + "\n" + interaction.user.display_name
+            embed_value_0 = embed_value_0 + "\n" + interaction.user.mention
         else:
-            embed_value_0 = embed_value_0.strip("\n" + interaction.user.display_name)
+            embed_value_0 = embed_value_0.strip("\n" + interaction.user.mention)
             if embed_value_0 == "":
                 embed_value_0 = "None"
 
@@ -69,39 +61,31 @@ class ping_buttons(nextcord.ui.View):
         embed_name_2 = embed.to_dict()["fields"][2]["name"]
         embed_value_2 = embed.to_dict()["fields"][2]["value"]
         if embed_value_1 == "None":
-            if interaction.user.display_name in embed_value_0:
-                embed_value_0 = embed_value_0.strip(
-                    "\n" + interaction.user.display_name
-                )
+            if interaction.user.mention in embed_value_0:
+                embed_value_0 = embed_value_0.strip("\n" + interaction.user.mention)
                 if embed_value_0 == "":
                     embed_value_0 = "None"
                 embed.set_field_at(0, name=embed_name_0, value=embed_value_0)
-            if interaction.user.display_name in embed_value_2:
-                embed_value_2 = embed_value_2.strip(
-                    "\n" + interaction.user.display_name
-                )
+            if interaction.user.mention in embed_value_2:
+                embed_value_2 = embed_value_2.strip("\n" + interaction.user.mention)
                 if embed_value_2 == "":
                     embed_value_2 = "None"
                 embed.set_field_at(2, name=embed_name_2, value=embed_value_2)
-            embed_value_1 = interaction.user.display_name
-        elif interaction.user.display_name not in embed_value_1:
-            if interaction.user.display_name in embed_value_0:
-                embed_value_0 = embed_value_0.strip(
-                    "\n" + interaction.user.display_name
-                )
+            embed_value_1 = interaction.user.mention
+        elif interaction.user.mention not in embed_value_1:
+            if interaction.user.mention in embed_value_0:
+                embed_value_0 = embed_value_0.strip("\n" + interaction.user.mention)
                 if embed_value_0 == "":
                     embed_value_0 = "None"
                 embed.set_field_at(0, name=embed_name_0, value=embed_value_0)
-            if interaction.user.display_name in embed_value_2:
-                embed_value_2 = embed_value_2.strip(
-                    "\n" + interaction.user.display_name
-                )
+            if interaction.user.mention in embed_value_2:
+                embed_value_2 = embed_value_2.strip("\n" + interaction.user.mention)
                 if embed_value_2 == "":
                     embed_value_2 = "None"
                 embed.set_field_at(2, name=embed_name_2, value=embed_value_2)
-            embed_value_1 = embed_value_1 + "\n" + interaction.user.display_name
+            embed_value_1 = embed_value_1 + "\n" + interaction.user.mention
         else:
-            embed_value_1 = embed_value_1.strip("\n" + interaction.user.display_name)
+            embed_value_1 = embed_value_1.strip("\n" + interaction.user.mention)
             if embed_value_1 == "":
                 embed_value_1 = "None"
         embed.set_field_at(1, name=embed_name_1, value=embed_value_1)
@@ -117,39 +101,31 @@ class ping_buttons(nextcord.ui.View):
         embed_name_2 = embed.to_dict()["fields"][2]["name"]
         embed_value_2 = embed.to_dict()["fields"][2]["value"]
         if embed_value_2 == "None":
-            if interaction.user.display_name in embed_value_0:
-                embed_value_0 = embed_value_0.strip(
-                    "\n" + interaction.user.display_name
-                )
+            if interaction.user.mention in embed_value_0:
+                embed_value_0 = embed_value_0.strip("\n" + interaction.user.mention)
                 if embed_value_0 == "":
                     embed_value_0 = "None"
                 embed.set_field_at(0, name=embed_name_0, value=embed_value_0)
-            if interaction.user.display_name in embed_value_1:
-                embed_value_1 = embed_value_1.strip(
-                    "\n" + interaction.user.display_name
-                )
+            if interaction.user.mention in embed_value_1:
+                embed_value_1 = embed_value_1.strip("\n" + interaction.user.mention)
                 if embed_value_1 == "":
                     embed_value_1 = "None"
                 embed.set_field_at(1, name=embed_name_1, value=embed_value_1)
-            embed_value_2 = interaction.user.display_name
-        elif interaction.user.display_name not in embed_value_2:
-            if interaction.user.display_name in embed_value_0:
-                embed_value_0 = embed_value_0.strip(
-                    "\n" + interaction.user.display_name
-                )
+            embed_value_2 = interaction.user.mention
+        elif interaction.user.mention not in embed_value_2:
+            if interaction.user.mention in embed_value_0:
+                embed_value_0 = embed_value_0.strip("\n" + interaction.user.mention)
                 if embed_value_0 == "":
                     embed_value_0 = "None"
                 embed.set_field_at(0, name=embed_name_0, value=embed_value_0)
-            if interaction.user.display_name in embed_value_1:
-                embed_value_1 = embed_value_1.strip(
-                    "\n" + interaction.user.display_name
-                )
+            if interaction.user.mention in embed_value_1:
+                embed_value_1 = embed_value_1.strip("\n" + interaction.user.mention)
                 if embed_value_1 == "":
                     embed_value_1 = "None"
                 embed.set_field_at(1, name=embed_name_1, value=embed_value_1)
-            embed_value_2 = embed_value_2 + "\n" + interaction.user.display_name
+            embed_value_2 = embed_value_2 + "\n" + interaction.user.mention
         else:
-            embed_value_2 = embed_value_2.strip("\n" + interaction.user.display_name)
+            embed_value_2 = embed_value_2.strip("\n" + interaction.user.mention)
             if embed_value_2 == "":
                 embed_value_2 = "None"
         embed.set_field_at(2, name=embed_name_2, value=embed_value_2)
