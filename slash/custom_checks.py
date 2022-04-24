@@ -29,7 +29,8 @@ def has_role_or_above(interaction: Interaction, role: str) -> bool:
     if not (ROLE := get(interaction.guild.roles, name=role)):
         return False
 
-    guild_roles = interaction.guild.roles.reverse()
+    guild_roles = interaction.guild.roles
+    guild_roles.reverse()
     for guild_role in guild_roles:
         if guild_role.position < ROLE.position:
             break
