@@ -51,9 +51,7 @@ class general_slash(commands.Cog, name="General Slash"):
         available = [
             user
             for user in interaction.channel.members
-            if not user.bot
-            if user.status != nextcord.Status.offline
-            if hypixel_ping in user.roles
+            if not user.bot and hypixel_ping in user.roles
         ]
         round_1 = ", ".join(str(user) for user in available) if available else "Nobody"
         if available:
