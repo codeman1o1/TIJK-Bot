@@ -42,10 +42,8 @@ def is_bot_owner():
     async def predicate(interaction: Interaction) -> bool:
         if await check_bot_owner(interaction):
             return True
-        else:
-            raise CustomCheckError(
-                f"You are not the owner of {interaction.client.user.name}!"
-            )
+
+        raise CustomCheckError(f"You are not the owner of {interaction.client.user.name}!")
 
     return check(predicate)
 
@@ -55,8 +53,8 @@ def is_server_owner():
         app_info = await interaction.client.application_info()
         if app_info.owner == interaction.user or check_server_owner(interaction):
             return True
-        else:
-            raise CustomCheckError("You are not the owner of this server!")
+
+        raise CustomCheckError("You are not the owner of this server!")
 
     return check(predicate)
 
@@ -69,8 +67,8 @@ def is_owner():
             or has_role_or_above(interaction, "Owner")
         ):
             return True
-        else:
-            raise CustomCheckError("You are not an owner!")
+
+        raise CustomCheckError("You are not an owner!")
 
     return check(predicate)
 
@@ -83,8 +81,8 @@ def is_admin():
             or has_role_or_above(interaction, "Admin")
         ):
             return True
-        else:
-            raise CustomCheckError("You are not an admin!")
+
+        raise CustomCheckError("You are not an admin!")
 
     return check(predicate)
 
@@ -97,7 +95,7 @@ def is_mod():
             or has_role_or_above(interaction, "Moderator")
         ):
             return True
-        else:
-            raise CustomCheckError("You are not a moderator!")
+
+        raise CustomCheckError("You are not a moderator!")
 
     return check(predicate)
