@@ -43,7 +43,9 @@ def is_bot_owner():
         if await check_bot_owner(interaction):
             return True
 
-        raise CustomCheckError(f"You are not the owner of {interaction.client.user.name}!")
+        raise CustomCheckError(
+            f"You are not the owner of {interaction.client.user.name}!"
+        )
 
     return check(predicate)
 
