@@ -1,12 +1,11 @@
 import datetime
-
 from contextlib import suppress
-import nextcord
-from nextcord.ext import commands
-from views.buttons.pings import ping_buttons
-from nextcord.ext.commands import Context
 
+import nextcord
 from main import BOT_DATA, USER_DATA, logger
+from nextcord.ext import commands
+from nextcord.ext.commands import Context
+from views.buttons.pings import ping_buttons
 
 
 class event_handler(commands.Cog, name="Event Handler"):
@@ -26,7 +25,11 @@ class event_handler(commands.Cog, name="Event Handler"):
                     pingpolls = BOT_DATA.find_one()["pingpolls"]
                     for pingpoll in pingpolls:
                         role = nextcord.utils.get(user.guild.roles, id=pingpoll)
-                        if role and message.content == f"<@&{role.id}>":
+                        if (
+                            role
+                            and message.content == f"<@&{role.id}>"
+                            and role in user.roles
+                        ):
                             embed = nextcord.Embed(
                                 color=0x0DD91A,
                                 title=f"{user.display_name} has {role.name}ed",
