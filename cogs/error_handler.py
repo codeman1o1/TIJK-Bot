@@ -1,13 +1,12 @@
 from urllib.parse import quote
 
 import nextcord
+from main import logger
 from nextcord import Interaction
 from nextcord.ext import commands
 from nextcord.ext.application_checks import *  # noqa: F403
 from nextcord.ext.commands import CommandError, CommandNotFound, Context
-
-from main import logger
-from slash.custom_checks import CustomCheckError  # noqa: F403
+from slash.custom_checks import CustomCheckError
 from views.buttons.link import link_button
 
 

@@ -70,7 +70,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
         else:
             embed = nextcord.Embed(
                 color=0xFFC800,
-                title="There are no button roles!\nMake sure to add them by using `.buttonroles add <role>`",
+                title="There are no button roles!\nMake sure to add them by using `/buttonroles add <role>`",
             )
 
         await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -103,7 +103,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
             )
             embed = nextcord.Embed(
                 color=0x0DD91A,
-                title=f'The "{role.name}" role has been added!\nMake sure to use `.buttonroles` again!',
+                title=f'The "{role.name}" role has been added!\nMake sure to use `/buttonroles send` again!',
             )
             await log(
                 interaction, f'The "{role.name}" role has been added to buttonroles'
@@ -134,7 +134,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
             )
             embed = nextcord.Embed(
                 color=0x0DD91A,
-                title=f'The "{role.name}" role has been removed!\nMake sure to use `.buttonroles` again!',
+                title=f'The "{role.name}" role has been removed!\nMake sure to use `/buttonroles send` again!',
             )
             await log(
                 interaction, f'The "{role.name}" role has been removed from buttonroles'
@@ -579,7 +579,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="User banned!",
-            value=f"{user} has been banned by {interaction.user.mention}{reason2}\nUse `.unban {user}` to unban",
+            value=f"{user} has been banned by {interaction.user.mention}{reason2}\nUse `/unban {user}` to unban",
             inline=False,
         )
         await interaction.response.send_message(embed=embed)
