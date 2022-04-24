@@ -1,15 +1,15 @@
 import datetime
 import random
+
 import nextcord
-from nextcord import Interaction, slash_command as slash
+import requests
+from main import HYPIXEL_API_KEY, SLASH_GUILDS, USER_DATA
+from mojang import MojangAPI
+from nextcord import Interaction
+from nextcord import slash_command as slash
 from nextcord.application_command import SlashOption
 from nextcord.ext import commands
-import requests
-from mojang import MojangAPI
-
 from views.buttons.link import link_button
-
-from main import HYPIXEL_API_KEY, SLASH_GUILDS, USER_DATA
 
 
 class general_slash(commands.Cog, name="General Slash"):
@@ -55,6 +55,7 @@ class general_slash(commands.Cog, name="General Slash"):
             if user.status != nextcord.Status.offline
             if hypixel_ping in user.roles
         ]
+        round_1 = ", ".join(str(user) for user in available) if available else "Nobody"
         if available:
             for user in available:
                 user2 = await commands.converter.UserConverter().convert(
@@ -77,6 +78,7 @@ class general_slash(commands.Cog, name="General Slash"):
                         available.remove(user)
                 else:
                     available.remove(user)
+        round_2 = ", ".join(str(user) for user in available) if available else "Nobody"
         if available:
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
@@ -89,6 +91,7 @@ class general_slash(commands.Cog, name="General Slash"):
                 color=0x0DD91A,
                 title="Nobody meets the requirements to be the party leader!",
             )
+        embed.set_footer(text=f"Round 1: {round_1}\nRound 2: {round_2}")
         await interaction.response.send_message(embed=embed, delete_after=300)
         del available
 
