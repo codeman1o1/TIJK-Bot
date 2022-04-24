@@ -8,8 +8,8 @@ from nextcord import Interaction, slash_command as slash
 from nextcord.application_command import SlashOption
 from nextcord.ext import commands
 
-from custom_checks import is_bot_owner, is_server_owner, is_admin
 from main import USER_DATA, log, SLASH_GUILDS, START_TIME
+from slash.custom_checks import is_bot_owner, is_server_owner, is_admin
 
 
 class developer_slash(commands.Cog, name="Developer Slash Commands"):

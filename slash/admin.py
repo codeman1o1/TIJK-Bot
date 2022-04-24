@@ -8,8 +8,8 @@ from nextcord import Interaction, slash_command as slash
 from nextcord.application_command import SlashOption
 from nextcord.ext import commands
 
-from custom_checks import is_server_owner, is_admin, is_mod
 from main import USER_DATA, log, warn_system, SLASH_GUILDS, BOT_DATA, logger
+from slash.custom_checks import is_server_owner, is_admin, is_mod
 from views.buttons.button_roles import button_roles
 from views.buttons.change_name_back import ChangeNameBack
 from views.buttons.link import link_button
