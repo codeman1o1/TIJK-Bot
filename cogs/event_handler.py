@@ -207,9 +207,7 @@ class EventHandler(commands.Cog, name="Event Handler"):
                     user = USER_DATA.find_one(query)
                     warns = user["warns"] if "warns" in user else 0
                     warns = warns + 1
-                    USER_DATA.update_one(
-                        {"_id": after.id}, {"$set": {"warns": warns}}
-                    )
+                    USER_DATA.update_one({"_id": after.id}, {"$set": {"warns": warns}})
             except nextcord.Forbidden:
                 logger.error("Couldn't change nickname")
 
