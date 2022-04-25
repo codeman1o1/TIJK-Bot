@@ -5,6 +5,7 @@ import nextcord
 from nextcord.ext import commands
 from nextcord.ext.commands import Context
 from views.buttons.pingpoll import PingPoll
+from slash.custom_checks import has_role_or_above
 
 from main import BOT_DATA, USER_DATA, logger
 
@@ -77,13 +78,7 @@ class EventHandler(commands.Cog, name="Event Handler"):
                         )
                         await message.channel.send(embed=embed, delete_after=5)
 
-                owner_role = nextcord.utils.get(user.guild.roles, name="Owner")
-                admin_role = nextcord.utils.get(user.guild.roles, name="Admin")
-                tijk_bot_developer_role = nextcord.utils.get(
-                    user.guild.roles, name="TIJK-Bot developer"
-                )
-                anti_mute = (owner_role, admin_role, tijk_bot_developer_role)
-                if all(role not in user.roles for role in anti_mute):
+                if not has_role_or_above(message.author, message.guild, "Moderator"):
                     with open("spam_detect.txt", "r+", encoding="utf-8") as file:
                         file.writelines(f"{user.id}\n")
                         counter = sum(
@@ -180,48 +175,43 @@ class EventHandler(commands.Cog, name="Event Handler"):
     @commands.Cog.listener()
     async def on_member_update(self, before: Context, after: Context):
         """Called when a member updates"""
-        tijk_bot_developer_role = nextcord.utils.get(
-            after.guild.roles, name="TIJK-Bot developer"
-        )
-        if tijk_bot_developer_role in after.roles:
-            info = await self.bot.application_info()
-            owner = info.owner
-            if after.id != owner.id:
-                await after.remove_roles(tijk_bot_developer_role)
-        if after.nick:
-            owner_role = nextcord.utils.get(after.guild.roles, name="Owner")
-            admin_role = nextcord.utils.get(after.guild.roles, name="Admin")
-            roles = (owner_role, admin_role)
-            admin_names = [
-                [user.name, user.display_name]
-                for user in after.guild.members
-                if any(role in user.roles for role in roles)
-            ]
-            admin_names = tuple(sum(admin_names, []))
-            admin_roles = (owner_role, admin_role)
-            if (
-                all(admin_role not in after.roles for admin_role in admin_roles)
-                and after.nick in admin_names
-            ):
-                try:
-                    user = self.bot.get_user(int(after.id))
-                    if before.nick:
-                        await after.edit(nick=before.nick)
-                    else:
-                        await after.edit(nick=before.name)
-                    query = {"_id": after.id}
-                    if USER_DATA.count_documents(query) == 0:
-                        post = {"_id": after.id, "warns": 1}
-                        USER_DATA.insert_one(post)
-                    else:
-                        user = USER_DATA.find_one(query)
-                        warns = user["warns"] if "warns" in user else 0
-                        warns = warns + 1
-                        USER_DATA.update_one(
-                            {"_id": after.id}, {"$set": {"warns": warns}}
-                        )
-                except nextcord.Forbidden:
-                    logger.error("Couldn't change nickname")
+        if not after.nick:
+            return
+
+        owner_role = nextcord.utils.get(after.guild.roles, name="Owner")
+        admin_role = nextcord.utils.get(after.guild.roles, name="Admin")
+        mod_role = nextcord.utils.get(after.guild.roles, name="Moderator")
+        roles = (owner_role, admin_role, mod_role)
+        admin_names = [
+            [user.name, user.display_name]
+            for user in after.guild.members
+            if any(role in user.roles for role in roles)
+        ]
+        admin_names = tuple(sum(admin_names, []))
+        admin_roles = (owner_role, admin_role)
+        if (
+            all(admin_role not in after.roles for admin_role in admin_roles)
+            and after.nick in admin_names
+        ):
+            try:
+                user = self.bot.get_user(int(after.id))
+                if before.nick:
+                    await after.edit(nick=before.nick)
+                else:
+                    await after.edit(nick=before.name)
+                query = {"_id": after.id}
+                if USER_DATA.count_documents(query) == 0:
+                    post = {"_id": after.id, "warns": 1}
+                    USER_DATA.insert_one(post)
+                else:
+                    user = USER_DATA.find_one(query)
+                    warns = user["warns"] if "warns" in user else 0
+                    warns = warns + 1
+                    USER_DATA.update_one(
+                        {"_id": after.id}, {"$set": {"warns": warns}}
+                    )
+            except nextcord.Forbidden:
+                logger.error("Couldn't change nickname")
 
     @commands.Cog.listener()
     async def on_member_remove(self, member: nextcord.Member):

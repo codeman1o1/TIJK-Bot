@@ -1,5 +1,6 @@
 import nextcord
 from nextcord import ButtonStyle
+from slash.custom_checks import has_role_or_above
 
 from main import log
 
@@ -18,13 +19,7 @@ class ChangeNameBack(nextcord.ui.View):
     async def change_name_back(
         self, button: nextcord.Button, interaction: nextcord.Interaction
     ):
-        owner_role = nextcord.utils.get(interaction.user.guild.roles, name="Owner")
-        admin_role = nextcord.utils.get(interaction.user.guild.roles, name="Admin")
-        tijk_bot_developer_role = nextcord.utils.get(
-            interaction.user.guild.roles, name="TIJK-Bot Developer"
-        )
-        roles = (owner_role, admin_role, tijk_bot_developer_role)
-        if any(role in interaction.user.roles for role in roles):
+        if has_role_or_above(interaction.user, interaction.guild, "Admin"):
             ORIGINAL_NAME = self.user.display_name
             await self.user.edit(nick=self.name)
             embed = nextcord.Embed(

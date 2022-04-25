@@ -1,4 +1,4 @@
-from nextcord import ApplicationError, Interaction
+from nextcord import ApplicationError, Interaction, User, Guild
 from nextcord.ext.application_checks import check
 from nextcord.utils import get
 
@@ -25,16 +25,16 @@ def has_role(interaction: Interaction, role: str) -> bool:
     )
 
 
-def has_role_or_above(interaction: Interaction, role: str) -> bool:
-    if not (role := get(interaction.guild.roles, name=role)):
+def has_role_or_above(user: User, guild: Guild, role: str) -> bool:
+    if not (role := get(guild.roles, name=role)):
         return False
 
-    guild_roles = interaction.guild.roles
+    guild_roles = guild.roles
     guild_roles.reverse()
     for guild_role in guild_roles:
         if guild_role.position < role.position:
             break
-        if guild_role in interaction.user.roles:
+        if guild_role in user.roles:
             return True
     return False
 
@@ -67,7 +67,7 @@ def is_owner():
         if (
             await check_bot_owner(interaction)
             or check_server_owner(interaction)
-            or has_role_or_above(interaction, "Owner")
+            or has_role_or_above(interaction.user, interaction.guild, "Owner")
         ):
             return True
 
@@ -81,7 +81,7 @@ def is_admin():
         if (
             await check_bot_owner(interaction)
             or check_server_owner(interaction)
-            or has_role_or_above(interaction, "Admin")
+            or has_role_or_above(interaction.user, interaction.guild, "Admin")
         ):
             return True
 
@@ -95,7 +95,7 @@ def is_mod():
         if (
             await check_bot_owner(interaction)
             or check_server_owner(interaction)
-            or has_role_or_above(interaction, "Moderator")
+            or has_role_or_above(interaction.user, interaction.guild, "Moderator")
         ):
             return True
 

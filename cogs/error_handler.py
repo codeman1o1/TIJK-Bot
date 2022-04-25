@@ -28,17 +28,11 @@ class ErrorHandler(commands.Cog, name="Error Handler"):
     ):
         """Called when a slash command error occurs"""
         if isinstance(error, ApplicationMissingAnyRole):
-            if error.missing_roles == ["Owner", "Admin", "TIJK-Bot developer"]:
-                embed = nextcord.Embed(
-                    color=0xFF0000, title="You must be an admin to do this!"
-                )
-
-            else:
-                missing_roles = ", ".join(error.missing_roles)
-                embed = nextcord.Embed(
-                    color=0xFF0000,
-                    title=f"You are missing any of the following roles: {missing_roles}",
-                )
+            missing_roles = ", ".join(error.missing_roles)
+            embed = nextcord.Embed(
+                color=0xFF0000,
+                title=f"You are missing any of the following roles: {missing_roles}",
+            )
 
         elif isinstance(error, ApplicationNotOwner):
             owner = self.bot.get_user(self.bot.owner_id)

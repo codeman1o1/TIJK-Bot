@@ -224,27 +224,6 @@ class Developer(commands.Cog, name="Developer Slash Commands"):
 
     @slash(guild_ids=SLASH_GUILDS)
     @is_bot_owner()
-    async def tijkbotdeveloper(self, interaction: Interaction):
-        """Give the TIJK-Bot developer role to the owner of TIJK Bot"""
-        tijk_bot_developer_role = nextcord.utils.get(
-            interaction.guild.roles, name="TIJK-Bot developer"
-        )
-        if tijk_bot_developer_role not in interaction.user.roles:
-            await interaction.user.add_roles(tijk_bot_developer_role)
-            embed = nextcord.Embed(color=0x0DD91A)
-            embed.add_field(
-                name="Done!",
-                value="You now have the `TIJK-Bot developer` role!",
-                inline=False,
-            )
-        else:
-            embed = nextcord.Embed(
-                color=0x0DD91A, title="You already have the `TIJK-Bot developer` role"
-            )
-        await interaction.response.send_message(embed=embed)
-
-    @slash(guild_ids=SLASH_GUILDS)
-    @is_bot_owner()
     async def purge_unknown_users(self, interaction: Interaction):
         """Remove invalid users from the database"""
         users_removed = 0
