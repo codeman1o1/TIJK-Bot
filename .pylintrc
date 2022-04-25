@@ -1,5 +1,0 @@
-[MASTER]
-init-hook='import sys; sys.path.append(".")'
-
-[MESSAGES CONTROL]
-disable=unnecessary-pass,missing-class-docstring,missing-function-docstring,unused-argument,missing-module-docstring,invalid-name,line-too-long
