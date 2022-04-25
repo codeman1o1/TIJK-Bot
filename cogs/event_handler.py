@@ -5,7 +5,7 @@ import nextcord
 from main import BOT_DATA, USER_DATA, logger
 from nextcord.ext import commands
 from nextcord.ext.commands import Context
-from views.buttons.pings import ping_buttons
+from views.buttons.pingpoll import PingPoll
 
 
 class event_handler(commands.Cog, name="Event Handler"):
@@ -13,7 +13,7 @@ class event_handler(commands.Cog, name="Event Handler"):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.bot.add_view(ping_buttons())
+        self.bot.add_view(PingPoll())
 
     @commands.Cog.listener()
     async def on_message(self, message: nextcord.Message):
@@ -34,13 +34,13 @@ class event_handler(commands.Cog, name="Event Handler"):
                                 color=0x0DD91A,
                                 title=f"{user.display_name} has {role.name}ed",
                             )
-                            embed.add_field(name="Accepted", value="None")
-                            embed.add_field(name="In a moment", value="None")
-                            embed.add_field(name="Denied", value="None")
+                            embed.add_field(name="Accepted", value="Nobody")
+                            embed.add_field(name="In a moment", value="Nobody")
+                            embed.add_field(name="Denied", value="Nobody")
                             await message.channel.send(
                                 embed=embed,
                                 delete_after=900,
-                                view=ping_buttons(),
+                                view=PingPoll(),
                             )
 
                 if message.channel.name == "one-word-story":
