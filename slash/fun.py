@@ -10,7 +10,9 @@ import pymongo
 from main import SLASH_GUILDS, USER_DATA
 
 root = os.path.abspath(os.getcwd())
-eight_ball_responses = open(os.path.join(root, "8ball_responses.json"), "r", encoding="utf-8")
+eight_ball_responses = open(
+    os.path.join(root, "8ball_responses.json"), "r", encoding="utf-8"
+)
 eight_ball_responses = tuple(json.load(eight_ball_responses)["responses"])
 
 
