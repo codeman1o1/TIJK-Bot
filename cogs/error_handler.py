@@ -10,7 +10,6 @@ from nextcord.ext.application_checks import (
     ApplicationBotMissingRole,
     ApplicationBotMissingPermissions,
 )
-from nextcord.ext.commands import CommandError, CommandNotFound, Context
 from slash.custom_checks import CustomCheckError
 from views.buttons.link import Link
 
@@ -24,20 +23,8 @@ class ErrorHandler(commands.Cog, name="Error Handler"):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_command_error(self, ctx: Context, error: CommandError):
-        if isinstance(error, CommandNotFound) and not ctx.message.content.startswith(
-            ".."
-        ):
-            embed = nextcord.Embed(
-                color=0xFFC800,
-                title="Text based commands are removed from TIJK Bot\nPlease use slash commands instead",
-            )
-            embed.set_footer(text="This message will delete itself after 10 seconds")
-            await ctx.send(embed=embed, delete_after=10)
-
-    @commands.Cog.listener()
     async def on_application_command_error(
-        self, interaction: Interaction, error: CommandError
+        self, interaction: Interaction, error: commands.CommandError
     ):
         """Called when a slash command error occurs"""
         if isinstance(error, ApplicationMissingAnyRole):
