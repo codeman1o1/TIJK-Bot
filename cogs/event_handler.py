@@ -2,13 +2,14 @@ import datetime
 from contextlib import suppress
 
 import nextcord
-from main import BOT_DATA, USER_DATA, logger
 from nextcord.ext import commands
 from nextcord.ext.commands import Context
 from views.buttons.pingpoll import PingPoll
 
+from main import BOT_DATA, USER_DATA, logger
 
-class event_handler(commands.Cog, name="Event Handler"):
+
+class EventHandler(commands.Cog, name="Event Handler"):
     """A separate cog for handling events"""
 
     def __init__(self, bot: commands.Bot):
@@ -83,7 +84,7 @@ class event_handler(commands.Cog, name="Event Handler"):
                 )
                 anti_mute = (owner_role, admin_role, tijk_bot_developer_role)
                 if all(role not in user.roles for role in anti_mute):
-                    with open("spam_detect.txt", "r+") as file:
+                    with open("spam_detect.txt", "r+", encoding="utf-8") as file:
                         file.writelines(f"{user.id}\n")
                         counter = sum(
                             lines.strip("\n") == str(user.id) for lines in file
@@ -228,7 +229,7 @@ class event_handler(commands.Cog, name="Event Handler"):
         with suppress(nextcord.errors.HTTPException):
             embed = nextcord.Embed(
                 color=0x0DD91A,
-                title=f"Bye {member.display_name} :wave:\nIt was great having you!!",
+                title=f"Bye {member.display_name} :wave:\nIt was great having you!",
             )
             if member.guild.system_channel:
                 await member.guild.system_channel.send(embed=embed)
@@ -237,4 +238,4 @@ class event_handler(commands.Cog, name="Event Handler"):
 
 
 def setup(bot: commands.Bot):
-    bot.add_cog(event_handler(bot))
+    bot.add_cog(EventHandler(bot))

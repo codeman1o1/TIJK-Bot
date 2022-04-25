@@ -136,16 +136,16 @@ async def log(interaction: nextcord.Interaction, message: str, channel: str = No
 @bot.event
 async def on_ready():
     """Runs when the bot is online"""
-    logger.info(f"Logged in as {bot.user}")
+    logger.info("Logged in as %s", bot.user)
     for cog in os.listdir("cogs"):
         if cog.endswith(".py"):
             try:
                 bot.load_extension(f"cogs.{cog.strip('.py')}")
-                logger.debug(f"{cog} loaded")
+                logger.debug("%s loaded", cog)
             except Exception as e:
                 logger.error(e)
-                logger.error(f"{cog} couldn't be loaded")
-    with open("spam_detect.txt", "a+") as file:
+                logger.error("%s couldn't be loaded", cog)
+    with open("spam_detect.txt", "a+", encoding="utf-8") as file:
         file.truncate(0)
     await bot.change_presence(
         activity=nextcord.Activity(

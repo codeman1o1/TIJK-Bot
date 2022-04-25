@@ -1,16 +1,23 @@
 from urllib.parse import quote
 
 import nextcord
-from main import logger
 from nextcord import Interaction
 from nextcord.ext import commands
-from nextcord.ext.application_checks import *  # noqa: F403
+from nextcord.ext.application_checks import (
+    ApplicationMissingAnyRole,
+    ApplicationNotOwner,
+    ApplicationBotMissingAnyRole,
+    ApplicationBotMissingRole,
+    ApplicationBotMissingPermissions,
+)
 from nextcord.ext.commands import CommandError, CommandNotFound, Context
 from slash.custom_checks import CustomCheckError
-from views.buttons.link import link_button
+from views.buttons.link import Link
+
+from main import logger
 
 
-class error_handler(commands.Cog, name="Error Handler"):
+class ErrorHandler(commands.Cog, name="Error Handler"):
     """A cog for customized error messages"""
 
     def __init__(self, bot: commands.Bot):
@@ -23,7 +30,7 @@ class error_handler(commands.Cog, name="Error Handler"):
         ):
             embed = nextcord.Embed(
                 color=0xFFC800,
-                title="Text based commands are removed from TIJK Bot. Please use slash commands instead",
+                title="Text based commands are removed from TIJK Bot\nPlease use slash commands instead",
             )
             embed.set_footer(text="This message will delete itself after 10 seconds")
             await ctx.send(embed=embed, delete_after=10)
@@ -47,17 +54,17 @@ class error_handler(commands.Cog, name="Error Handler"):
                 )
 
         elif isinstance(error, ApplicationNotOwner):
-            OWNER = self.bot.get_user(self.bot.owner_id)
+            owner = self.bot.get_user(self.bot.owner_id)
             embed = nextcord.Embed(
                 color=0xFF0000,
-                title=f"Only the owner of TIJK Bot ({OWNER}) can do this!",
+                title=f"Only the owner of TIJK Bot ({owner}) can do this!",
             )
 
         elif isinstance(error, ApplicationBotMissingAnyRole):
-            MISSING_ROLES = ", ".join(error.missing_roles)
+            missing_roles = ", ".join(error.missing_roles)
             embed = nextcord.Embed(
                 color=0xFF0000,
-                title=f"I am missing any of the following role(s): {MISSING_ROLES}",
+                title=f"I am missing any of the following role(s): {missing_roles}",
             )
 
         elif isinstance(error, ApplicationBotMissingRole):
@@ -86,7 +93,7 @@ class error_handler(commands.Cog, name="Error Handler"):
             embed.set_footer(text="Click the button below to report this error")
             await interaction.send(
                 embed=embed,
-                view=link_button(
+                view=Link(
                     f"https://github.com/codeman1o1/TIJK-Bot/issues/new?assignees=&labels=bug&template=error.yaml&title=%5BERROR%5D+{quote(str(error))}",
                     "Report error",
                 ),
@@ -99,4 +106,4 @@ class error_handler(commands.Cog, name="Error Handler"):
 
 
 def setup(bot: commands.Bot):
-    bot.add_cog(error_handler(bot))
+    bot.add_cog(ErrorHandler(bot))

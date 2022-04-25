@@ -1,12 +1,13 @@
 import nextcord
-from main import SLASH_GUILDS, USER_DATA, warn_system
 from nextcord.ext import commands
 from nextcord.interactions import Interaction
 from slash.custom_checks import is_admin, is_mod
-from views.buttons.link import link_button
+from views.buttons.link import Link
+
+from main import SLASH_GUILDS, USER_DATA, warn_system
 
 
-class admin_ctx(commands.Cog):
+class Admin(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
@@ -63,10 +64,10 @@ class admin_ctx(commands.Cog):
             embed.add_field(name="Permissions in guild", value=permissions, inline=True)
         await interaction.response.send_message(
             embed=embed,
-            view=link_button(user.display_avatar.url, "Download profile picture"),
+            view=Link(user.display_avatar.url, "Download profile picture"),
             ephemeral=True,
         )
 
 
 def setup(bot: commands.Bot):
-    bot.add_cog(admin_ctx(bot))
+    bot.add_cog(Admin(bot))

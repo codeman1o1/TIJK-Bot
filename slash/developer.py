@@ -12,7 +12,7 @@ from main import USER_DATA, log, SLASH_GUILDS, START_TIME
 from slash.custom_checks import is_bot_owner, is_server_owner, is_admin
 
 
-class developer_slash(commands.Cog, name="Developer Slash Commands"):
+class Developer(commands.Cog, name="Developer Slash Commands"):
     """Slash commands for developers"""
 
     def __init__(self, bot: commands.Bot):
@@ -273,9 +273,9 @@ class developer_slash(commands.Cog, name="Developer Slash Commands"):
                 embed = nextcord.Embed(color=0xFFC800, title="Invalid server ID!")
                 await interaction.response.send_message(embed=embed, ephemeral=True)
                 return
-            if GUILD := nextcord.utils.get(self.bot.guilds, id=server_id):
-                await GUILD.leave()
-                embed = nextcord.Embed(color=0x0DD91A, title=f"Left {GUILD.name}")
+            if guild := nextcord.utils.get(self.bot.guilds, id=server_id):
+                await guild.leave()
+                embed = nextcord.Embed(color=0x0DD91A, title=f"Left {guild.name}")
                 await interaction.response.send_message(embed=embed)
             else:
                 embed = nextcord.Embed(
@@ -292,4 +292,4 @@ class developer_slash(commands.Cog, name="Developer Slash Commands"):
 
 
 def setup(bot):
-    bot.add_cog(developer_slash(bot))
+    bot.add_cog(Developer(bot))

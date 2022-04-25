@@ -2,7 +2,7 @@ import nextcord
 from nextcord import ButtonStyle
 
 
-class link_button(nextcord.ui.View):
+class Link(nextcord.ui.View):
     def __init__(self, link: str, label: str = "Open in browser"):
         super().__init__()
         self.add_item(

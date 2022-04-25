@@ -4,22 +4,23 @@ from contextlib import suppress
 import humanfriendly
 import nextcord
 import nextcord.ext.application_checks as checks
-from main import BOT_DATA, SLASH_GUILDS, USER_DATA, log, logger, warn_system
 from nextcord import Interaction
 from nextcord import slash_command as slash
 from nextcord.application_command import SlashOption
 from nextcord.ext import commands
-from views.buttons.button_roles import button_roles
+from views.buttons.button_roles import ButtonRoles
 from views.buttons.change_name_back import ChangeNameBack
-from views.buttons.link import link_button
+from views.buttons.link import Link
 from views.modals.button_roles import ButtonRolesModal
 
 from slash.custom_checks import is_admin, is_mod, is_server_owner
 
+from main import BOT_DATA, SLASH_GUILDS, USER_DATA, log, logger, warn_system
+
 BOT_PREFIXES = tuple(BOT_DATA.find_one()["botprefixes"])
 
 
-class admin_slash(commands.Cog, name="Admin Slash Commands"):
+class Admin(commands.Cog, name="Admin Slash Commands"):
     """Slash commands for admins"""
 
     def __init__(self, bot: commands.Bot):
@@ -27,7 +28,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        self.bot.add_view(button_roles(bot=self.bot))
+        self.bot.add_view(ButtonRoles(bot=self.bot))
         self.bot.add_view(ChangeNameBack(None, None))
         self.bot.add_modal(ButtonRolesModal(None))
 
@@ -57,14 +58,14 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
         if roles > 0:
             if custom_text:
                 await interaction.response.send_modal(
-                    ButtonRolesModal(button_roles(guild=interaction.guild))
+                    ButtonRolesModal(ButtonRoles(guild=interaction.guild))
                 )
                 return
             embed = nextcord.Embed(
                 color=0x0DD91A, title="Click a button to add/remove that role!"
             )
             await interaction.channel.send(
-                embed=embed, view=button_roles(guild=interaction.guild)
+                embed=embed, view=ButtonRoles(guild=interaction.guild)
             )
             embed = nextcord.Embed(color=0x0DD91A, title="The message has been sent!")
         else:
@@ -198,7 +199,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
         owner = info.owner
         dm = await owner.create_dm()
         await dm.send(embed=embed)
-        logger.info(f"TIJK Bot was shut down by {interaction.user}")
+        logger.info("TIJK Bot was shut down by %s", interaction.user)
         await self.bot.close()
 
     @slash(guild_ids=SLASH_GUILDS)
@@ -721,7 +722,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
         embed.add_field(name="Role ID", value=role.id, inline=True)
         embed.add_field(
             name="Role color",
-            value="#" + hex(role._colour).replace("0x", "").upper(),
+            value="#" + hex(role.color.value).replace("0x", "").upper(),
             inline=True,
         )
         embed.add_field(
@@ -810,10 +811,10 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
             value=user.joined_at.strftime("%d %b %Y"),
             inline=True,
         )
-        if user._timeout:
+        if user.communication_disabled_until:
             embed.add_field(
                 name="Timed out until",
-                value=user._timeout.strftime("%H:%M:%S %d %b %Y"),
+                value=user.communication_disabled_until.strftime("%H:%M:%S %d %b %Y"),
                 inline=True,
             )
         embed.add_field(name="Top role", value=user.top_role.mention, inline=True)
@@ -839,7 +840,7 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
             embed.add_field(name="Permissions in guild", value=permissions, inline=True)
         await interaction.response.send_message(
             embed=embed,
-            view=link_button(user.display_avatar.url, "Download profile picture"),
+            view=Link(user.display_avatar.url, "Download profile picture"),
         )
 
     @slash(guild_ids=SLASH_GUILDS)
@@ -976,4 +977,4 @@ class admin_slash(commands.Cog, name="Admin Slash Commands"):
 
 
 def setup(bot):
-    bot.add_cog(admin_slash(bot))
+    bot.add_cog(Admin(bot))

@@ -1,20 +1,20 @@
 import random
+import os
+import json
 import nextcord
 from nextcord import Interaction, slash_command as slash
 from nextcord.ext import commands
 from nextcord.application_command import SlashOption
 import pymongo
-import os
-import json
 
 from main import SLASH_GUILDS, USER_DATA
 
 root = os.path.abspath(os.getcwd())
-eight_ball_responses = open(os.path.join(root, "8ball_responses.json"))
+eight_ball_responses = open(os.path.join(root, "8ball_responses.json"), "r", encoding="utf-8")
 eight_ball_responses = tuple(json.load(eight_ball_responses)["responses"])
 
 
-class fun_slash(commands.Cog, name="Fun Slash"):
+class Fun(commands.Cog, name="Fun Slash"):
     """Fun slash commands"""
 
     def __init__(self, bot: commands.Bot):
@@ -100,4 +100,4 @@ class fun_slash(commands.Cog, name="Fun Slash"):
 
 
 def setup(bot: commands.Bot):
-    bot.add_cog(fun_slash(bot))
+    bot.add_cog(Fun(bot))

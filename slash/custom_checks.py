@@ -4,7 +4,7 @@ from nextcord.utils import get
 
 
 class CustomCheckError(ApplicationError):
-    def __init__(self, message: str):
+    def __init__(self, message: str):  # pylint: disable=super-init-not-called
         self.message = message
 
 
@@ -26,13 +26,13 @@ def has_role(interaction: Interaction, role: str) -> bool:
 
 
 def has_role_or_above(interaction: Interaction, role: str) -> bool:
-    if not (ROLE := get(interaction.guild.roles, name=role)):
+    if not (role := get(interaction.guild.roles, name=role)):
         return False
 
     guild_roles = interaction.guild.roles
     guild_roles.reverse()
     for guild_role in guild_roles:
-        if guild_role.position < ROLE.position:
+        if guild_role.position < role.position:
             break
         if guild_role in interaction.user.roles:
             return True

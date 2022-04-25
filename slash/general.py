@@ -3,13 +3,14 @@ import random
 
 import nextcord
 import requests
-from main import HYPIXEL_API_KEY, SLASH_GUILDS, USER_DATA
 from mojang import MojangAPI
 from nextcord import Interaction
 from nextcord import slash_command as slash
 from nextcord.application_command import SlashOption
 from nextcord.ext import commands
-from views.buttons.link import link_button
+from views.buttons.link import Link
+
+from main import HYPIXEL_API_KEY, SLASH_GUILDS, USER_DATA
 
 
 class general_slash(commands.Cog, name="General Slash"):
@@ -28,7 +29,7 @@ class general_slash(commands.Cog, name="General Slash"):
             inline=False,
         )
         await interaction.response.send_message(
-            embed=embed, view=link_button("https://github.com/codeman1o1/TIJK-Bot")
+            embed=embed, view=Link("https://github.com/codeman1o1/TIJK-Bot")
         )
 
     @slash(guild_ids=SLASH_GUILDS)
@@ -41,7 +42,7 @@ class general_slash(commands.Cog, name="General Slash"):
             inline=False,
         )
         await interaction.response.send_message(
-            embed=embed, view=link_button("https://codeman1o1.github.io/TIJK-Bot")
+            embed=embed, view=Link("https://codeman1o1.github.io/TIJK-Bot")
         )
 
     @slash(guild_ids=SLASH_GUILDS)

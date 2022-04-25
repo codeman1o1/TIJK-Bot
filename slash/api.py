@@ -1,6 +1,7 @@
 from datetime import datetime
-from PIL import Image
 import math
+import os
+from PIL import Image
 import aiohttp
 import nextcord
 from nextcord.ext import commands
@@ -8,12 +9,11 @@ from nextcord import Interaction, slash_command as slash
 from nextcord.application_command import SlashOption
 from mojang import MojangAPI
 import requests
-import os
 
 from main import SLASH_GUILDS, HYPIXEL_API_KEY
 
 
-class api_slash(commands.Cog, name="API Slash commands"):
+class Api(commands.Cog, name="API Slash commands"):
     """API slash commands"""
 
     def __init__(self, bot: commands.Bot):
@@ -188,45 +188,36 @@ class api_slash(commands.Cog, name="API Slash commands"):
             embed = nextcord.Embed(color=0xFFC800, title="That is not a user!")
             await interaction.response.send_message(embed=embed, ephemeral=True)
             return
-        try:
-            profile = MojangAPI.get_profile(uuid)
-            skin_url = profile.skin_url
-            skin = Image.open(requests.get(skin_url, stream=True).raw)
-            head_img = skin.crop((8, 8, 16, 16))
-            head_img = head_img.resize((128, 128), Image.NEAREST)
-            head_img.save("head_img.png")
-            head_img.close()
-            file = nextcord.File("head_img.png")
-            embed = nextcord.Embed(color=0x0DD91A)
-            embed.set_thumbnail(url="attachment://head_img.png")
-            async with aiohttp.ClientSession() as session:
-                request = await session.get(
-                    f"https://some-random-api.ml/mc?username={username}"
-                )
-                info = await request.json()
-            name_history2 = ""
-            for item in info["name_history"]:
-                name_history2 = (
-                    name_history2
-                    + "\nName: "
-                    + item["name"]
-                    + "\nChanged at: "
-                    + item["changedToAt"]
-                    + "\n"
-                )
-            embed.add_field(name="Username", value=info["username"], inline=False)
-            embed.add_field(name="UUID", value=info["uuid"], inline=False)
-            embed.add_field(name="Name History", value=name_history2, inline=False)
-            await interaction.response.send_message(file=file, embed=embed)
-            os.remove("head_img.png")
-        except Exception:
-            embed = nextcord.Embed(color=0xFF0000)
-            embed.add_field(
-                name=f"Can't request info for {username}",
-                value="Error provided by the API:\n" + info["error"],
-                inline=False,
+        profile = MojangAPI.get_profile(uuid)
+        skin_url = profile.skin_url
+        skin = Image.open(requests.get(skin_url, stream=True).raw)
+        head_img = skin.crop((8, 8, 16, 16))
+        head_img = head_img.resize((128, 128), Image.NEAREST)
+        head_img.save("head_img.png")
+        head_img.close()
+        file = nextcord.File("head_img.png")
+        embed = nextcord.Embed(color=0x0DD91A)
+        embed.set_thumbnail(url="attachment://head_img.png")
+        async with aiohttp.ClientSession() as session:
+            request = await session.get(
+                f"https://some-random-api.ml/mc?username={username}"
             )
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            info = await request.json()
+        name_history2 = ""
+        for item in info["name_history"]:
+            name_history2 = (
+                name_history2
+                + "\nName: "
+                + item["name"]
+                + "\nChanged at: "
+                + item["changedToAt"]
+                + "\n"
+            )
+        embed.add_field(name="Username", value=info["username"], inline=False)
+        embed.add_field(name="UUID", value=info["uuid"], inline=False)
+        embed.add_field(name="Name History", value=name_history2, inline=False)
+        await interaction.response.send_message(file=file, embed=embed)
+        os.remove("head_img.png")
 
     @api.subcommand(name="joke", inherit_hooks=True)
     async def joke_api(self, interaction: Interaction):
@@ -256,72 +247,70 @@ class api_slash(commands.Cog, name="API Slash commands"):
     ):
         """Uses an API to get information about a Pokémon"""
         embed = nextcord.Embed(color=0x0DD91A)
-        try:
-            async with aiohttp.ClientSession() as session:
-                request = await session.get(
-                    f"https://some-random-api.ml/pokedex?pokemon={name}"
-                )
-                info = await request.json()
-            pokemon_type = ", ".join(info["type"])
-            species = " ".join(info["species"])
-            abilities = ", ".join(info["abilities"])
-            gender = ", ".join(info["gender"])
-            egg_groups = ", ".join(info["egg_groups"])
-            sprites = info["sprites"]
-            stats = info["stats"]
-            hp = stats["hp"]
-            attack = stats["attack"]
-            defense = stats["defense"]
-            sp_atk = stats["sp_atk"]
-            sp_def = stats["sp_def"]
-            speed = stats["speed"]
-            total = stats["total"]
-            family = info["family"]
-            evolution_stage = family["evolutionStage"]
-            if evolution_line := family["evolutionLine"]:
-                evolution_line2 = ""
-                for data in evolution_line:
-                    evolution_line2 = evolution_line2 + data + " -> "
-                evolution_line2 = evolution_line2[:-4]
-                family_text = f"Evolution Stage: {evolution_stage}\nEvolution Line: {evolution_line2}"
-            else:
-                family_text = "This Pokémon has no evolution line"
-            # Possible options: "normal" or "animated"
-            embed.set_thumbnail(url=sprites["normal"])
-            embed.add_field(name="Name", value=info["name"].capitalize(), inline=True)
-            embed.add_field(name="ID", value=info["id"], inline=True)
-            embed.add_field(name="Type", value=pokemon_type, inline=True)
-            embed.add_field(name="Species", value=species, inline=True)
-            embed.add_field(name="Abilities", value=abilities, inline=True)
-            embed.add_field(name="Height", value=info["height"], inline=True)
-            embed.add_field(name="Weight", value=info["weight"], inline=True)
-            embed.add_field(
-                name="Base Experience", value=info["base_experience"], inline=True
+        async with aiohttp.ClientSession() as session:
+            request = await session.get(
+                f"https://some-random-api.ml/pokedex?pokemon={name}"
             )
+            info: dict = await request.json()
 
-            embed.add_field(name="Gender", value=gender, inline=True)
-            embed.add_field(name="Egg Groups", value=egg_groups, inline=True)
-            embed.add_field(
-                name="Stats",
-                value=f"HP: {hp}\nAttack: {attack}\nDefense: {defense}\nSpecial Attack: {sp_atk}\nSpecial Defense: {sp_def}\nSpeed: {speed}\nTotal: {total}",
-                inline=True,
-            )
+        if "error" in info:
+            embed = nextcord.Embed(color=0xFFC800, title=info["error"])
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+            return
 
-            embed.add_field(name="Family", value=family_text, inline=True)
-            embed.add_field(
-                name="Description",
-                value=info["description"].replace(". ", ".\n"),
-                inline=True,
+        pokemon_type = ", ".join(info["type"])
+        species = " ".join(info["species"])
+        abilities = ", ".join(info["abilities"])
+        gender = ", ".join(info["gender"])
+        egg_groups = ", ".join(info["egg_groups"])
+        sprites = info["sprites"]
+        stats = info["stats"]
+        hp = stats["hp"]
+        attack = stats["attack"]
+        defense = stats["defense"]
+        sp_atk = stats["sp_atk"]
+        sp_def = stats["sp_def"]
+        speed = stats["speed"]
+        total = stats["total"]
+        family = info["family"]
+        evolution_stage = family["evolutionStage"]
+        if evolution_line := family["evolutionLine"]:
+            evolution_line2 = ""
+            for data in evolution_line:
+                evolution_line2 = evolution_line2 + data + " -> "
+            evolution_line2 = evolution_line2[:-4]
+            family_text = (
+                f"Evolution Stage: {evolution_stage}\nEvolution Line: {evolution_line2}"
             )
+        else:
+            family_text = "This Pokémon has no evolution line"
+        # Possible options: "normal" or "animated"
+        embed.set_thumbnail(url=sprites["normal"])
+        embed.add_field(name="Name", value=info["name"].capitalize(), inline=True)
+        embed.add_field(name="ID", value=info["id"], inline=True)
+        embed.add_field(name="Type", value=pokemon_type, inline=True)
+        embed.add_field(name="Species", value=species, inline=True)
+        embed.add_field(name="Abilities", value=abilities, inline=True)
+        embed.add_field(name="Height", value=info["height"], inline=True)
+        embed.add_field(name="Weight", value=info["weight"], inline=True)
+        embed.add_field(
+            name="Base Experience", value=info["base_experience"], inline=True
+        )
+        embed.add_field(name="Gender", value=gender, inline=True)
+        embed.add_field(name="Egg Groups", value=egg_groups, inline=True)
+        embed.add_field(
+            name="Stats",
+            value=f"HP: {hp}\nAttack: {attack}\nDefense: {defense}\nSpecial Attack: {sp_atk}\nSpecial Defense: {sp_def}\nSpeed: {speed}\nTotal: {total}",
+            inline=True,
+        )
+        embed.add_field(name="Family", value=family_text, inline=True)
+        embed.add_field(
+            name="Description",
+            value=info["description"].replace(". ", ".\n"),
+            inline=True,
+        )
+        embed.add_field(name="Generation", value=info["generation"], inline=True)
 
-            embed.add_field(name="Generation", value=info["generation"], inline=True)
-        except Exception:
-            embed = nextcord.Embed(color=0xFF0000)
-            embed.add_field(
-                name=f"Can't request info for the Pokémon {name}",
-                value="Error provided by the API:\n" + info["error"],
-                inline=True,
-            )
         await interaction.response.send_message(embed=embed)
 
     @api.subcommand(name="activity", inherit_hooks=True)
@@ -358,4 +347,4 @@ class api_slash(commands.Cog, name="API Slash commands"):
 
 
 def setup(bot: commands.Bot):
-    bot.add_cog(api_slash(bot))
+    bot.add_cog(Api(bot))

@@ -6,7 +6,7 @@ from nextcord.utils import get
 from main import BOT_DATA
 
 
-class button_roles(nextcord.ui.View):
+class ButtonRoles(nextcord.ui.View):
     def __init__(self, bot: commands.Bot = None, guild: nextcord.Guild = None):
         super().__init__(timeout=None)
         if guild:
