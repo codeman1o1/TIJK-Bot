@@ -39,8 +39,12 @@ class Admin(commands.Cog):
             value=user.joined_at.strftime("%d %b %Y"),
             inline=True,
         )
-        if user.timeout:
-            embed.add_field(name="Timeout", value=user.timeout, inline=True)
+        if user.communication_disabled_until:
+            embed.add_field(
+                name="Timed out until",
+                value=user.communication_disabled_until.strftime("%H:%M:%S %d %b %Y"),
+                inline=True,
+            )
         embed.add_field(name="Top role", value=user.top_role.mention, inline=True)
         roles_list: list = user.roles
         roles_list.reverse()
