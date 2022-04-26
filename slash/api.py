@@ -19,6 +19,27 @@ class Api(commands.Cog, name="API Slash commands"):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
+    async def embed_with_mc_head(
+        self, interaction: Interaction, embed: nextcord.Embed, username: str
+    ):
+        uuid = MojangAPI.get_uuid(username)
+        if not uuid:
+            embed = nextcord.Embed(color=0xFFC800, title="That is not a user!")
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+            return
+
+        profile = MojangAPI.get_profile(uuid)
+        skin_url = profile.skin_url
+        skin = Image.open(requests.get(skin_url, stream=True).raw)
+        head_img = skin.crop((8, 8, 16, 16))
+        head_img = head_img.resize((128, 128), Image.NEAREST)
+        head_img.save("head_img.png")
+        head_img.close()
+        file = nextcord.File("head_img.png")
+        embed.set_thumbnail(url="attachment://head_img.png")
+        await interaction.response.send_message(embed=embed, file=file)
+        os.remove("head_img.png")
+
     @slash(guild_ids=SLASH_GUILDS)
     async def api(self, interaction: Interaction):
         """This will never get called since it has slash commands"""
@@ -62,14 +83,6 @@ class Api(commands.Cog, name="API Slash commands"):
             embed = nextcord.Embed(color=0xFFC800, title="That is not a user!")
             await interaction.response.send_message(embed=embed, ephemeral=True)
             return
-        profile = MojangAPI.get_profile(uuid)
-        skin_url = profile.skin_url
-        skin = Image.open(requests.get(skin_url, stream=True).raw)
-        head_img = skin.crop((8, 8, 16, 16))
-        head_img = head_img.resize((128, 128), Image.NEAREST)
-        head_img.save("head_img.png")
-        head_img.close()
-        file = nextcord.File("head_img.png")
         async with aiohttp.ClientSession() as session:
             request = await session.get(
                 f"https://api.hypixel.net/player?key={HYPIXEL_API_KEY}&uuid={uuid}"
@@ -99,7 +112,6 @@ class Api(commands.Cog, name="API Slash commands"):
                 color=0x0DD91A,
                 title=f"Here is information for **{rank} {display_name}**:",
             )
-            embed.set_thumbnail(url="attachment://head_img.png")
             if "lastLogout" in player_data:
                 logouttime = player_data["lastLogout"]
                 logintime = player_data["lastLogin"]
@@ -165,14 +177,14 @@ class Api(commands.Cog, name="API Slash commands"):
             embed.add_field(name="Network Level", value=network_level, inline=False)
             karma = player_data["karma"]
             embed.add_field(name="Karma", value=f"{karma:,}", inline=False)
+            await self.embed_with_mc_head(interaction, embed, username)
         else:
             error = data["cause"]
             embed = nextcord.Embed(color=0xFF0000)
             embed.add_field(
                 name="An error occurred!", value=f"Error provided by the API:\n{error}"
             )
-        await interaction.response.send_message(embed=embed, file=file)
-        os.remove("head_img.png")
+            await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @api.subcommand(name="minecraft", inherit_hooks=True)
     async def minecraft_api(
@@ -188,16 +200,7 @@ class Api(commands.Cog, name="API Slash commands"):
             embed = nextcord.Embed(color=0xFFC800, title="That is not a user!")
             await interaction.response.send_message(embed=embed, ephemeral=True)
             return
-        profile = MojangAPI.get_profile(uuid)
-        skin_url = profile.skin_url
-        skin = Image.open(requests.get(skin_url, stream=True).raw)
-        head_img = skin.crop((8, 8, 16, 16))
-        head_img = head_img.resize((128, 128), Image.NEAREST)
-        head_img.save("head_img.png")
-        head_img.close()
-        file = nextcord.File("head_img.png")
         embed = nextcord.Embed(color=0x0DD91A)
-        embed.set_thumbnail(url="attachment://head_img.png")
         async with aiohttp.ClientSession() as session:
             request = await session.get(
                 f"https://some-random-api.ml/mc?username={username}"
@@ -216,8 +219,7 @@ class Api(commands.Cog, name="API Slash commands"):
         embed.add_field(name="Username", value=info["username"], inline=False)
         embed.add_field(name="UUID", value=info["uuid"], inline=False)
         embed.add_field(name="Name History", value=name_history2, inline=False)
-        await interaction.response.send_message(file=file, embed=embed)
-        os.remove("head_img.png")
+        await self.embed_with_mc_head(interaction, embed, username)
 
     @api.subcommand(name="joke", inherit_hooks=True)
     async def joke_api(self, interaction: Interaction):
