@@ -32,23 +32,38 @@ class Developer(commands.Cog, name="Developer Slash Commands"):
             choices={"green": 0x0DD91A, "orange": 0xFFC800, "red": 0xFF0000},
             required=False,
         ),
+        footer: str = SlashOption(
+            description="The footer of the embed", required=False
+        ),
         name1: str = SlashOption(
-            name="name1", description="The name of the 1st field", required=False
+            description="The name of the 1st field", required=False
         ),
         value1: str = SlashOption(
-            name="value1", description="The value of the 1st field", required=False
+            description="The value of the 1st field", required=False
         ),
         name2: str = SlashOption(
-            name="name2", description="The name of the 2nd field", required=False
+            description="The name of the 2nd field", required=False
         ),
         value2: str = SlashOption(
-            name="value2", description="The value of the 2nd field", required=False
+            description="The value of the 2nd field", required=False
         ),
         name3: str = SlashOption(
-            name="name3", description="The name of the 3d field", required=False
+            description="The name of the 3d field", required=False
         ),
         value3: str = SlashOption(
-            name="value3", description="The value of the 3d field", required=False
+            description="The value of the 3d field", required=False
+        ),
+        name4: str = SlashOption(
+            description="The name of the 3d field", required=False
+        ),
+        value4: str = SlashOption(
+            description="The value of the 3d field", required=False
+        ),
+        name5: str = SlashOption(
+            description="The name of the 3d field", required=False
+        ),
+        value5: str = SlashOption(
+            description="The value of the 3d field", required=False
         ),
     ):
         """Generate an embed"""
@@ -59,6 +74,8 @@ class Developer(commands.Cog, name="Developer Slash Commands"):
                 embed = nextcord.Embed(color=color, title=title)
             else:
                 embed = nextcord.Embed(color=color)
+            if footer:
+                embed.set_footer(text=footer)
             if name1 and value1:
                 embed.add_field(
                     name=name1,
@@ -75,6 +92,18 @@ class Developer(commands.Cog, name="Developer Slash Commands"):
                 embed.add_field(
                     name=name3,
                     value=value3,
+                    inline=False,
+                )
+            if name4 and value4:
+                embed.add_field(
+                    name=name4,
+                    value=value4,
+                    inline=False,
+                )
+            if name5 and value5:
+                embed.add_field(
+                    name=name5,
+                    value=value5,
                     inline=False,
                 )
             await interaction.response.send_message(embed=embed)
