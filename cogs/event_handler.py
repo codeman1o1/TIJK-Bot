@@ -45,10 +45,10 @@ class EventHandler(commands.Cog, name="Event Handler"):
                         )
 
                 if message.channel.name == "one-word-story":
-                    LAST_WORD = nextcord.utils.get(
+                    last_word = nextcord.utils.get(
                         message.guild.roles, name="last word"
                     )
-                    if LAST_WORD in user.roles:
+                    if last_word in user.roles:
                         await message.delete()
                         embed = nextcord.Embed(
                             color=0xFFC800, title="You can't send multiple messages!"
@@ -60,11 +60,11 @@ class EventHandler(commands.Cog, name="Event Handler"):
 
                     elif " " not in message.content:
                         for member in message.channel.members:
-                            if LAST_WORD in member.roles:
+                            if last_word in member.roles:
                                 await member.remove_roles(
-                                    LAST_WORD, reason="One word story"
+                                    last_word, reason="One word story"
                                 )
-                        await user.add_roles(LAST_WORD, reason="One word story")
+                        await user.add_roles(last_word, reason="One word story")
 
                     else:
                         await message.delete()
@@ -152,15 +152,15 @@ class EventHandler(commands.Cog, name="Event Handler"):
                     color=0x0DD91A,
                     title=f"Hey {member.display_name} :wave:\nWe hope you add great functionality to {member.guild.name}!",
                 )
-                BOT_ROLE = nextcord.utils.get(member.guild.roles, name="Bot")
-                await member.add_roles(BOT_ROLE, reason="Bot joined")
+                bot_role = nextcord.utils.get(member.guild.roles, name="Bot")
+                await member.add_roles(bot_role, reason="Bot joined")
             else:
                 embed = nextcord.Embed(
                     color=0x0DD91A,
                     title=f"Hey {member.display_name} :wave:\nWelcome to {member.guild.name}!\nWe hope you enjoy your stay!",
                 )
-                MEMBER_ROLE = nextcord.utils.get(member.guild.roles, name="Member")
-                await member.add_roles(MEMBER_ROLE, reason="Member joined")
+                member_role = nextcord.utils.get(member.guild.roles, name="Member")
+                await member.add_roles(member_role, reason="Member joined")
             if member.guild.system_channel:
                 await member.guild.system_channel.send(embed=embed)
             dm = await member.create_dm()

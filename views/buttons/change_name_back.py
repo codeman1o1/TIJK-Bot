@@ -20,7 +20,7 @@ class ChangeNameBack(nextcord.ui.View):
         self, button: nextcord.Button, interaction: nextcord.Interaction
     ):
         if has_role_or_above(interaction.user, interaction.guild, "Admin"):
-            ORIGINAL_NAME = self.user.display_name
+            original_name = self.user.display_name
             await self.user.edit(nick=self.name)
             embed = nextcord.Embed(
                 color=0x0DD91A,
@@ -29,7 +29,7 @@ class ChangeNameBack(nextcord.ui.View):
             await interaction.response.send_message(embed=embed)
             await log(
                 interaction,
-                f"{ORIGINAL_NAME}'s nickname has been changed to {self.name}",
+                f"{original_name}'s nickname has been changed to {self.name}",
             )
         else:
             embed = nextcord.Embed(

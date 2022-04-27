@@ -353,16 +353,16 @@ class Admin(commands.Cog, name="Admin Slash Commands"):
         name: str = SlashOption(description="The new nickname", required=True),
     ):
         """Give a user a nickname"""
-        ORIGINAL_NAME = user.display_name
+        original_name = user.display_name
         await user.edit(nick=name)
         embed = nextcord.Embed(
             color=0x0DD91A,
-            title=f"{ORIGINAL_NAME}'s nickname has been changed to {name}\nClick the button below to change the name back",
+            title=f"{original_name}'s nickname has been changed to {name}\nClick the button below to change the name back",
         )
         await interaction.response.send_message(
-            embed=embed, view=ChangeNameBack(user, ORIGINAL_NAME)
+            embed=embed, view=ChangeNameBack(user, original_name)
         )
-        await log(interaction, f"{ORIGINAL_NAME}'s nickname has been changed to {name}")
+        await log(interaction, f"{original_name}'s nickname has been changed to {name}")
 
     @nick.subcommand(name="reset", inherit_hooks=True)
     async def nick_reset(
@@ -371,16 +371,16 @@ class Admin(commands.Cog, name="Admin Slash Commands"):
         user: nextcord.Member = SlashOption(description="The user", required=True),
     ):
         """Reset a user's nickname"""
-        ORIGINAL_NAME = user.display_name
+        original_name = user.display_name
         await user.edit(nick=None)
         embed = nextcord.Embed(
             color=0x0DD91A,
-            title=f"{ORIGINAL_NAME}'s nickname has been reset\nClick the button below to change the name back",
+            title=f"{original_name}'s nickname has been reset\nClick the button below to change the name back",
         )
         await interaction.response.send_message(
-            embed=embed, view=ChangeNameBack(user, ORIGINAL_NAME)
+            embed=embed, view=ChangeNameBack(user, original_name)
         )
-        await log(interaction, f"{ORIGINAL_NAME}'s nickname has been reset")
+        await log(interaction, f"{original_name}'s nickname has been reset")
 
     @slash(guild_ids=SLASH_GUILDS)
     @is_admin()

@@ -33,9 +33,9 @@ bot = commands.Bot(
     intents=nextcord.Intents.all(),
 )
 
-FORMAT = "%(asctime)s %(name)s %(levelname)s %(message)s"
+text_format = "%(asctime)s %(name)s %(levelname)s %(message)s"
 handler = logging.FileHandler(filename="nextcord.log", encoding="utf-8", mode="w")
-handler.setFormatter(logging.Formatter(FORMAT))
+handler.setFormatter(logging.Formatter(text_format))
 
 logger = logging.getLogger("TIJK Bot")
 logger.setLevel(logging.DEBUG)
@@ -43,7 +43,7 @@ logger.addHandler(handler)
 coloredlogs.install(
     level=logging.DEBUG,
     logger=logger,
-    fmt=FORMAT,
+    fmt=text_format,
 )
 
 nextcord_logger = logging.getLogger("nextcord")
@@ -52,7 +52,7 @@ nextcord_logger.addHandler(handler)
 coloredlogs.install(
     level=logging.INFO,
     logger=nextcord_logger,
-    fmt=FORMAT,
+    fmt=text_format,
 )
 
 

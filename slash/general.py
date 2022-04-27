@@ -209,13 +209,13 @@ class General(commands.Cog, name="General Slash"):
                 birthdays.append(birthdays_dictionary.copy())
         birthdays = sorted(birthdays, key=lambda i: i["daysLeft"])
         for user in birthdays:
-            USERNAME = user["userName"]
-            BIRTHDAY = user["birthday"]
-            YEAR = user["year"]
-            DAYS_LEFT = user["daysLeft"]
+            username = user["userName"]
+            birthday = user["birthday"]
+            yeah = user["year"]
+            days_left = user["daysLeft"]
             embed.add_field(
-                name=f"{USERNAME}'s birthday is on",
-                value=f"{BIRTHDAY}-{YEAR} ({DAYS_LEFT} days left)",
+                name=f"{username}'s birthday is on",
+                value=f"{birthday}-{yeah} ({days_left} days left)",
                 inline=False,
             )
         if embed.fields == 0:
