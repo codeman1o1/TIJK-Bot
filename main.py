@@ -143,7 +143,7 @@ def set_bot_data(query: str, value):
 
 
 def get_user_data(user_id: int, query: str = None):
-    if USER_DATA.find_one({"_id": user_id}):
+    if not USER_DATA.find_one({"_id": user_id}):
         return None
     if query and query not in USER_DATA.find_one({"_id": user_id}):
         return None
