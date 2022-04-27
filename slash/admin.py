@@ -836,8 +836,12 @@ class Admin(commands.Cog, name="Admin Slash Commands"):
         embed.add_field(
             name="In mutual guilds", value=len(user.mutual_guilds), inline=True
         )
-        embed.add_field(name="Messages sent", value=get_user_data(user.id, "messages"), inline=True)
-        embed.add_field(name="Total warns", value=get_user_data(user.id, "warns"), inline=True)
+        embed.add_field(
+            name="Messages sent", value=get_user_data(user.id, "messages"), inline=True
+        )
+        embed.add_field(
+            name="Total warns", value=get_user_data(user.id, "warns"), inline=True
+        )
         if user.guild_permissions:
             permissions = ", ".join(
                 name for name, value in user.guild_permissions if value
