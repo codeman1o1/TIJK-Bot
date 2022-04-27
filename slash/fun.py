@@ -42,30 +42,26 @@ class Fun(commands.Cog, name="Fun Slash"):
         """Play rock paper scissors"""
         embed = nextcord.Embed(color=0x0DD91A)
         random_choice = random.choice(("rock", "paper", "scissors"))
-        if choice == "paper":
-            if random_choice == "paper":
-                win_lose_or_tie = "it is a tie"
-            elif random_choice == "rock":
-                win_lose_or_tie = "you win"
+        if choice == random_choice:
+            wlt = "it is a tie"
+        elif choice == "paper":
+            if random_choice == "rock":
+                wlt = "you win"
             elif random_choice == "scissors":
-                win_lose_or_tie = "I win"
+                wlt = "I win"
         elif choice == "rock":
             if random_choice == "paper":
-                win_lose_or_tie = "I win"
-            elif random_choice == "rock":
-                win_lose_or_tie = "it is a tie"
+                wlt = "I win"
             elif random_choice == "scissors":
-                win_lose_or_tie = "you win"
+                wlt = "you win"
         elif choice == "scissors":
             if random_choice == "paper":
-                win_lose_or_tie = "you win"
+                wlt = "you win"
             elif random_choice == "rock":
-                win_lose_or_tie = "I win"
-            elif random_choice == "scissors":
-                win_lose_or_tie = "it is a tie"
+                wlt = "I win"
         embed.add_field(
             name=f"You had {choice} and I had {random_choice}",
-            value=f"That means that {win_lose_or_tie}!",
+            value=f"That means that {wlt}!",
             inline=False,
         )
         await interaction.response.send_message(embed=embed)
