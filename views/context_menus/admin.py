@@ -4,7 +4,7 @@ from nextcord.interactions import Interaction
 from slash.custom_checks import is_admin, is_mod
 from views.buttons.link import Link
 
-from main import SLASH_GUILDS, USER_DATA, warn_system
+from main import SLASH_GUILDS, get_user_data, warn_system
 
 
 class Admin(commands.Cog):
@@ -57,10 +57,12 @@ class Admin(commands.Cog):
         embed.add_field(
             name="In mutual guilds", value=len(user.mutual_guilds), inline=True
         )
-        messages = USER_DATA.find_one({"_id": user.id})["messages"] or 0
-        warns = USER_DATA.find_one({"_id": user.id})["warns"] or 0
-        embed.add_field(name="Messages sent", value=messages, inline=True)
-        embed.add_field(name="Total warns", value=warns, inline=True)
+        embed.add_field(
+            name="Messages sent", value=get_user_data(user.id, "messages"), inline=True
+        )
+        embed.add_field(
+            name="Total warns", value=get_user_data(user.id, "warns"), inline=True
+        )
         if user.guild_permissions:
             permissions = ", ".join(
                 name for name, value in user.guild_permissions if value

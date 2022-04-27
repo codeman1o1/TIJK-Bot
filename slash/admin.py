@@ -15,7 +15,15 @@ from views.modals.button_roles import ButtonRolesModal
 
 from slash.custom_checks import is_admin, is_mod, is_server_owner
 
-from main import BOT_DATA, SLASH_GUILDS, USER_DATA, log, logger, warn_system
+from main import (
+    BOT_DATA,
+    SLASH_GUILDS,
+    USER_DATA,
+    get_user_data,
+    log,
+    logger,
+    warn_system,
+)
 
 BOT_PREFIXES = tuple(BOT_DATA.find_one()["botprefixes"])
 
@@ -692,8 +700,7 @@ class Admin(commands.Cog, name="Admin Slash Commands"):
     @warn.subcommand(name="get")
     async def get_warn(self, interaction: Interaction):
         """Get your warns"""
-        user = USER_DATA.find_one({"_id": interaction.user.id})
-        warns = user["warns"] if "warns" in user else 0
+        warns = get_user_data(interaction.user.id, "warns")
         embed = nextcord.Embed(
             color=0x0DD91A,
             title=f"You have {warns} warn(s)!",
@@ -829,10 +836,8 @@ class Admin(commands.Cog, name="Admin Slash Commands"):
         embed.add_field(
             name="In mutual guilds", value=len(user.mutual_guilds), inline=True
         )
-        messages = USER_DATA.find_one({"_id": user.id})["messages"] or 0
-        warns = USER_DATA.find_one({"_id": user.id})["warns"] or 0
-        embed.add_field(name="Messages sent", value=messages, inline=True)
-        embed.add_field(name="Total warns", value=warns, inline=True)
+        embed.add_field(name="Messages sent", value=get_user_data(user.id, "messages"), inline=True)
+        embed.add_field(name="Total warns", value=get_user_data(user.id, "warns"), inline=True)
         if user.guild_permissions:
             permissions = ", ".join(
                 name for name, value in user.guild_permissions if value

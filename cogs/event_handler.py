@@ -7,7 +7,7 @@ from nextcord.ext.commands import Context
 from views.buttons.pingpoll import PingPoll
 from slash.custom_checks import has_role_or_above
 
-from main import BOT_DATA, USER_DATA, logger
+from main import BOT_DATA, USER_DATA, get_user_data, logger, set_user_data
 
 
 class EventHandler(commands.Cog, name="Event Handler"):
@@ -105,15 +105,9 @@ class EventHandler(commands.Cog, name="Event Handler"):
                         )
                         await logs_channel.send(embed=embed)
 
-            query = {"_id": user.id}
-            if USER_DATA.count_documents(query) == 0:
-                post = {"_id": user.id, "messages": 1}
-                USER_DATA.insert_one(post)
-            else:
-                user2 = USER_DATA.find_one(query)
-                messages = user2["messages"]
-                messages = messages + 1
-                USER_DATA.update_one(query, {"$set": {"messages": messages}})
+            messages = get_user_data(user.id, "messages")
+            messages += 1
+            set_user_data(user.id, "messages", messages)
 
     @commands.Cog.listener()
     async def on_message_edit(self, before: nextcord.Message, after: nextcord.Message):
@@ -153,6 +147,8 @@ class EventHandler(commands.Cog, name="Event Handler"):
     async def on_member_join(self, member: nextcord.Member):
         """Called when a member joins the server"""
         with suppress(nextcord.errors.HTTPException):
+            if not get_user_data(member.id):
+                USER_DATA.insert_one({"_id": member.id, "messages": 0, "warns": 0})
             if member.bot:
                 embed = nextcord.Embed(
                     color=0x0DD91A,
@@ -199,15 +195,9 @@ class EventHandler(commands.Cog, name="Event Handler"):
                     await after.edit(nick=before.nick)
                 else:
                     await after.edit(nick=before.name)
-                query = {"_id": after.id}
-                if USER_DATA.count_documents(query) == 0:
-                    post = {"_id": after.id, "warns": 1}
-                    USER_DATA.insert_one(post)
-                else:
-                    user = USER_DATA.find_one(query)
-                    warns = user["warns"] if "warns" in user else 0
-                    warns = warns + 1
-                    USER_DATA.update_one({"_id": after.id}, {"$set": {"warns": warns}})
+                warns = get_user_data(user.id, "warns")
+                warns += 1
+                set_user_data(user.id, "warns", warns)
             except nextcord.Forbidden:
                 logger.error("Couldn't change nickname")
 

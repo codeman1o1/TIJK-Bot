@@ -10,7 +10,14 @@ from nextcord.application_command import SlashOption
 from nextcord.ext import commands
 from views.buttons.link import Link
 
-from main import HYPIXEL_API_KEY, SLASH_GUILDS, USER_DATA
+from main import (
+    HYPIXEL_API_KEY,
+    SLASH_GUILDS,
+    USER_DATA,
+    get_user_data,
+    set_user_data,
+    unset_user_data,
+)
 
 
 class general_slash(commands.Cog, name="General Slash"):
@@ -60,20 +67,16 @@ class general_slash(commands.Cog, name="General Slash"):
                 user2 = await commands.converter.UserConverter().convert(
                     interaction, str(user)
                 )
-                query = {"_id": user2.id}
-                if USER_DATA.count_documents(query) != 0:
-                    user3 = USER_DATA.find_one(query)
-                    if "minecraft_account" in user3:
-                        username = user3["minecraft_account"]
-                        uuid = MojangAPI.get_uuid(username)
-                        data = requests.get(
-                            f"https://api.hypixel.net/player?key={HYPIXEL_API_KEY}&uuid={uuid}"
-                        ).json()
-                        logouttime = data["player"]["lastLogout"]
-                        logintime = data["player"]["lastLogin"]
-                        if logouttime >= logintime or data["success"] is False:
-                            available.remove(user)
-                    else:
+                if get_user_data(user2.id, "minecraft_account"):
+                    uuid = MojangAPI.get_uuid(
+                        get_user_data(user2.id, "minecraft_account")
+                    )
+                    data = requests.get(
+                        f"https://api.hypixel.net/player?key={HYPIXEL_API_KEY}&uuid={uuid}"
+                    ).json()
+                    logouttime = data["player"]["lastLogout"]
+                    logintime = data["player"]["lastLogin"]
+                    if logouttime >= logintime or data["success"] is False:
                         available.remove(user)
                 else:
                     available.remove(user)
@@ -98,33 +101,24 @@ class general_slash(commands.Cog, name="General Slash"):
     async def link(
         self,
         interaction: Interaction,
-        username: str = SlashOption(description="Your username", required=False),
+        username: str = SlashOption(
+            description='Your username. Type "remove" to remove.', required=False
+        ),
     ):
         """Link your Minecraft account"""
         if username:
             if username.lower() == "remove":
-                query = {"_id": interaction.user.id}
-                if USER_DATA.count_documents(query) == 0:
+                if get_user_data(interaction.user.id, "minecraft_account"):
                     embed = nextcord.Embed(
                         color=0xFFC800,
                         title="You don't have your Minecraft account linked!",
                     )
                 else:
-                    user = USER_DATA.find_one(query)
-                    if "minecraft_account" in user:
-                        account = user["minecraft_account"]
-                        USER_DATA.update_one(
-                            {"_id": interaction.user.id},
-                            {"$unset": {"minecraft_account": account}},
-                        )
-                    else:
-                        embed = nextcord.Embed(
-                            color=0xFFC800,
-                            title="You don't have your Minecraft account linked!",
-                        )
-                embed = nextcord.Embed(
-                    color=0x0DD91A, title="Successfully removed your Minecraft account"
-                )
+                    unset_user_data(interaction.user.id, "minecraft_account")
+                    embed = nextcord.Embed(
+                        color=0x0DD91A,
+                        title="Successfully removed your Minecraft account",
+                    )
             else:
                 uuid = MojangAPI.get_uuid(username)
                 data = requests.get(
@@ -137,18 +131,9 @@ class general_slash(commands.Cog, name="General Slash"):
                                 data["player"]["socialMedia"]["links"]["DISCORD"]
                                 == f"{interaction.user}"
                             ):
-                                query = {"_id": interaction.user.id}
-                                if USER_DATA.count_documents(query) == 0:
-                                    post = {
-                                        "_id": interaction.user.id,
-                                        "minecraft_account": username,
-                                    }
-                                    USER_DATA.insert_one(post)
-                                else:
-                                    USER_DATA.update_one(
-                                        {"_id": interaction.user.id},
-                                        {"$set": {"minecraft_account": username}},
-                                    )
+                                set_user_data(
+                                    interaction.user.id, "minecraft_account", username
+                                )
                                 embed = nextcord.Embed(
                                     color=0x0DD91A,
                                     title=f"Linked your account to **{username}**!",
@@ -177,10 +162,10 @@ class general_slash(commands.Cog, name="General Slash"):
                         inline=False,
                     )
 
-        elif "minecraft_account" in USER_DATA.find_one({"_id": interaction.user.id}):
-            minecraft_account: str = USER_DATA.find_one({"_id": interaction.user.id})[
-                "minecraft_account"
-            ]
+        elif get_user_data(interaction.user.id, "minecraft_account"):
+            minecraft_account: str = get_user_data(
+                interaction.user.id, "minecraft_account"
+            )
             embed = nextcord.Embed(
                 color=0x0DD91A,
                 title=f"Your Discord account is linked to **{minecraft_account}**",
@@ -240,8 +225,8 @@ class general_slash(commands.Cog, name="General Slash"):
     @birthday.subcommand(name="get", inherit_hooks=True)
     async def get_birthday(self, interaction: Interaction):
         """Get your birthday"""
-        if "birthday" in USER_DATA.find_one({"_id": interaction.user.id}):
-            birthday = USER_DATA.find_one({"_id": interaction.user.id})["birthday"]
+        if get_user_data(interaction.user.id, "birthday"):
+            birthday: str = get_user_data(interaction.user.id, "birthday")
             embed = nextcord.Embed(
                 color=0x0DD91A,
                 title=f"Your birthday is set to **{birthday}**",
@@ -272,14 +257,7 @@ class general_slash(commands.Cog, name="General Slash"):
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
             return
-        query = {"_id": interaction.user.id}
-        if USER_DATA.count_documents(query) == 0:
-            post = {"_id": interaction.user.id, "birthday": date}
-            USER_DATA.insert_one(post)
-        else:
-            USER_DATA.update_one(
-                {"_id": interaction.user.id}, {"$set": {"birthday": date}}
-            )
+        set_user_data(interaction.user.id, "birthday", date)
         embed = nextcord.Embed(
             color=0x0DD91A, title=f"Your birthday is set to **{date}**!"
         )
@@ -288,10 +266,8 @@ class general_slash(commands.Cog, name="General Slash"):
     @birthday.subcommand(name="remove", inherit_hooks=True)
     async def remove_birthday(self, interaction: Interaction):
         """Remove your birthday"""
-        if "birthday" in USER_DATA.find_one({"_id": interaction.user.id}):
-            USER_DATA.update_one(
-                {"_id": interaction.user.id}, {"$unset": {"birthday": ""}}
-            )
+        if get_user_data(interaction.user.id, "birthday"):
+            unset_user_data(interaction.user.id, "birthday")
             embed = nextcord.Embed(
                 color=0x0DD91A, title="Your birthday has been removed!"
             )

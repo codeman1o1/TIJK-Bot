@@ -76,16 +76,9 @@ async def warn_system(
         remove (bool, optional): If warns should be removed instead of added. Defaults to False.
     """
     reason2 = f" because of {reason}" if reason else ""
-    query = {"_id": user.id}
-    if USER_DATA.count_documents(query) == 0:
-        post = {"_id": user.id, "warns": amount}
-        USER_DATA.insert_one(post)
-        total_warns = 0
-    else:
-        user2 = USER_DATA.find_one(query)
-        warns = user2["warns"] if "warns" in user2 else 0
-        total_warns = max(warns - amount, 0) if remove else warns + amount
-        USER_DATA.update_one({"_id": user.id}, {"$set": {"warns": total_warns}})
+    warns = get_user_data(user.id, "warns")
+    total_warns = max(warns - amount, 0) if remove else warns + amount
+    set_user_data(user_id=user.id, query="warns", value=total_warns)
     if not remove:
         await log(
             interaction,
@@ -110,7 +103,7 @@ async def warn_system(
             )
         await interaction.send(embed=embed)
     if total_warns >= 10:
-        USER_DATA.update_one({"_id": user.id}, {"$set": {"warns": 0}})
+        set_user_data(user.id, "warns", 0)
         embed.add_field(
             name=f"{user} exceeded the warn limit!",
             value="He shall be punished with a 10 minute mute!",
@@ -131,6 +124,47 @@ async def log(interaction: nextcord.Interaction, message: str, channel: str = No
         text=f'Used from the "{channel or interaction.channel.name}" channel'
     )
     await logs_channel.send(embed=embed)
+
+
+def get_bot_data(query: str):
+    # sourcery skip: assign-if-exp, reintroduce-else
+    if query not in BOT_DATA.find_one():
+        return None
+
+    return BOT_DATA.find_one()[query]
+
+
+def set_bot_data(query: str, value):
+    if query not in BOT_DATA.find_one():
+        return None
+
+    BOT_DATA.find_one_and_update({}, {"$set": {query: value}})
+    return True
+
+
+def get_user_data(user_id: int, query: str = None):
+    if not USER_DATA.find_one({"_id": user_id}):
+        if query and query not in USER_DATA.find_one({"_id": user_id}):
+            return None
+        return None
+
+    return USER_DATA.find_one({"_id": user_id})[query]
+
+
+def set_user_data(user_id: int, query: str, value):
+    if not get_user_data(user_id, query):
+        return None
+
+    USER_DATA.find_one_and_update({"_id": user_id}, {"$set": {query: value}})
+    return True
+
+
+def unset_user_data(user_id: int, query: str):
+    if not get_user_data(user_id, query):
+        return None
+
+    USER_DATA.find_one_and_update({"_id": user_id}, {"$unset": {query: ""}})
+    return True
 
 
 @bot.event
