@@ -16,16 +16,15 @@ from views.modals.button_roles import ButtonRolesModal
 from slash.custom_checks import is_admin, is_mod, is_server_owner
 
 from main import (
-    BOT_DATA,
     SLASH_GUILDS,
     USER_DATA,
+    get_bot_data,
     get_user_data,
     log,
     logger,
+    set_bot_data,
     warn_system,
 )
-
-BOT_PREFIXES = tuple(BOT_DATA.find_one()["botprefixes"])
 
 
 class Admin(commands.Cog, name="Admin Slash Commands"):
@@ -57,7 +56,7 @@ class Admin(commands.Cog, name="Admin Slash Commands"):
         ),
     ):
         """Sends a message with buttons where people can get roles"""
-        buttonroles_id = BOT_DATA.find_one()["buttonroles"]
+        buttonroles_id = get_bot_data("buttonroles")
         roles = sum(
             bool(nextcord.utils.get(interaction.guild.roles, id=buttonrole))
             for buttonrole in buttonroles_id
@@ -91,7 +90,7 @@ class Admin(commands.Cog, name="Admin Slash Commands"):
         role: nextcord.Role = SlashOption(description="The role to add", required=True),
     ):
         """Add a button role"""
-        buttonroles = BOT_DATA.find_one()["buttonroles"]
+        buttonroles = get_bot_data("buttonroles")
         roles = sum(
             1
             for buttonrole in buttonroles
@@ -105,11 +104,7 @@ class Admin(commands.Cog, name="Admin Slash Commands"):
             await interaction.response.send_message(embed=embed, ephemeral=True)
         elif role.id not in buttonroles:
             buttonroles.append(role.id)
-            BOT_DATA.update_one(
-                {},
-                {"$set": {"buttonroles": buttonroles}},
-                upsert=False,
-            )
+            set_bot_data("buttonroles", buttonroles)
             embed = nextcord.Embed(
                 color=0x0DD91A,
                 title=f'The "{role.name}" role has been added!\nMake sure to use `/buttonroles send` again!',
@@ -133,14 +128,10 @@ class Admin(commands.Cog, name="Admin Slash Commands"):
         ),
     ):
         """Remove a button role"""
-        buttonroles = BOT_DATA.find_one()["buttonroles"]
+        buttonroles = get_bot_data("buttonroles")
         if role.id in buttonroles:
             buttonroles.remove(role.id)
-            BOT_DATA.update_one(
-                {},
-                {"$set": {"buttonroles": buttonroles}},
-                upsert=False,
-            )
+            set_bot_data("buttonroles", buttonroles)
             embed = nextcord.Embed(
                 color=0x0DD91A,
                 title=f'The "{role.name}" role has been removed!\nMake sure to use `/buttonroles send` again!',
@@ -158,7 +149,7 @@ class Admin(commands.Cog, name="Admin Slash Commands"):
     @buttonroles.subcommand(name="list", inherit_hooks=True)
     async def list_buttonroles(self, interaction: Interaction):
         """List all button roles"""
-        buttonroles = BOT_DATA.find_one()["buttonroles"]
+        buttonroles = get_bot_data("buttonroles")
         roles = sum(
             1
             for buttonrole in buttonroles
@@ -526,7 +517,8 @@ class Admin(commands.Cog, name="Admin Slash Commands"):
 
         def check(message: nextcord.Message):
             return bool(
-                message.author.bot or message.content.lower().startswith(BOT_PREFIXES)
+                message.author.bot
+                or message.content.lower().startswith(get_bot_data("botprefixes"))
             )
 
         channel = channel or interaction.channel
@@ -912,14 +904,10 @@ class Admin(commands.Cog, name="Admin Slash Commands"):
         ),
     ):
         """Add roles used in Ping Poll"""
-        pingpolls = list(BOT_DATA.find_one()["pingpolls"])
+        pingpolls = get_bot_data("pingpolls")
         if role.id not in pingpolls:
             pingpolls.append(role.id)
-            BOT_DATA.update_one(
-                {},
-                {"$set": {"pingpolls": pingpolls}},
-                upsert=False,
-            )
+            set_bot_data("pingpolls", pingpolls)
             embed = nextcord.Embed(
                 color=0x0DD91A, title=f"Role `{role.name}` added to PingPolls!"
             )
@@ -940,14 +928,10 @@ class Admin(commands.Cog, name="Admin Slash Commands"):
         ),
     ):
         """Remove roles used from Ping Poll"""
-        pingpolls = list(BOT_DATA.find_one()["pingpolls"])
+        pingpolls = get_bot_data("pingpolls")
         if role.id in pingpolls:
             pingpolls.remove(role.id)
-            BOT_DATA.update_one(
-                {},
-                {"$set": {"pingpolls": pingpolls}},
-                upsert=False,
-            )
+            set_bot_data("pingpolls", pingpolls)
             embed = nextcord.Embed(
                 color=0x0DD91A, title=f"Role `{role.name}` removed from PingPolls!"
             )
@@ -962,7 +946,7 @@ class Admin(commands.Cog, name="Admin Slash Commands"):
     @pingpoll.subcommand(name="list", inherit_hooks=True)
     async def list_pingpoll(self, interaction: Interaction):
         """List roles used in Ping Poll"""
-        if pingpolls := list(BOT_DATA.find_one()["pingpolls"]):
+        if pingpolls := get_bot_data("pingpolls"):
             pingpolls2 = ""
             for pingpoll in pingpolls:
                 if nextcord.utils.get(interaction.guild.roles, id=pingpoll):

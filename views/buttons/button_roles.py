@@ -3,14 +3,14 @@ from nextcord import ButtonStyle
 from nextcord.ext import commands
 from nextcord.utils import get
 
-from main import BOT_DATA
+from main import get_bot_data
 
 
 class ButtonRoles(nextcord.ui.View):
     def __init__(self, bot: commands.Bot = None, guild: nextcord.Guild = None):
         super().__init__(timeout=None)
         if guild:
-            for buttonrole in BOT_DATA.find_one()["buttonroles"]:
+            for buttonrole in get_bot_data("buttonroles"):
                 if get(guild.roles, id=buttonrole):
                     self.add_item(
                         AddButton(
@@ -21,7 +21,7 @@ class ButtonRoles(nextcord.ui.View):
                     )
         if bot:
             for guild2 in bot.guilds:
-                for buttonrole in BOT_DATA.find_one()["buttonroles"]:
+                for buttonrole in get_bot_data("buttonroles"):
                     if get(guild2.roles, id=buttonrole):
                         self.add_item(
                             AddButton(

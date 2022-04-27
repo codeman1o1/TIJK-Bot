@@ -7,7 +7,7 @@ from nextcord.ext.commands import Context
 from views.buttons.pingpoll import PingPoll
 from slash.custom_checks import has_role_or_above
 
-from main import BOT_DATA, USER_DATA, get_user_data, logger, set_user_data
+from main import USER_DATA, get_bot_data, get_user_data, logger, set_user_data
 
 
 class EventHandler(commands.Cog, name="Event Handler"):
@@ -23,27 +23,26 @@ class EventHandler(commands.Cog, name="Event Handler"):
         user = message.author
         if message.guild and user is not None and not message.flags.is_crossposted:
             if not user.bot:
-                if "pingpolls" in BOT_DATA.find_one():
-                    pingpolls = BOT_DATA.find_one()["pingpolls"]
-                    for pingpoll in pingpolls:
-                        role = nextcord.utils.get(user.guild.roles, id=pingpoll)
-                        if (
-                            role
-                            and message.content == f"<@&{role.id}>"
-                            and role in user.roles
-                        ):
-                            embed = nextcord.Embed(
-                                color=0x0DD91A,
-                                title=f"{user.display_name} has {role.name}ed",
-                            )
-                            embed.add_field(name="Accepted", value="Nobody")
-                            embed.add_field(name="In a moment", value="Nobody")
-                            embed.add_field(name="Denied", value="Nobody")
-                            await message.channel.send(
-                                embed=embed,
-                                delete_after=900,
-                                view=PingPoll(),
-                            )
+                pingpolls = get_bot_data("pingpolls")
+                for pingpoll in pingpolls:
+                    role = nextcord.utils.get(user.guild.roles, id=pingpoll)
+                    if (
+                        role
+                        and message.content == f"<@&{role.id}>"
+                        and role in user.roles
+                    ):
+                        embed = nextcord.Embed(
+                            color=0x0DD91A,
+                            title=f"{user.display_name} has {role.name}ed",
+                        )
+                        embed.add_field(name="Accepted", value="Nobody")
+                        embed.add_field(name="In a moment", value="Nobody")
+                        embed.add_field(name="Denied", value="Nobody")
+                        await message.channel.send(
+                            embed=embed,
+                            delete_after=900,
+                            view=PingPoll(),
+                        )
 
                 if message.channel.name == "one-word-story":
                     LAST_WORD = nextcord.utils.get(
