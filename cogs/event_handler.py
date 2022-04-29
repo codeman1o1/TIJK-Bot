@@ -105,7 +105,8 @@ class EventHandler(commands.Cog, name="Event Handler"):
                         await logs_channel.send(embed=embed)
 
             messages: int = get_user_data(user.id, "messages")
-            set_user_data(user.id, "messages", messages + 1)
+            if messages:
+                set_user_data(user.id, "messages", messages + 1)
 
     @commands.Cog.listener()
     async def on_message_edit(self, before: nextcord.Message, after: nextcord.Message):
