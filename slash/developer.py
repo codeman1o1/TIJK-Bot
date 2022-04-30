@@ -1,3 +1,4 @@
+import contextlib
 import datetime
 import os
 import sys
@@ -8,7 +9,7 @@ from nextcord import Interaction, slash_command as slash
 from nextcord.application_command import SlashOption
 from nextcord.ext import commands
 
-from main import USER_DATA, get_user_data, log, SLASH_GUILDS, START_TIME
+from main import USER_DATA, get_user_data, log, SLASH_GUILDS, START_TIME, set_user_data
 from slash.custom_checks import is_bot_owner, is_server_owner, is_admin
 from views.buttons.database_check import DatabaseCheck
 
@@ -307,6 +308,25 @@ class Developer(commands.Cog, name="Developer Slash Commands"):
             if not remove:
                 view.remove_item(view.children[1])
             await interaction.edit_original_message(embed=embed, view=view)
+
+    @database.subcommand(name="set", inherit_hooks=True)
+    async def set_database(
+        self,
+        interaction: Interaction,
+        user: nextcord.Member = SlashOption(
+            description="The user whose data should be changed", required=True
+        ),
+        query: str = SlashOption(description="The query to change", required=True),
+        value: str = SlashOption(description="The new value", required=True),
+    ):
+        """Change a value for a user in the database"""
+        with contextlib.suppress(ValueError):
+            value = int(value)
+        set_user_data(user.id, query, value)
+        embed = nextcord.Embed(
+            color=0x0DD91A, title=f"Changed `{query}` to `{value}` for {user}"
+        )
+        await interaction.response.send_message(embed=embed)
 
     @database.subcommand(name="remove", inherit_hooks=True)
     async def remove_database(
