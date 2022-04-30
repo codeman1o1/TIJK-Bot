@@ -9,7 +9,15 @@ from nextcord import Interaction, slash_command as slash
 from nextcord.application_command import SlashOption
 from nextcord.ext import commands
 
-from main import USER_DATA, get_user_data, log, SLASH_GUILDS, START_TIME, set_user_data
+from main import (
+    USER_DATA,
+    get_user_data,
+    log,
+    SLASH_GUILDS,
+    START_TIME,
+    set_user_data,
+    unset_user_data,
+)
 from slash.custom_checks import is_bot_owner, is_server_owner, is_admin
 from views.buttons.database_check import DatabaseCheck
 
@@ -345,6 +353,25 @@ class Developer(commands.Cog, name="Developer Slash Commands"):
         if set_user_data(user.id, query, value):
             embed = nextcord.Embed(
                 color=0x0DD91A, title=f"Changed `{query}` to `{value}` for `{user}`"
+            )
+            await interaction.response.send_message(embed=embed)
+        else:
+            embed = nextcord.Embed(color=0xFFC800, title="User or query not found!")
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+
+    @database.subcommand(name="unset", inherit_hooks=True)
+    async def unset_database(
+        self,
+        interaction: Interaction,
+        user: nextcord.Member = SlashOption(
+            description="The user whose data should be changed", required=True
+        ),
+        query: str = SlashOption(description="The query to unset", required=True),
+    ):
+        """Unset data for a user in the database"""
+        if unset_user_data(user.id, query):
+            embed = nextcord.Embed(
+                color=0x0DD91A, title=f"Unset `{query}` for `{user}`"
             )
             await interaction.response.send_message(embed=embed)
         else:
