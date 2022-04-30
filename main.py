@@ -167,11 +167,6 @@ def unset_user_data(user_id: int, query: str):
     return True
 
 
-@bot.command()
-async def gud(ctx, user: nextcord.Member, query: str = None):
-    await ctx.send(str(get_user_data(user.id, query)))
-
-
 @bot.event
 async def on_ready():
     """Runs when the bot is online"""
