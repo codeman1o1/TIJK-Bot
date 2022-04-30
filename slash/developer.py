@@ -8,8 +8,9 @@ from nextcord import Interaction, slash_command as slash
 from nextcord.application_command import SlashOption
 from nextcord.ext import commands
 
-from main import USER_DATA, log, SLASH_GUILDS, START_TIME
+from main import USER_DATA, get_user_data, log, SLASH_GUILDS, START_TIME
 from slash.custom_checks import is_bot_owner, is_server_owner, is_admin
+from views.buttons.database_check import DatabaseCheck
 
 
 class Developer(commands.Cog, name="Developer Slash Commands"):
@@ -17,6 +18,10 @@ class Developer(commands.Cog, name="Developer Slash Commands"):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+
+    @commands.Cog.listener()
+    async def on_read(self):
+        self.bot.add_view(DatabaseCheck(None, None))
 
     @slash(guild_ids=SLASH_GUILDS)
     @is_admin()
@@ -253,20 +258,55 @@ class Developer(commands.Cog, name="Developer Slash Commands"):
 
     @slash(guild_ids=SLASH_GUILDS)
     @is_bot_owner()
-    async def purge_unknown_users(self, interaction: Interaction):
-        """Remove invalid users from the database"""
-        users_removed = 0
+    async def database(self, interaction: Interaction):
+        """This will never get called since it has subcommands"""
+        pass
+
+    @database.subcommand(name="check", inherit_hooks=True)
+    async def check_database(self, interaction: Interaction):
+        """Check if all users are initialized in the database"""
+        embed = nextcord.Embed(color=0x0DD91A, title="Checking database...")
+        await interaction.response.send_message(embed=embed)
+        embed = nextcord.Embed(color=0x0DD91A)
+        not_found = 0
+        not_found_users = []
+        add = []
+        for guild in self.bot.guilds:
+            for user in guild.members:
+                if not get_user_data(user.id) and user.id in add:
+                    not_found += 1
+                    not_found_users.append(f"{user} ({user.id})")
+                    add.append(user)
+        if not_found:
+            embed.add_field(
+                name=f"{not_found} users were not found in the database",
+                value="\n> " + "\n> ".join(not_found_users),
+                inline=False,
+            )
+        invalid = 0
+        invalid_users = []
+        remove = []
         for user in USER_DATA.find():
             if not self.bot.get_user(user["_id"]):
-                USER_DATA.delete_one({"_id": user["_id"]})
-                users_removed += 1
-        if users_removed > 0:
-            embed = nextcord.Embed(
-                color=0x0DD91A, title=f"Removed {users_removed} user(s)!"
+                invalid += 1
+                invalid_users.append(str(user["_id"]))
+                remove.append(user["_id"])
+        if invalid_users:
+            embed.add_field(
+                name=f"{invalid} invalid users were found in the database",
+                value="\n> " + "\n> ".join(invalid_users),
+                inline=False,
             )
+        if not embed.fields:
+            embed = nextcord.Embed(color=0x0DD91A, title="The database is fine!")
+            await interaction.edit_original_message(embed=embed)
         else:
-            embed = nextcord.Embed(color=0xFFC800, title="No users were removed!")
-        await interaction.response.send_message(embed=embed)
+            view = DatabaseCheck(add, remove)
+            if not add:
+                view.remove_item(view.children[0])
+            if not remove:
+                view.remove_item(view.children[1])
+            await interaction.edit_original_message(embed=embed, view=view)
 
     @slash(guild_ids=SLASH_GUILDS)
     @is_bot_owner()
