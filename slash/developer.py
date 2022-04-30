@@ -266,7 +266,7 @@ class Developer(commands.Cog, name="Developer Slash Commands"):
         await interaction.response.send_message(embed=embed)
 
     @slash(guild_ids=SLASH_GUILDS)
-    @is_bot_owner()
+    @is_server_owner()
     async def database(self, interaction: Interaction):
         """This will never get called since it has subcommands"""
         pass
