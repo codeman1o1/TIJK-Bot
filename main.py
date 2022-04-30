@@ -143,9 +143,9 @@ def set_bot_data(query: str, value):
 
 
 def get_user_data(user_id: int, query: str = None):
-    if not USER_DATA.find_one({"_id": user_id}):
-        return None
-    if query and query not in USER_DATA.find_one({"_id": user_id}):
+    if not query:
+        return True if USER_DATA.find_one({"_id": user_id}) else None
+    if query not in USER_DATA.find_one({"_id": user_id}):
         return None
 
     return USER_DATA.find_one({"_id": user_id})[query]
@@ -165,6 +165,11 @@ def unset_user_data(user_id: int, query: str):
 
     USER_DATA.find_one_and_update({"_id": user_id}, {"$unset": {query: ""}})
     return True
+
+
+@bot.command()
+async def gud(ctx, user: nextcord.Member, query: str = None):
+    await ctx.send(str(get_user_data(user.id, query)))
 
 
 @bot.event
