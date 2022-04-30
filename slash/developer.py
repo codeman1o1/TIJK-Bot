@@ -308,6 +308,27 @@ class Developer(commands.Cog, name="Developer Slash Commands"):
                 view.remove_item(view.children[1])
             await interaction.edit_original_message(embed=embed, view=view)
 
+    @database.subcommand(name="remove", inherit_hooks=True)
+    async def remove_database(
+        self,
+        interaction: Interaction,
+        user: nextcord.Member = SlashOption(
+            description="The user to remove from the database", required=True
+        ),
+    ):
+        """Remove a user from the database"""
+        if get_user_data(user.id):
+            USER_DATA.delete_one({"_id": user.id})
+            embed = nextcord.Embed(
+                color=0x0DD91A, title="Removed user from the database!"
+            )
+            await interaction.response.send_message(embed=embed)
+        else:
+            embed = nextcord.Embed(
+                color=0xFFC800, title="That user is not in the database!"
+            )
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+
     @slash(guild_ids=SLASH_GUILDS)
     @is_bot_owner()
     async def leave_server(
