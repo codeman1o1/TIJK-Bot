@@ -309,6 +309,25 @@ class Developer(commands.Cog, name="Developer Slash Commands"):
                 view.remove_item(view.children[1])
             await interaction.edit_original_message(embed=embed, view=view)
 
+    @database.subcommand(name="get", inherit_hooks=True)
+    async def get_database(
+        self,
+        interaction: Interaction,
+        user: nextcord.Member = SlashOption(
+            description="The user to get information from", required=True
+        ),
+        query: str = SlashOption(description="The query", required=True),
+    ):
+        """Get data from a user"""
+        if data := get_user_data(user.id, query):
+            embed = nextcord.Embed(
+                color=0x0DD91A, title=f"The value from `{query}` for `{user}` is `{data}`"
+            )
+            await interaction.response.send_message(embed=embed)
+        else:
+            embed = nextcord.Embed(color=0xFFC800, title="User or query not found!")
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+
     @database.subcommand(name="set", inherit_hooks=True)
     async def set_database(
         self,
@@ -324,7 +343,7 @@ class Developer(commands.Cog, name="Developer Slash Commands"):
             value = int(value)
         set_user_data(user.id, query, value)
         embed = nextcord.Embed(
-            color=0x0DD91A, title=f"Changed `{query}` to `{value}` for {user}"
+            color=0x0DD91A, title=f"Changed `{query}` to `{value}` for `{user}`"
         )
         await interaction.response.send_message(embed=embed)
 
