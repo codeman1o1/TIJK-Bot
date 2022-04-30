@@ -154,7 +154,7 @@ def get_user_data(user_id: int, query: str = None):
 
 
 def set_user_data(user_id: int, query: str, value):
-    if not get_user_data(user_id, query):
+    if not get_user_data(user_id):
         return None
 
     USER_DATA.find_one_and_update({"_id": user_id}, {"$set": {query: value}})
