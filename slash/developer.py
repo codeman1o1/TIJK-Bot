@@ -321,7 +321,8 @@ class Developer(commands.Cog, name="Developer Slash Commands"):
         """Get data from a user"""
         if data := get_user_data(user.id, query):
             embed = nextcord.Embed(
-                color=0x0DD91A, title=f"The value from `{query}` for `{user}` is `{data}`"
+                color=0x0DD91A,
+                title=f"The value from `{query}` for `{user}` is `{data}`",
             )
             await interaction.response.send_message(embed=embed)
         else:
@@ -341,11 +342,14 @@ class Developer(commands.Cog, name="Developer Slash Commands"):
         """Change a value for a user in the database"""
         with contextlib.suppress(ValueError):
             value = int(value)
-        set_user_data(user.id, query, value)
-        embed = nextcord.Embed(
-            color=0x0DD91A, title=f"Changed `{query}` to `{value}` for `{user}`"
-        )
-        await interaction.response.send_message(embed=embed)
+        if set_user_data(user.id, query, value):
+            embed = nextcord.Embed(
+                color=0x0DD91A, title=f"Changed `{query}` to `{value}` for `{user}`"
+            )
+            await interaction.response.send_message(embed=embed)
+        else:
+            embed = nextcord.Embed(color=0xFFC800, title="User or query not found!")
+            await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @database.subcommand(name="remove", inherit_hooks=True)
     async def remove_database(
