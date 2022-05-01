@@ -62,14 +62,12 @@ class General(commands.Cog, name="General Slash"):
             if not user.bot and hypixel_ping in user.roles
         ]
         round_1 = ", ".join(str(user) for user in available) if available else "Nobody"
+        remove = []
         if available:
             for user in available:
-                user2 = await commands.converter.UserConverter().convert(
-                    interaction, str(user)
-                )
-                if get_user_data(user2.id, "minecraft_account"):
+                if get_user_data(user.id, "minecraft_account"):
                     uuid = MojangAPI.get_uuid(
-                        get_user_data(user2.id, "minecraft_account")
+                        get_user_data(user.id, "minecraft_account")
                     )
                     data = requests.get(
                         f"https://api.hypixel.net/player?key={HYPIXEL_API_KEY}&uuid={uuid}"
@@ -77,9 +75,11 @@ class General(commands.Cog, name="General Slash"):
                     logouttime = data["player"]["lastLogout"]
                     logintime = data["player"]["lastLogin"]
                     if logouttime >= logintime or data["success"] is False:
-                        available.remove(user)
+                        remove.append(user)
                 else:
-                    available.remove(user)
+                    remove.append(user)
+        for user in remove:
+            available.remove(user)
         round_2 = ", ".join(str(user) for user in available) if available else "Nobody"
         if available:
             embed = nextcord.Embed(color=0x0DD91A)
