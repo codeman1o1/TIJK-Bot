@@ -82,7 +82,7 @@ async def warn_system(
     if not remove:
         await log(
             interaction,
-            f"{user} has been warned {amount}x by {interaction.user.mention}{reason2}",
+            f"{user} has been warned {amount}x by {interaction.user}{reason2}",
         )
     else:
         await log(interaction, f"{amount} warn(s) have been removed from {user}")

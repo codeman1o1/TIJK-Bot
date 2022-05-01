@@ -442,7 +442,7 @@ class Admin(commands.Cog, name="Admin Slash Commands"):
             await interaction.response.send_message(embed=embed)
             await log(
                 interaction,
-                f"Role {role.mention} has been assigned to {user.mention} by {interaction.user.mention}",
+                f"Role {role.name} has been assigned to {user} by {interaction.user}",
             )
         else:
             embed = nextcord.Embed(color=0x0DD91A)
@@ -483,7 +483,7 @@ class Admin(commands.Cog, name="Admin Slash Commands"):
             await interaction.response.send_message(embed=embed)
             await log(
                 interaction,
-                f"Role {role.mention} has been removed from {user.mention} by {interaction.user.mention}",
+                f"Role {role.name} has been removed from {user} by {interaction.user}",
             )
 
         else:
@@ -521,7 +521,7 @@ class Admin(commands.Cog, name="Admin Slash Commands"):
         await interaction.response.send_message(embed=embed, delete_after=10)
         await log(
             interaction,
-            f"{len(deleted_messages)} messages have been cleared from {channel.mention}",
+            f"{len(deleted_messages)} messages have been cleared from {channel.name}",
         )
 
     @slash(guild_ids=SLASH_GUILDS)
@@ -557,7 +557,7 @@ class Admin(commands.Cog, name="Admin Slash Commands"):
         await interaction.response.send_message(embed=embed, delete_after=10)
         await log(
             interaction,
-            f"{len(deleted_messages)} messages have been cleaned from {channel.mention}",
+            f"{len(deleted_messages)} messages have been cleaned from {channel.name}",
         )
 
     @slash(guild_ids=SLASH_GUILDS)
@@ -584,7 +584,7 @@ class Admin(commands.Cog, name="Admin Slash Commands"):
         await interaction.response.send_message(embed=embed)
         await log(
             interaction,
-            f"{user} has been kicked by {interaction.user.mention}{reason2}",
+            f"{user} has been kicked by {interaction.user}{reason2}",
         )
 
     @slash(guild_ids=SLASH_GUILDS)
@@ -611,7 +611,7 @@ class Admin(commands.Cog, name="Admin Slash Commands"):
         await interaction.response.send_message(embed=embed)
         await log(
             interaction,
-            f"{user} has been banned by {interaction.user.mention}{reason2}",
+            f"{user} has been banned by {interaction.user}{reason2}",
         )
 
     @slash(guild_ids=SLASH_GUILDS)
@@ -643,7 +643,7 @@ class Admin(commands.Cog, name="Admin Slash Commands"):
             )
             await log(
                 interaction,
-                f"{user} has been unbanned by {interaction.user.mention}{reason2}",
+                f"{user} has been unbanned by {interaction.user}{reason2}",
             )
             await interaction.response.send_message(embed=embed)
         else:
