@@ -13,7 +13,13 @@ from views.buttons.change_name_back import ChangeNameBack
 from views.buttons.link import Link
 from views.modals.button_roles import ButtonRolesModal
 
-from slash.custom_checks import is_admin, is_mod, is_server_owner
+from slash.custom_checks import (
+    check_bot_owner,
+    check_server_owner,
+    is_admin,
+    is_mod,
+    is_server_owner,
+)
 
 from main import (
     SLASH_GUILDS,
@@ -406,6 +412,25 @@ class Admin(commands.Cog, name="Admin Slash Commands"):
         """Give a user a role"""
         user = user or interaction.user
         if role not in user.roles:
+            mod_role = nextcord.utils.get(interaction.guild.roles, name="Moderator")
+            admin_role = nextcord.utils.get(interaction.guild.roles, name="Admin")
+            owner_role = nextcord.utils.get(interaction.guild.roles, name="Owner")
+            admin_roles = (mod_role, admin_role, owner_role)
+            if (
+                not check_server_owner(interaction) or not check_bot_owner(interaction)
+            ) and role in admin_roles:
+                embed = nextcord.Embed(
+                    color=0xFFC800, title="You cannot give an admin role!"
+                )
+                await interaction.response.send_message(embed=embed)
+                server_owner = interaction.guild.owner
+                dm = await server_owner.create_dm()
+                embed = nextcord.Embed(
+                    color=0xFFC800,
+                    title=f"{interaction.user} tried to give an admin role ({role.name}) to {user}",
+                )
+                await dm.send(embed=embed)
+                return
             await user.add_roles(role, reason=reason)
             reason2 = f" because of {reason}" if reason else ""
             embed = nextcord.Embed(color=0x0DD91A)
