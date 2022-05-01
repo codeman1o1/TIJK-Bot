@@ -105,6 +105,9 @@ class EventHandler(commands.Cog, name="Event Handler"):
                         await logs_channel.send(embed=embed)
 
             messages: int = get_user_data(user.id, "messages")
+            logger.debug(
+                "This is for debugging purposes!\nUser: %s ID: %s", user, user.id
+            )
             set_user_data(user.id, "messages", messages + 1)
 
     @commands.Cog.listener()
