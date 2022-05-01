@@ -21,7 +21,12 @@ class EventHandler(commands.Cog, name="Event Handler"):
     async def on_message(self, message: nextcord.Message):
         """Processes messages"""
         user = message.author
-        if message.guild and user is not None and not message.flags.is_crossposted:
+        if (
+            message.guild
+            and user is not None
+            and not message.flags.is_crossposted
+            and user.discriminator != "0000"
+        ):
             if not user.bot:
                 pingpolls = get_bot_data("pingpolls")
                 for pingpoll in pingpolls:
@@ -105,9 +110,6 @@ class EventHandler(commands.Cog, name="Event Handler"):
                         await logs_channel.send(embed=embed)
 
             messages: int = get_user_data(user.id, "messages")
-            logger.debug(
-                "This is for debugging purposes!\nUser: %s ID: %s", user, user.id
-            )
             set_user_data(user.id, "messages", messages + 1)
 
     @commands.Cog.listener()
