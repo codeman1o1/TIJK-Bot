@@ -20,8 +20,7 @@ from main import (
 )
 
 
-class General(commands.Cog, name="General Slash"):
-    """Slash commands that everyone can use"""
+class General(commands.Cog):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot

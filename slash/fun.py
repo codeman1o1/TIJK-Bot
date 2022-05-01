@@ -16,8 +16,7 @@ eight_ball_responses = open(
 eight_ball_responses = tuple(json.load(eight_ball_responses)["responses"])
 
 
-class Fun(commands.Cog, name="Fun Slash"):
-    """Fun slash commands"""
+class Fun(commands.Cog):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot

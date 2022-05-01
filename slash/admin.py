@@ -33,9 +33,7 @@ from main import (
 )
 
 
-class Admin(commands.Cog, name="Admin Slash Commands"):
-    """Slash commands for admins"""
-
+class Admin(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 

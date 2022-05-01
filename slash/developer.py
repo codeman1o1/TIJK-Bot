@@ -22,8 +22,7 @@ from slash.custom_checks import is_bot_owner, is_server_owner, is_admin
 from views.buttons.database_check import DatabaseCheck
 
 
-class Developer(commands.Cog, name="Developer Slash Commands"):
-    """Slash commands for developers"""
+class Developer(commands.Cog):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
