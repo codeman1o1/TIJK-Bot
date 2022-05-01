@@ -85,7 +85,9 @@ async def warn_system(
             f"{user} has been warned {amount}x by {interaction.user}{reason2}",
         )
     else:
-        await log(interaction, f"{amount} warn(s) have been removed from {user}")
+        await log(
+            interaction, f"{amount} warn(s) have been removed from {user}{reason2}"
+        )
     embed = nextcord.Embed(color=0x0DD91A)
     if total_warns <= 9:
         reason2 = f" because of {reason}" if reason else ""
@@ -113,7 +115,9 @@ async def warn_system(
         await user.timeout(nextcord.utils.utcnow() + datetime.timedelta(seconds=1200))
 
         await interaction.send(embed=embed)
-        await log(interaction, f"{user} was muted for 10 minutes by Warn System")
+        await log(
+            interaction, f"{user} was muted for 10 minutes by Warn System{reason2}"
+        )
 
 
 async def log(interaction: nextcord.Interaction, message: str, channel: str = None):

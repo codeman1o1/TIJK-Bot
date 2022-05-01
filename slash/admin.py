@@ -442,7 +442,7 @@ class Admin(commands.Cog, name="Admin Slash Commands"):
             await interaction.response.send_message(embed=embed)
             await log(
                 interaction,
-                f"Role {role.name} has been assigned to {user} by {interaction.user}",
+                f"Role {role.name} has been assigned to {user} by {interaction.user}{reason2}",
             )
         else:
             embed = nextcord.Embed(color=0x0DD91A)
@@ -483,7 +483,7 @@ class Admin(commands.Cog, name="Admin Slash Commands"):
             await interaction.response.send_message(embed=embed)
             await log(
                 interaction,
-                f"Role {role.name} has been removed from {user} by {interaction.user}",
+                f"Role {role.name} has been removed from {user} by {interaction.user}{reason2}",
             )
 
         else:
