@@ -14,7 +14,6 @@ from main import SLASH_GUILDS, HYPIXEL_API_KEY
 
 
 class Api(commands.Cog):
-
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
