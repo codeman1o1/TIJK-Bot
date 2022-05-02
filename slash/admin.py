@@ -470,6 +470,25 @@ class Admin(commands.Cog):
         """Remove a role from a user"""
         user = user or interaction.user
         if role in user.roles:
+            mod_role = nextcord.utils.get(interaction.guild.roles, name="Moderator")
+            admin_role = nextcord.utils.get(interaction.guild.roles, name="Admin")
+            owner_role = nextcord.utils.get(interaction.guild.roles, name="Owner")
+            admin_roles = (mod_role, admin_role, owner_role)
+            if (
+                not check_server_owner(interaction) or not check_bot_owner(interaction)
+            ) and role in admin_roles:
+                embed = nextcord.Embed(
+                    color=0xFFC800, title="You cannot remove an admin role!"
+                )
+                await interaction.response.send_message(embed=embed)
+                server_owner = interaction.guild.owner
+                dm = await server_owner.create_dm()
+                embed = nextcord.Embed(
+                    color=0xFFC800,
+                    title=f"{interaction.user} tried to remove an admin role ({role.name}) from {user}",
+                )
+                await dm.send(embed=embed)
+                return
             await user.remove_roles(role, reason=reason)
             reason2 = f" because of {reason}" if reason else ""
             embed = nextcord.Embed(color=0x0DD91A)
