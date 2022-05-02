@@ -7,7 +7,7 @@ from views.buttons.link import Link
 from main import SLASH_GUILDS, get_user_data, warn_system
 
 
-class Admin(commands.Cog):
+class AdminContext(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
@@ -76,4 +76,4 @@ class Admin(commands.Cog):
 
 
 def setup(bot: commands.Bot):
-    bot.add_cog(Admin(bot))
+    bot.add_cog(AdminContext(bot))
