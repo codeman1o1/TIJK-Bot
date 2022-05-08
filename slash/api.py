@@ -13,30 +13,31 @@ import requests
 from main import SLASH_GUILDS, HYPIXEL_API_KEY
 
 
+async def embed_with_mc_head(
+    interaction: Interaction, embed: nextcord.Embed, username: str
+):
+    uuid = MojangAPI.get_uuid(username)
+    if not uuid:
+        embed = nextcord.Embed(color=0xFFC800, title="That is not a user!")
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+        return
+
+    profile = MojangAPI.get_profile(uuid)
+    skin_url = profile.skin_url
+    skin = Image.open(requests.get(skin_url, stream=True).raw)
+    head_img = skin.crop((8, 8, 16, 16))
+    head_img = head_img.resize((128, 128), Image.NEAREST)
+    head_img.save("head_img.png")
+    head_img.close()
+    file = nextcord.File("head_img.png")
+    embed.set_thumbnail(url="attachment://head_img.png")
+    await interaction.response.send_message(embed=embed, file=file)
+    os.remove("head_img.png")
+
+
 class Api(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-
-    async def embed_with_mc_head(
-        self, interaction: Interaction, embed: nextcord.Embed, username: str
-    ):
-        uuid = MojangAPI.get_uuid(username)
-        if not uuid:
-            embed = nextcord.Embed(color=0xFFC800, title="That is not a user!")
-            await interaction.response.send_message(embed=embed, ephemeral=True)
-            return
-
-        profile = MojangAPI.get_profile(uuid)
-        skin_url = profile.skin_url
-        skin = Image.open(requests.get(skin_url, stream=True).raw)
-        head_img = skin.crop((8, 8, 16, 16))
-        head_img = head_img.resize((128, 128), Image.NEAREST)
-        head_img.save("head_img.png")
-        head_img.close()
-        file = nextcord.File("head_img.png")
-        embed.set_thumbnail(url="attachment://head_img.png")
-        await interaction.response.send_message(embed=embed, file=file)
-        os.remove("head_img.png")
 
     @slash(guild_ids=SLASH_GUILDS)
     async def api(self, interaction: Interaction):
@@ -175,7 +176,7 @@ class Api(commands.Cog):
             embed.add_field(name="Network Level", value=network_level, inline=False)
             karma = player_data["karma"]
             embed.add_field(name="Karma", value=f"{karma:,}", inline=False)
-            await self.embed_with_mc_head(interaction, embed, username)
+            await embed_with_mc_head(interaction, embed, username)
         else:
             error = data["cause"]
             embed = nextcord.Embed(color=0xFF0000)
@@ -217,7 +218,7 @@ class Api(commands.Cog):
         embed.add_field(name="Username", value=info["username"], inline=False)
         embed.add_field(name="UUID", value=info["uuid"], inline=False)
         embed.add_field(name="Name History", value=name_history2, inline=False)
-        await self.embed_with_mc_head(interaction, embed, username)
+        await embed_with_mc_head(interaction, embed, username)
 
     @api.subcommand(name="joke", inherit_hooks=True)
     async def joke_api(self, interaction: Interaction):
