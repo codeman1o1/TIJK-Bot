@@ -7,6 +7,6 @@ body:
   - type: input
     id: question
     attributes:
-      label: What do you want to ask?
+      label: What is your question?
     validations:
       required: true
