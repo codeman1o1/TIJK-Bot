@@ -415,7 +415,7 @@ class Admin(commands.Cog):
             owner_role = nextcord.utils.get(interaction.guild.roles, name="Owner")
             admin_roles = (mod_role, admin_role, owner_role)
             if (
-                not check_server_owner(interaction) or not check_bot_owner(interaction)
+                not check_server_owner(interaction) or not await check_bot_owner(interaction)
             ) and role in admin_roles:
                 embed = nextcord.Embed(
                     color=0xFFC800, title="You cannot give an admin role!"
@@ -475,7 +475,7 @@ class Admin(commands.Cog):
             owner_role = nextcord.utils.get(interaction.guild.roles, name="Owner")
             admin_roles = (mod_role, admin_role, owner_role)
             if (
-                not check_server_owner(interaction) or not check_bot_owner(interaction)
+                not check_server_owner(interaction) or not await check_bot_owner(interaction)
             ) and role in admin_roles:
                 embed = nextcord.Embed(
                     color=0xFFC800, title="You cannot remove an admin role!"
