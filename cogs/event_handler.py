@@ -96,7 +96,7 @@ class EventHandler(commands.Cog, name="Event Handler"):
                         embed = nextcord.Embed(color=0x0DD91A)
                         embed.add_field(
                             name=f"You ({user.display_name}) have been muted",
-                            value="You have been muted for 10 minutes.\nIf you think this was a mistake, please contact an owner or admin",
+                            value="You have been muted for 20 minutes.\nIf you think this was a mistake, please contact an owner or admin",
                             inline=True,
                         )
                         await message.channel.send(embed=embed)
