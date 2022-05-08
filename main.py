@@ -89,12 +89,12 @@ async def warn_system(
             interaction, f"{amount} warn(s) have been removed from {user}{reason2}"
         )
     embed = nextcord.Embed(color=0x0DD91A)
-    if total_warns <= 9:
+    if total_warns <= 2:
         reason2 = f" because of {reason}" if reason else ""
         if not remove:
             embed.add_field(
                 name=f"{user} has been warned by {invoker_username}{reason2}",
-                value=f"{user} has {10 - total_warns} warns left!",
+                value=f"{user} has {3 - total_warns} warns left!",
                 inline=False,
             )
         else:
