@@ -104,15 +104,15 @@ async def warn_system(
                 inline=False,
             )
         await interaction.send(embed=embed)
-    if total_warns >= 10:
+    if total_warns >= 3:
         set_user_data(user.id, "warns", 0)
         embed.add_field(
             name=f"{user} exceeded the warn limit!",
-            value="He shall be punished with a 10 minute mute!",
+            value="He shall be punished with an hour-long mute!",
             inline=False,
         )
 
-        await user.timeout(nextcord.utils.utcnow() + datetime.timedelta(seconds=1200))
+        await user.timeout(nextcord.utils.utcnow() + datetime.timedelta(seconds=3600))
 
         await interaction.send(embed=embed)
         await log(
