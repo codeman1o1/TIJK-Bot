@@ -1,4 +1,4 @@
-name: Feature request
+name: Suggestion
 description: Suggest an idea for TIJK Bot
 title: '[SUGGESTION] name-here'
 labels:
@@ -14,10 +14,10 @@ body:
   - type: textarea
     id: related-to-problem
     attributes:
-      label: Is your feature request related to a problem?
+      label: Is your suggestion related to a problem?
       description: If so, please describe the problem
   - type: textarea
     id: context
     attributes:
       label: Additional context
-      description: Add any other context or screenshots about the feature request here
+      description: Add any other context or screenshots about your suggestion here
