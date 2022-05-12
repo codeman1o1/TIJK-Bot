@@ -59,9 +59,9 @@ class EventHandler(commands.Cog, name="Event Handler"):
                             color=0xFFC800, title="You can't send multiple messages!"
                         )
                         embed.set_footer(
-                            text="This message will delete itself after 5 seconds"
+                            text="This message will delete itself after 10 seconds"
                         )
-                        await message.channel.send(embed=embed, delete_after=5)
+                        await message.channel.send(embed=embed, delete_after=10)
 
                     elif " " not in message.content:
                         for member in message.channel.members:
@@ -78,9 +78,9 @@ class EventHandler(commands.Cog, name="Event Handler"):
                             title="The message can only contain one word!",
                         )
                         embed.set_footer(
-                            text="This message will delete itself after 5 seconds"
+                            text="This message will delete itself after 10 seconds"
                         )
-                        await message.channel.send(embed=embed, delete_after=5)
+                        await message.channel.send(embed=embed, delete_after=10)
 
                 if not has_role_or_above(message.author, message.guild, "Moderator"):
                     with open("spam_detect.txt", "r+", encoding="utf-8") as file:
