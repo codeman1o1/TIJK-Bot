@@ -266,8 +266,6 @@ class Admin(commands.Cog):
                     inline=False,
                 )
             await interaction.response.send_message(embed=embed)
-            if warn_user:
-                await warn_system(interaction, user, 1, interaction.user, reason)
         except IndexError:
             embed = nextcord.Embed(
                 color=0xFF0000, title=f"{rule_number} is not a valid rule number!"
