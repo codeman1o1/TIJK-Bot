@@ -210,7 +210,7 @@ class EventHandler(commands.Cog, name="Event Handler"):
         with suppress(nextcord.errors.HTTPException):
             embed = nextcord.Embed(
                 color=0x0DD91A,
-                title=f"Bye {member.display_name} :wave:\nIt was great having you! We hope to see you back soon.",
+                title=f"Bye {member.display_name} :wave:\nIt was great having you!\nWe hope to see you back soon.",
             )
             if member.guild.system_channel:
                 await member.guild.system_channel.send(embed=embed)
