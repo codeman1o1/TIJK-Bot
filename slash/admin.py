@@ -82,7 +82,7 @@ class Admin(commands.Cog):
         else:
             embed = nextcord.Embed(
                 color=0xFFC800,
-                title="There are no button roles!\nMake sure to add them by using `/buttonroles add <role>`",
+                title="There are no set button roles!\nMake sure to add them by using `/buttonroles add <role>`",
             )
 
         await interaction.response.send_message(embed=embed, ephemeral=True)
