@@ -121,7 +121,7 @@ class EventHandler(commands.Cog, name="Event Handler"):
             await after.delete(delay=10)
             embed = nextcord.Embed(
                 color=0xFFC800,
-                title="You cannot edit messages and thus your message will be deleted after 10 seconds!",
+                title="You can't edit messages and thus your message will be deleted after 10 seconds!",
             )
             embed.set_footer(text="This message will be deleted in 10 seconds")
             await after.reply(embed=embed, delete_after=10)
@@ -162,7 +162,7 @@ class EventHandler(commands.Cog, name="Event Handler"):
             else:
                 embed = nextcord.Embed(
                     color=0x0DD91A,
-                    title=f"Hey {member.display_name} :wave:\nWelcome to {member.guild.name}!\nWe hope you will enjoy your stay!",
+                    title=f"Hey {member.display_name} :wave:\nWelcome to {member.guild.name}!\nWe hope you enjoy your stay!",
                 )
                 member_role = nextcord.utils.get(member.guild.roles, name="Member")
                 await member.add_roles(member_role, reason="Member joined")
