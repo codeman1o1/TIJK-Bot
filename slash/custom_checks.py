@@ -4,7 +4,7 @@ from nextcord.utils import get
 
 
 class CustomCheckError(ApplicationError):
-    def __init__(self, message: str):  # pylint: disable=super-init-not-called
+    def __init__(self, message: str):
         self.message = message
 
 
