@@ -56,7 +56,7 @@ class EventHandler(commands.Cog, name="Event Handler"):
                     if last_word in user.roles:
                         await message.delete()
                         embed = nextcord.Embed(
-                            color=0xFFC800, title="You can't send multiple messages!"
+                            color=0xFFC800, title="You cannot send multiple messages!"
                         )
                         embed.set_footer(
                             text="This message will delete itself after 10 seconds"
@@ -75,7 +75,7 @@ class EventHandler(commands.Cog, name="Event Handler"):
                         await message.delete()
                         embed = nextcord.Embed(
                             color=0xFFC800,
-                            title="The message can only contain one word!",
+                            title="The message may only contain one word!",
                         )
                         embed.set_footer(
                             text="This message will delete itself after 10 seconds"
@@ -121,7 +121,7 @@ class EventHandler(commands.Cog, name="Event Handler"):
             await after.delete(delay=10)
             embed = nextcord.Embed(
                 color=0xFFC800,
-                title="You can't edit messages and thus your message will be deleted after 10 seconds!",
+                title="You cannot edit messages and thus your message will be deleted after 10 seconds!",
             )
             embed.set_footer(text="This message will be deleted in 10 seconds")
             await after.reply(embed=embed, delete_after=10)
@@ -155,14 +155,14 @@ class EventHandler(commands.Cog, name="Event Handler"):
             if member.bot:
                 embed = nextcord.Embed(
                     color=0x0DD91A,
-                    title=f"Hey {member.display_name} :wave:\nWe hope you add great functionality to {member.guild.name}!",
+                    title=f"Hey {member.display_name} :wave:\nWe hope you will add great functionality to {member.guild.name}!",
                 )
                 bot_role = nextcord.utils.get(member.guild.roles, name="Bot")
                 await member.add_roles(bot_role, reason="Bot joined")
             else:
                 embed = nextcord.Embed(
                     color=0x0DD91A,
-                    title=f"Hey {member.display_name} :wave:\nWelcome to {member.guild.name}!\nWe hope you enjoy your stay!",
+                    title=f"Hey {member.display_name} :wave:\nWelcome to {member.guild.name}!\nWe hope you will enjoy your stay!",
                 )
                 member_role = nextcord.utils.get(member.guild.roles, name="Member")
                 await member.add_roles(member_role, reason="Member joined")
@@ -210,7 +210,7 @@ class EventHandler(commands.Cog, name="Event Handler"):
         with suppress(nextcord.errors.HTTPException):
             embed = nextcord.Embed(
                 color=0x0DD91A,
-                title=f"Bye {member.display_name} :wave:\nIt was great having you!",
+                title=f"Bye {member.display_name} :wave:\nIt was great having you!\nWe hope to see you back soon.",
             )
             if member.guild.system_channel:
                 await member.guild.system_channel.send(embed=embed)
