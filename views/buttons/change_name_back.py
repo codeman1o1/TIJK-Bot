@@ -7,14 +7,13 @@ from main import log
 
 class ChangeNameBack(nextcord.ui.View):
     def __init__(self, user: nextcord.Member, name: str):
-        super().__init__(timeout=None)
+        super().__init__()
         self.user = user
         self.name = name
 
     @nextcord.ui.button(
         label="Change name back",
         style=ButtonStyle.blurple,
-        custom_id="change_name_back",
     )
     async def change_name_back(
         self, button: nextcord.Button, interaction: nextcord.Interaction

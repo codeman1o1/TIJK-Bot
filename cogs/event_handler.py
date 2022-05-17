@@ -15,7 +15,6 @@ class EventHandler(commands.Cog, name="Event Handler"):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.bot.add_view(PingPoll())
 
     @commands.Cog.listener()
     async def on_message(self, message: nextcord.Message):

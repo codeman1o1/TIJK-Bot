@@ -4,7 +4,7 @@ from nextcord import Button, ButtonStyle, Embed, Interaction
 
 class PingPoll(nextcord.ui.View):
     def __init__(self):
-        super().__init__(timeout=None)
+        super().__init__()
 
     async def update(self, interaction: Interaction, embed: Embed, button_index: int):
         user = interaction.user
@@ -35,21 +35,17 @@ class PingPoll(nextcord.ui.View):
 
         await interaction.message.edit(embed=embed)
 
-    @nextcord.ui.button(
-        label="Accept", style=ButtonStyle.green, custom_id="pingpoll:accept"
-    )
+    @nextcord.ui.button(label="Accept", style=ButtonStyle.green)
     async def accept(self, button: Button, interaction: Interaction):
         embed = interaction.message.embeds[0]
         await self.update(interaction, embed, 0)
 
-    @nextcord.ui.button(
-        label="In a moment", style=ButtonStyle.blurple, custom_id="pingpoll:in_a_moment"
-    )
+    @nextcord.ui.button(label="In a moment", style=ButtonStyle.blurple)
     async def in_a_moment(self, button: Button, interaction: Interaction):
         embed = interaction.message.embeds[0]
         await self.update(interaction, embed, 1)
 
-    @nextcord.ui.button(label="Deny", style=ButtonStyle.red, custom_id="pingpoll:deny")
+    @nextcord.ui.button(label="Deny", style=ButtonStyle.red)
     async def deny(self, button: Button, interaction: Interaction):
         embed = interaction.message.embeds[0]
         await self.update(interaction, embed, 2)

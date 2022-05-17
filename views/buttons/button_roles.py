@@ -16,9 +16,10 @@ class ButtonRoles(nextcord.ui.View):
                         AddButton(
                             label=get(guild.roles, id=buttonrole).name,
                             style=ButtonStyle.primary,
-                            custom_id=str(buttonrole),
+                            custom_id=f"button:buttonroles.{str(buttonrole)}",
                         )
                     )
+
         if bot:
             for guild2 in bot.guilds:
                 for buttonrole in get_bot_data("buttonroles"):
@@ -27,14 +28,17 @@ class ButtonRoles(nextcord.ui.View):
                             AddButton(
                                 label=get(guild2.roles, id=buttonrole).name,
                                 style=ButtonStyle.primary,
-                                custom_id=str(buttonrole),
+                                custom_id=f"button:buttonroles.{str(buttonrole)}",
                             )
                         )
 
     async def handle_click(
         self, button: nextcord.ui.Button, interaction: nextcord.Interaction
     ):
-        if role := get(interaction.guild.roles, id=int(button.custom_id)):
+        if role := get(
+            interaction.guild.roles,
+            id=int(button.custom_id.replace("button:buttonroles.", "", 1)),
+        ):
             if role not in interaction.user.roles:
                 await interaction.user.add_roles(role)
                 await interaction.response.send_message(

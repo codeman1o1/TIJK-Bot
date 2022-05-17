@@ -40,7 +40,6 @@ class Admin(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         self.bot.add_view(ButtonRoles(bot=self.bot))
-        self.bot.add_view(ChangeNameBack(None, None))
         self.bot.add_modal(ButtonRolesModal(None))
 
     @slash(guild_ids=SLASH_GUILDS)

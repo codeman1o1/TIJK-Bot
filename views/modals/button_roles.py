@@ -4,7 +4,7 @@ import nextcord
 class ButtonRolesModal(nextcord.ui.Modal):
     def __init__(self, view):
         super().__init__(
-            title="Button Roles", custom_id="button_roles_text_modal", timeout=None
+            title="Button Roles", custom_id="modal:buttonroles", timeout=None
         )
         self.view = view
 
@@ -13,7 +13,7 @@ class ButtonRolesModal(nextcord.ui.Modal):
             placeholder="e.g. Click a button to add/remove that role!",
             required=True,
             style=nextcord.TextInputStyle.paragraph,
-            custom_id="button_roles_text_modal:text",
+            custom_id="modal:buttonroles.text",
         )
         self.add_item(self.text)
 

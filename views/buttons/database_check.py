@@ -21,7 +21,6 @@ class DatabaseCheck(nextcord.ui.View):
 
     @nextcord.ui.button(
         label="Add users to the database",
-        custom_id="databasecheck:add",
         style=ButtonStyle.blurple,
     )
     @is_bot_owner()
@@ -33,7 +32,6 @@ class DatabaseCheck(nextcord.ui.View):
 
     @nextcord.ui.button(
         label="Remove users from the database",
-        custom_id="databasecheck:remove",
         style=ButtonStyle.blurple,
     )
     @is_bot_owner()
