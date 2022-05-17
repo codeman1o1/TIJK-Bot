@@ -66,7 +66,7 @@ class Fun(commands.Cog):
 
     @slash(guild_ids=SLASH_GUILDS)
     async def messages(self, interaction: Interaction):
-        """Show the amount of messages everone has sent"""
+        """Show the amount of messages everyone has sent"""
         embed = nextcord.Embed(color=0x0DD91A)
         for user in USER_DATA.find().sort("messages", pymongo.DESCENDING):
             if "messages" in user:
