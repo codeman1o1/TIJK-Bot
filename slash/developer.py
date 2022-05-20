@@ -393,6 +393,20 @@ class Developer(commands.Cog):
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
+    @database.subcommand(name="querylist", inherit_hooks=True)
+    async def querylist_database(self, interaction: Interaction):
+        """List all query options in the database"""
+        embed = nextcord.Embed(color=0x0DD91A)
+        querylist = []
+        for user in USER_DATA.find():
+            for query in user:
+                if query not in querylist:
+                    querylist.append(query)
+        embed.add_field(
+            name="Query list", value="> " + "\n> ".join(querylist), inline=False
+        )
+        await interaction.response.send_message(embed=embed)
+
     @slash(guild_ids=SLASH_GUILDS)
     @is_bot_owner()
     async def leave_server(
