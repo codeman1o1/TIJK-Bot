@@ -1,4 +1,4 @@
-from typing import List
+from typing import Iterable
 import nextcord
 from nextcord import ButtonStyle
 from main import USER_DATA
@@ -7,7 +7,7 @@ from slash.custom_checks import is_bot_owner
 
 
 class DatabaseCheck(nextcord.ui.View):
-    def __init__(self, add: List[nextcord.Member], remove: List[int]):
+    def __init__(self, add: Iterable[nextcord.Member], remove: Iterable[int]):
         super().__init__()
         self.add = add
         self.remove = remove

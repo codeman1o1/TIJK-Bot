@@ -304,7 +304,7 @@ class Developer(commands.Cog):
             embed = nextcord.Embed(color=0x0DD91A, title="The database is fine!")
             await interaction.edit_original_message(embed=embed)
         else:
-            view = DatabaseCheck(add, remove)
+            view = DatabaseCheck(tuple(add), tuple(remove))
             if not add:
                 view.remove_item(view.children[0])
             if not remove:

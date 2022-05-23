@@ -33,7 +33,7 @@ class Fun(commands.Cog):
         interaction: Interaction,
         choice=SlashOption(
             description="Your choice",
-            choices=["rock", "paper", "scissors"],
+            choices=("rock", "paper", "scissors"),
             required=True,
         ),
     ):
