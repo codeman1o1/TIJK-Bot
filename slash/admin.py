@@ -648,7 +648,10 @@ class Admin(commands.Cog):
             await interaction.response.send_message(embed=embed, ephemeral=True)
             return
         embed = nextcord.Embed(color=0x0DD91A)
-        bans = tuple(ban_entry.user for ban_entry in await interaction.guild.bans())
+        bans = tuple(
+            ban_entry.user
+            for ban_entry in await interaction.guild.bans(limit=None).flatten()
+        )
         if user in bans:
             await interaction.guild.unban(user, reason=reason)
             reason2 = f" because of {reason}" if reason else ""
