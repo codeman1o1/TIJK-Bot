@@ -16,7 +16,7 @@ class ChangeNameBack(nextcord.ui.View):
         style=ButtonStyle.blurple,
     )
     async def change_name_back(
-        self, button: nextcord.Button, interaction: nextcord.Interaction
+        self, button: nextcord.ui.Button, interaction: nextcord.Interaction
     ):
         if has_role_or_above(interaction.user, interaction.guild, "Admin"):
             original_name = self.user.display_name

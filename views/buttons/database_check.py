@@ -25,7 +25,7 @@ class DatabaseCheck(nextcord.ui.View):
     )
     @is_bot_owner()
     async def add_users(
-        self, button: nextcord.Button, interaction: nextcord.Interaction
+        self, button: nextcord.ui.Button, interaction: nextcord.Interaction
     ):
         for user in self.add:
             USER_DATA.insert_one({"_id": user.id, "messages": 0, "warns": 0})
@@ -36,7 +36,7 @@ class DatabaseCheck(nextcord.ui.View):
     )
     @is_bot_owner()
     async def remove_users(
-        self, button: nextcord.Button, interaction: nextcord.Interaction
+        self, button: nextcord.ui.Button, interaction: nextcord.Interaction
     ):
         for user_id in self.remove:
             USER_DATA.delete_one({"_id": user_id})
