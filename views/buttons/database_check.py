@@ -3,8 +3,6 @@ import nextcord
 from nextcord import ButtonStyle
 from main import USER_DATA
 
-from slash.custom_checks import is_bot_owner
-
 
 class DatabaseCheck(nextcord.ui.View):
     def __init__(self, add: Iterable[nextcord.Member], remove: Iterable[int]):
@@ -23,7 +21,6 @@ class DatabaseCheck(nextcord.ui.View):
         label="Add users to the database",
         style=ButtonStyle.blurple,
     )
-    @is_bot_owner()
     async def add_users(
         self, button: nextcord.ui.Button, interaction: nextcord.Interaction
     ):
@@ -34,7 +31,6 @@ class DatabaseCheck(nextcord.ui.View):
         label="Remove users from the database",
         style=ButtonStyle.blurple,
     )
-    @is_bot_owner()
     async def remove_users(
         self, button: nextcord.ui.Button, interaction: nextcord.Interaction
     ):
