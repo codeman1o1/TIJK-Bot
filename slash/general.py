@@ -53,15 +53,13 @@ class General(commands.Cog):
     @slash(guild_ids=SLASH_GUILDS)
     async def hypixelparty(self, interaction: Interaction):
         """Choose a random player who can own the party"""
-        hypixel_ping = nextcord.utils.get(
-            interaction.guild.roles, name="Hypixel Ping")
+        hypixel_ping = nextcord.utils.get(interaction.guild.roles, name="Hypixel Ping")
         available = [
             user
             for user in interaction.channel.members
             if not user.bot and hypixel_ping in user.roles
         ]
-        round_1 = ", ".join(str(user)
-                            for user in available) if available else "Nobody"
+        round_1 = ", ".join(str(user) for user in available) if available else "Nobody"
         remove = []
         if available:
             for user in available:
@@ -94,8 +92,7 @@ class General(commands.Cog):
                     remove.append(user)
         for user in remove:
             available.remove(user)
-        round_2 = ", ".join(str(user)
-                            for user in available) if available else "Nobody"
+        round_2 = ", ".join(str(user) for user in available) if available else "Nobody"
         if available:
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
@@ -209,13 +206,11 @@ class General(commands.Cog):
                 birthday = user["birthday"]
                 user = self.bot.get_user(int(user["_id"]))
                 birthday2 = birthday.split("-")
-                date = datetime.date(
-                    year, int(birthday2[1]), int(birthday2[0]))
+                date = datetime.date(year, int(birthday2[1]), int(birthday2[0]))
                 diff = date - today
                 while diff.days < 0:
                     year += 1
-                    date = datetime.date(
-                        year, int(birthday2[1]), int(birthday2[0]))
+                    date = datetime.date(year, int(birthday2[1]), int(birthday2[0]))
                     diff = date - today
                 birthdays_dictionary = {
                     "userName": user.name,
@@ -236,8 +231,7 @@ class General(commands.Cog):
                 inline=False,
             )
         if embed.fields == 0:
-            embed = nextcord.Embed(
-                color=0x0DD91A, title="No-one has a birthday set!")
+            embed = nextcord.Embed(color=0x0DD91A, title="No-one has a birthday set!")
         await interaction.response.send_message(embed=embed)
 
     @birthday.subcommand(name="get", inherit_hooks=True)

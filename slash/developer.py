@@ -242,8 +242,7 @@ class Developer(commands.Cog):
         )
         embed.add_field(
             name="Uptime:",
-            value=str(datetime.timedelta(
-                seconds=int(round(time.time() - START_TIME)))),
+            value=str(datetime.timedelta(seconds=int(round(time.time() - START_TIME)))),
             inline=False,
         )
         guilds = "".join(
@@ -251,8 +250,7 @@ class Developer(commands.Cog):
             for guild in self.bot.guilds
         )
         embed.add_field(name="Guilds:", value=guilds, inline=False)
-        embed.add_field(
-            name="Users:", value=f"{len(self.bot.users)}", inline=False)
+        embed.add_field(name="Users:", value=f"{len(self.bot.users)}", inline=False)
         embed.add_field(
             name="Cogs loaded:", value=f"{len(self.bot.cogs)}", inline=False
         )
@@ -303,8 +301,7 @@ class Developer(commands.Cog):
                 inline=False,
             )
         if not embed.fields:
-            embed = nextcord.Embed(
-                color=0x0DD91A, title="The database is fine!")
+            embed = nextcord.Embed(color=0x0DD91A, title="The database is fine!")
             await interaction.edit_original_message(embed=embed)
         else:
             view = DatabaseCheck(tuple(add), tuple(remove))
@@ -331,8 +328,7 @@ class Developer(commands.Cog):
             )
             await interaction.response.send_message(embed=embed)
         else:
-            embed = nextcord.Embed(
-                color=0xFFC800, title="User or query not found!")
+            embed = nextcord.Embed(color=0xFFC800, title="User or query not found!")
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @database.subcommand(name="set", inherit_hooks=True)
@@ -342,8 +338,7 @@ class Developer(commands.Cog):
         user: nextcord.Member = SlashOption(
             description="The user whose data should be changed", required=True
         ),
-        query: str = SlashOption(
-            description="The query to change", required=True),
+        query: str = SlashOption(description="The query to change", required=True),
         value: str = SlashOption(description="The new value", required=True),
     ):
         """Change a value for a user in the database"""
@@ -355,8 +350,7 @@ class Developer(commands.Cog):
             )
             await interaction.response.send_message(embed=embed)
         else:
-            embed = nextcord.Embed(
-                color=0xFFC800, title="User or query not found!")
+            embed = nextcord.Embed(color=0xFFC800, title="User or query not found!")
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @database.subcommand(name="unset", inherit_hooks=True)
@@ -366,8 +360,7 @@ class Developer(commands.Cog):
         user: nextcord.Member = SlashOption(
             description="The user whose data should be changed", required=True
         ),
-        query: str = SlashOption(
-            description="The query to unset", required=True),
+        query: str = SlashOption(description="The query to unset", required=True),
     ):
         """Unset data for a user in the database"""
         if unset_user_data(user.id, query):
@@ -376,8 +369,7 @@ class Developer(commands.Cog):
             )
             await interaction.response.send_message(embed=embed)
         else:
-            embed = nextcord.Embed(
-                color=0xFFC800, title="User or query not found!")
+            embed = nextcord.Embed(color=0xFFC800, title="User or query not found!")
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @database.subcommand(name="remove", inherit_hooks=True)
@@ -425,14 +417,12 @@ class Developer(commands.Cog):
             try:
                 server_id = int(server_id)
             except ValueError:
-                embed = nextcord.Embed(
-                    color=0xFFC800, title="Invalid server ID!")
+                embed = nextcord.Embed(color=0xFFC800, title="Invalid server ID!")
                 await interaction.response.send_message(embed=embed, ephemeral=True)
                 return
             if guild := nextcord.utils.get(self.bot.guilds, id=server_id):
                 await guild.leave()
-                embed = nextcord.Embed(
-                    color=0x0DD91A, title=f"Left {guild.name}")
+                embed = nextcord.Embed(color=0x0DD91A, title=f"Left {guild.name}")
                 await interaction.response.send_message(embed=embed)
             else:
                 embed = nextcord.Embed(
