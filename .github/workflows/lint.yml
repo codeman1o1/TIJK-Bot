@@ -23,7 +23,7 @@ jobs:
           python-version: 3.9
 
       - name: Install Python dependencies
-        run: pip install black flake8
+        run: pip install black flake8 mypy autopep8
 
       - name: Run linters
         uses: wearerequired/lint-action@v2
@@ -34,3 +34,7 @@ jobs:
           flake8: true
           flake8_auto_fix: false
           flake8_args: "--ignore=E501,W503,F405"
+          mypy: true
+          mypy_auto_fix: true
+          autopep8: true
+          autopep8_auto_fix: true
