@@ -33,7 +33,6 @@ jobs:
           black_auto_fix: true
           flake8: true
           flake8_auto_fix: false
-          flake8_args: "--ignore=E501,W503,F405"
           mypy: true
           mypy_auto_fix: false
           autopep8: true
