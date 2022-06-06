@@ -1,4 +1,4 @@
-nextcord==2.0.0b2
+nextcord==2.0.0b3
 python-dotenv==0.20.0
 requests==2.27.1
 pymongo==4.1.1
