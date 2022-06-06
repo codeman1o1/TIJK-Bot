@@ -108,8 +108,7 @@ class Api(commands.Cog):
             request = await session.get("https://some-random-api.ml/joke")
             info = await request.json()
         embed = nextcord.Embed(color=0x0DD91A)
-        embed.add_field(name="Here is a joke!",
-                        value=info["joke"], inline=False)
+        embed.add_field(name="Here is a joke!", value=info["joke"], inline=False)
         await interaction.response.send_message(embed=embed)
 
     @api.subcommand(name="meme", inherit_hooks=True)
@@ -126,8 +125,7 @@ class Api(commands.Cog):
     async def pokedex_api(
         self,
         interaction: Interaction,
-        name: str = SlashOption(
-            description="The name of the Pokémon", required=True),
+        name: str = SlashOption(description="The name of the Pokémon", required=True),
     ):
         """Uses an API to get information about a Pokémon"""
         embed = nextcord.Embed(color=0x0DD91A)
@@ -170,8 +168,7 @@ class Api(commands.Cog):
             family_text = "This Pokémon has no evolution line"
         # Possible options: "normal" or "animated"
         embed.set_thumbnail(url=sprites["normal"])
-        embed.add_field(
-            name="Name", value=info["name"].capitalize(), inline=True)
+        embed.add_field(name="Name", value=info["name"].capitalize(), inline=True)
         embed.add_field(name="ID", value=info["id"], inline=True)
         embed.add_field(name="Type", value=pokemon_type, inline=True)
         embed.add_field(name="Species", value=species, inline=True)
@@ -194,8 +191,7 @@ class Api(commands.Cog):
             value=info["description"].replace(". ", ".\n"),
             inline=True,
         )
-        embed.add_field(name="Generation",
-                        value=info["generation"], inline=True)
+        embed.add_field(name="Generation", value=info["generation"], inline=True)
 
         await interaction.response.send_message(embed=embed)
 

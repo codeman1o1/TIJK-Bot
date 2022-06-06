@@ -65,15 +65,13 @@ class ErrorHandler(commands.Cog, name="Error Handler"):
             embed = nextcord.Embed(color=0xFF0000, title=error.message)
 
         else:
-            embed = nextcord.Embed(
-                color=0xFF0000, title="An unknown error occurred!")
+            embed = nextcord.Embed(color=0xFF0000, title="An unknown error occurred!")
             embed.add_field(
                 name="Error:",
                 value=error,
                 inline=True,
             )
-            embed.set_footer(
-                text="Click the button below to report this error")
+            embed.set_footer(text="Click the button below to report this error")
             await interaction.send(
                 embed=embed,
                 view=Link(

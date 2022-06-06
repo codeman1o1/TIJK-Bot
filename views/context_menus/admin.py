@@ -42,12 +42,10 @@ class AdminContext(commands.Cog):
         if user.communication_disabled_until:
             embed.add_field(
                 name="Timed out until",
-                value=user.communication_disabled_until.strftime(
-                    "%H:%M:%S %d %b %Y"),
+                value=user.communication_disabled_until.strftime("%H:%M:%S %d %b %Y"),
                 inline=True,
             )
-        embed.add_field(name="Top role",
-                        value=user.top_role.mention, inline=True)
+        embed.add_field(name="Top role", value=user.top_role.mention, inline=True)
         roles_list: list = user.roles
         roles_list.reverse()
         roles = ", ".join(role.mention for role in roles_list)
@@ -55,8 +53,7 @@ class AdminContext(commands.Cog):
         public_flags_list: list = user.public_flags.all()
         if public_flags_list:
             public_flags = ", ".join(flag.name for flag in public_flags_list)
-            embed.add_field(name="Public flags",
-                            value=public_flags, inline=True)
+            embed.add_field(name="Public flags", value=public_flags, inline=True)
         embed.add_field(
             name="In mutual guilds", value=len(user.mutual_guilds), inline=True
         )
@@ -70,8 +67,7 @@ class AdminContext(commands.Cog):
             permissions = ", ".join(
                 name for name, value in user.guild_permissions if value
             )
-            embed.add_field(name="Permissions in guild",
-                            value=permissions, inline=True)
+            embed.add_field(name="Permissions in guild", value=permissions, inline=True)
         await interaction.response.send_message(
             embed=embed,
             view=Link(user.display_avatar.url, "Download profile picture"),

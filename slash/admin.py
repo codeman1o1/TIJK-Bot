@@ -77,8 +77,7 @@ class Admin(commands.Cog):
             await interaction.channel.send(
                 embed=embed, view=ButtonRoles(guild=interaction.guild)
             )
-            embed = nextcord.Embed(
-                color=0x0DD91A, title="The message has been sent!")
+            embed = nextcord.Embed(color=0x0DD91A, title="The message has been sent!")
         else:
             embed = nextcord.Embed(
                 color=0xFFC800,
@@ -91,8 +90,7 @@ class Admin(commands.Cog):
     async def add_buttonroles(
         self,
         interaction: Interaction,
-        role: nextcord.Role = SlashOption(
-            description="The role to add", required=True),
+        role: nextcord.Role = SlashOption(description="The role to add", required=True),
     ):
         """Add a button role"""
         buttonroles = get_bot_data("buttonroles")
@@ -179,8 +177,7 @@ class Admin(commands.Cog):
             )
             embed.set_footer(text=f"{roles}/25 buttonroles")
         else:
-            embed = nextcord.Embed(
-                color=0xFFC800, title="There are no button roles")
+            embed = nextcord.Embed(color=0xFFC800, title="There are no button roles")
 
         await interaction.response.send_message(embed=embed)
 
@@ -372,8 +369,7 @@ class Admin(commands.Cog):
     async def nick_reset(
         self,
         interaction: Interaction,
-        user: nextcord.Member = SlashOption(
-            description="The user", required=True),
+        user: nextcord.Member = SlashOption(description="The user", required=True),
     ):
         """Reset a user's nickname"""
         original_name = user.display_name
@@ -411,12 +407,9 @@ class Admin(commands.Cog):
         """Give a user a role"""
         user = user or interaction.user
         if role not in user.roles:
-            mod_role = nextcord.utils.get(
-                interaction.guild.roles, name="Moderator")
-            admin_role = nextcord.utils.get(
-                interaction.guild.roles, name="Admin")
-            owner_role = nextcord.utils.get(
-                interaction.guild.roles, name="Owner")
+            mod_role = nextcord.utils.get(interaction.guild.roles, name="Moderator")
+            admin_role = nextcord.utils.get(interaction.guild.roles, name="Admin")
+            owner_role = nextcord.utils.get(interaction.guild.roles, name="Owner")
             admin_roles = (mod_role, admin_role, owner_role)
             if (
                 not check_server_owner(interaction)
@@ -475,12 +468,9 @@ class Admin(commands.Cog):
         """Remove a role from a user"""
         user = user or interaction.user
         if role in user.roles:
-            mod_role = nextcord.utils.get(
-                interaction.guild.roles, name="Moderator")
-            admin_role = nextcord.utils.get(
-                interaction.guild.roles, name="Admin")
-            owner_role = nextcord.utils.get(
-                interaction.guild.roles, name="Owner")
+            mod_role = nextcord.utils.get(interaction.guild.roles, name="Moderator")
+            admin_role = nextcord.utils.get(interaction.guild.roles, name="Admin")
+            owner_role = nextcord.utils.get(interaction.guild.roles, name="Owner")
             admin_roles = (mod_role, admin_role, owner_role)
             if (
                 not check_server_owner(interaction)
@@ -645,8 +635,7 @@ class Admin(commands.Cog):
     async def unban(
         self,
         interaction: Interaction,
-        user: str = SlashOption(
-            description="The user to unban", required=True),
+        user: str = SlashOption(description="The user to unban", required=True),
         reason: str = SlashOption(
             description="The reason why the user was unbanned", required=False
         ),
@@ -677,8 +666,7 @@ class Admin(commands.Cog):
             )
             await interaction.response.send_message(embed=embed)
         else:
-            embed = nextcord.Embed(
-                color=0xFF0000, title=f"{user} is not banned!")
+            embed = nextcord.Embed(color=0xFF0000, title=f"{user} is not banned!")
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @slash(guild_ids=SLASH_GUILDS)
@@ -783,8 +771,7 @@ class Admin(commands.Cog):
         embed.add_field(
             name="Users with this role", value=len(role.members), inline=True
         )
-        permissions = ", ".join(
-            name for name, value in role.permissions if value)
+        permissions = ", ".join(name for name, value in role.permissions if value)
         embed.add_field(
             name="Role permissions", value=permissions or "None", inline=True
         )
@@ -804,8 +791,7 @@ class Admin(commands.Cog):
         try:
             guild_id = int(guild_id)
         except ValueError:
-            embed = nextcord.Embed(
-                color=0xFFC800, title="Please put in a server ID!")
+            embed = nextcord.Embed(color=0xFFC800, title="Please put in a server ID!")
             await interaction.response.send_message(embed=embed, ephemeral=True)
             return
         guild = self.bot.get_guild(guild_id)
@@ -825,22 +811,17 @@ class Admin(commands.Cog):
                     name="Owner",
                     value=f"{guild.owner} ({guild.owner.name})",
                 )
-            embed.add_field(name="Total members", value=len(
-                guild.members), inline=True)
-            embed.add_field(name="Total humans", value=len(
-                guild.humans), inline=True)
-            embed.add_field(name="Total bots", value=len(
-                guild.bots), inline=True)
-            embed.add_field(name="Total roles", value=len(
-                guild.roles), inline=True)
+            embed.add_field(name="Total members", value=len(guild.members), inline=True)
+            embed.add_field(name="Total humans", value=len(guild.humans), inline=True)
+            embed.add_field(name="Total bots", value=len(guild.bots), inline=True)
+            embed.add_field(name="Total roles", value=len(guild.roles), inline=True)
             with suppress(nextcord.Forbidden):
                 bans = 0
                 for _ in await guild.bans():
                     bans += 1
                 embed.add_field(name="Total bans", value=bans, inline=True)
         else:
-            embed = nextcord.Embed(
-                color=0xFFC800, title="I can not access that guild!")
+            embed = nextcord.Embed(color=0xFFC800, title="I can not access that guild!")
         await interaction.response.send_message(embed=embed)
 
     @info.subcommand(name="user", inherit_hooks=True)
@@ -876,12 +857,10 @@ class Admin(commands.Cog):
         if user.communication_disabled_until:
             embed.add_field(
                 name="Timed out until",
-                value=user.communication_disabled_until.strftime(
-                    "%H:%M:%S %d %b %Y"),
+                value=user.communication_disabled_until.strftime("%H:%M:%S %d %b %Y"),
                 inline=True,
             )
-        embed.add_field(name="Top role",
-                        value=user.top_role.mention, inline=True)
+        embed.add_field(name="Top role", value=user.top_role.mention, inline=True)
         roles_list: list = user.roles
         roles_list.reverse()
         roles = ", ".join(role.mention for role in roles_list)
@@ -889,8 +868,7 @@ class Admin(commands.Cog):
         public_flags_list: list = user.public_flags.all()
         if public_flags_list:
             public_flags = ", ".join(flag.name for flag in public_flags_list)
-            embed.add_field(name="Public flags",
-                            value=public_flags, inline=True)
+            embed.add_field(name="Public flags", value=public_flags, inline=True)
         embed.add_field(
             name="In mutual guilds", value=len(user.mutual_guilds), inline=True
         )
@@ -904,8 +882,7 @@ class Admin(commands.Cog):
             permissions = ", ".join(
                 name for name, value in user.guild_permissions if value
             )
-            embed.add_field(name="Permissions in guild",
-                            value=permissions, inline=True)
+            embed.add_field(name="Permissions in guild", value=permissions, inline=True)
         await interaction.response.send_message(
             embed=embed,
             view=Link(user.display_avatar.url, "Download profile picture"),
@@ -1023,8 +1000,7 @@ class Admin(commands.Cog):
                         + nextcord.utils.get(interaction.guild.roles, id=pingpoll).name
                     )
             if not pingpolls2:
-                embed = nextcord.Embed(
-                    color=0xFFC800, title="There are no PingPolls!")
+                embed = nextcord.Embed(color=0xFFC800, title="There are no PingPolls!")
             else:
                 embed = nextcord.Embed(color=0x0DD91A)
                 embed.add_field(
@@ -1033,8 +1009,7 @@ class Admin(commands.Cog):
                     inline=False,
                 )
         else:
-            embed = nextcord.Embed(
-                color=0xFFC800, title="There are no PingPolls!")
+            embed = nextcord.Embed(color=0xFFC800, title="There are no PingPolls!")
         await interaction.response.send_message(embed=embed)
 
 

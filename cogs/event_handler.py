@@ -150,8 +150,7 @@ class EventHandler(commands.Cog, name="Event Handler"):
         """Called when a member joins the server"""
         with suppress(nextcord.errors.HTTPException):
             if not get_user_data(member.id):
-                USER_DATA.insert_one(
-                    {"_id": member.id, "messages": 0, "warns": 0})
+                USER_DATA.insert_one({"_id": member.id, "messages": 0, "warns": 0})
             if member.bot:
                 embed = nextcord.Embed(
                     color=0x0DD91A,
@@ -164,8 +163,7 @@ class EventHandler(commands.Cog, name="Event Handler"):
                     color=0x0DD91A,
                     title=f"Hey {member.display_name} :wave:\nWelcome to {member.guild.name}!\nWe hope you will enjoy your stay!",
                 )
-                member_role = nextcord.utils.get(
-                    member.guild.roles, name="Member")
+                member_role = nextcord.utils.get(member.guild.roles, name="Member")
                 await member.add_roles(member_role, reason="Member joined")
             if member.guild.system_channel:
                 await member.guild.system_channel.send(embed=embed)
