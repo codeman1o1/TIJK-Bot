@@ -67,9 +67,23 @@ class General(commands.Cog):
                     uuid = MojangAPI.get_uuid(
                         get_user_data(user.id, "minecraft_account")
                     )
-                    data = requests.get(
+                    response = requests.get(
                         f"https://api.hypixel.net/player?key={HYPIXEL_API_KEY}&uuid={uuid}"
-                    ).json()
+                    )
+                    data = response.json()
+                    if response.status_code == 429:
+                        if data["global"] is True:
+                            embed = nextcord.Embed(
+                                color=0xFFC800,
+                                title="Unfortunately, the Hypixel API is currently unavailable\nThis is for all users trying to access the Hypixel API\nPlease try again later",
+                            )
+                        else:
+                            embed = nextcord.Embed(
+                                color=0xFFC800,
+                                title="Unfortunately, the Hypixel API is currently unavailable\nThis is due to it being rate limited (the limit is 120 requests per minute)\nPlease try again later",
+                            )
+                        await interaction.response.send_message(embed=embed)
+                        return
                     logouttime = data["player"]["lastLogout"]
                     logintime = data["player"]["lastLogin"]
                     if logouttime >= logintime or data["success"] is False:
