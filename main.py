@@ -34,7 +34,8 @@ bot = commands.Bot(
 )
 
 text_format = "%(asctime)s %(name)s %(levelname)s %(message)s"
-handler = logging.FileHandler(filename="nextcord.log", encoding="utf-8", mode="w")
+handler = logging.FileHandler(
+    filename="nextcord.log", encoding="utf-8", mode="w")
 handler.setFormatter(logging.Formatter(text_format))
 
 logger = logging.getLogger("TIJK Bot")

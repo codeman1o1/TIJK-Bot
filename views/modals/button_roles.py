@@ -18,7 +18,8 @@ class ButtonRolesModal(nextcord.ui.Modal):
         self.add_item(self.text)
 
     async def callback(self, interaction: nextcord.Interaction):
-        embed = nextcord.Embed(color=0x0DD91A, title="The message has been sent!")
+        embed = nextcord.Embed(
+            color=0x0DD91A, title="The message has been sent!")
         await interaction.response.send_message(embed=embed, ephemeral=True)
         embed = nextcord.Embed(color=0x0DD91A, title=self.text.value)
         await interaction.channel.send(embed=embed, view=self.view)
