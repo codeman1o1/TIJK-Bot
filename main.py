@@ -252,6 +252,6 @@ if __name__ == "__main__":
                 logger.debug(f"{ctx} loaded")
             except Exception as e:
                 logger.error(e)
-                logger.error(f"{ctx}  - context couldn't be loaded")
+                logger.error(f"{ctx} - context couldn't be loaded")
 
     bot.run(os.getenv("BotToken"))
