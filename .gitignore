@@ -132,7 +132,6 @@ dmypy.json
 .dccache
 
 spam_detect.txt
-file.txt
 head_img.png
 .vscode
 .idea
