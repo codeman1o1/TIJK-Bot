@@ -128,11 +128,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Chatbot files
-assistant_model_classes.pkl
-assistant_model_words.pkl
-assistant_model.h5
-
 spam_detect.txt
 file.txt
 head_img.png
