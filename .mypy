@@ -1,0 +1,3 @@
+[mypy]
+show_error_codes = True
+disable_error_code = union-attr, no-redef, attr-defined, assignment

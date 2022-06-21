@@ -1,4 +1,6 @@
-from nextcord import ApplicationError, Interaction, User, Guild
+# type: ignore[arg-type]
+
+from nextcord import ApplicationError, Interaction, Member, Guild
 from nextcord.ext.application_checks import check
 from nextcord.utils import get
 
@@ -25,8 +27,9 @@ def has_role(interaction: Interaction, role: str) -> bool:
     )
 
 
-def has_role_or_above(user: User, guild: Guild, role: str) -> bool:
-    if not (role := get(guild.roles, name=role)):
+def has_role_or_above(user: Member, guild: Guild, role: str) -> bool:
+    role = get(guild.roles, name=role)
+    if role is None:
         return False
 
     guild_roles = guild.roles

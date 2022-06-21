@@ -1,7 +1,7 @@
 import datetime
 from contextlib import suppress
 
-import humanfriendly
+from humanfriendly import parse_timespan, format_timespan, InvalidTimespan
 import nextcord
 import nextcord.ext.application_checks as checks
 from nextcord import Interaction
@@ -198,9 +198,7 @@ class Admin(commands.Cog):
             f"TIJK Bot was shut down by {interaction.user}",
         )
         info = await self.bot.application_info()
-        owner = info.owner
-        dm = await owner.create_dm()
-        await dm.send(embed=embed)
+        await info.owner.dm_channel.send(embed=embed)
         logger.info("TIJK Bot was shut down by %s", interaction.user)
         await self.bot.close()
 
@@ -290,22 +288,22 @@ class Admin(commands.Cog):
         """Mute a user"""
         try:
             reason2 = f" because of {reason}" if reason else ""
-            time = humanfriendly.parse_timespan(time)
+            time = parse_timespan(time)
             await user.timeout(
-                nextcord.utils.utcnow() + datetime.timedelta(seconds=time)
+                nextcord.utils.utcnow() + datetime.timedelta(seconds=time)  # type: ignore[arg-type]
             )
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
                 name="User muted!",
-                value=f"{user} was muted for {humanfriendly.format_timespan(time)} by {interaction.user}{reason2}",
+                value=f"{user} was muted for {format_timespan(time)} by {interaction.user}{reason2}",
                 inline=False,
             )
             await interaction.response.send_message(embed=embed)
             await log(
                 interaction,
-                f"{user} was muted for {humanfriendly.format_timespan(time)} by {interaction.user}{reason2}",
+                f"{user} was muted for {format_timespan(time)} by {interaction.user}{reason2}",
             )
-        except humanfriendly.InvalidTimespan:
+        except InvalidTimespan:
             embed = nextcord.Embed(color=0xFFC800, title="Invalid time!")
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
@@ -324,7 +322,7 @@ class Admin(commands.Cog):
     ):
         """Unmute a user"""
         reason2 = f" because of {reason}" if reason else ""
-        await user.timeout(None)
+        await user.timeout(None)  # type: ignore[arg-type]
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
             name="User unmuted!",
@@ -420,14 +418,13 @@ class Admin(commands.Cog):
                 )
                 await interaction.response.send_message(embed=embed)
                 server_owner = interaction.guild.owner
-                dm = await server_owner.create_dm()
                 embed = nextcord.Embed(
                     color=0xFFC800,
                     title=f"{interaction.user} tried to give an admin role ({role.name}) to {user}",
                 )
-                await dm.send(embed=embed)
+                await server_owner.dm_channel.send(embed=embed)
                 return
-            await user.add_roles(role, reason=reason)
+            await user.add_roles(role, reason=reason)  # type: ignore[arg-type]
             reason2 = f" because of {reason}" if reason else ""
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
@@ -481,14 +478,13 @@ class Admin(commands.Cog):
                 )
                 await interaction.response.send_message(embed=embed)
                 server_owner = interaction.guild.owner
-                dm = await server_owner.create_dm()
                 embed = nextcord.Embed(
                     color=0xFFC800,
                     title=f"{interaction.user} tried to remove an admin role ({role.name}) from {user}",
                 )
-                await dm.send(embed=embed)
+                await server_owner.dm_channel.send(embed=embed)
                 return
-            await user.remove_roles(role, reason=reason)
+            await user.remove_roles(role, reason=reason)  # type: ignore[arg-type]
             reason2 = f" because of {reason}" if reason else ""
             embed = nextcord.Embed(color=0x0DD91A)
             embed.add_field(
@@ -649,11 +645,11 @@ class Admin(commands.Cog):
             return
         embed = nextcord.Embed(color=0x0DD91A)
         bans = tuple(
-            ban_entry.user
+            ban_entry.user.id
             for ban_entry in await interaction.guild.bans(limit=None).flatten()
         )
-        if user in bans:
-            await interaction.guild.unban(user, reason=reason)
+        if user.id in bans:
+            await interaction.guild.unban(user, reason=reason)  # type: ignore[arg-type]
             reason2 = f" because of {reason}" if reason else ""
             embed.add_field(
                 name="User unbanned!",
@@ -693,7 +689,7 @@ class Admin(commands.Cog):
         ),
     ):
         """Warn a user"""
-        await warn_system(interaction, user, amount, interaction.user, reason)
+        await warn_system(interaction, user, amount, str(interaction.user), reason)
 
     @warn.subcommand(name="remove", inherit_hooks=True)
     async def remove_warn(
@@ -713,7 +709,9 @@ class Admin(commands.Cog):
         ),
     ):
         """Remove a warn from a user"""
-        await warn_system(interaction, user, amount, interaction.user, reason, True)
+        await warn_system(
+            interaction, user, amount, str(interaction.user), reason, True
+        )
 
     @warn.subcommand(name="list", inherit_hooks=True)
     async def list_warn(self, interaction: Interaction):
@@ -909,13 +907,13 @@ class Admin(commands.Cog):
         ):
             time = "0"
         try:
-            time_seconds = int(humanfriendly.parse_timespan(time))
-        except humanfriendly.InvalidTimespan:
+            time_seconds = int(parse_timespan(time))
+        except InvalidTimespan:
             embed = nextcord.Embed(color=0xFFC800, title="Invalid time!")
             await interaction.response.send_message(embed=embed, ephemeral=True)
             return
-        channel = channel or interaction.channel
-        time = humanfriendly.format_timespan(time_seconds)
+        channel: nextcord.TextChannel = channel or interaction.channel
+        time = format_timespan(time_seconds)
         if time_seconds <= 21600:
             await channel.edit(slowmode_delay=time_seconds)
             embed = nextcord.Embed(

@@ -343,7 +343,7 @@ class Developer(commands.Cog):
     ):
         """Change a value for a user in the database"""
         with contextlib.suppress(ValueError):
-            value = int(value)
+            value = int(value)  # type: int
         if set_user_data(user.id, query, value):
             embed = nextcord.Embed(
                 color=0x0DD91A, title=f"Changed `{query}` to `{value}` for `{user}`"
@@ -415,7 +415,7 @@ class Developer(commands.Cog):
         """Remove TIJK Bot from a server"""
         if server_id:
             try:
-                server_id = int(server_id)
+                server_id = int(server_id)  # type: int
             except ValueError:
                 embed = nextcord.Embed(color=0xFFC800, title="Invalid server ID!")
                 await interaction.response.send_message(embed=embed, ephemeral=True)

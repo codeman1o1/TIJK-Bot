@@ -15,7 +15,7 @@ class AdminContext(commands.Cog):
     @is_mod()
     async def warn(self, interaction: Interaction, user: nextcord.Member):
         await interaction.response.send_message(f"Warned {user}", ephemeral=True)
-        await warn_system(interaction, user, 1, interaction.user)
+        await warn_system(interaction, user, 1, str(interaction.user))
 
     @nextcord.user_command(name="Show user information", guild_ids=SLASH_GUILDS)
     @is_admin()

@@ -16,7 +16,7 @@ from views.buttons.link import Link
 from main import logger
 
 
-class ErrorHandler(commands.Cog, name="Error Handler"):
+class ErrorHandler(commands.Cog):
     """A cog for customized error messages"""
 
     def __init__(self, bot: commands.Bot):

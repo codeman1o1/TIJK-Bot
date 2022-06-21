@@ -16,7 +16,7 @@ from pymongo import MongoClient
 
 load_dotenv()
 HYPIXEL_API_KEY = os.getenv("HypixelApiKey")
-CLUSTER = MongoClient(os.getenv("MongoURL"))
+CLUSTER: MongoClient = MongoClient(os.getenv("MongoURL"))
 DATA = CLUSTER["Data"]
 BOT_DATA = DATA["BotData"]
 USER_DATA = DATA["UserData"]
@@ -132,14 +132,16 @@ async def log(interaction: nextcord.Interaction, message: str, channel: str = No
 
 def get_bot_data(query: str):
     # sourcery skip: assign-if-exp, reintroduce-else
-    if query not in BOT_DATA.find_one():
+    if BOT_DATA.find_one() is None:
+        return None
+    if query not in BOT_DATA.find_one().__dict__.keys():
         return None
 
-    return BOT_DATA.find_one()[query]
+    return BOT_DATA.find_one().__dict__[query]
 
 
 def set_bot_data(query: str, value):
-    if query not in BOT_DATA.find_one():
+    if query not in BOT_DATA.find_one().__dict__.keys():
         return None
 
     BOT_DATA.find_one_and_update({}, {"$set": {query: value}})
@@ -151,10 +153,10 @@ def get_user_data(user_id: int, query: str = None):
         return None
     if not query:
         return True
-    if query not in USER_DATA.find_one({"_id": user_id}):
+    if query not in USER_DATA.find_one({"_id": user_id}).__dict__.keys():
         return None
 
-    return USER_DATA.find_one({"_id": user_id})[query]
+    return USER_DATA.find_one({"_id": user_id}).__dict__[query]
 
 
 def set_user_data(user_id: int, query: str, value):

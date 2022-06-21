@@ -10,7 +10,7 @@ from slash.custom_checks import has_role_or_above
 from main import USER_DATA, get_bot_data, get_user_data, logger, set_user_data
 
 
-class EventHandler(commands.Cog, name="Event Handler"):
+class EventHandler(commands.Cog):
     """A separate cog for handling events"""
 
     def __init__(self, bot: commands.Bot):
@@ -65,10 +65,8 @@ class EventHandler(commands.Cog, name="Event Handler"):
                     elif " " not in message.content:
                         for member in message.channel.members:
                             if last_word in member.roles:
-                                await member.remove_roles(
-                                    last_word, reason="One word story"
-                                )
-                        await user.add_roles(last_word, reason="One word story")
+                                await member.remove_roles(last_word, reason="One word story")  # type: ignore[arg-type]
+                        await user.add_roles(last_word, reason="One word story")  # type: ignore[arg-type]
 
                     else:
                         await message.delete()
@@ -157,18 +155,17 @@ class EventHandler(commands.Cog, name="Event Handler"):
                     title=f"Hey {member.display_name} :wave:\nWe hope you will add great functionality to {member.guild.name}!",
                 )
                 bot_role = nextcord.utils.get(member.guild.roles, name="Bot")
-                await member.add_roles(bot_role, reason="Bot joined")
+                await member.add_roles(bot_role, reason="Bot joined")  # type: ignore[arg-type]
             else:
                 embed = nextcord.Embed(
                     color=0x0DD91A,
                     title=f"Hey {member.display_name} :wave:\nWelcome to {member.guild.name}!\nWe hope you will enjoy your stay!",
                 )
                 member_role = nextcord.utils.get(member.guild.roles, name="Member")
-                await member.add_roles(member_role, reason="Member joined")
+                await member.add_roles(member_role, reason="Member joined")  # type: ignore[arg-type]
             if member.guild.system_channel:
                 await member.guild.system_channel.send(embed=embed)
-            dm = await member.create_dm()
-            await dm.send(embed=embed)
+            await member.dm_channel.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_member_update(self, before: Context, after: Context):
@@ -213,8 +210,7 @@ class EventHandler(commands.Cog, name="Event Handler"):
             )
             if member.guild.system_channel:
                 await member.guild.system_channel.send(embed=embed)
-            dm = await member.create_dm()
-            await dm.send(embed=embed)
+            await member.dm_channel.send(embed=embed)
 
 
 def setup(bot: commands.Bot):
