@@ -134,14 +134,14 @@ def get_bot_data(query: str):
     # sourcery skip: assign-if-exp, reintroduce-else
     if BOT_DATA.find_one() is None:
         return None
-    if query not in BOT_DATA.find_one().__dict__.keys():
+    if query not in dict(BOT_DATA.find_one()).keys():  # type: ignore[arg-type]
         return None
 
-    return BOT_DATA.find_one().__dict__[query]
+    return dict(BOT_DATA.find_one())[query]  # type: ignore[arg-type]
 
 
 def set_bot_data(query: str, value):
-    if query not in BOT_DATA.find_one().__dict__.keys():
+    if query not in dict(BOT_DATA.find_one()).keys():  # type: ignore[arg-type]
         return None
 
     BOT_DATA.find_one_and_update({}, {"$set": {query: value}})
@@ -153,10 +153,10 @@ def get_user_data(user_id: int, query: str = None):
         return None
     if not query:
         return True
-    if query not in USER_DATA.find_one({"_id": user_id}).__dict__.keys():
+    if query not in dict(USER_DATA.find_one({"_id": user_id})).keys():  # type: ignore[arg-type]
         return None
 
-    return USER_DATA.find_one({"_id": user_id}).__dict__[query]
+    return dict(USER_DATA.find_one({"_id": user_id}))[query]  # type: ignore[arg-type]
 
 
 def set_user_data(user_id: int, query: str, value):
