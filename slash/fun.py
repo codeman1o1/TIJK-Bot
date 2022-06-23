@@ -12,7 +12,7 @@ from main import SLASH_GUILDS, USER_DATA
 root = os.path.abspath(os.getcwd())
 with open(os.path.join(root, "8ball_responses.json"), "r", encoding="utf-8") as file:
     eight_ball_responses = file.read()
-eight_ball_responses = tuple(json.load(eight_ball_responses)["responses"])  # type: ignore[arg-type]
+eight_ball_responses = tuple(json.loads(eight_ball_responses)["responses"])  # type: ignore[arg-type]
 
 
 class Fun(commands.Cog):
