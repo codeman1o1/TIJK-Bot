@@ -246,6 +246,7 @@ if __name__ == "__main__":
                 logger.error(f"{file} couldn't be loaded")
 
     context = os.listdir("views/context_menus")
+    context.remove("admin.py")
     for ctx in context:
         if ctx.endswith(".py"):
             try:
