@@ -107,7 +107,6 @@ class General(commands.Cog):
             )
         embed.set_footer(text=f"Round 1: {round_1}\nRound 2: {round_2}")
         await interaction.response.send_message(embed=embed, delete_after=300)
-        del available
 
     @slash(guild_ids=SLASH_GUILDS)
     async def link(
