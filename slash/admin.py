@@ -358,7 +358,9 @@ class Admin(commands.Cog):
             color=0x0DD91A,
             title=f"{original_name}'s nickname has been changed to {name}\nClick the button below to change the name back",
         )
-        await interaction.response.send_message(embed=embed, view=ChangeNameBack(user, original_name, interaction.user.id))
+        await interaction.response.send_message(
+            embed=embed, view=ChangeNameBack(user, original_name, interaction.user.id)
+        )
         await log(interaction, f"{original_name}'s nickname has been changed to {name}")
 
     @nick.subcommand(name="reset", inherit_hooks=True)
@@ -374,7 +376,9 @@ class Admin(commands.Cog):
             color=0x0DD91A,
             title=f"{original_name}'s nickname has been reset\nClick the button below to change the name back",
         )
-        await interaction.response.send_message(embed=embed, view=ChangeNameBack(user, original_name, interaction.user.id))
+        await interaction.response.send_message(
+            embed=embed, view=ChangeNameBack(user, original_name, interaction.user.id)
+        )
         await log(interaction, f"{original_name}'s nickname has been reset")
 
     @slash(guild_ids=SLASH_GUILDS)
