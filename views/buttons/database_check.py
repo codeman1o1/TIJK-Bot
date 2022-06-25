@@ -1,12 +1,17 @@
 from typing import Iterable
 import nextcord
 from nextcord import ButtonStyle
+
 from main import USER_DATA
+from utils.check_message_sender import CheckMessageSender as CMS
 
 
-class DatabaseCheck(nextcord.ui.View):
-    def __init__(self, add: Iterable[nextcord.Member], remove: Iterable[int]):
+class DatabaseCheck(nextcord.ui.View, CMS):
+    def __init__(
+        self, add: Iterable[nextcord.Member], remove: Iterable[int], sender_id: int
+    ):
         super().__init__()
+        CMS.__init__(self, sender_id)
         self.add = add
         self.remove = remove
         self.add_item(
