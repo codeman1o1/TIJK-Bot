@@ -11,13 +11,11 @@ from nextcord.ext import commands
 
 from main import (
     USER_DATA,
-    get_user_data,
     log,
     SLASH_GUILDS,
     START_TIME,
-    set_user_data,
-    unset_user_data,
 )
+from utils.database import get_user_data, set_user_data, unset_user_data
 from slash.custom_checks import is_bot_owner, is_server_owner, is_admin
 from views.buttons.database_check import DatabaseCheck
 

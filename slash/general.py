@@ -14,10 +14,8 @@ from main import (
     HYPIXEL_API_KEY,
     SLASH_GUILDS,
     USER_DATA,
-    get_user_data,
-    set_user_data,
-    unset_user_data,
 )
+from utils.database import get_user_data, set_user_data, unset_user_data
 
 
 class General(commands.Cog):
