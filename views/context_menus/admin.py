@@ -4,7 +4,8 @@ from nextcord.interactions import Interaction
 from slash.custom_checks import is_admin, is_mod
 from views.buttons.link import Link
 
-from main import SLASH_GUILDS, get_user_data, warn_system
+from main import SLASH_GUILDS, warn_system
+from utils.database import get_user_data
 
 
 class AdminContext(commands.Cog):

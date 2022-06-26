@@ -3,7 +3,7 @@ from nextcord import ButtonStyle
 from nextcord.ext import commands
 from nextcord.utils import get
 
-from main import get_bot_data
+from utils.database import get_bot_data
 
 
 class ButtonRoles(nextcord.ui.View):

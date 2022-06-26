@@ -24,13 +24,11 @@ from slash.custom_checks import (
 from main import (
     SLASH_GUILDS,
     USER_DATA,
-    get_bot_data,
-    get_user_data,
     log,
     logger,
-    set_bot_data,
     warn_system,
 )
+from utils.database import get_bot_data, get_user_data, set_bot_data
 
 
 class Admin(commands.Cog):
