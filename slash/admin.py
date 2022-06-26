@@ -703,7 +703,8 @@ class Admin(commands.Cog):
             required=False,
         ),
         reason: str = SlashOption(
-            description="The reason why the user was warned", required=False
+            description="The reason why warns were removed from the user",
+            required=False,
         ),
     ):
         """Remove a warn from a user"""
