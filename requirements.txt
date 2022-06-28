@@ -1,4 +1,4 @@
-nextcord==2.0.0rc2
+nextcord==2.0.0
 python-dotenv==0.20.0
 requests==2.28.0
 types-requests==2.27.31
