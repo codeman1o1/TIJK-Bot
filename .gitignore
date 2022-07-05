@@ -128,9 +128,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Snyk files
-.dccache
-
 spam_detect.txt
 head_img.png
 .vscode
