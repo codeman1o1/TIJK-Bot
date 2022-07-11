@@ -23,6 +23,14 @@ USER_DATA = DATA["UserData"]
 START_TIME = time.time()
 SLASH_GUILDS = (870973430114181141, 865146077236822017)
 
+intents = nextcord.Intents.none()
+intents.guilds = True
+intents.members = True
+intents.bans = True
+intents.presences = True
+intents.messages = True
+intents.reactions = True
+intents.message_content = True
 
 client = nextcord.Client()
 bot = commands.Bot(
@@ -30,7 +38,7 @@ bot = commands.Bot(
     case_insensitive=True,
     strip_after_prefix=True,
     help_command=None,
-    intents=nextcord.Intents.all(),
+    intents=intents,
 )
 
 text_format = "%(asctime)s %(name)s %(levelname)s %(message)s"
