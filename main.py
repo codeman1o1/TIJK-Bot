@@ -41,12 +41,25 @@ bot = commands.Bot(
     intents=intents,
 )
 
+
+class LogFilter(logging.Filter):
+    def filter(self, record: logging.LogRecord):
+        # 0 means block, anything else (e.g. 1) means allow
+        return (
+            0
+            if any(
+                blocked in record.msg.lower()
+                for blocked in ("shard", "websocket", "payload")
+            )
+            else 1
+        )
+
+
 text_format = "%(asctime)s %(name)s %(levelname)s %(message)s"
 handler = logging.FileHandler(filename="nextcord.log", encoding="utf-8", mode="w")
 handler.setFormatter(logging.Formatter(text_format))
 
 logger = logging.getLogger("TIJK Bot")
-logger.setLevel(logging.DEBUG)
 logger.addHandler(handler)
 coloredlogs.install(
     level=logging.DEBUG,
@@ -55,13 +68,15 @@ coloredlogs.install(
 )
 
 nextcord_logger = logging.getLogger("nextcord")
-nextcord_logger.setLevel(logging.INFO)
 nextcord_logger.addHandler(handler)
 coloredlogs.install(
     level=logging.INFO,
     logger=nextcord_logger,
     fmt=text_format,
 )
+
+for handler in logging.getLogger("nextcord").handlers:
+    handler.addFilter(LogFilter())
 
 
 async def warn_system(
