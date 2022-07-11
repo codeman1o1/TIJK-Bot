@@ -206,13 +206,13 @@ class Api(commands.Cog):
         ),
     ):
         """Gets a random activity from an API"""
-        url = "https://www.boredapi.com/api/activity"
+        url = "http://www.boredapi.com/api/activity"
         extra_text = ""
         if extra_option == "alone":
-            url = "https://www.boredapi.com/api/activity?participants=1"
+            url += "?participants=1"
             extra_text = " that you can do alone"
         elif extra_option == "free":
-            url = "https://www.boredapi.com/api/activity?price=0"
+            url += "?price=0"
             extra_text = " that you can do for free"
         async with aiohttp.ClientSession() as session:
             request = await session.get(url)
