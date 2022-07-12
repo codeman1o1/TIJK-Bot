@@ -48,7 +48,7 @@ class LogFilter(logging.Filter):
         return (
             0
             if any(
-                blocked in record.msg.lower()
+                blocked in str(record.msg).lower()
                 for blocked in ("shard", "websocket", "payload")
             )
             else 1
