@@ -196,7 +196,8 @@ class Admin(commands.Cog):
             f"TIJK Bot was shut down by {interaction.user}",
         )
         info = await self.bot.application_info()
-        await info.owner.dm_channel.send(embed=embed)
+        if info.owner.dm_channel:
+            await info.owner.dm_channel.send(embed=embed)
         logger.info("TIJK Bot was shut down by %s", interaction.user)
         await self.bot.close()
 
@@ -416,11 +417,12 @@ class Admin(commands.Cog):
                 )
                 await interaction.response.send_message(embed=embed)
                 server_owner = interaction.guild.owner
-                embed = nextcord.Embed(
-                    color=0xFFC800,
-                    title=f"{interaction.user} tried to give an admin role ({role.name}) to {user}",
-                )
-                await server_owner.dm_channel.send(embed=embed)
+                if server_owner.dm_channel:
+                    embed = nextcord.Embed(
+                        color=0xFFC800,
+                        title=f"{interaction.user} tried to give an admin role ({role.name}) to {user}",
+                    )
+                    await server_owner.dm_channel.send(embed=embed)
                 return
             await user.add_roles(role, reason=reason)  # type: ignore[arg-type]
             reason2 = f" because of {reason}" if reason else ""
@@ -476,11 +478,12 @@ class Admin(commands.Cog):
                 )
                 await interaction.response.send_message(embed=embed)
                 server_owner = interaction.guild.owner
-                embed = nextcord.Embed(
-                    color=0xFFC800,
-                    title=f"{interaction.user} tried to remove an admin role ({role.name}) from {user}",
-                )
-                await server_owner.dm_channel.send(embed=embed)
+                if server_owner.dm_channel:
+                    embed = nextcord.Embed(
+                        color=0xFFC800,
+                        title=f"{interaction.user} tried to remove an admin role ({role.name}) from {user}",
+                    )
+                    await server_owner.dm_channel.send(embed=embed)
                 return
             await user.remove_roles(role, reason=reason)  # type: ignore[arg-type]
             reason2 = f" because of {reason}" if reason else ""
