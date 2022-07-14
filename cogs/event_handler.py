@@ -166,7 +166,8 @@ class EventHandler(commands.Cog):
                 await member.add_roles(member_role, reason="Member joined")  # type: ignore[arg-type]
             if member.guild.system_channel:
                 await member.guild.system_channel.send(embed=embed)
-            await member.dm_channel.send(embed=embed)
+            if member.dm_channel:
+                await member.dm_channel.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_member_update(self, before: Context, after: Context):
@@ -211,7 +212,8 @@ class EventHandler(commands.Cog):
             )
             if member.guild.system_channel:
                 await member.guild.system_channel.send(embed=embed)
-            await member.dm_channel.send(embed=embed)
+            if member.dm_channel:
+                await member.dm_channel.send(embed=embed)
 
 
 def setup(bot: commands.Bot):
