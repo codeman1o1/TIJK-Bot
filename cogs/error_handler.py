@@ -27,45 +27,34 @@ class ErrorHandler(commands.Cog):
         self, interaction: Interaction, error: commands.CommandError
     ):
         """Called when a slash command error occurs"""
+        embed = nextcord.Embed(color=0xFF0000)
+
         if isinstance(error, ApplicationMissingAnyRole):
             missing_roles = ", ".join(error.missing_roles)
-            embed = nextcord.Embed(
-                color=0xFF0000,
-                title=f"You are missing any of the following roles: {missing_roles}",
-            )
+            embed.title = f"You are missing any of the following roles: {missing_roles}"
 
         elif isinstance(error, ApplicationNotOwner):
             owner = self.bot.get_user(self.bot.owner_id)
-            embed = nextcord.Embed(
-                color=0xFF0000,
-                title=f"Only the owner of TIJK Bot ({owner}) can do this!",
-            )
+            embed.title = f"Only the owner of TIJK Bot ({owner}) can do this!"
 
         elif isinstance(error, ApplicationBotMissingAnyRole):
             missing_roles = ", ".join(error.missing_roles)
-            embed = nextcord.Embed(
-                color=0xFF0000,
-                title=f"I am missing any of the following role(s): {missing_roles}",
-            )
+            embed.title = f"I am missing any of the following role(s): {missing_roles}"
 
         elif isinstance(error, ApplicationBotMissingRole):
-            embed = nextcord.Embed(
-                color=0xFF0000,
-                title=f"I am missing the following role: {error.missing_role}",
-            )
+            embed.title = f"I am missing the following role: {error.missing_role}"
 
         elif isinstance(error, ApplicationBotMissingPermissions):
             missing_permissions = ", ".join(error.missing_permissions)
-            embed = nextcord.Embed(
-                color=0xFF0000,
-                title=f"I am missing the following permission(s): {missing_permissions}",
+            embed.title = (
+                f"I am missing the following permission(s): {missing_permissions}"
             )
 
         elif isinstance(error, CustomCheckError):
-            embed = nextcord.Embed(color=0xFF0000, title=error.message)
+            embed.title = error.message
 
         else:
-            embed = nextcord.Embed(color=0xFF0000, title="An unknown error occurred!")
+            embed.title = "An unknown error occurred!"
             embed.add_field(
                 name="Error:",
                 value=error,
