@@ -1,5 +1,6 @@
 import datetime
 import random
+from urllib.parse import quote
 
 import nextcord
 import requests
@@ -10,11 +11,7 @@ from nextcord.application_command import SlashOption
 from nextcord.ext import commands
 from views.buttons.link import Link
 
-from main import (
-    HYPIXEL_API_KEY,
-    SLASH_GUILDS,
-    USER_DATA,
-)
+from main import HYPIXEL_API_KEY, SLASH_GUILDS, USER_DATA, logger
 from utils.database import get_user_data, set_user_data, unset_user_data
 
 
@@ -82,9 +79,26 @@ class General(commands.Cog):
                             )
                         await interaction.response.send_message(embed=embed)
                         return
+                    if data["success"] is False:
+                        cause = data["cause"]
+                        embed = nextcord.Embed(
+                            color=0xFF0000, title=f"An error occurred:\n{cause}"
+                        )
+                        embed.set_footer(
+                            text="Click the button below to report this error"
+                        )
+                        await interaction.send(
+                            embed=embed,
+                            view=Link(
+                                f"https://github.com/codeman1o1/TIJK-Bot/issues/new?assignees=&labels=bug&template=error.yaml&title=%5BERROR%5D+{quote(str(cause))}",
+                                "Report error",
+                            ),
+                        )
+                        logger.error(cause)
+                        return
                     logouttime = data["player"]["lastLogout"]
                     logintime = data["player"]["lastLogin"]
-                    if logouttime >= logintime or data["success"] is False:
+                    if logouttime >= logintime:
                         remove.append(user)
                 else:
                     remove.append(user)
