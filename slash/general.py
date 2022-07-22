@@ -210,18 +210,18 @@ class General(commands.Cog):
         """Send all birthdays"""
         birthdays = []
         embed = nextcord.Embed(color=0x0DD91A)
-        today = datetime.date.today()
-        year = today.year
         for user in USER_DATA.find():
             if "birthday" in user:
-                birthday = user["birthday"]
+                today = datetime.date.today()
+                year: int = today.year
+                birthday: str = user["birthday"]
                 user = self.bot.get_user(int(user["_id"]))
-                birthday2 = birthday.split("-")
-                date = datetime.date(year, int(birthday2[1]), int(birthday2[0]))
+                day, month = birthday.split("-")
+                date = datetime.date(year, int(month), int(day))
                 diff = date - today
                 while diff.days < 0:
                     year += 1
-                    date = datetime.date(year, int(birthday2[1]), int(birthday2[0]))
+                    date = datetime.date(year, int(month), int(day))
                     diff = date - today
                 birthdays_dictionary = {
                     "userName": user.name,
