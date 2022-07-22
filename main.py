@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 from nextcord import Interaction
 from nextcord.ext import commands, tasks
 from pymongo import MongoClient
+from pydactyl import PterodactylClient
 
 load_dotenv()
 HYPIXEL_API_KEY = os.getenv("HypixelApiKey")
@@ -22,6 +23,11 @@ BOT_DATA = DATA["BotData"]
 USER_DATA = DATA["UserData"]
 START_TIME = time.time()
 SLASH_GUILDS = (870973430114181141, 865146077236822017)
+PTD_SERVER_ID = os.getenv("PterodactylServerId")
+
+PtdClient = PterodactylClient(
+    "https://control.sparkedhost.us/", os.getenv("PterodactylApiKey")
+)
 
 intents = nextcord.Intents.none()
 intents.guilds = True
@@ -237,3 +243,11 @@ if __name__ == "__main__":
                 logger.error(f"{ctx} - context couldn't be loaded")
 
     bot.run(os.getenv("BotToken"))
+    # Anything after this will get executed after the bot is shut down
+
+    # Shutdown the host
+    if (
+        PtdClient.client.servers.get_server_utilization(PTD_SERVER_ID)["current_state"]
+        == "running"
+    ):
+        PtdClient.client.servers.send_power_action(PTD_SERVER_ID, "stop")
