@@ -22,12 +22,11 @@ def set_bot_data(query: str, value):
 def get_user_data(user_id: int, query: str = None):
     if not USER_DATA.find_one({"_id": user_id}):
         return None
-    if not query:
-        return True
-    if query not in dict(USER_DATA.find_one({"_id": user_id})).keys():  # type: ignore[arg-type]
-        return None
-
-    return dict(USER_DATA.find_one({"_id": user_id}))[query]  # type: ignore[arg-type]
+    return (
+        dict(USER_DATA.find_one({"_id": user_id})).get(query, None)
+        if query
+        else True
+    )
 
 
 def set_user_data(user_id: int, query: str, value):
