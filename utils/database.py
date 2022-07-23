@@ -23,9 +23,7 @@ def get_user_data(user_id: int, query: str = None):
     if not USER_DATA.find_one({"_id": user_id}):
         return None
     return (
-        dict(USER_DATA.find_one({"_id": user_id})).get(query, None)
-        if query
-        else True
+        dict(USER_DATA.find_one({"_id": user_id})).get(query, None) if query else True
     )
 
 
