@@ -11,7 +11,7 @@ from nextcord.ext import commands
 from views.buttons.button_roles import ButtonRoles
 from views.buttons.change_name_back import ChangeNameBack
 from views.buttons.link import Link
-from views.modals.button_roles import ButtonRolesModal
+from views.modals.button_roles_modal import ButtonRolesModal
 
 from slash.custom_checks import (
     check_bot_owner,
