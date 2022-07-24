@@ -35,6 +35,6 @@ jobs:
           flake8_auto_fix: false
           mypy: true
           mypy_auto_fix: false
-          mypy_args: "--config-file=.\.mypy"
+          mypy_args: "--config-file=.\\.mypy"
           autopep8: true
           autopep8_auto_fix: true
