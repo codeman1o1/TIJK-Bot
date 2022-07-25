@@ -349,8 +349,21 @@ class Developer(commands.Cog):
         value: str = SlashOption(description="The new value", required=True),
     ):
         """Change a value for a user in the database"""
-        with contextlib.suppress(ValueError):
-            value = int(value)  # type: int
+
+        # Try to convert to boolean
+        if value.lower() == "true":
+            value = True
+        elif value.lower() == "false":
+            value = False
+        else:
+            # Try to convert to integer
+            try:
+                value = int(value)
+            except ValueError:
+                # Try to convert to float
+                with contextlib.suppress(ValueError):
+                    value = float(value)
+
         if set_user_data(user.id, query, value):
             embed = nextcord.Embed(
                 color=0x0DD91A, title=f"Changed `{query}` to `{value}` for `{user}`"
