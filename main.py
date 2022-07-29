@@ -39,13 +39,7 @@ intents.reactions = True
 intents.message_content = True
 
 client = nextcord.Client()
-bot = commands.Bot(
-    command_prefix=".",
-    case_insensitive=True,
-    strip_after_prefix=True,
-    help_command=None,
-    intents=intents,
-)
+bot = commands.Bot(intents=intents)
 
 
 class LogFilter(logging.Filter):
