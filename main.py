@@ -38,7 +38,6 @@ intents.messages = True
 intents.reactions = True
 intents.message_content = True
 
-client = nextcord.Client()
 bot = commands.Bot(intents=intents)
 
 
