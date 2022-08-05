@@ -3,6 +3,7 @@
 import asyncio
 import datetime
 import logging
+import sys
 import os
 import time
 
@@ -238,8 +239,8 @@ if __name__ == "__main__":
     bot.run(os.getenv("BotToken"))
     # Anything after this will get executed after the bot is shut down
 
-    # Shutdown the host
-    if (
+    # Shutdown the host except if the user specified not to
+    if "--no-stop" not in sys.argv[1:] and (
         PtdClient.client.servers.get_server_utilization(PTD_SERVER_ID)["current_state"]
         == "running"
     ):
