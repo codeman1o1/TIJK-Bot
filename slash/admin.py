@@ -567,7 +567,9 @@ class Admin(commands.Cog):
                 or message.content.lower().startswith(get_bot_data("botprefixes"))
             )
 
-        channel = channel or interaction.channel
+        channel: nextcord.TextChannel | nextcord.VoiceChannel = (
+            channel or interaction.channel
+        )
         deleted_messages = await channel.purge(limit=amount, check=check)
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
