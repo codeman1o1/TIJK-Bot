@@ -1,6 +1,7 @@
 import random
 import os
 import json
+from typing import Literal
 import nextcord
 from nextcord import Interaction, slash_command as slash
 from nextcord.ext import commands
@@ -30,9 +31,8 @@ class Fun(commands.Cog):
     async def rockpaperscissors(
         self,
         interaction: Interaction,
-        choice=SlashOption(
+        choice: Literal["rock", "paper", "scissors"] = SlashOption(
             description="Your choice",
-            choices=("rock", "paper", "scissors"),
             required=True,
         ),
     ):

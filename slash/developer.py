@@ -1,6 +1,7 @@
 import contextlib
 import datetime
 import time
+from typing import Literal
 
 import nextcord
 from nextcord import Interaction, slash_command as slash
@@ -164,15 +165,8 @@ class Developer(commands.Cog):
     async def set_status(
         self,
         interaction: Interaction,
-        status_type: str = SlashOption(
+        status_type: Literal["watching", "playing", "streaming", "listening", "competing"] = SlashOption(
             description="The type of status",
-            choices=[
-                "watching",
-                "playing",
-                "streaming",
-                "listening",
-                "competing",
-            ],
             required=True,
         ),
         text: str = SlashOption(
