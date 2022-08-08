@@ -165,7 +165,9 @@ class Developer(commands.Cog):
     async def set_status(
         self,
         interaction: Interaction,
-        status_type: Literal["watching", "playing", "streaming", "listening", "competing"] = SlashOption(
+        status_type: Literal[
+            "watching", "playing", "streaming", "listening", "competing"
+        ] = SlashOption(
             description="The type of status",
             required=True,
         ),
