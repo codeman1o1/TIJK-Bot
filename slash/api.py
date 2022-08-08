@@ -1,4 +1,5 @@
 import os
+from typing import Literal
 from PIL import Image
 import aiohttp
 import nextcord
@@ -199,9 +200,8 @@ class Api(commands.Cog):
     async def activity_api(
         self,
         interaction: Interaction,
-        extra_option=SlashOption(
+        extra_option: Literal["alone", "free"] = SlashOption(
             description="Extra configurable options",
-            choices=["alone", "free"],
             required=False,
         ),
     ):

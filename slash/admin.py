@@ -1,6 +1,7 @@
 import sys
 import datetime
 from contextlib import suppress
+from typing import Union
 
 from humanfriendly import parse_timespan, format_timespan, InvalidTimespan
 import nextcord
@@ -523,14 +524,15 @@ class Admin(commands.Cog):
         amount: int = SlashOption(
             description="The amount of messages to clear", min_value=1, required=True
         ),
-        channel: nextcord.abc.GuildChannel = SlashOption(
+        channel: Union[nextcord.TextChannel, nextcord.VoiceChannel] = SlashOption(
             description="The channel to clear messages from. Defaults to the current channel",
-            channel_types=[nextcord.ChannelType.text],
             required=False,
         ),
     ):
         """Clear the chat"""
-        channel: nextcord.TextChannel = channel or interaction.channel
+        channel: nextcord.TextChannel | nextcord.VoiceChannel = (
+            channel or interaction.channel
+        )
         deleted_messages = await channel.purge(limit=amount, bulk=True)
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
@@ -552,9 +554,8 @@ class Admin(commands.Cog):
         amount: int = SlashOption(
             description="The amount of messages to clear", min_value=1, required=True
         ),
-        channel: nextcord.abc.GuildChannel = SlashOption(
+        channel: Union[nextcord.TextChannel, nextcord.VoiceChannel] = SlashOption(
             description="The channel to clear messages from",
-            channel_types=[nextcord.ChannelType.text],
             required=False,
         ),
     ):
@@ -566,7 +567,9 @@ class Admin(commands.Cog):
                 or message.content.lower().startswith(get_bot_data("botprefixes"))
             )
 
-        channel = channel or interaction.channel
+        channel: nextcord.TextChannel | nextcord.VoiceChannel = (
+            channel or interaction.channel
+        )
         deleted_messages = await channel.purge(limit=amount, check=check)
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(
@@ -904,9 +907,8 @@ class Admin(commands.Cog):
             description="How long the slowmode should be. Use 0 to turn off",
             required=True,
         ),
-        channel: nextcord.abc.GuildChannel = SlashOption(
+        channel: nextcord.TextChannel = SlashOption(
             description="The channel to set a slowmode for. Defaults to the current channel",
-            channel_types=[nextcord.ChannelType.text],
             required=False,
         ),
     ):
