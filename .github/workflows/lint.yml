@@ -26,7 +26,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Install types for Mypy
-        run: mypy --install-types
+        run: python -m mypy --install-types
 
       - name: Run linters
         uses: wearerequired/lint-action@v2.0.1
