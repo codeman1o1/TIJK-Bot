@@ -8,9 +8,9 @@ name: Lint Code Base
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 jobs:
   run-lint:
     runs-on: ubuntu-latest
@@ -26,4 +26,8 @@ jobs:
         env:
           DEFAULT_BRANCH: "main"
           VALIDATE_PYTHON: true
+          LINTER_RULES_PATH: /
+          PYTHON_FLAKE8_CONFIG_FILE: ".flake8"
+          PYTHON_MYPY_CONFIG_FILE: ".mypy"
+          PYTHON_PYLINT_CONFIG_FILE: ".pylintrc"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
