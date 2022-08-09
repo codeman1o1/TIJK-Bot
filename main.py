@@ -3,8 +3,8 @@
 import asyncio
 import datetime
 import logging
-import sys
 import os
+import sys
 import time
 
 import coloredlogs
@@ -13,8 +13,8 @@ import nextcord.ext.commands.errors
 from dotenv import load_dotenv
 from nextcord import Interaction
 from nextcord.ext import commands, tasks
-from pymongo import MongoClient
 from pydactyl import PterodactylClient
+from pymongo import MongoClient
 
 load_dotenv()
 HYPIXEL_API_KEY = os.getenv("HypixelApiKey")

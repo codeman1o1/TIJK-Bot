@@ -1,5 +1,4 @@
 import nextcord
-
 from nextcord import ButtonStyle
 
 from main import log

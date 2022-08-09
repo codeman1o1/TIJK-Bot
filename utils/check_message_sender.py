@@ -1,4 +1,4 @@
-from nextcord import Interaction, Embed
+from nextcord import Embed, Interaction
 
 
 class CheckMessageSender:

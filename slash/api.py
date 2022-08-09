@@ -1,13 +1,15 @@
 import os
 from typing import Literal
-from PIL import Image
+
 import aiohttp
 import nextcord
-from nextcord.ext import commands
-from nextcord import Interaction, slash_command as slash
-from nextcord.application_command import SlashOption
-from mojang import MojangAPI
 import requests
+from mojang import MojangAPI
+from nextcord import Interaction
+from nextcord import slash_command as slash
+from nextcord.application_command import SlashOption
+from nextcord.ext import commands
+from PIL import Image
 
 from main import SLASH_GUILDS
 

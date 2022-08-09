@@ -1,20 +1,17 @@
-import sys
 import datetime
+import sys
 from contextlib import suppress
 from typing import Union
 
-from humanfriendly import parse_timespan, format_timespan, InvalidTimespan
 import nextcord
 import nextcord.ext.application_checks as checks
+from humanfriendly import InvalidTimespan, format_timespan, parse_timespan
 from nextcord import Interaction
 from nextcord import slash_command as slash
 from nextcord.application_command import SlashOption
 from nextcord.ext import commands
-from views.buttons.button_roles import ButtonRoles
-from views.buttons.change_name_back import ChangeNameBack
-from views.buttons.link import Link
-from views.modals.button_roles_modal import ButtonRolesModal
 
+from main import SLASH_GUILDS, USER_DATA, log, logger, warn_system
 from slash.custom_checks import (
     check_bot_owner,
     check_server_owner,
@@ -22,15 +19,11 @@ from slash.custom_checks import (
     is_mod,
     is_server_owner,
 )
-
-from main import (
-    SLASH_GUILDS,
-    USER_DATA,
-    log,
-    logger,
-    warn_system,
-)
 from utils.database import get_bot_data, get_user_data, set_bot_data
+from views.buttons.button_roles import ButtonRoles
+from views.buttons.change_name_back import ChangeNameBack
+from views.buttons.link import Link
+from views.modals.button_roles_modal import ButtonRolesModal
 
 
 class Admin(commands.Cog):

@@ -1,12 +1,14 @@
-import random
-import os
 import json
+import os
+import random
 from typing import Literal
+
 import nextcord
-from nextcord import Interaction, slash_command as slash
-from nextcord.ext import commands
-from nextcord.application_command import SlashOption
 import pymongo
+from nextcord import Interaction
+from nextcord import slash_command as slash
+from nextcord.application_command import SlashOption
+from nextcord.ext import commands
 
 from main import SLASH_GUILDS, USER_DATA
 

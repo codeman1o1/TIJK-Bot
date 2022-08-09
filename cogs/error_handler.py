@@ -4,16 +4,16 @@ import nextcord
 from nextcord import Interaction
 from nextcord.ext import commands
 from nextcord.ext.application_checks import (
+    ApplicationBotMissingAnyRole,
+    ApplicationBotMissingPermissions,
+    ApplicationBotMissingRole,
     ApplicationMissingAnyRole,
     ApplicationNotOwner,
-    ApplicationBotMissingAnyRole,
-    ApplicationBotMissingRole,
-    ApplicationBotMissingPermissions,
 )
-from slash.custom_checks import CustomCheckError
-from views.buttons.link import Link
 
 from main import logger
+from slash.custom_checks import CustomCheckError
+from views.buttons.link import Link
 
 
 class ErrorHandler(commands.Cog):

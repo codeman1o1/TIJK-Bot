@@ -4,20 +4,14 @@ import time
 from typing import Literal
 
 import nextcord
-from nextcord import Interaction, slash_command as slash
+from nextcord import Interaction
+from nextcord import slash_command as slash
 from nextcord.application_command import SlashOption
 from nextcord.ext import commands
 
-from main import (
-    PtdClient,
-    PTD_SERVER_ID,
-    USER_DATA,
-    log,
-    SLASH_GUILDS,
-    START_TIME,
-)
+from main import PTD_SERVER_ID, SLASH_GUILDS, START_TIME, USER_DATA, PtdClient, log
+from slash.custom_checks import is_admin, is_bot_owner, is_server_owner
 from utils.database import get_user_data, set_user_data, unset_user_data
-from slash.custom_checks import is_bot_owner, is_server_owner, is_admin
 from views.buttons.database_check import DatabaseCheck
 
 
