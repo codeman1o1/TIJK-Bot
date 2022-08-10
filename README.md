@@ -18,3 +18,5 @@ Example
 ## Code quality
 
 [![CodeFactor](https://www.codefactor.io/repository/github/codeman1o1/tijk-bot/badge)](https://www.codefactor.io/repository/github/codeman1o1/tijk-bot)
+
+[![Lint](https://github.com/codeman1o1/TIJK-Bot/actions/workflows/lint.yml/badge.svg)](https://github.com/codeman1o1/TIJK-Bot/actions/workflows/lint.yml)
