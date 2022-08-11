@@ -557,10 +557,7 @@ class Admin(commands.Cog):
         """Clear the chat from bot messages"""
 
         def check(message: nextcord.Message):
-            return bool(
-                message.author.bot
-                or message.content.lower().startswith(get_bot_data("botprefixes"))
-            )
+            return bool(message.author.bot)
 
         channel: nextcord.TextChannel | nextcord.VoiceChannel = (
             channel or interaction.channel
