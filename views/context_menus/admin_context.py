@@ -21,6 +21,7 @@ class AdminContext(commands.Cog):
     @nextcord.user_command(name="Show user information", guild_ids=SLASH_GUILDS)
     @is_admin()
     async def user_info(self, interaction: Interaction, user: nextcord.Member):
+        # pylint: disable=duplicate-code
         embed = nextcord.Embed(
             color=0x0DD91A, title=f"Here is information for {user.name}"
         )

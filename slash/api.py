@@ -150,7 +150,7 @@ class Api(commands.Cog):
         egg_groups = ", ".join(info["egg_groups"])
         sprites = info["sprites"]
         stats = info["stats"]
-        hp = stats["hp"]
+        hp = stats["hp"]  # pylint: disable=invalid-name
         attack = stats["attack"]
         defense = stats["defense"]
         sp_atk = stats["sp_atk"]

@@ -30,16 +30,21 @@ PtdClient = PterodactylClient(
     "https://control.sparkedhost.us/", os.getenv("PterodactylApiKey")
 )
 
-intents = nextcord.Intents.none()
-intents.guilds = True
-intents.members = True
-intents.bans = True
-intents.presences = True
-intents.messages = True
-intents.reactions = True
-intents.message_content = True
 
-bot = commands.Bot(intents=intents)
+def set_intents() -> nextcord.Intents:
+    # pylint: disable=assigning-non-slot
+    intents = nextcord.Intents.none()
+    intents.guilds = True
+    intents.members = True
+    intents.bans = True
+    intents.presences = True
+    intents.messages = True
+    intents.reactions = True
+    intents.message_content = True
+    return intents
+
+
+bot = commands.Bot(intents=set_intents())
 
 
 class LogFilter(logging.Filter):
@@ -55,16 +60,16 @@ class LogFilter(logging.Filter):
         )
 
 
-text_format = "%(asctime)s %(name)s %(levelname)s %(message)s"
+TEXT_FORMAT = "%(asctime)s %(name)s %(levelname)s %(message)s"
 handler = logging.FileHandler(filename="nextcord.log", encoding="utf-8", mode="w")
-handler.setFormatter(logging.Formatter(text_format))
+handler.setFormatter(logging.Formatter(TEXT_FORMAT))
 
 logger = logging.getLogger("TIJK Bot")
 logger.addHandler(handler)
 coloredlogs.install(
     level=logging.DEBUG,
     logger=logger,
-    fmt=text_format,
+    fmt=TEXT_FORMAT,
 )
 
 nextcord_logger = logging.getLogger("nextcord")
@@ -72,7 +77,7 @@ nextcord_logger.addHandler(handler)
 coloredlogs.install(
     level=logging.INFO,
     logger=nextcord_logger,
-    fmt=text_format,
+    fmt=TEXT_FORMAT,
 )
 
 for handler in logging.getLogger("nextcord").handlers:
@@ -98,7 +103,11 @@ async def warn_system(
         reason (str, optional): The reason why the user was warned. Defaults to None.
         remove (bool, optional): If warns should be removed instead of added. Defaults to False.
     """
-    from utils.database import get_user_data, set_user_data
+    # Can't place import on top because that would cause circular imports
+    from utils.database import (  # pylint: disable=import-outside-toplevel
+        get_user_data,
+        set_user_data,
+    )
 
     reason2 = f" because of {reason}" if reason else ""
     warns = get_user_data(user.id, "warns")
@@ -164,7 +173,7 @@ async def on_ready():
             try:
                 bot.load_extension(f"cogs.{cog.strip('.py')}")
                 logger.debug("%s loaded", cog)
-            except Exception as e:
+            except Exception as e:  # pylint: disable=broad-except
                 logger.error(e)
                 logger.error("%s couldn't be loaded", cog)
     with open("spam_detect.txt", "a+", encoding="utf-8") as file:
@@ -177,7 +186,7 @@ async def on_ready():
     birthday_checker.start()
     while True:
         await asyncio.sleep(10)
-        with open("spam_detect.txt", "r+") as file:
+        with open("spam_detect.txt", "r+", encoding="utf-8") as file:
             file.truncate(0)
 
 
@@ -220,10 +229,10 @@ if __name__ == "__main__":
             try:
                 file2 = file.strip(".py")
                 bot.load_extension(f"slash.{file2}")
-                logger.debug(f"{file} loaded")
-            except Exception as e:
+                logger.debug("%s loaded", file)
+            except Exception as e:  # pylint: disable=broad-except
                 logger.error(e)
-                logger.error(f"{file} couldn't be loaded")
+                logger.error("%s couldn't be loaded", file)
 
     context = os.listdir("views/context_menus")
     for ctx in context:
@@ -231,10 +240,10 @@ if __name__ == "__main__":
             try:
                 ctx2 = ctx.strip(".py")
                 bot.load_extension(f"views.context_menus.{ctx2}")
-                logger.debug(f"{ctx} loaded")
-            except Exception as e:
+                logger.debug("%s loaded", ctx)
+            except Exception as e:  # pylint: disable=broad-except
                 logger.error(e)
-                logger.error(f"{ctx} - context couldn't be loaded")
+                logger.error("%s - context couldn't be loaded", ctx)
 
     bot.run(os.getenv("BotToken"))
     # Anything after this will get executed after the bot is shut down

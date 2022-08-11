@@ -199,7 +199,9 @@ class Admin(commands.Cog):
         info = await self.bot.application_info()
         if info.owner.dm_channel:
             await info.owner.dm_channel.send(embed=embed)
-        logger.info(f"TIJK Bot was shut down by %s\n{host_stop_note}", interaction.user)
+        logger.info(
+            "TIJK Bot was shut down by %s\n%s", interaction.user, host_stop_note
+        )
         await self.bot.close()
 
     @slash(guild_ids=SLASH_GUILDS)
@@ -837,6 +839,7 @@ class Admin(commands.Cog):
         ),
     ):
         """Show information about a user"""
+        # pylint: disable=duplicate-code
         user = user or interaction.user
         embed = nextcord.Embed(
             color=0x0DD91A, title=f"Here is information for {user.name}"
