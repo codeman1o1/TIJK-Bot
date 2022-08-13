@@ -6,6 +6,7 @@ import logging
 import os
 import sys
 import time
+import re
 
 import coloredlogs
 import nextcord
@@ -50,14 +51,8 @@ bot = commands.Bot(intents=set_intents())
 class LogFilter(logging.Filter):
     def filter(self, record: logging.LogRecord):
         # 0 means block, anything else (e.g. 1) means allow
-        return (
-            0
-            if any(
-                blocked in str(record.msg).lower()
-                for blocked in ("shard", "websocket", "payload")
-            )
-            else 1
-        )
+        regexs = [r"^Shard ID .* has sent the .* payload\.$", r"^Shard ID .* has connected to Gateway: .* \(Session ID: .*\).$"]
+        return next((0 for regex in regexs if re.search(regex, record.msg)), 1)
 
 
 TEXT_FORMAT = "%(asctime)s %(name)s %(levelname)s %(message)s"
