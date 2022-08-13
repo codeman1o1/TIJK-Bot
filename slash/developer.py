@@ -268,36 +268,33 @@ class Developer(commands.Cog):
         embed = nextcord.Embed(color=0x0DD91A, title="Checking database...")
         await interaction.response.send_message(embed=embed)
         embed = nextcord.Embed(color=0x0DD91A)
-        not_found = 0
-        not_found_users = []
+        not_found = []
         add = []
         for guild in self.bot.guilds:
             for user in guild.members:
                 if not get_user_data(user.id) and user.id in add:
-                    not_found += 1
-                    not_found_users.append(f"{user} ({user.id})")
+                    not_found.append(f"{user} ({user.id})")
                     add.append(user)
         if not_found:
             embed.add_field(
-                name=f"{not_found} users were not found in the database",
-                value="\n> " + "\n> ".join(not_found_users),
+                name=f"{len(not_found)} users were not found in the database",
+                value="\n> " + "\n> ".join(not_found),
                 inline=False,
             )
-        invalid = 0
-        invalid_users = []
+        invalid = []
         remove = []
         for user in USER_DATA.find():
             if not self.bot.get_user(user["_id"]):
-                invalid += 1
-                invalid_users.append(str(user["_id"]))
                 remove.append(user["_id"])
-        if invalid_users:
+                user = await self.bot.fetch_user(user["_id"])
+                invalid.append(user)
+        if invalid:
             embed.add_field(
-                name=f"{invalid} invalid users were found in the database",
-                value="\n> " + "\n> ".join(invalid_users),
+                name=f"{len(invalid)} invalid users were found in the database",
+                value="\n> " + "\n> ".join([f"{user} ({user.id})" for user in invalid]),
                 inline=False,
             )
-        if not embed.fields:
+        if not not_found and not invalid:
             embed = nextcord.Embed(color=0x0DD91A, title="The database is fine!")
             await interaction.edit_original_message(embed=embed)
         else:
