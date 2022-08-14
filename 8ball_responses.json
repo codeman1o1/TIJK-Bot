@@ -1,14 +1,26 @@
 {
-  "responses": [
-    "Yes",
-    "No",
-    "Maybe",
-    "Is my name TIJK-Bot?",
-    "Google it you twat",
-    "DEFINITELY",
-    "No, I am very sorry for you",
-    "I am not sure about that",
-    "I do not understand",
-    "What are you going to do if I don't answer?"
-  ]
-}
+    "responses": [
+      "Yes",
+      "No",
+      "Maybe",
+      "Is my name TIJK Bot?",
+      "Google it you twat",
+      "DEFINITELY",
+      "No, I am very sorry for you",
+      "I am not sure about that",
+      "I do not understand",
+      "What are you going to do if I don't answer?",
+      "I need to think about it",
+      "Try again",
+      "1+1=3, which is true so to answer your question, yes",
+      "HELL NAH",
+      "Very doubtful",
+      "Sure",
+      "Without a doubt",
+      "Most likely",
+      "Might be possible",
+      "You'll be the judge",
+      "No... (╯°□°）╯︵ ┻━┻",
+      "Might be yes, might be no, but who am I to judge?"
+    ]
+  }
