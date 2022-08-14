@@ -4,9 +4,9 @@ import asyncio
 import datetime
 import logging
 import os
+import re
 import sys
 import time
-import re
 
 import coloredlogs
 import nextcord
