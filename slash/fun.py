@@ -32,7 +32,7 @@ class Fun(commands.Cog):
         hot = random.choice(("heads", "tails"))
         embed = nextcord.Embed(color=0x0DD91A, title=f"It is {hot}!")
         await interaction.response.send_message(embed=embed)
-       
+
     @slash(guild_ids=SLASH_GUILDS)
     async def f(self, interaction: Interaction, text: str = SlashOption(required=True)):
         """Press F to pay respect"""
