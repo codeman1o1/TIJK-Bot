@@ -57,7 +57,7 @@ class EventHandler(commands.Cog):
                         await message.delete()
                         embed = nextcord.Embed(
                             color=0xFFC800,
-                            title="You cannot send multiple messages after eachother!",
+                            title="You cannot send multiple messages after each other!",
                         )
                         embed.set_footer(
                             text="This message will delete itself after 10 seconds"
