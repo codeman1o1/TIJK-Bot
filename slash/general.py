@@ -31,7 +31,7 @@ class General(commands.Cog):
         await interaction.response.send_message(
             embed=embed, view=Link("https://github.com/codeman1o1/TIJK-Bot")
         )
-        
+
     @slash(guild_ids=SLASH_GUILDS)
     async def avatar(self, ctx, *, user: nextcord.Member = None):
         """Get the avatar of you or someone else"""
@@ -75,7 +75,6 @@ class General(commands.Cog):
         embed.description = "\n".join(avatars_list)
 
         await ctx.send(f"🖼 Avatar to **{user}**", embed=embed)
-
 
     @slash(guild_ids=SLASH_GUILDS)
     async def website(self, interaction: Interaction):
