@@ -65,7 +65,7 @@ class ErrorHandler(commands.Cog):
                 embed=embed,
                 view=Link(
                     f"https://github.com/codeman1o1/TIJK-Bot/issues/new?assignees=&labels=bug&template=error.yaml&title=%5BERROR%5D+{quote(str(error))}",
-                    "Report error",
+                    "Report error on GitHub",
                 ),
             )
             logger.error(error)
