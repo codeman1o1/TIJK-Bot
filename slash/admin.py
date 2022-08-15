@@ -868,8 +868,7 @@ class Admin(commands.Cog):
         roles_list.reverse()
         roles = ", ".join(role.mention for role in roles_list)
         embed.add_field(name="Roles", value=roles, inline=True)
-        public_flags_list: list = user.public_flags.all()
-        if public_flags_list:
+        if public_flags_list := user.public_flags.all():
             public_flags = ", ".join(flag.name for flag in public_flags_list)
             embed.add_field(name="Public flags", value=public_flags, inline=True)
         embed.add_field(
