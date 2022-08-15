@@ -46,7 +46,7 @@ class Admin(commands.Cog):
         self,
         interaction: Interaction,
         custom_text: bool = SlashOption(
-            description="Set to True if you want custom text",
+            description="Set to True if you want custom text, you can choose what the custom text will be :D",
             required=False,
             default=False,
         ),
