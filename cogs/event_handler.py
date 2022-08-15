@@ -56,7 +56,8 @@ class EventHandler(commands.Cog):
                     if last_word in user.roles:
                         await message.delete()
                         embed = nextcord.Embed(
-                            color=0xFFC800, title="You cannot send multiple messages after eachother!"
+                            color=0xFFC800,
+                            title="You cannot send multiple messages after eachother!",
                         )
                         embed.set_footer(
                             text="This message will delete itself after 10 seconds"
