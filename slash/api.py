@@ -42,7 +42,7 @@ class Api(commands.Cog):
 
     @slash(guild_ids=SLASH_GUILDS)
     async def api(self, interaction: Interaction):
-        """This will never get called since it has slash commands"""
+        """This will never get called since it has slash commands :D"""
         pass
 
     @api.subcommand(name="animal", inherit_hooks=True)
