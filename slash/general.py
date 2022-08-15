@@ -31,6 +31,51 @@ class General(commands.Cog):
         await interaction.response.send_message(
             embed=embed, view=Link("https://github.com/codeman1o1/TIJK-Bot")
         )
+        
+    @slash(guild_ids=SLASH_GUILDS)
+    async def avatar(self, ctx, *, user: nextcord.Member = None):
+        """Get the avatar of you or someone else"""
+        user = user or ctx.author
+
+        avatars_list = []
+
+        def target_avatar_formats(self):
+            formats = ["JPEG", "PNG", "WebP"]
+            if self.is_animated():
+                formats.append("GIF")
+            return formats
+
+        if not user.avatar and not user.guild_avatar:
+            return await ctx.send(f"**{user}** has no avatar set, at all...")
+
+        if user.avatar:
+            avatars_list.append(
+                "**Account avatar:** "
+                + " **-** ".join(
+                    f"[{img_format}]({user.avatar.replace(format=img_format.lower(), size=1024)})"
+                    for img_format in target_avatar_formats(user.avatar)
+                )
+            )
+
+        embed = nextcord.Embed(colour=user.top_role.colour.value)
+
+        if user.guild_avatar:
+            avatars_list.append(
+                "**Server avatar:** "
+                + " **-** ".join(
+                    f"[{img_format}]({user.guild_avatar.replace(format=img_format.lower(), size=1024)})"
+                    for img_format in target_avatar_formats(user.guild_avatar)
+                )
+            )
+            embed.set_thumbnail(url=user.avatar.replace(format="png"))
+
+        embed.set_image(
+            url=f"{user.display_avatar.with_size(256).with_static_format('png')}"
+        )
+        embed.description = "\n".join(avatars_list)
+
+        await ctx.send(f"🖼 Avatar to **{user}**", embed=embed)
+
 
     @slash(guild_ids=SLASH_GUILDS)
     async def website(self, interaction: Interaction):
