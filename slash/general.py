@@ -46,9 +46,9 @@ class General(commands.Cog):
 
         avatars_list = []
 
-        def target_avatar_formats(self, bot: commands.Bot):
+        def target_avatar_formats(format):
             formats = ["JPEG", "PNG", "WebP"]
-            if self.is_animated():
+            if format.is_animated():
                 formats.append("GIF")
             return formats
 
