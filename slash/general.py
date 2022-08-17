@@ -189,7 +189,7 @@ class General(commands.Cog):
 
     @slash(guild_ids=SLASH_GUILDS)
     async def birthday(self, interaction: Interaction):
-        """This will never get called since it has subcommands"""
+        """No one read bc sub-cmds lol hehe"""
         pass
 
     @birthday.subcommand(name="send", inherit_hooks=True)
