@@ -42,7 +42,7 @@ class General(commands.Cog):
         ),
     ):
         """Get the avatar of you or someone else"""
-        user = user or ctx.author
+        user = user or interaction.author
 
         avatars_list = []
 
@@ -53,7 +53,7 @@ class General(commands.Cog):
             return formats
 
         if not user.avatar and not user.guild_avatar:
-            return await ctx.send(f"**{user}** has no avatar set, at all...")
+            return await interaction.send(f"**{user}** has no avatar set, at all...")
 
         if user.avatar:
             avatars_list.append(
@@ -81,7 +81,7 @@ class General(commands.Cog):
         )
         embed.description = "\n".join(avatars_list)
 
-        await ctx.send(f"🖼 Avatar to **{user}**", embed=embed)
+        await interaction.send(f"🖼 Avatar to **{user}**", embed=embed)
 
     @slash(guild_ids=SLASH_GUILDS)
     async def website(self, interaction: Interaction):
