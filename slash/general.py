@@ -33,19 +33,6 @@ class General(commands.Cog):
         )
 
     @slash(guild_ids=SLASH_GUILDS)
-    async def website(self, interaction: Interaction):
-        """Send a link to the official TIJK Bot website"""
-        embed = nextcord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name="View the official TIJK Bot code now!",
-            value="https://codeman1o1.github.io/TIJK-Bot",
-            inline=False,
-        )
-        await interaction.response.send_message(
-            embed=embed, view=Link("https://codeman1o1.github.io/TIJK-Bot")
-        )
-
-    @slash(guild_ids=SLASH_GUILDS)
     async def hypixelparty(self, interaction: Interaction):
         """Choose a random player who can own the party"""
         hypixel_ping = nextcord.utils.get(interaction.guild.roles, name="Hypixel Ping")
