@@ -42,7 +42,7 @@ class General(commands.Cog):
         ),
     ):
         """Get the avatar of you or someone else"""
-        user = user or interaction.author
+        user = user or interaction.user
 
         avatars_list = []
 
