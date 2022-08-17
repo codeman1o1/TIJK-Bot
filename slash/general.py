@@ -33,10 +33,10 @@ class General(commands.Cog):
         )
 
     @slash(guild_ids=SLASH_GUILDS)
-    async def avatar(self, interaction: Interaction, user = SlashOption(
-            description="The user of which you wish to download their pfp",
-            required=True,
-        ),):
+    async def avatar(self, interaction: Interaction, user=SlashOption(
+        description="The user of which you wish to download their pfp",
+        required=True,
+    ),):
         """Get the avatar of you or someone else"""
         user = user or ctx.author
 
