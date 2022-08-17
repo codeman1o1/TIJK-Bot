@@ -93,13 +93,18 @@ async def warn_system(
     """
     Warns a user
 
-    Args:
-        interaction (Interaction): The interaction
-        user (nextcord.Member): The user who is warned
-        amount (int, optional): The amount of warns to give. Defaults to 1.
-        invoker_username (str, optional): The user who warned the user. Defaults to "Warn System".
-        reason (str, optional): The reason why the user was warned. Defaults to None.
-        remove (bool, optional): If warns should be removed instead of added. Defaults to False.
+    :param interaction: The interaction
+    :type interaction: Interaction
+    :param user: The user who is warned
+    :type user: nextcord.Member
+    :param amount: The amount of warns to give, defaults to 1
+    :type amount: int, optional
+    :param invoker_username: The user who warned a user, defaults to "Warn System"
+    :type invoker_username: str, optional
+    :param reason: The reason why the user was warned, defaults to None
+    :type reason: str, optional
+    :param remove: Wether to remove warns instead of adding them, defaults to False
+    :type remove: bool, optional
     """
     # Can't place import on top because that would cause circular imports
     from utils.database import (  # pylint: disable=import-outside-toplevel
