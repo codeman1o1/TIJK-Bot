@@ -34,7 +34,11 @@ class Fun(commands.Cog):
         await interaction.response.send_message(embed=embed)
 
     @slash(guild_ids=SLASH_GUILDS)
-    async def f(self, interaction: Interaction, text: str = SlashOption(description="what you respect", required=False)):
+    async def f(
+        self,
+        interaction: Interaction,
+        text: str = SlashOption(description="what you respect", required=False),
+    ):
         """Press F to pay respect"""
         hearts = ("❤", "💛", "💚", "💙", "💜")
         reason = f"for **{text}** " if text else ""
