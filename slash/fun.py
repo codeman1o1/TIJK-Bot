@@ -37,7 +37,7 @@ class Fun(commands.Cog):
     async def f(
         self,
         interaction: Interaction,
-        text: str = SlashOption(description="what you respect", required=False),
+        text: str = SlashOption(description="What you respect", required=False),
     ):
         """Press F to pay respect"""
         hearts = ("❤", "💛", "💚", "💙", "💜")
