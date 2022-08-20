@@ -34,7 +34,7 @@ class Fun(commands.Cog):
         await interaction.response.send_message(embed=embed)
 
     @slash(guild_ids=SLASH_GUILDS)
-    async def f(
+    async def respect(
         self,
         interaction: Interaction,
         text: str = SlashOption(description="What you respect", required=False),
