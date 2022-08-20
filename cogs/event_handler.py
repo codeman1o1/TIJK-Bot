@@ -45,7 +45,7 @@ class EventHandler(commands.Cog):
                         embed.add_field(name="Denied", value="Nobody")
                         await message.channel.send(
                             embed=embed,
-                            delete_after=900,
+                            delete_after=1200,
                             view=PingPoll(),
                         )
 
