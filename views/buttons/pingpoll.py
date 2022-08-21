@@ -4,7 +4,7 @@ from nextcord import Button, ButtonStyle, Embed, Interaction
 
 class PingPoll(nextcord.ui.View):
     def __init__(self):
-        super().__init__(timeout=900)
+        super().__init__(timeout=1200)
 
     async def update(self, interaction: Interaction, embed: Embed, button_index: int):
         user = interaction.user
