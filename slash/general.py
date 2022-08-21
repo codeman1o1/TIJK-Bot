@@ -36,7 +36,7 @@ class General(commands.Cog):
     async def avatar(
         self,
         interaction: Interaction,
-        user=SlashOption(
+        user: nextcord.Member = SlashOption(
             description="The user of which you wish to download their pfp",
             required=True,
         ),
