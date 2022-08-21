@@ -81,7 +81,7 @@ class General(commands.Cog):
         )
         embed.description = "\n".join(avatars_list)
 
-        await interaction.send(f"🖼 Avatar to **{user}**", embed=embed)
+        await interaction.send(f"🖼 Here is the avatar of **{user}**", embed=embed)
 
     @slash(guild_ids=SLASH_GUILDS)
     async def website(self, interaction: Interaction):
