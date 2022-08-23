@@ -875,7 +875,7 @@ class Admin(commands.Cog):
         )
         embed.add_field(
             name=f"Joined {user.guild.name} at",
-            value=user.joined_at.strftime("%d %b %Y"),
+            value=f"<t:{int(user.joined_at.timestamp())}:D>",
             inline=True,
         )
         if user.communication_disabled_until:
