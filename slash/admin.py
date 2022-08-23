@@ -783,13 +783,13 @@ class Admin(commands.Cog):
     async def server_info(
         self,
         interaction: Interaction,
-        server_id: str = SlashOption(
+        server: str = SlashOption(
             description="The server to show info about. Defaults to the current server",
             required=False,
         ),
     ):
         """Show information about a server"""
-        guild_id = server_id or interaction.guild.id
+        guild_id = server or interaction.guild.id
         try:
             guild_id = int(guild_id)
         except ValueError:
@@ -806,12 +806,12 @@ class Admin(commands.Cog):
                 embed.set_thumbnail(url=guild.icon)
             embed.add_field(name="Server name", value=guild.name, inline=True)
             embed.add_field(name="Server ID", value=guild.id, inline=True)
-            if guild.owner.name == guild.owner:
+            if not guild.owner.nick:
                 embed.add_field(name="Owner", value=guild.owner, inline=True)
             else:
                 embed.add_field(
                     name="Owner",
-                    value=f"{guild.owner} ({guild.owner.name})",
+                    value=f"{guild.owner.nick} ({guild.owner})",
                 )
             embed.add_field(name="Total members", value=len(guild.members), inline=True)
             embed.add_field(name="Total humans", value=len(guild.humans), inline=True)
@@ -819,12 +819,33 @@ class Admin(commands.Cog):
             embed.add_field(name="Total roles", value=len(guild.roles), inline=True)
             with suppress(nextcord.Forbidden):
                 bans = 0
-                for _ in await guild.bans():
+                async for _ in guild.bans():
                     bans += 1
                 embed.add_field(name="Total bans", value=bans, inline=True)
         else:
             embed = nextcord.Embed(color=0xFFC800, title="I can not access that guild!")
         await interaction.response.send_message(embed=embed)
+
+    @server_info.on_autocomplete("server")
+    async def server_autocomplete(self, interaction: Interaction, server: str):
+        guilds = self.bot.guilds
+        servers: dict[str, str] = {}
+        if not server:
+            for guild in guilds:
+                servers[guild.name] = str(guild.id)
+            await interaction.response.send_autocomplete(servers)
+            return
+
+        try:
+            server = int(server)
+            near_servers = [guild for guild in guilds if str(server) in str(guild.id)]
+        except ValueError:
+            near_servers = [
+                guild for guild in guilds if server.lower() in guild.name.lower()
+            ]
+        for guild in near_servers:
+            servers[guild.name] = str(guild.id)
+        await interaction.response.send_autocomplete(servers)
 
     @info.subcommand(name="user", inherit_hooks=True)
     async def user_info(
@@ -868,8 +889,7 @@ class Admin(commands.Cog):
         roles_list.reverse()
         roles = ", ".join(role.mention for role in roles_list)
         embed.add_field(name="Roles", value=roles, inline=True)
-        public_flags_list: list = user.public_flags.all()
-        if public_flags_list:
+        if public_flags_list := user.public_flags.all():
             public_flags = ", ".join(flag.name for flag in public_flags_list)
             embed.add_field(name="Public flags", value=public_flags, inline=True)
         embed.add_field(
