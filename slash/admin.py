@@ -870,7 +870,7 @@ class Admin(commands.Cog):
         embed.add_field(name="ID", value=user.id, inline=True)
         embed.add_field(
             name="Account created at",
-            value=user.created_at.strftime("%d %b %Y"),
+            value=f"<t:{int(user.created_at.timestamp())}:D>",
             inline=True,
         )
         embed.add_field(
