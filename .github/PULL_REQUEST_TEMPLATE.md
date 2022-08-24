@@ -7,6 +7,7 @@
 <!-- Put an x inside [ ] to check it, like so: [x] -->
 
 - [ ] If code changes were made then they have been tested
+- [ ] This PR improves a feature
 - [ ] This PR adds a feature
   - [ ] This PR adds a slash command
   - [ ] This PR adds a view
