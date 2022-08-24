@@ -813,6 +813,11 @@ class Admin(commands.Cog):
                     name="Owner",
                     value=f"{guild.owner.nick} ({guild.owner})",
                 )
+            embed.add_field(
+                name="Server created at",
+                value=f"<t:{int(guild.created_at.timestamp())}:D>",
+                inline=True,
+            )
             embed.add_field(name="Total members", value=len(guild.members), inline=True)
             embed.add_field(name="Total humans", value=len(guild.humans), inline=True)
             embed.add_field(name="Total bots", value=len(guild.bots), inline=True)
