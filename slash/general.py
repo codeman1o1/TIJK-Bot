@@ -66,7 +66,7 @@ class General(commands.Cog):
                 )
             )
 
-        embed = nextcord.Embed(color=user.top_role.color.value)
+        embed = nextcord.Embed(color=0x0DD91A)
 
         if user.guild_avatar:
             avatars_list.append(
