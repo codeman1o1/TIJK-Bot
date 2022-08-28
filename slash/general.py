@@ -37,7 +37,7 @@ class General(commands.Cog):
         self,
         interaction: Interaction,
         user: nextcord.Member = SlashOption(
-            description="The user of which you wish to download their pfp",
+            description="The user of which you want to download their avatar",
             required=True,
         ),
     ):
