@@ -77,7 +77,7 @@ class General(commands.Cog):
             embed.set_thumbnail(url=user.avatar.replace(format="png"))
 
         embed.set_image(
-            url=f"{user.display_avatar.replace(static_format="png", size=256)}"
+            url=f"{user.display_avatar.replace(static_format='png', size=256)}"
         )
         embed.description = "\n".join(avatars_list)
 
