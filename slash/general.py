@@ -42,8 +42,6 @@ class General(commands.Cog):
         ),
     ):
         """Get someone's avatar"""
-        user = user or interaction.user
-
         avatars_list = []
 
         def target_avatar_formats(avatar):
