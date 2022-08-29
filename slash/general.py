@@ -33,6 +33,60 @@ class General(commands.Cog):
         )
 
     @slash(guild_ids=SLASH_GUILDS)
+    async def avatar(
+        self,
+        interaction: Interaction,
+        user: nextcord.Member = SlashOption(
+            description="The user of which you want to download their avatar",
+            required=True,
+        ),
+    ):
+        """Get someone's avatar"""
+        avatars_list = []
+
+        def target_avatar_formats(avatar):
+            formats = ["JPEG", "PNG", "WebP"]
+            if avatar.is_animated():
+                formats.append("GIF")
+            return formats
+
+        if not user.avatar and not user.guild_avatar:
+            await interaction.send(
+                f"**{user}** has no avatar set, at all...", ephemeral=True
+            )
+            return
+
+        if user.avatar:
+            avatars_list.append(
+                "**Account avatar:** "
+                + " **-** ".join(
+                    f"[{img_format}]({user.avatar.replace(format=img_format.lower(), size=1024)})"
+                    for img_format in target_avatar_formats(user.avatar)
+                )
+            )
+
+        embed = nextcord.Embed(
+            title=f"🖼 Here is the avatar of **{user}**", color=0x0DD91A
+        )
+
+        if user.guild_avatar:
+            avatars_list.append(
+                "**Server avatar:** "
+                + " **-** ".join(
+                    f"[{img_format}]({user.guild_avatar.replace(format=img_format.lower(), size=1024)})"
+                    for img_format in target_avatar_formats(user.guild_avatar)
+                )
+            )
+            embed.set_thumbnail(url=user.avatar.replace(format="png"))
+
+        embed.set_image(
+            url=f"{user.display_avatar.replace(static_format='png', size=256)}"
+        )
+        embed.description = "\n".join(avatars_list)
+
+        await interaction.send(embed=embed)
+
+    @slash(guild_ids=SLASH_GUILDS)
     async def hypixelparty(self, interaction: Interaction):
         """Choose a random player who can own the party"""
         hypixel_ping = nextcord.utils.get(interaction.guild.roles, name="Hypixel Ping")
