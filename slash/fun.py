@@ -40,11 +40,13 @@ class Fun(commands.Cog):
         text: str = SlashOption(description="What you respect", required=False),
     ):
         """Press F to pay respect"""
+        embed = nextcord.Embed(color=0x0DD91A)
         hearts = ("❤️", "🧡", "💛", "💚", "💙", "💜", "🤎")
         reason = f"for **{text}** " if text else ""
-        await interaction.response.send_message(
+        embed.add_field(
             f"**{interaction.user.name}** has paid their respect {reason}{random.choice(hearts)}"
         )
+        await interaction.response.send_message(embed=embed)
 
     @slash(guild_ids=SLASH_GUILDS)
     async def rockpaperscissors(
