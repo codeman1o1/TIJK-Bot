@@ -41,11 +41,11 @@ class Fun(commands.Cog):
     ):
         """Press F to pay respect"""
         hearts = ("❤️", "🧡", "💛", "💚", "💙", "💜", "🤎")
+        reason = f"for **{text}** " if text else ""
         embed = nextcord.Embed(
             color=0x0DD91A,
             title=f"**{interaction.user.name}** has paid their respect {reason}{random.choice(hearts)}",
         )
-        reason = f"for **{text}** " if text else ""
         await interaction.response.send_message(embed=embed)
 
     @slash(guild_ids=SLASH_GUILDS)
