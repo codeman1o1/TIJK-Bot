@@ -51,11 +51,18 @@ bot = commands.Bot(intents=set_intents())
 class LogFilter(logging.Filter):
     def filter(self, record: logging.LogRecord):
         # 0 means block, anything else (e.g. 1) means allow
+        allow = 1
         regexs = [
-            r"^Shard ID .* has sent the .* payload\.$",
-            r"^Shard ID .* has connected to Gateway: .* \(Session ID: .*\).$",
+            r"^Shard ID (%s) has sent the (\w+) payload\.$",
+            r"^Got a request to (%s) the websocket\.$",
+            r"^Shard ID (%s) has connected to Gateway: (%s) \(Session ID: (%s)\)\.$",
+            r"^Shard ID (%s) has successfully (\w+) session (%s) under trace (%s)\.$",
         ]
-        return next((0 for regex in regexs if re.search(regex, record.msg)), 1)
+        for regex in regexs:
+            if re.search(regex, record.msg):
+                allow = 0
+                break
+        return allow
 
 
 TEXT_FORMAT = "%(asctime)s %(name)s %(levelname)s %(message)s"
@@ -93,13 +100,18 @@ async def warn_system(
     """
     Warns a user
 
-    Args:
-        interaction (Interaction): The interaction
-        user (nextcord.Member): The user who is warned
-        amount (int, optional): The amount of warns to give. Defaults to 1.
-        invoker_username (str, optional): The user who warned the user. Defaults to "Warn System".
-        reason (str, optional): The reason why the user was warned. Defaults to None.
-        remove (bool, optional): If warns should be removed instead of added. Defaults to False.
+    :param interaction: The interaction
+    :type interaction: Interaction
+    :param user: The user who is warned
+    :type user: nextcord.Member
+    :param amount: The amount of warns to give, defaults to 1
+    :type amount: int, optional
+    :param invoker_username: The user who warned a user, defaults to "Warn System"
+    :type invoker_username: str, optional
+    :param reason: The reason why the user was warned, defaults to None
+    :type reason: str, optional
+    :param remove: Wether to remove warns instead of adding them, defaults to False
+    :type remove: bool, optional
     """
     # Can't place import on top because that would cause circular imports
     from utils.database import (  # pylint: disable=import-outside-toplevel
