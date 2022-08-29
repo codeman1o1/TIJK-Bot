@@ -34,6 +34,21 @@ class Fun(commands.Cog):
         await interaction.response.send_message(embed=embed)
 
     @slash(guild_ids=SLASH_GUILDS)
+    async def respect(
+        self,
+        interaction: Interaction,
+        text: str = SlashOption(description="What you respect", required=False),
+    ):
+        """Press F to pay respect"""
+        hearts = ("❤️", "🧡", "💛", "💚", "💙", "💜", "🤎")
+        reason = f"for **{text}** " if text else ""
+        embed = nextcord.Embed(
+            color=0x0DD91A,
+            title=f"**{interaction.user.name}** has paid their respect {reason}{random.choice(hearts)}",
+        )
+        await interaction.response.send_message(embed=embed)
+
+    @slash(guild_ids=SLASH_GUILDS)
     async def rockpaperscissors(
         self,
         interaction: Interaction,
