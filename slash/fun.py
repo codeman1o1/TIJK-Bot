@@ -44,7 +44,7 @@ class Fun(commands.Cog):
         hearts = ("❤️", "🧡", "💛", "💚", "💙", "💜", "🤎")
         reason = f"for **{text}** " if text else ""
         embed.add_field(
-            f"**{interaction.user.name}** has paid their respect {reason}{random.choice(hearts)}"
+            name=f"**{interaction.user.name}** has paid their respect {reason}{random.choice(hearts)}"
         )
         await interaction.response.send_message(embed=embed)
 
