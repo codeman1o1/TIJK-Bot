@@ -51,9 +51,10 @@ class General(commands.Cog):
             return formats
 
         if not user.avatar and not user.guild_avatar:
-            return await interaction.send(
+            await interaction.send(
                 f"**{user}** has no avatar set, at all...", ephemeral=True
             )
+            return
 
         if user.avatar:
             avatars_list.append(
