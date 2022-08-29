@@ -65,7 +65,9 @@ class General(commands.Cog):
                 )
             )
 
-        embed = nextcord.Embed(color=0x0DD91A)
+        embed = nextcord.Embed(
+            title=f"🖼 Here is the avatar of **{user}**", color=0x0DD91A
+        )
 
         if user.guild_avatar:
             avatars_list.append(
@@ -82,7 +84,7 @@ class General(commands.Cog):
         )
         embed.description = "\n".join(avatars_list)
 
-        await interaction.send(f"🖼 Here is the avatar of **{user}**", embed=embed)
+        await interaction.send(embed=embed)
 
     @slash(guild_ids=SLASH_GUILDS)
     async def hypixelparty(self, interaction: Interaction):
