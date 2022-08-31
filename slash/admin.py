@@ -773,7 +773,9 @@ class Admin(commands.Cog):
         embed.add_field(
             name="Users with this role", value=len(role.members), inline=True
         )
-        permissions = ", ".join(name for name, value in role.permissions if value)
+        permissions = ", ".join(
+            name.replace("_", " ") for name, value in role.permissions if value
+        ).capitalize()
         embed.add_field(
             name="Role permissions", value=permissions or "None", inline=True
         )
@@ -908,8 +910,10 @@ class Admin(commands.Cog):
         )
         if user.guild_permissions:
             permissions = ", ".join(
-                name for name, value in user.guild_permissions if value
-            )
+                name.replace("_", " ")
+                for name, value in user.guild_permissions
+                if value
+            ).capitalize()
             embed.add_field(name="Permissions in guild", value=permissions, inline=True)
         await interaction.response.send_message(
             embed=embed,
