@@ -761,7 +761,7 @@ class Admin(commands.Cog):
     ):
         """Show information about a role"""
         embed = nextcord.Embed(
-            color=0x0DD91A, title=f"Here is information about the {role.name} role"
+            color=role.color, title=f"Here is information about the {role.name} role"
         )
         embed.add_field(name="Role name", value=role.name, inline=True)
         embed.add_field(name="Role ID", value=role.id, inline=True)
@@ -865,7 +865,7 @@ class Admin(commands.Cog):
         # pylint: disable=duplicate-code
         user = user or interaction.user
         embed = nextcord.Embed(
-            color=0x0DD91A, title=f"Here is information for {user.name}"
+            color=user.color, title=f"Here is information for {user.name}"
         )
         if user.avatar:
             embed.set_thumbnail(url=user.display_avatar)
