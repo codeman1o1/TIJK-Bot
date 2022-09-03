@@ -683,7 +683,7 @@ class Admin(commands.Cog):
         ),
         amount: int = SlashOption(
             description="The amount of warns to give. Defaults to 1",
-            min_value=1,
+            min_value=0,
             default=1,
             required=False,
         ),
@@ -703,7 +703,7 @@ class Admin(commands.Cog):
         ),
         amount: int = SlashOption(
             description="The amount of warns to remove. Defaults to 1",
-            min_value=1,
+            min_value=0,
             default=1,
             required=False,
         ),
