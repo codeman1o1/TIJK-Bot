@@ -5,7 +5,6 @@ import datetime
 import logging
 import os
 import re
-import sys
 import time
 
 import coloredlogs
@@ -14,7 +13,6 @@ import nextcord.ext.commands.errors
 from dotenv import load_dotenv
 from nextcord import Interaction
 from nextcord.ext import commands, tasks
-from pydactyl import PterodactylClient
 from pymongo import MongoClient
 
 load_dotenv()
@@ -25,11 +23,6 @@ BOT_DATA = DATA["BotData"]
 USER_DATA = DATA["UserData"]
 START_TIME = time.time()
 SLASH_GUILDS = (870973430114181141, 865146077236822017)
-PTD_SERVER_ID = os.getenv("PterodactylServerId")
-
-PtdClient = PterodactylClient(
-    "https://control.sparkedhost.us/", os.getenv("PterodactylApiKey")
-)
 
 
 def set_intents() -> nextcord.Intents:
@@ -245,11 +238,3 @@ if __name__ == "__main__":
                 logger.error("%s couldn't be loaded", file)
 
     bot.run(os.getenv("BotToken"))
-    # Anything after this will get executed after the bot is shut down
-
-    # Shutdown the host except if the user specified not to
-    if "--no-stop" not in sys.argv[1:] and (
-        PtdClient.client.servers.get_server_utilization(PTD_SERVER_ID)["current_state"]
-        == "running"
-    ):
-        PtdClient.client.servers.send_power_action(PTD_SERVER_ID, "stop")

@@ -9,7 +9,7 @@ from nextcord import slash_command as slash
 from nextcord.application_command import SlashOption
 from nextcord.ext import commands
 
-from main import PTD_SERVER_ID, SLASH_GUILDS, START_TIME, USER_DATA, PtdClient, log
+from main import SLASH_GUILDS, START_TIME, USER_DATA
 from slash.custom_checks import is_admin, is_bot_owner, is_server_owner
 from utils.database import get_user_data, set_user_data, unset_user_data
 from views.buttons.database_check import DatabaseCheck
@@ -112,39 +112,6 @@ class Developer(commands.Cog):
             await interaction.response.send_message(
                 "The embed is invalid", ephemeral=True
             )
-
-    @slash(guild_ids=SLASH_GUILDS)
-    @is_server_owner()
-    async def restart(self, interaction: nextcord.Interaction):
-        """Restart TIJK Bot"""
-        state: str = PtdClient.client.servers.get_server_utilization(PTD_SERVER_ID)[
-            "current_state"
-        ]
-        if state == "offline":
-            embed = nextcord.Embed(color=0xFFC800)
-            embed.add_field(
-                name="Could not restart TIJK Bot",
-                value="Because the host seems to be offline, I assume I am hosted locally.\nPlease restart me manually.",
-            )
-            await interaction.response.send_message(embed=embed, ephemeral=True)
-        elif state == "running":
-            embed = nextcord.Embed(color=0x0DD91A)
-            embed.add_field(
-                name="TIJK Bot is restarting...",
-                value=f"TIJK Bot was restarted by {interaction.user}",
-                inline=False,
-            )
-            await interaction.response.send_message(embed=embed)
-            await log(
-                interaction,
-                f"TIJK Bot was restarted by {interaction.user}",
-            )
-            await self.bot.change_presence(
-                activity=nextcord.Activity(
-                    type=nextcord.ActivityType.playing, name="Restarting..."
-                )
-            )
-            PtdClient.client.servers.send_power_action(PTD_SERVER_ID, "restart")
 
     @slash(guild_ids=SLASH_GUILDS)
     @is_server_owner()

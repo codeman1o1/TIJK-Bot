@@ -1,5 +1,4 @@
 import datetime
-import sys
 from contextlib import suppress
 from typing import Union
 
@@ -179,29 +178,21 @@ class Admin(commands.Cog):
     async def shutdown(self, interaction: Interaction):
         """Shut down TIJK Bot"""
         embed = nextcord.Embed(color=0x0DD91A)
-        host_stop_note = (
-            "Please note that the host will not shut down.\nThis is requested by the user who started TIJK Bot"
-            if "--no-stop" in sys.argv[1:]
-            else "The host will also shut down"
-        )
         embed.add_field(
             name="TIJK Bot was shut down",
             value=f"TIJK Bot was shut down by {interaction.user}",
             inline=False,
         )
-        embed.set_footer(text=host_stop_note)
 
         await interaction.response.send_message(embed=embed)
         await log(
             interaction,
-            f"TIJK Bot was shut down by {interaction.user}\n{host_stop_note}",
+            f"TIJK Bot was shut down by {interaction.user}",
         )
         info = await self.bot.application_info()
         if info.owner.dm_channel:
             await info.owner.dm_channel.send(embed=embed)
-        logger.info(
-            "TIJK Bot was shut down by %s\n%s", interaction.user, host_stop_note
-        )
+        logger.info("TIJK Bot was shut down by %s", interaction.user)
         await self.bot.close()
 
     @slash(guild_ids=SLASH_GUILDS)
