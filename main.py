@@ -244,17 +244,6 @@ if __name__ == "__main__":
                 logger.error(e)
                 logger.error("%s couldn't be loaded", file)
 
-    context = os.listdir("views/context_menus")
-    for ctx in context:
-        if ctx.endswith(".py"):
-            try:
-                ctx2 = ctx.strip(".py")
-                bot.load_extension(f"views.context_menus.{ctx2}")
-                logger.debug("%s loaded", ctx)
-            except Exception as e:  # pylint: disable=broad-except
-                logger.error(e)
-                logger.error("%s - context couldn't be loaded", ctx)
-
     bot.run(os.getenv("BotToken"))
     # Anything after this will get executed after the bot is shut down
 
