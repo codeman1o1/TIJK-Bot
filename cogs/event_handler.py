@@ -8,7 +8,7 @@ from nextcord.ext.commands import Context
 from main import USER_DATA, logger
 from slash.custom_checks import has_role_or_above
 from utils.database import get_bot_data, get_user_data, set_user_data
-from views.buttons.pingpoll import PingPoll
+from views.dropdowns.pingpoll_time import PingPollTimeView
 
 
 class EventHandler(commands.Cog):
@@ -46,7 +46,7 @@ class EventHandler(commands.Cog):
                         await message.channel.send(
                             embed=embed,
                             delete_after=900,
-                            view=PingPoll(),
+                            view=PingPollTimeView(message.author.id),
                         )
 
                 if message.channel.name == "one-word-story":
