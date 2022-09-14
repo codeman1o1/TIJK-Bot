@@ -97,7 +97,7 @@ class Fun(commands.Cog):
                     value=f"{messages} messages",
                     inline=False,
                 )
-        if embed.fields == 0:
+        if len(embed.fields) == 0:
             embed = nextcord.Embed(
                 color=0x0DD91A, title="Nobody has sent any messages!"
             )
