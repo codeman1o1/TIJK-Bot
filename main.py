@@ -52,7 +52,7 @@ class LogFilter(logging.Filter):
             r"^Shard ID (%s) has successfully (\w+) session (%s) under trace (%s)\.$",
         ]
         for regex in regexs:
-            if re.search(regex, record.msg):
+            if re.search(regex, str(record.msg)):
                 allow = 0
                 break
         return allow
