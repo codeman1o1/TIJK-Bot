@@ -46,13 +46,13 @@ class PingPoll(nextcord.ui.View):
                 mention = None
             if mention:
                 if replace_mode and name == "In a moment":
-                    for v_index, v in enumerate(values):
-                        if mention in v:
-                            values[v_index] = f"{user.mention} {custom_message}"
+                    for value_index, value in enumerate(values):
+                        if mention in value:
+                            values[value_index] = f"{user.mention} {custom_message}"
                 else:
-                    for v in values:
-                        if mention in v:
-                            values.remove(v)
+                    for value in values:
+                        if mention in value:
+                            values.remove(value)
                 value = "\n".join(values)
             elif index == button_index and not remove_only:
                 value = value + "\n" + user.mention + " " + custom_message
