@@ -66,7 +66,9 @@ class InAMoment(nextcord.ui.Select):
             )
             return
 
-        from views.buttons.pingpoll import PingPoll
+        from views.buttons.pingpoll import (  # pylint: disable=import-outside-toplevel
+            PingPoll,
+        )
 
         if selected == "remove":
             await PingPoll.update(
