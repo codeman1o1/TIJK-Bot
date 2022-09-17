@@ -3,7 +3,7 @@ from nextcord import ButtonStyle
 from nextcord.ext import commands
 from nextcord.utils import get
 
-from utils.database import get_bot_data
+from utils.database import get_bot_data, get_user_data
 
 
 class ButtonRoles(nextcord.ui.View):
@@ -35,10 +35,19 @@ class ButtonRoles(nextcord.ui.View):
     async def handle_click(
         self, button: nextcord.ui.Button, interaction: nextcord.Interaction
     ):
+        role_id = int(button.custom_id.replace("button:buttonroles.", "", 1))
         if role := get(
             interaction.guild.roles,
-            id=int(button.custom_id.replace("button:buttonroles.", "", 1)),
+            id=role_id,
         ):
+            bans = get_user_data(interaction.user.id, "buttonroles_bans")
+            if role_id in bans:
+                await interaction.response.send_message(
+                    f'You have been banned from using the "{role.name}" button role',
+                    ephemeral=True,
+                )
+                return
+
             if role not in interaction.user.roles:
                 await interaction.user.add_roles(role)
                 await interaction.response.send_message(
