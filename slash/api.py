@@ -1,6 +1,7 @@
 import os
 from typing import Literal
 
+import uuid
 import aiohttp
 import nextcord
 import requests
@@ -78,30 +79,16 @@ class Api(commands.Cog):
         ),
     ):
         """Gets information from the Mojang API"""
-        uuid = MojangAPI.get_uuid(username)
-        if not uuid:
+        mc_uuid = MojangAPI.get_uuid(username)
+        user = MojangAPI.get_profile(mc_uuid)
+        if not mc_uuid or not user:
             embed = nextcord.Embed(color=0xFFC800, title="That is not a user!")
             await interaction.response.send_message(embed=embed, ephemeral=True)
             return
         embed = nextcord.Embed(color=0x0DD91A)
-        async with aiohttp.ClientSession() as session:
-            request = await session.get(
-                f"https://some-random-api.ml/mc?username={username}"
-            )
-            info = await request.json()
-        name_history2 = ""
-        for item in info["name_history"]:
-            name_history2 = (
-                name_history2
-                + "\nName: "
-                + item["name"]
-                + "\nChanged at: "
-                + item["changedToAt"]
-                + "\n"
-            )
-        embed.add_field(name="Username", value=info["username"], inline=False)
-        embed.add_field(name="UUID", value=info["uuid"], inline=False)
-        embed.add_field(name="Name History", value=name_history2, inline=False)
+        embed.add_field(name="Username", value=user.name, inline=False)
+        embed.add_field(name="Short UUID", value=user.id, inline=False)
+        embed.add_field(name="Long UUID", value=str(uuid.UUID(user.id)), inline=False)
         await embed_with_mc_head(interaction, embed, username)
 
     @api.subcommand(name="joke", inherit_hooks=True)
