@@ -87,8 +87,9 @@ class Api(commands.Cog):
             return
         embed = nextcord.Embed(color=0x0DD91A)
         embed.add_field(name="Username", value=user.name, inline=False)
-        embed.add_field(name="Short UUID", value=user.id, inline=False)
-        embed.add_field(name="Long UUID", value=str(uuid.UUID(user.id)), inline=False)
+        embed.add_field(
+            name="UUID", value=user.id + "\n" + str(uuid.UUID(user.id)), inline=False
+        )
         await embed_with_mc_head(interaction, embed, username)
 
     @api.subcommand(name="joke", inherit_hooks=True)
