@@ -1,7 +1,7 @@
 import os
+import uuid
 from typing import Literal
 
-import uuid
 import aiohttp
 import nextcord
 import requests
