@@ -43,19 +43,13 @@ bot = commands.Bot(intents=set_intents())
 
 class LogFilter(logging.Filter):
     def filter(self, record: logging.LogRecord):
-        # 0 means block, anything else (e.g. 1) means allow
-        allow = 1
         regexs = [
             r"^Shard ID (%s) has sent the (\w+) payload\.$",
             r"^Got a request to (%s) the websocket\.$",
             r"^Shard ID (%s) has connected to Gateway: (%s) \(Session ID: (%s)\)\.$",
             r"^Shard ID (%s) has successfully (\w+) session (%s) under trace (%s)\.$",
         ]
-        for regex in regexs:
-            if re.search(regex, str(record.msg)):
-                allow = 0
-                break
-        return allow
+        return next((0 for regex in regexs if re.search(regex, str(record.msg))), 1)
 
 
 TEXT_FORMAT = "%(asctime)s %(name)s %(levelname)s %(message)s"
