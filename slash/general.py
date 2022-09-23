@@ -313,8 +313,16 @@ class General(commands.Cog):
         """Set your birthday"""
         try:
             today = datetime.date.today()
-            date2 = date.split("-")
-            datetime.date(today.year, int(date2[1]), int(date2[0]))
+            try:
+                day, month = date.split("-")
+            except ValueError:
+                embed = nextcord.Embed(
+                    color=0xFF0000,
+                    title="Please use the correct format: day-month",
+                )
+                await interaction.response.send_message(embed=embed, ephemeral=True)
+                return
+            datetime.date(today.year, int(month), int(day))
         except (ValueError, IndexError):
             embed = nextcord.Embed(
                 color=0xFFC800, title=f"**{date}** is not a valid date!"
