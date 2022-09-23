@@ -10,7 +10,7 @@ from nextcord import slash_command as slash
 from nextcord.application_command import SlashOption
 from nextcord.ext import commands
 
-from main import SLASH_GUILDS, USER_DATA, log, logger, warn_system
+from main import USER_DATA, log, logger, warn_system
 from slash.custom_checks import (
     check_bot_owner,
     check_server_owner,
@@ -34,7 +34,7 @@ class Admin(commands.Cog):
         self.bot.add_view(ButtonRoles(bot=self.bot))
         self.bot.add_modal(ButtonRolesModal(None))
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_admin()
     async def buttonroles(self, interaction: Interaction):
         """This will never get called since it has subcommands"""
@@ -261,7 +261,7 @@ class Admin(commands.Cog):
             )
         await interaction.response.send_message(embed=embed)
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_server_owner()
     async def shutdown(self, interaction: Interaction):
         """Shut down TIJK Bot"""
@@ -283,7 +283,7 @@ class Admin(commands.Cog):
         logger.info("TIJK Bot was shut down by %s", interaction.user)
         await self.bot.close()
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_mod()
     async def ping(
         self,
@@ -305,7 +305,7 @@ class Admin(commands.Cog):
         )
         await interaction.response.send_message(embed=embed)
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_mod()
     async def readtherules(
         self,
@@ -350,7 +350,7 @@ class Admin(commands.Cog):
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_mod()
     @checks.bot_has_permissions(moderate_members=True)
     async def mute(
@@ -388,7 +388,7 @@ class Admin(commands.Cog):
             embed = nextcord.Embed(color=0xFFC800, title="Invalid time!")
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_mod()
     @checks.bot_has_permissions(moderate_members=True)
     async def unmute(
@@ -416,7 +416,7 @@ class Admin(commands.Cog):
             f"{user} was unmuted by {interaction.user}{reason2}",
         )
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_admin()
     @checks.bot_has_permissions(manage_nicknames=True)
     async def nick(self, interaction: Interaction):
@@ -462,7 +462,7 @@ class Admin(commands.Cog):
         )
         await log(interaction, f"{original_name}'s nickname has been reset")
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_admin()
     async def role(self, interaction: Interaction):
         """This will never get called since it has subcommands"""
@@ -590,7 +590,7 @@ class Admin(commands.Cog):
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_mod()
     async def clear(
         self,
@@ -620,7 +620,7 @@ class Admin(commands.Cog):
             f"{len(deleted_messages)} messages have been cleared from {channel.name}",
         )
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_admin()
     async def clean(
         self,
@@ -654,7 +654,7 @@ class Admin(commands.Cog):
             f"{len(deleted_messages)} messages have been cleaned from {channel.name}",
         )
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_admin()
     async def kick(
         self,
@@ -681,7 +681,7 @@ class Admin(commands.Cog):
             f"{user} has been kicked by {interaction.user}{reason2}",
         )
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_server_owner()
     async def ban(
         self,
@@ -708,7 +708,7 @@ class Admin(commands.Cog):
             f"{user} has been banned by {interaction.user}{reason2}",
         )
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_server_owner()
     async def unban(
         self,
@@ -747,7 +747,7 @@ class Admin(commands.Cog):
             embed = nextcord.Embed(color=0xFF0000, title=f"{user} is not banned!")
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_mod()
     async def warn(self, interaction: Interaction):
         """This will never get called since it has subcommands"""
@@ -824,7 +824,7 @@ class Admin(commands.Cog):
         )
         await interaction.response.send_message(embed=embed)
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_admin()
     async def info(self, interaction: Interaction):
         """This will never get called since it has subcommands"""
@@ -999,7 +999,7 @@ class Admin(commands.Cog):
             view=Link(user.display_avatar.url, "Download profile picture"),
         )
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_admin()
     async def slowmode(
         self,
@@ -1043,7 +1043,7 @@ class Admin(commands.Cog):
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_admin()
     async def pingpoll(self, interaction: Interaction):
         """This will never get called since it has subcommands"""

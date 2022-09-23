@@ -12,8 +12,6 @@ from nextcord.application_command import SlashOption
 from nextcord.ext import commands
 from PIL import Image
 
-from main import SLASH_GUILDS
-
 
 async def embed_with_mc_head(
     interaction: Interaction, embed: nextcord.Embed, username: str
@@ -41,7 +39,7 @@ class Api(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     async def api(self, interaction: Interaction):
         """This will never get called since it has slash commands"""
         pass

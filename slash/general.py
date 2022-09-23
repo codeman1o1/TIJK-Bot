@@ -10,7 +10,7 @@ from nextcord import slash_command as slash
 from nextcord.application_command import SlashOption
 from nextcord.ext import commands
 
-from main import HYPIXEL_API_KEY, SLASH_GUILDS, USER_DATA, logger
+from main import HYPIXEL_API_KEY, USER_DATA, logger
 from utils.database import get_user_data, set_user_data, unset_user_data
 from views.buttons.link import Link
 
@@ -19,7 +19,7 @@ class General(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     async def github(self, interaction: Interaction):
         """Send a link to the official TIJK Bot GitHub page"""
         embed = nextcord.Embed(color=0x0DD91A)
@@ -32,7 +32,7 @@ class General(commands.Cog):
             embed=embed, view=Link("https://github.com/codeman1o1/TIJK-Bot")
         )
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     async def avatar(
         self,
         interaction: Interaction,
@@ -86,7 +86,7 @@ class General(commands.Cog):
 
         await interaction.send(embed=embed)
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash(guild_ids=(870973430114181141, 865146077236822017))
     async def hypixelparty(self, interaction: Interaction):
         """Choose a random player who can own the party"""
         hypixel_ping = nextcord.utils.get(interaction.guild.roles, name="Hypixel Ping")
@@ -161,7 +161,7 @@ class General(commands.Cog):
         embed.set_footer(text=f"Round 1: {round_1}\nRound 2: {round_2}")
         await interaction.response.send_message(embed=embed, delete_after=300)
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     async def link(
         self,
         interaction: Interaction,
@@ -241,7 +241,7 @@ class General(commands.Cog):
             )
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     async def birthday(self, interaction: Interaction):
         """This will never get called since it has subcommands"""
         pass

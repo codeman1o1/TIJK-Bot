@@ -9,7 +9,7 @@ from nextcord import slash_command as slash
 from nextcord.application_command import SlashOption
 from nextcord.ext import commands
 
-from main import SLASH_GUILDS, START_TIME, USER_DATA
+from main import START_TIME, USER_DATA
 from slash.custom_checks import is_admin, is_bot_owner, is_server_owner
 from utils.database import get_user_data, set_user_data, unset_user_data
 from views.buttons.database_check import DatabaseCheck
@@ -19,7 +19,7 @@ class Developer(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_admin()
     async def embed(
         self,
@@ -113,7 +113,7 @@ class Developer(commands.Cog):
                 "The embed is invalid", ephemeral=True
             )
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_server_owner()
     async def status(
         self,
@@ -193,7 +193,7 @@ class Developer(commands.Cog):
 
         await interaction.response.send_message(embed=embed)
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     async def stats(self, interaction: Interaction):
         """Show the statistics of TIJK Bot"""
         embed = nextcord.Embed(
@@ -223,7 +223,7 @@ class Developer(commands.Cog):
         )
         await interaction.response.send_message(embed=embed)
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_server_owner()
     async def database(self, interaction: Interaction):
         """This will never get called since it has subcommands"""
@@ -381,7 +381,7 @@ class Developer(commands.Cog):
         )
         await interaction.response.send_message(embed=embed)
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_bot_owner()
     async def leave_server(
         self, interaction: Interaction, server_id: str = SlashOption(required=False)
