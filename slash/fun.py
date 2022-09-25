@@ -10,7 +10,7 @@ from nextcord import slash_command as slash
 from nextcord.application_command import SlashOption
 from nextcord.ext import commands
 
-from main import SLASH_GUILDS, USER_DATA
+from main import USER_DATA
 
 
 def get_8ball_responses():
@@ -26,14 +26,14 @@ class Fun(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     async def headsortails(self, interaction: Interaction):
         """Flip a coin"""
         hot = random.choice(("heads", "tails"))
         embed = nextcord.Embed(color=0x0DD91A, title=f"It is {hot}!")
         await interaction.response.send_message(embed=embed)
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     async def respect(
         self,
         interaction: Interaction,
@@ -48,7 +48,7 @@ class Fun(commands.Cog):
         )
         await interaction.response.send_message(embed=embed)
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     async def rockpaperscissors(
         self,
         interaction: Interaction,
@@ -84,7 +84,7 @@ class Fun(commands.Cog):
         )
         await interaction.response.send_message(embed=embed)
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     async def messages(self, interaction: Interaction):
         """Show the amount of messages each user has sent"""
         embed = nextcord.Embed(color=0x0DD91A)
@@ -97,13 +97,13 @@ class Fun(commands.Cog):
                     value=f"{messages} messages",
                     inline=False,
                 )
-        if embed.fields == 0:
+        if len(embed.fields) == 0:
             embed = nextcord.Embed(
                 color=0x0DD91A, title="Nobody has sent any messages!"
             )
         await interaction.response.send_message(embed=embed)
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     async def eightball(
         self,
         interaction: Interaction,

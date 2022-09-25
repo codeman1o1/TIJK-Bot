@@ -22,7 +22,6 @@ DATA = CLUSTER["Data"]
 BOT_DATA = DATA["BotData"]
 USER_DATA = DATA["UserData"]
 START_TIME = time.time()
-SLASH_GUILDS = (870973430114181141, 865146077236822017)
 
 
 def set_intents() -> nextcord.Intents:
@@ -52,7 +51,7 @@ class LogFilter(logging.Filter):
             r"^Shard ID (%s) has successfully (\w+) session (%s) under trace (%s)\.$",
         ]
         for regex in regexs:
-            if re.search(regex, record.msg):
+            if re.search(regex, str(record.msg)):
                 allow = 0
                 break
         return allow

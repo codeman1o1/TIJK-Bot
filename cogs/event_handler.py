@@ -149,7 +149,14 @@ class EventHandler(commands.Cog):
         """Called when a member joins the server"""
         with suppress(nextcord.errors.HTTPException):
             if not get_user_data(member.id):
-                USER_DATA.insert_one({"_id": member.id, "messages": 0, "warns": 0})
+                USER_DATA.insert_one(
+                    {
+                        "_id": member.id,
+                        "messages": 0,
+                        "warns": 0,
+                        "buttonroles_bans": [],
+                    }
+                )
             if member.bot:
                 embed = nextcord.Embed(
                     color=0x0DD91A,

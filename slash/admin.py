@@ -1,6 +1,6 @@
 import datetime
 from contextlib import suppress
-from typing import Union
+from typing import Dict, List, Union
 
 import nextcord
 import nextcord.ext.application_checks as checks
@@ -10,7 +10,7 @@ from nextcord import slash_command as slash
 from nextcord.application_command import SlashOption
 from nextcord.ext import commands
 
-from main import SLASH_GUILDS, USER_DATA, log, logger, warn_system
+from main import USER_DATA, log, logger, warn_system
 from slash.custom_checks import (
     check_bot_owner,
     check_server_owner,
@@ -18,7 +18,7 @@ from slash.custom_checks import (
     is_mod,
     is_server_owner,
 )
-from utils.database import get_bot_data, get_user_data, set_bot_data
+from utils.database import get_bot_data, get_user_data, set_bot_data, set_user_data
 from views.buttons.button_roles import ButtonRoles
 from views.buttons.change_name_back import ChangeNameBack
 from views.buttons.link import Link
@@ -34,7 +34,7 @@ class Admin(commands.Cog):
         self.bot.add_view(ButtonRoles(bot=self.bot))
         self.bot.add_modal(ButtonRolesModal(None))
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_admin()
     async def buttonroles(self, interaction: Interaction):
         """This will never get called since it has subcommands"""
@@ -173,7 +173,95 @@ class Admin(commands.Cog):
 
         await interaction.response.send_message(embed=embed)
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @buttonroles.subcommand(name="ban", inherit_hooks=True)
+    async def ban_buttonroles(self, interaction: Interaction):
+        """This will never get called since it has subcommands"""
+        pass
+
+    @ban_buttonroles.subcommand(name="add", inherit_hooks=True)
+    async def add_ban_buttonroles(
+        self,
+        interaction: Interaction,
+        user: nextcord.Member = SlashOption(
+            description="The user to ban from a button role", required=True
+        ),
+        role: nextcord.Role = SlashOption(
+            description="The button role to ban a user from", required=True
+        ),
+    ):
+        """Ban a user from a button role"""
+        bans: List[int] = get_user_data(user.id, "buttonroles_bans")
+        if role.id in bans:
+            embed = nextcord.Embed(
+                color=0xFFC800,
+                title=f'{user.name} is already banned from the "{role.name}" button role!',
+            )
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+            return
+
+        bans.append(role.id)
+        set_user_data(user.id, "buttonroles_bans", bans)
+
+        embed = nextcord.Embed(
+            color=0x0DD91A,
+            title=f'{user} has been banned from the "{role}" button role!',
+        )
+        await interaction.response.send_message(embed=embed)
+
+    @ban_buttonroles.subcommand(name="remove", inherit_hooks=True)
+    async def remove_ban_buttonroles(
+        self,
+        interaction: Interaction,
+        user: nextcord.Member = SlashOption(
+            description="The user to remove a button role ban from", required=True
+        ),
+        role: nextcord.Role = SlashOption(
+            description="The role to remove a button role ban from", required=True
+        ),
+    ):
+        """Remove a button role ban from a user"""
+        bans: List[int] = get_user_data(user.id, "buttonroles_bans")
+        if role.id not in bans:
+            embed = nextcord.Embed(
+                color=0xFFC800,
+                title=f'{user} is not banned from the "{role.name}" button role!',
+            )
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+            return
+
+        bans.remove(role.id)
+        set_user_data(user.id, "buttonroles_bans", bans)
+
+        embed = nextcord.Embed(
+            color=0x0DD91A,
+            title=f'{user} is no longer banned from the "{role}" button role!',
+        )
+        await interaction.response.send_message(embed=embed)
+
+    @ban_buttonroles.subcommand(name="list", inherit_hooks=True)
+    async def list_ban_buttonroles(self, interaction: Interaction):
+        """List all button role bans"""
+        embed = nextcord.Embed(color=0x0DD91A)
+        buttonroles_bans: Dict[int, List[int]] = {}
+        for user in USER_DATA.find().sort("buttonroles_bans"):
+            if "buttonroles_bans" in user:
+                for role in user["buttonroles_bans"]:
+                    if role not in buttonroles_bans:
+                        buttonroles_bans[role] = []
+                    buttonroles_bans[role].append(user["_id"])
+        for role_id, users in buttonroles_bans.items():
+            embed.add_field(
+                name=nextcord.utils.get(interaction.guild.roles, id=role_id).name,
+                value="\n".join([self.bot.get_user(user).mention for user in users]),
+                inline=False,
+            )
+        if len(embed.fields) == 0:
+            embed = nextcord.Embed(
+                color=0x0DD91A, title="There are no users banned from button roles!"
+            )
+        await interaction.response.send_message(embed=embed)
+
+    @slash()
     @is_server_owner()
     async def shutdown(self, interaction: Interaction):
         """Shut down TIJK Bot"""
@@ -195,7 +283,7 @@ class Admin(commands.Cog):
         logger.info("TIJK Bot was shut down by %s", interaction.user)
         await self.bot.close()
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_mod()
     async def ping(
         self,
@@ -217,7 +305,7 @@ class Admin(commands.Cog):
         )
         await interaction.response.send_message(embed=embed)
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_mod()
     async def readtherules(
         self,
@@ -262,7 +350,7 @@ class Admin(commands.Cog):
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_mod()
     @checks.bot_has_permissions(moderate_members=True)
     async def mute(
@@ -300,7 +388,7 @@ class Admin(commands.Cog):
             embed = nextcord.Embed(color=0xFFC800, title="Invalid time!")
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_mod()
     @checks.bot_has_permissions(moderate_members=True)
     async def unmute(
@@ -328,7 +416,7 @@ class Admin(commands.Cog):
             f"{user} was unmuted by {interaction.user}{reason2}",
         )
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_admin()
     @checks.bot_has_permissions(manage_nicknames=True)
     async def nick(self, interaction: Interaction):
@@ -374,7 +462,7 @@ class Admin(commands.Cog):
         )
         await log(interaction, f"{original_name}'s nickname has been reset")
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_admin()
     async def role(self, interaction: Interaction):
         """This will never get called since it has subcommands"""
@@ -502,7 +590,7 @@ class Admin(commands.Cog):
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_mod()
     async def clear(
         self,
@@ -532,7 +620,7 @@ class Admin(commands.Cog):
             f"{len(deleted_messages)} messages have been cleared from {channel.name}",
         )
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_admin()
     async def clean(
         self,
@@ -566,7 +654,7 @@ class Admin(commands.Cog):
             f"{len(deleted_messages)} messages have been cleaned from {channel.name}",
         )
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_admin()
     async def kick(
         self,
@@ -593,7 +681,7 @@ class Admin(commands.Cog):
             f"{user} has been kicked by {interaction.user}{reason2}",
         )
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_server_owner()
     async def ban(
         self,
@@ -620,7 +708,7 @@ class Admin(commands.Cog):
             f"{user} has been banned by {interaction.user}{reason2}",
         )
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_server_owner()
     async def unban(
         self,
@@ -659,7 +747,7 @@ class Admin(commands.Cog):
             embed = nextcord.Embed(color=0xFF0000, title=f"{user} is not banned!")
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_mod()
     async def warn(self, interaction: Interaction):
         """This will never get called since it has subcommands"""
@@ -736,7 +824,7 @@ class Admin(commands.Cog):
         )
         await interaction.response.send_message(embed=embed)
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_admin()
     async def info(self, interaction: Interaction):
         """This will never get called since it has subcommands"""
@@ -911,7 +999,7 @@ class Admin(commands.Cog):
             view=Link(user.display_avatar.url, "Download profile picture"),
         )
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_admin()
     async def slowmode(
         self,
@@ -955,7 +1043,7 @@ class Admin(commands.Cog):
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @slash(guild_ids=SLASH_GUILDS)
+    @slash()
     @is_admin()
     async def pingpoll(self, interaction: Interaction):
         """This will never get called since it has subcommands"""
