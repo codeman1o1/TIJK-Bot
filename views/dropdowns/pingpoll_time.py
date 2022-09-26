@@ -14,7 +14,7 @@ class PingPollTime(nextcord.ui.Select, CMS):
         ]
 
         super().__init__(
-            placeholder="Please select a time",
+            placeholder="Please select how long the PingPoll should stay",
             min_values=1,
             max_values=1,
             options=options,
