@@ -10,3 +10,4 @@ mojang==0.2.0
 pillow==9.2.0
 coloredlogs==15.0.1
 aiohttp==3.8.3
+docker==6.0.0

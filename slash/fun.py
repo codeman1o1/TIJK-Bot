@@ -1,7 +1,7 @@
 import json
 import os
 import random
-from typing import Literal
+from typing import List, Literal
 
 import nextcord
 import pymongo
@@ -9,8 +9,11 @@ from nextcord import Interaction
 from nextcord import slash_command as slash
 from nextcord.application_command import SlashOption
 from nextcord.ext import commands
-
+import docker
+from docker.models.containers import Container
 from main import USER_DATA
+
+DOCKER_CLIENT = docker.from_env()
 
 
 def get_8ball_responses():
@@ -113,6 +116,33 @@ class Fun(commands.Cog):
         embed = nextcord.Embed(color=0x0DD91A, title=question)
         embed.description = random.choice(get_8ball_responses())
         await interaction.response.send_message(embed=embed)
+
+    @slash(guild_ids=(870973430114181141, 1022468050164924497))
+    async def start_server(self, interaction: Interaction, server: str):
+        """Start a Minecraft server"""
+        MINECRAFT_SERVER: Container = DOCKER_CLIENT.containers.get(server)
+        if MINECRAFT_SERVER.status != "exited":
+            await interaction.response.send_message(
+                "Server is already running!", ephemeral=True
+            )
+            return
+
+        MINECRAFT_SERVER.start()
+        embed = nextcord.Embed(color=0x0DD91A, title="Server starting!")
+        await interaction.response.send_message(embed=embed)
+
+    @start_server.on_autocomplete("server")
+    async def server_autocomplete(self, interaction: Interaction, server: str):
+        MC_CONTAINERS: List[Container] = DOCKER_CLIENT.containers.list(
+            all=True,
+            filters={
+                "ancestor": "itzg/minecraft-server",
+                "label": "allow_remote_start=true",
+            },
+        )
+        await interaction.response.send_autocomplete(
+            [container.name for container in MC_CONTAINERS]
+        )
 
 
 def setup(bot: commands.Bot):
