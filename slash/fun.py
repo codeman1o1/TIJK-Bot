@@ -132,7 +132,7 @@ class Fun(commands.Cog):
         await interaction.response.send_message(embed=embed)
 
     @start_server.on_autocomplete("server")
-    async def server_autocomplete(self, interaction: Interaction, server: str):
+    async def server_autocomplete(self, interaction: Interaction, server: str = SlashOption(description="The server to start", required=True)):
         MC_CONTAINERS: List[Container] = DOCKER_CLIENT.containers.list(
             all=True,
             filters={
