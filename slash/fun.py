@@ -3,14 +3,15 @@ import os
 import random
 from typing import List, Literal
 
+import docker
 import nextcord
 import pymongo
+from docker.models.containers import Container
 from nextcord import Interaction
 from nextcord import slash_command as slash
 from nextcord.application_command import SlashOption
 from nextcord.ext import commands
-import docker
-from docker.models.containers import Container
+
 from main import USER_DATA
 
 DOCKER_CLIENT = docker.from_env()
