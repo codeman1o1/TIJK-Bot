@@ -118,7 +118,11 @@ class Fun(commands.Cog):
         await interaction.response.send_message(embed=embed)
 
     @slash(guild_ids=(870973430114181141, 1022468050164924497))
-    async def start_server(self, interaction: Interaction, server: str = SlashOption(description="The server to start", required=True)):
+    async def start_server(
+        self,
+        interaction: Interaction,
+        server: str = SlashOption(description="The server to start", required=True),
+    ):
         """Start a Minecraft server"""
         MINECRAFT_SERVER: Container = DOCKER_CLIENT.containers.get(server)
         if MINECRAFT_SERVER.status != "exited":
