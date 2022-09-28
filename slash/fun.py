@@ -125,20 +125,20 @@ class Fun(commands.Cog):
         server: str = SlashOption(description="The server to start", required=True),
     ):
         """Start a Minecraft server"""
-        MINECRAFT_SERVER: Container = DOCKER_CLIENT.containers.get(server)
-        if MINECRAFT_SERVER.status != "exited":
+        minecraft_server: Container = DOCKER_CLIENT.containers.get(server)
+        if minecraft_server.status != "exited":
             await interaction.response.send_message(
                 "Server is already running!", ephemeral=True
             )
             return
 
-        MINECRAFT_SERVER.start()
+        minecraft_server.start()
         embed = nextcord.Embed(color=0x0DD91A, title="Server starting!")
         await interaction.response.send_message(embed=embed)
 
     @start_server.on_autocomplete("server")
     async def server_autocomplete(self, interaction: Interaction, server: str):
-        MC_CONTAINERS: List[Container] = DOCKER_CLIENT.containers.list(
+        mc_containers: List[Container] = DOCKER_CLIENT.containers.list(
             all=True,
             filters={
                 "ancestor": "itzg/minecraft-server",
@@ -146,7 +146,7 @@ class Fun(commands.Cog):
             },
         )
         await interaction.response.send_autocomplete(
-            [container.name for container in MC_CONTAINERS]
+            [container.name for container in mc_containers]
         )
 
 
