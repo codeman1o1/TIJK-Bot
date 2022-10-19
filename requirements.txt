@@ -4,7 +4,6 @@ requests==2.28.1
 types-requests==2.28.5
 pymongo==4.3.2
 dnspython==2.2.1
-psutil==5.9.2
 humanfriendly==10.0
 mojang==0.2.0
 pillow==9.2.0
