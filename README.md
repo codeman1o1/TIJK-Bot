@@ -1,9 +1,7 @@
 
 # TIJK Bot is made and maintained by [codeman1o1](https://github.com/codeman1o1)
 
-## [People who helped with improving TIJK Bot](https://github.com/codeman1o1/TIJK-Bot/graphs/contributors)
-
-### Important
+## Important
 
 When setting a `custom_id` (only if you want to make a view persistent), make sure to follow the following rules:
 
