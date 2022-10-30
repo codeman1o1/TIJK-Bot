@@ -73,7 +73,6 @@ class InAMoment(nextcord.ui.Select):
 
         if selected == "remove":
             await PingPoll.update(
-                self,
                 interaction.user,
                 self.message,
                 1,
@@ -89,7 +88,6 @@ class InAMoment(nextcord.ui.Select):
         )
 
         await PingPoll.update(
-            self,
             interaction.user,
             self.message,
             1,
