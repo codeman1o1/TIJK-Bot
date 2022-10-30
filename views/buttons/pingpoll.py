@@ -12,8 +12,8 @@ class PingPoll(nextcord.ui.View):
         super().__init__(timeout=900)
         self.del_after = del_after
 
+    @staticmethod
     async def update(
-        self,
         user: nextcord.Member,
         message: nextcord.Message,
         button_index: int,

@@ -32,8 +32,9 @@ class ButtonRoles(nextcord.ui.View):
                             )
                         )
 
+    @staticmethod
     async def handle_click(
-        self, button: nextcord.ui.Button, interaction: nextcord.Interaction
+        button: nextcord.ui.Button, interaction: nextcord.Interaction
     ):
         role_id = int(button.custom_id.replace("button:buttonroles.", "", 1))
         if role := get(
