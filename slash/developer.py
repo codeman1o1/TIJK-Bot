@@ -303,7 +303,6 @@ class Developer(commands.Cog):
         value: str = SlashOption(description="The new value", required=True),
     ):
         """Change a value for a user in the database"""
-
         # Try to convert to boolean
         if value.lower() == "true":
             value = True
