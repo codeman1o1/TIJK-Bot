@@ -18,7 +18,7 @@ from main import USER_DATA
 try:
     DOCKER_CLIENT = docker.from_env()
 except DockerException:
-    # Docker is most likely not installed. We will ignore at first, but tell the user when Docker is needed
+    # Docker is most likely not installed
     DOCKER_CLIENT = None
 
 
