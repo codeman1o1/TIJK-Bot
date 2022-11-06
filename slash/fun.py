@@ -125,7 +125,7 @@ class Fun(commands.Cog):
 
     if DOCKER_CLIENT is not None:
 
-        @slash(guild_ids=(870973430114181141, 1022468050164924497))
+        @slash(name="start-server", guild_ids=(870973430114181141, 1022468050164924497))
         async def start_server(
             self,
             interaction: Interaction,
