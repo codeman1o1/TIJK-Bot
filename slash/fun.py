@@ -6,6 +6,7 @@ from typing import List, Literal
 import docker
 import nextcord
 import pymongo
+from docker.errors import DockerException
 from docker.models.containers import Container
 from nextcord import Interaction
 from nextcord import slash_command as slash
@@ -14,7 +15,11 @@ from nextcord.ext import commands
 
 from main import USER_DATA
 
-DOCKER_CLIENT = docker.from_env()
+try:
+    DOCKER_CLIENT = docker.from_env()
+except DockerException:
+    # Docker is most likely not installed. We will ignore at first, but tell the user when Docker is needed
+    DOCKER_CLIENT = None
 
 
 def get_8ball_responses():
@@ -118,36 +123,38 @@ class Fun(commands.Cog):
         embed.description = random.choice(get_8ball_responses())
         await interaction.response.send_message(embed=embed)
 
-    @slash(guild_ids=(870973430114181141, 1022468050164924497))
-    async def start_server(
-        self,
-        interaction: Interaction,
-        server: str = SlashOption(description="The server to start", required=True),
-    ):
-        """Start a Minecraft server"""
-        minecraft_server: Container = DOCKER_CLIENT.containers.get(server)
-        if minecraft_server.status != "exited":
-            await interaction.response.send_message(
-                "Server is already running!", ephemeral=True
+    if DOCKER_CLIENT is not None:
+
+        @slash(guild_ids=(870973430114181141, 1022468050164924497))
+        async def start_server(
+            self,
+            interaction: Interaction,
+            server: str = SlashOption(description="The server to start", required=True),
+        ):
+            """Start a Minecraft server"""
+            minecraft_server: Container = DOCKER_CLIENT.containers.get(server)
+            if minecraft_server.status != "exited":
+                await interaction.response.send_message(
+                    "Server is already running!", ephemeral=True
+                )
+                return
+
+            minecraft_server.start()
+            embed = nextcord.Embed(color=0x0DD91A, title="Server starting!")
+            await interaction.response.send_message(embed=embed)
+
+        @start_server.on_autocomplete("server")
+        async def server_autocomplete(self, interaction: Interaction, server: str):
+            mc_containers: List[Container] = DOCKER_CLIENT.containers.list(
+                all=True,
+                filters={
+                    "ancestor": "itzg/minecraft-server",
+                    "label": "allow_remote_start=true",
+                },
             )
-            return
-
-        minecraft_server.start()
-        embed = nextcord.Embed(color=0x0DD91A, title="Server starting!")
-        await interaction.response.send_message(embed=embed)
-
-    @start_server.on_autocomplete("server")
-    async def server_autocomplete(self, interaction: Interaction, server: str):
-        mc_containers: List[Container] = DOCKER_CLIENT.containers.list(
-            all=True,
-            filters={
-                "ancestor": "itzg/minecraft-server",
-                "label": "allow_remote_start=true",
-            },
-        )
-        await interaction.response.send_autocomplete(
-            [container.name for container in mc_containers]
-        )
+            await interaction.response.send_autocomplete(
+                [container.name for container in mc_containers]
+            )
 
 
 def setup(bot: commands.Bot):
