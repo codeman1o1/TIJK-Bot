@@ -5,12 +5,14 @@ from typing import Literal
 import aiohttp
 import nextcord
 import requests
-from mojang import MojangAPI
+from mojang import API as MAPI
 from nextcord import Interaction
 from nextcord import slash_command as slash
 from nextcord.application_command import SlashOption
 from nextcord.ext import commands
 from PIL import Image
+
+MojangAPI = MAPI()
 
 
 async def embed_with_mc_head(
