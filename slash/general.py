@@ -4,7 +4,7 @@ from urllib.parse import quote
 
 import nextcord
 import requests
-from mojang import MojangAPI
+from mojang import API as MAPI
 from nextcord import Interaction
 from nextcord import slash_command as slash
 from nextcord.application_command import SlashOption
@@ -13,6 +13,8 @@ from nextcord.ext import commands
 from main import HYPIXEL_API_KEY, USER_DATA, logger
 from utils.database import get_user_data, set_user_data, unset_user_data
 from views.buttons.link import Link
+
+MojangAPI = MAPI()
 
 
 class General(commands.Cog):
