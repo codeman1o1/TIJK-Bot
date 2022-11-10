@@ -53,6 +53,7 @@ class LogFilter(logging.Filter):
             r"Preparing to terminate ffmpeg process (%s)",
             r"ffmpeg process (%s) successfully terminated with return code of (%s)\.",
         )
+        # 0 means block, anything else (e.g. 1) means allow
         return next((0 for regex in regexs if re.search(regex, str(record.msg))), 1)
 
 
