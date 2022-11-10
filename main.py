@@ -34,6 +34,7 @@ def set_intents() -> nextcord.Intents:
     intents.messages = True
     intents.reactions = True
     intents.message_content = True
+    intents.voice_states = True
     return intents
 
 
@@ -44,12 +45,16 @@ class LogFilter(logging.Filter):
     def filter(self, record: logging.LogRecord):
         # 0 means block, anything else (e.g. 1) means allow
         allow = 1
-        regexs = [
+        regexs = (
             r"^Shard ID (%s) has sent the (\w+) payload\.$",
             r"^Got a request to (%s) the websocket\.$",
             r"^Shard ID (%s) has connected to Gateway: (%s) \(Session ID: (%s)\)\.$",
             r"^Shard ID (%s) has successfully (\w+) session (%s) under trace (%s)\.$",
-        ]
+            # Voice related stuff
+            r"^selected the voice protocol for use \((%s)\)$",
+            r"Preparing to terminate ffmpeg process (%s)",
+            r"ffmpeg process (%s) successfully terminated with return code of (%s)\.",
+        )
         for regex in regexs:
             if re.search(regex, str(record.msg)):
                 allow = 0

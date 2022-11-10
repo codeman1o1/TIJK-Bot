@@ -3,6 +3,7 @@ import os
 import random
 from typing import List, Literal
 
+import asyncio
 import docker
 import nextcord
 import pymongo
@@ -12,8 +13,33 @@ from nextcord import Interaction
 from nextcord import slash_command as slash
 from nextcord.application_command import SlashOption
 from nextcord.ext import commands
+import youtube_dl
 
-from main import USER_DATA
+from main import USER_DATA, logger
+
+# Suppress noise about console usage from errors
+youtube_dl.utils.bug_reports_message = lambda: ""
+
+
+ytdl_format_options = {
+    "format": "bestaudio/best",
+    "outtmpl": "%(extractor)s-%(id)s-%(title)s.%(ext)s",
+    "restrictfilenames": True,
+    "noplaylist": True,
+    "nocheckcertificate": True,
+    "ignoreerrors": False,
+    "logtostderr": False,
+    "quiet": True,
+    "no_warnings": True,
+    "default_search": "auto",
+    "source_address": "0.0.0.0",  # bind to ipv4 since ipv6 addresses cause issues sometimes
+}
+
+ffmpeg_options = {"options": "-vn"}
+
+ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
+
+HAMSTEREN_URL = "https://www.youtube.com/watch?v=0fn4X2TLxNc"
 
 try:
     DOCKER_CLIENT = docker.from_env()
@@ -29,6 +55,30 @@ def get_8ball_responses():
     ) as file:
         eight_ball_responses = file.read()
     return tuple(json.loads(eight_ball_responses)["responses"])  # type: ignore[arg-type]
+
+
+class YTDLSource(nextcord.PCMVolumeTransformer):
+    def __init__(self, source, *, data, volume=0.5):
+        super().__init__(source, volume)
+
+        self.data = data
+
+        self.title = data.get("title")
+        self.url = data.get("url")
+
+    @classmethod
+    async def from_url(cls, url, *, loop=None, stream=False):
+        loop = loop or asyncio.get_event_loop()
+        data = await loop.run_in_executor(
+            None, lambda: ytdl.extract_info(url, download=not stream)
+        )
+
+        if "entries" in data:
+            # take first item from a playlist
+            data = data["entries"][0]
+
+        filename = data["url"] if stream else ytdl.prepare_filename(data)
+        return cls(nextcord.FFmpegPCMAudio(filename, **ffmpeg_options), data=data)
 
 
 class Fun(commands.Cog):
@@ -155,6 +205,49 @@ class Fun(commands.Cog):
             await interaction.response.send_autocomplete(
                 [container.name for container in mc_containers]
             )
+
+    @slash()
+    async def hamsteren(self, interaction: Interaction):
+        """Hamsteren"""
+        if not isinstance(interaction.channel, nextcord.VoiceChannel):
+            await interaction.response.send_message(
+                "You must be in a voice channel to use this command!", ephemeral=True
+            )
+            return
+
+        if (
+            interaction.user.voice is None
+            or interaction.user.voice.channel is None
+            or interaction.user.voice.channel != interaction.channel
+        ):
+            await interaction.response.send_message(
+                "You must be in this voice channel to use this command!", ephemeral=True
+            )
+            return
+
+        if interaction.guild.voice_client is None:
+            voice_client = await interaction.channel.connect()
+        else:
+            voice_client = interaction.guild.voice_client
+            if voice_client.channel != interaction.channel:
+                await voice_client.move_to(interaction.channel)
+
+        player = await YTDLSource.from_url(
+            HAMSTEREN_URL, loop=self.bot.loop, stream=True
+        )
+        try:
+            voice_client.play(
+                player,
+                after=lambda e: logger.error(f"Player error: {e}")
+                if e is not None
+                else voice_client.disconnect(),
+            )
+        except nextcord.ClientException:
+            await interaction.response.send_message(
+                "We zijn al aan het hamsteren!", ephemeral=True
+            )
+            return
+        await interaction.response.send_message("We gaan hamsteren!")
 
 
 def setup(bot: commands.Bot):
