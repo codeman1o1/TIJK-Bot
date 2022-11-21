@@ -45,7 +45,7 @@ class LogFilter(logging.Filter):
         regexs = [
             r"^Shard ID (%s) has sent the (\w+) payload\.$",
             r"^Got a request to (%s) the websocket\.$",
-            r"^Shard ID (%s) has connected to Gateway: (%s) \(Session ID: (%s)\)\.$",
+            r"^Shard ID (%s) has connected to Gateway: (%s) \(Session ID: (%s)\). Resume URL specified as (%s)$",
             r"^Shard ID (%s) has successfully (\w+) session (%s) under trace (%s)\.$",
         ]
         # 0 means block, anything else (e.g. 1) means allow
