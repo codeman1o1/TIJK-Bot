@@ -1,6 +1,6 @@
 name: Suggestion
 description: Suggest an idea for TIJK Bot
-title: '[SUGGESTION] name-here'
+title: "name-here"
 labels:
   - suggestion
 body:
