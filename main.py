@@ -6,6 +6,7 @@ import logging
 import os
 import re
 import time
+import json
 
 import coloredlogs
 import nextcord
@@ -17,6 +18,7 @@ from pymongo import MongoClient
 
 load_dotenv()
 HYPIXEL_API_KEY = os.getenv("HypixelApiKey")
+SERVER_START_GUILDS = json.loads(os.getenv("SERVER_START_GUILDS"))
 CLUSTER: MongoClient = MongoClient(os.getenv("MongoURL"))
 DATA = CLUSTER["Data"]
 BOT_DATA = DATA["BotData"]

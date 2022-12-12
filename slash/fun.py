@@ -13,7 +13,7 @@ from nextcord import slash_command as slash
 from nextcord.application_command import SlashOption
 from nextcord.ext import commands
 
-from main import USER_DATA
+from main import SERVER_START_GUILDS, USER_DATA
 
 try:
     DOCKER_CLIENT = docker.from_env()
@@ -125,7 +125,7 @@ class Fun(commands.Cog):
 
     if DOCKER_CLIENT is not None:
 
-        @slash(name="start-server", guild_ids=(870973430114181141, 1022468050164924497))
+        @slash(name="start-server", guild_ids=SERVER_START_GUILDS)
         async def start_server(
             self,
             interaction: Interaction,
