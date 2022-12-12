@@ -380,7 +380,7 @@ class Developer(commands.Cog):
         )
         await interaction.response.send_message(embed=embed)
 
-    @slash()
+    @slash(name="leave-server")
     @is_bot_owner()
     async def leave_server(
         self, interaction: Interaction, server_id: str = SlashOption(required=False)
