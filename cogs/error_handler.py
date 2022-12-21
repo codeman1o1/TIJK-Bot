@@ -64,7 +64,7 @@ class ErrorHandler(commands.Cog):
             await interaction.send(
                 embed=embed,
                 view=Link(
-                    f"https://github.com/codeman1o1/TIJK-Bot/issues/new?assignees=&labels=bug&template=error.yaml&title=%5BERROR%5D+{quote(str(error))}",
+                    f"https://github.com/codeman1o1/TIJK-Bot/issues/new?assignees=&labels=bug&template=error.yaml&title={quote(str(error))}",
                     "Report error",
                 ),
             )
