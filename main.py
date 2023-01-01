@@ -2,7 +2,6 @@
 
 import asyncio
 import datetime
-import json
 import logging
 import os
 import re
@@ -18,7 +17,6 @@ from pymongo import MongoClient
 
 load_dotenv()
 HYPIXEL_API_KEY = os.getenv("HypixelApiKey")
-SERVER_START_GUILDS = json.loads(os.getenv("SERVER_START_GUILDS"))
 CLUSTER: MongoClient = MongoClient(os.getenv("MongoURL"))
 DATA = CLUSTER["Data"]
 BOT_DATA = DATA["BotData"]

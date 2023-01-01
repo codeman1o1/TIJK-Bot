@@ -1,25 +1,16 @@
 import json
 import os
 import random
-from typing import List, Literal
+from typing import Literal
 
-import docker
 import nextcord
 import pymongo
-from docker.errors import DockerException
-from docker.models.containers import Container
 from nextcord import Interaction
 from nextcord import slash_command as slash
 from nextcord.application_command import SlashOption
 from nextcord.ext import commands
 
-from main import SERVER_START_GUILDS, USER_DATA
-
-try:
-    DOCKER_CLIENT = docker.from_env()
-except DockerException:
-    # Docker is most likely not installed
-    DOCKER_CLIENT = None
+from main import USER_DATA
 
 
 def get_8ball_responses():
@@ -122,39 +113,6 @@ class Fun(commands.Cog):
         embed = nextcord.Embed(color=0x0DD91A, title=question)
         embed.description = random.choice(get_8ball_responses())
         await interaction.response.send_message(embed=embed)
-
-    if DOCKER_CLIENT is not None:
-
-        @slash(name="start-server", guild_ids=SERVER_START_GUILDS)
-        async def start_server(
-            self,
-            interaction: Interaction,
-            server: str = SlashOption(description="The server to start", required=True),
-        ):
-            """Start a Minecraft server"""
-            minecraft_server: Container = DOCKER_CLIENT.containers.get(server)
-            if minecraft_server.status != "exited":
-                await interaction.response.send_message(
-                    "Server is already running!", ephemeral=True
-                )
-                return
-
-            minecraft_server.start()
-            embed = nextcord.Embed(color=0x0DD91A, title="Server starting!")
-            await interaction.response.send_message(embed=embed)
-
-        @start_server.on_autocomplete("server")
-        async def server_autocomplete(self, interaction: Interaction, server: str):
-            mc_containers: List[Container] = DOCKER_CLIENT.containers.list(
-                all=True,
-                filters={
-                    "ancestor": "itzg/minecraft-server",
-                    "label": "allow_remote_start=true",
-                },
-            )
-            await interaction.response.send_autocomplete(
-                [container.name for container in mc_containers]
-            )
 
 
 def setup(bot: commands.Bot):

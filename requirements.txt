@@ -8,4 +8,3 @@ humanfriendly==10.0
 mojang==1.0.0
 pillow==9.3.0
 coloredlogs==15.0.1
-docker==6.0.1
