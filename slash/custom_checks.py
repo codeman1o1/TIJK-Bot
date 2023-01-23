@@ -1,5 +1,3 @@
-# type: ignore[arg-type]
-
 from nextcord import ApplicationError, Guild, Interaction, Member
 from nextcord.ext.application_checks import check
 from nextcord.utils import get
