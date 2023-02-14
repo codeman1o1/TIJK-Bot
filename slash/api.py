@@ -102,16 +102,6 @@ class Api(commands.Cog):
         embed.add_field(name="Here is a joke!", value=info["joke"], inline=False)
         await interaction.response.send_message(embed=embed)
 
-    @api.subcommand(name="meme", inherit_hooks=True)
-    async def meme_api(self, interaction: Interaction):
-        """Gets a random meme from an API"""
-        async with aiohttp.ClientSession() as session:
-            request = await session.get("https://some-random-api.ml/meme")
-            info = await request.json()
-        embed = nextcord.Embed(color=0x0DD91A, title=info["caption"])
-        embed.set_image(url=info["image"])
-        await interaction.response.send_message(embed=embed)
-
     @api.subcommand(name="pokedex", inherit_hooks=True)
     async def pokedex_api(
         self,
