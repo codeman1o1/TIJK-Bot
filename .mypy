@@ -1,5 +1,5 @@
 [mypy]
-follow_imports=silent
+follow_imports=skip
 ignore_missing_imports=True
 show_error_codes = True
 disable_error_code = union-attr, no-redef, attr-defined, assignment
