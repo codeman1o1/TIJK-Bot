@@ -10,7 +10,7 @@ from nextcord import slash_command as slash
 from nextcord.application_command import SlashOption
 from nextcord.ext import commands
 
-from main import HYPIXEL_API_KEY, USER_DATA, logger
+from main import GITHUB_URL, HYPIXEL_API_KEY, USER_DATA, logger
 from utils.database import get_user_data, set_user_data, unset_user_data
 from views.buttons.link import Link
 
@@ -21,18 +21,18 @@ class General(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @slash()
-    async def github(self, interaction: Interaction):
-        """Send a link to the official TIJK Bot GitHub page"""
-        embed = nextcord.Embed(color=0x0DD91A)
-        embed.add_field(
-            name="View the official TIJK Bot code now!",
-            value="https://github.com/codeman1o1/TIJK-Bot",
-            inline=False,
-        )
-        await interaction.response.send_message(
-            embed=embed, view=Link("https://github.com/codeman1o1/TIJK-Bot")
-        )
+    if GITHUB_URL:
+
+        @slash()
+        async def github(self, interaction: Interaction):
+            """Send a link to the official TIJK Bot GitHub page"""
+            embed = nextcord.Embed(color=0x0DD91A)
+            embed.add_field(
+                name="View the official TIJK Bot code now!",
+                value=GITHUB_URL,
+                inline=False,
+            )
+            await interaction.response.send_message(embed=embed, view=Link(GITHUB_URL))
 
     @slash()
     async def avatar(
@@ -91,6 +91,12 @@ class General(commands.Cog):
     @slash(guild_ids=(870973430114181141, 865146077236822017))
     async def hypixelparty(self, interaction: Interaction):
         """Choose a random player who can own the party"""
+        if HYPIXEL_API_KEY is None:
+            await interaction.response.send_message(
+                "The Hypixel API key is not set in the .env file. If you are the bot owner, please refer to the README.md file for more information on how to set it up."
+            )
+            return
+
         hypixel_ping = nextcord.utils.get(interaction.guild.roles, name="Hypixel Ping")
         available = [
             user
@@ -127,16 +133,19 @@ class General(commands.Cog):
                         embed = nextcord.Embed(
                             color=0xFF0000, title=f"An error occurred:\n{cause}"
                         )
-                        embed.set_footer(
-                            text="Click the button below to report this error"
-                        )
-                        await interaction.send(
-                            embed=embed,
-                            view=Link(
-                                f"https://github.com/codeman1o1/TIJK-Bot/issues/new?assignees=&labels=bug&template=error.yaml&title=%5BERROR%5D+{quote(str(cause))}",
-                                "Report error",
-                            ),
-                        )
+                        if GITHUB_URL:
+                            embed.set_footer(
+                                text="Click the button below to report this error"
+                            )
+                            await interaction.send(
+                                embed=embed,
+                                view=Link(
+                                    f"{GITHUB_URL}/issues/new?assignees=&labels=bug&template=error.yaml&title=%5BERROR%5D+{quote(str(cause))}",
+                                    "Report error",
+                                ),
+                            )
+                        else:
+                            await interaction.send(embed=embed)
                         logger.error(cause)
                         return
                     logouttime = data["player"]["lastLogout"]

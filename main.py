@@ -16,6 +16,7 @@ from nextcord.ext import commands, tasks
 from pymongo import MongoClient
 
 load_dotenv()
+GITHUB_URL = os.getenv("GithubUrl")
 HYPIXEL_API_KEY = os.getenv("HypixelApiKey")
 CLUSTER: MongoClient = MongoClient(os.getenv("MongoURL"))
 DATA = CLUSTER["Data"]

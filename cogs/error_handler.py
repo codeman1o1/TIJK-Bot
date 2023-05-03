@@ -11,7 +11,7 @@ from nextcord.ext.application_checks import (
     ApplicationNotOwner,
 )
 
-from main import logger
+from main import GITHUB_URL, logger
 from slash.custom_checks import CustomCheckError
 from views.buttons.link import Link
 
@@ -60,14 +60,17 @@ class ErrorHandler(commands.Cog):
                 value=error,
                 inline=True,
             )
-            embed.set_footer(text="Click the button below to report this error")
-            await interaction.send(
-                embed=embed,
-                view=Link(
-                    f"https://github.com/codeman1o1/TIJK-Bot/issues/new?assignees=&labels=bug&template=error.yaml&title={quote(str(error))}",
-                    "Report error",
-                ),
-            )
+            if GITHUB_URL:
+                embed.set_footer(text="Click the button below to report this error")
+                await interaction.send(
+                    embed=embed,
+                    view=Link(
+                        f"{GITHUB_URL}/issues/new?assignees=&labels=bug&template=error.yaml&title={quote(str(error))}",
+                        "Report error",
+                    ),
+                )
+            else:
+                await interaction.send(embed=embed)
             logger.error(error)
             return
 
