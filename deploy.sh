@@ -8,4 +8,4 @@ docker container rm $CONTAINER_NAME
 docker image rm $IMAGE_NAME
 
 docker build -t $IMAGE_NAME .
-docker run -d --name $CONTAINER_NAME -v /var/run/docker.sock:/var/run/docker.sock --restart unless-stopped $IMAGE_NAME
+docker run -d --name $CONTAINER_NAME --restart unless-stopped $IMAGE_NAME
