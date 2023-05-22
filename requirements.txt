@@ -1,6 +1,6 @@
 nextcord==2.4.2
 python-dotenv==1.0.0
-requests==2.29.0
+requests==2.31.0
 types-requests==2.30.0.0
 pymongo==4.3.3
 dnspython==2.3.0
