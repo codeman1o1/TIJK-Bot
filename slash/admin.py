@@ -18,7 +18,13 @@ from slash.custom_checks import (
     is_mod,
     is_server_owner,
 )
-from utils.database import USER_DATA, get_bot_data, get_user_data, set_bot_data, set_user_data
+from utils.database import (
+    USER_DATA,
+    get_bot_data,
+    get_user_data,
+    set_bot_data,
+    set_user_data,
+)
 from views.buttons.button_roles import ButtonRoles
 from views.buttons.change_name_back import ChangeNameBack
 from views.buttons.link import Link
