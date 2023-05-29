@@ -9,9 +9,9 @@ from nextcord import slash_command as slash
 from nextcord.application_command import SlashOption
 from nextcord.ext import commands
 
-from main import START_TIME, USER_DATA
+from main import START_TIME
 from slash.custom_checks import is_admin, is_bot_owner, is_server_owner
-from utils.database import get_user_data, set_user_data, unset_user_data
+from utils.database import USER_DATA, get_user_data, set_user_data, unset_user_data
 from views.buttons.database_check import DatabaseCheck
 
 

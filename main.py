@@ -13,14 +13,10 @@ import nextcord.ext.commands.errors
 from dotenv import load_dotenv
 from nextcord import Interaction
 from nextcord.ext import commands, tasks
-from pymongo import MongoClient
+from utils.database import USER_DATA, get_user_data, set_user_data
 
 load_dotenv()
 HYPIXEL_API_KEY = os.getenv("HypixelApiKey")
-CLUSTER: MongoClient = MongoClient(os.getenv("MongoURL"))
-DATA = CLUSTER["Data"]
-BOT_DATA = DATA["BotData"]
-USER_DATA = DATA["UserData"]
 START_TIME = time.time()
 
 
@@ -100,12 +96,6 @@ async def warn_system(
     :param remove: Wether to remove warns instead of adding them, defaults to False
     :type remove: bool, optional
     """
-    # Can't place import on top because that would cause circular imports
-    from utils.database import (  # pylint: disable=import-outside-toplevel
-        get_user_data,
-        set_user_data,
-    )
-
     reason2 = f" because of {reason}" if reason else ""
     warns = get_user_data(user.id, "warns")
     total_warns = max(warns - amount, 0) if remove else warns + amount

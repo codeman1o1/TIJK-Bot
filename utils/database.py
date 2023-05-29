@@ -1,4 +1,10 @@
-from main import BOT_DATA, USER_DATA
+from dotenv import get_key
+from pymongo import MongoClient
+
+CLUSTER = MongoClient(get_key(".env", "MongoURL"))
+DATA = CLUSTER["Data"]
+BOT_DATA = DATA["BotData"]
+USER_DATA = DATA["UserData"]
 
 
 def get_bot_data(query: str):

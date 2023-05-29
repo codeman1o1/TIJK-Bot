@@ -3,7 +3,7 @@ from typing import Iterable
 import nextcord
 from nextcord import ButtonStyle
 
-from main import USER_DATA
+from utils.database import USER_DATA
 from utils.check_message_sender import CheckMessageSender as CMS
 
 

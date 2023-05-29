@@ -5,9 +5,9 @@ import nextcord
 from nextcord.ext import commands
 from nextcord.ext.commands import Context
 
-from main import USER_DATA, logger
+from main import logger
 from slash.custom_checks import has_role_or_above
-from utils.database import get_bot_data, get_user_data, set_user_data
+from utils.database import USER_DATA, get_bot_data, get_user_data, set_user_data
 from views.dropdowns.pingpoll_time import PingPollTimeView
 
 

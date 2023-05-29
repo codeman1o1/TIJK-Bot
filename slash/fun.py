@@ -10,7 +10,7 @@ from nextcord import slash_command as slash
 from nextcord.application_command import SlashOption
 from nextcord.ext import commands
 
-from main import USER_DATA
+from utils.database import USER_DATA
 
 
 def get_8ball_responses():

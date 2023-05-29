@@ -10,7 +10,7 @@ from nextcord import slash_command as slash
 from nextcord.application_command import SlashOption
 from nextcord.ext import commands
 
-from main import USER_DATA, log, logger, warn_system
+from main import log, logger, warn_system
 from slash.custom_checks import (
     check_bot_owner,
     check_server_owner,
@@ -18,7 +18,7 @@ from slash.custom_checks import (
     is_mod,
     is_server_owner,
 )
-from utils.database import get_bot_data, get_user_data, set_bot_data, set_user_data
+from utils.database import USER_DATA, get_bot_data, get_user_data, set_bot_data, set_user_data
 from views.buttons.button_roles import ButtonRoles
 from views.buttons.change_name_back import ChangeNameBack
 from views.buttons.link import Link
