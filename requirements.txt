@@ -2,7 +2,7 @@ nextcord==2.5.0
 python-dotenv==1.0.0
 requests==2.31.0
 types-requests==2.31.0.1
-pymongo==4.3.3
+pymongo==4.4.0
 dnspython==2.3.0
 humanfriendly==10.0
 mojang==1.1.0
