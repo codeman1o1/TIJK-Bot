@@ -6,5 +6,5 @@ pymongo==4.4.0
 dnspython==2.3.0
 humanfriendly==10.0
 mojang==1.1.0
-pillow==9.5.0
+pillow==10.0.0
 coloredlogs==15.0.1
